@@ -1,0 +1,922 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>무지개 다리 너머 🌈</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Noto+Serif+KR:wght@300;400;600&family=Noto+Sans+KR:wght@300&display=swap" rel="stylesheet">
+
+  <!-- ★ AdSense: ca-pub-XXXXXXXXXXXXXXXX 를 본인 발행자 ID로 교체하세요 -->
+  <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-XXXXXXXXXXXXXXXX" crossorigin="anonymous"></script>
+
+  <style>
+    *, *::before, *::after { margin: 0; padding: 0; box-sizing: border-box; }
+
+    :root {
+      --card-w: 160px;
+      --card-h: 270px;
+      --text-main: #f0e6ff;
+      --text-sub:  #c0aad8;
+      --text-dim:  #8070a0;
+      --border:    rgba(200,160,255,.22);
+      --glass:     rgba(255,255,255,.04);
+    }
+
+    body {
+      min-height: 100vh;
+      background: radial-gradient(ellipse at 20% 10%, #2a0a4a 0%, #0d0d2b 40%, #0a1428 70%, #001a1a 100%);
+      font-family: 'Noto Serif KR', serif;
+      color: var(--text-main);
+      overflow-x: hidden;
+    }
+
+    /* rainbow top bar */
+    .rainbow-bar {
+      position: fixed; top: 0; left: 0; right: 0; height: 3px; z-index: 200;
+      background: linear-gradient(90deg, #ff6b6b,#ff9f43,#ffd32a,#0be881,#17c0eb,#7d5fff,#ef5777);
+    }
+
+    /* starfield */
+    #stars { position: fixed; inset: 0; pointer-events: none; z-index: 0; }
+    .star {
+      position: absolute; border-radius: 50%; background: white;
+      animation: twinkle var(--d,3s) var(--delay,0s) infinite ease-in-out;
+    }
+    @keyframes twinkle {
+      0%,100% { opacity:.15; transform:scale(1); }
+      50%      { opacity:1;  transform:scale(1.6); }
+    }
+
+    /* floating petals */
+    .petal {
+      position: fixed; font-size:13px; opacity:0; pointer-events:none; z-index:1;
+      animation: floatUp var(--fd,8s) var(--fdelay,0s) infinite linear;
+    }
+    @keyframes floatUp {
+      0%   { transform:translateY(100vh) rotate(0deg);   opacity:0; }
+      10%  { opacity:.35; }
+      90%  { opacity:.25; }
+      100% { transform:translateY(-10vh) rotate(360deg); opacity:0; }
+    }
+
+    /* layout */
+    .page { position:relative; z-index:10; }
+    .container { max-width:880px; margin:0 auto; padding:70px 22px 60px; }
+
+    /* header */
+    .header { text-align:center; margin-bottom:48px; }
+    .header .icon {
+      font-size:3.4rem; display:block; margin-bottom:16px;
+      animation: floatIcon 4s ease-in-out infinite;
+    }
+    @keyframes floatIcon {
+      0%,100% { transform:translateY(0) rotate(-5deg); }
+      50%      { transform:translateY(-12px) rotate(5deg); }
+    }
+    .header h1 {
+      font-size:clamp(1.8rem,5vw,2.7rem); font-weight:600; line-height:1.3;
+      background:linear-gradient(135deg,#e8c4ff 0%,#c8e6ff 50%,#ffcce8 100%);
+      -webkit-background-clip:text; -webkit-text-fill-color:transparent; background-clip:text;
+      margin-bottom:12px;
+    }
+    .header .sub { font-size:.92rem; color:var(--text-sub); line-height:1.9; font-weight:300; }
+
+    /* glass panel */
+    .glass {
+      background:var(--glass); border:1px solid var(--border);
+      border-radius:20px; backdrop-filter:blur(12px); padding:24px 26px;
+    }
+
+    /* api section */
+    details.api-panel { margin-bottom:24px; }
+    details.api-panel summary {
+      cursor:pointer; color:var(--text-sub); font-size:.86rem; list-style:none;
+      display:flex; align-items:center; gap:8px;
+      padding:11px 16px; border-radius:12px;
+      background:rgba(255,255,255,.04); border:1px solid var(--border);
+      transition:background .2s;
+    }
+    details.api-panel summary:hover { background:rgba(255,255,255,.08); }
+    details.api-panel summary::before { content:'🔑'; }
+    .api-row { display:flex; gap:10px; margin-top:12px; }
+    .api-saved { color:#7ef7a0; font-size:.78rem; margin-top:7px; }
+
+    /* inputs */
+    input, textarea, select {
+      width:100%;
+      background:rgba(255,255,255,.07); border:1px solid var(--border);
+      border-radius:12px; color:var(--text-main);
+      padding:12px 16px; font-family:'Noto Serif KR',serif; font-size:.9rem;
+      outline:none; transition:border-color .3s, box-shadow .3s;
+    }
+    input:focus, textarea:focus {
+      border-color:rgba(180,100,255,.5);
+      box-shadow:0 0 16px rgba(160,80,255,.18);
+    }
+    input::placeholder, textarea::placeholder { color:var(--text-dim); }
+
+    .field-label { font-size:.86rem; color:#d0b0f0; margin-bottom:8px; display:block; }
+    .input-row { display:grid; grid-template-columns:1fr 1fr; gap:14px; margin-bottom:16px; }
+    textarea.question { min-height:100px; resize:vertical; line-height:1.8; }
+
+    /* buttons */
+    .btn-draw {
+      width:100%; margin-top:20px; padding:17px;
+      border:none; border-radius:16px; cursor:pointer;
+      font-family:'Noto Serif KR',serif; font-size:1rem; color:white;
+      background:linear-gradient(135deg,#7d5fff,#5f4bd8,#3db8e8);
+      background-size:200% 200%; animation:gradShift 4s ease infinite;
+      transition:transform .2s, box-shadow .2s; position:relative; overflow:hidden;
+    }
+    @keyframes gradShift {
+      0%  { background-position:0% 50%; }
+      50% { background-position:100% 50%; }
+      100%{ background-position:0% 50%; }
+    }
+    .btn-draw:hover:not(:disabled) { transform:translateY(-3px); box-shadow:0 12px 30px rgba(108,92,231,.45); }
+    .btn-draw:disabled { opacity:.5; cursor:not-allowed; animation:none; }
+    .btn-draw::after {
+      content:''; position:absolute; inset:0;
+      background:linear-gradient(120deg,transparent 30%,rgba(255,255,255,.12) 50%,transparent 70%);
+      transform:translateX(-100%); transition:transform .5s;
+    }
+    .btn-draw:hover::after { transform:translateX(100%); }
+
+    .btn-small {
+      padding:11px 20px; border-radius:11px; cursor:pointer;
+      font-family:'Noto Serif KR',serif; font-size:.85rem; white-space:nowrap;
+      transition:all .25s;
+    }
+    .btn-ghost {
+      background:transparent; border:1px solid var(--border); color:var(--text-sub);
+    }
+    .btn-ghost:hover { background:rgba(200,160,255,.1); color:var(--text-main); }
+    .btn-purple {
+      background:rgba(180,100,255,.16); border:1px solid rgba(180,100,255,.32); color:#d8b4ff;
+    }
+    .btn-purple:hover { background:rgba(180,100,255,.26); }
+
+    /* ── cards section ── */
+    .cards-section { display:none; margin-top:48px; }
+    .cards-section.show { display:block; }
+
+    .spread-hint {
+      text-align:center; font-size:.88rem; color:var(--text-sub);
+      margin-bottom:28px; letter-spacing:.04em;
+    }
+    .spread-hint em { font-style:normal; animation:hintPulse 2s ease-in-out infinite; display:inline-block; }
+    @keyframes hintPulse { 0%,100%{opacity:.6;} 50%{opacity:1;} }
+
+    .cards-grid {
+      display:grid; grid-template-columns:repeat(3,1fr);
+      gap:18px; justify-items:center;
+    }
+
+    .card-slot { width:100%; max-width:210px; text-align:center; }
+    .card-pos-label { font-size:.78rem; color:var(--text-sub); margin-bottom:9px; }
+    .card-pos-sub   { font-size:.7rem;  color:var(--text-dim); margin-top:8px; }
+
+    /* tarot card flip */
+    .card-wrap { perspective:1000px; width:100%; height:var(--card-h); }
+    .tarot-card {
+      width:100%; height:var(--card-h); position:relative;
+      transform-style:preserve-3d;
+      transition:transform .85s cubic-bezier(.4,.2,.2,1);
+      cursor:pointer;
+    }
+    .tarot-card.flipped { transform:rotateY(180deg); cursor:default; }
+
+    .card-face, .card-back {
+      position:absolute; inset:0; border-radius:14px;
+      backface-visibility:hidden; overflow:hidden;
+    }
+
+    /* card back */
+    .card-back {
+      background:linear-gradient(145deg,#16082c,#1e1060,#0a1530);
+      border:1.5px solid rgba(160,100,230,.32);
+      display:flex; flex-direction:column; align-items:center; justify-content:center;
+    }
+    .cb-border {
+      position:absolute; inset:9px; border-radius:9px;
+      border:1px solid rgba(160,100,230,.18);
+    }
+    .cb-pattern {
+      position:absolute; inset:18px; border-radius:6px;
+      background-image:
+        repeating-linear-gradient(45deg,rgba(140,80,220,.11) 0,rgba(140,80,220,.11) 1px,transparent 0,transparent 9px),
+        repeating-linear-gradient(-45deg,rgba(140,80,220,.11) 0,rgba(140,80,220,.11) 1px,transparent 0,transparent 9px);
+    }
+    .cb-symbol { font-size:2.6rem; opacity:.22; position:relative; z-index:2; user-select:none; }
+    .cb-glow {
+      position:absolute; inset:0; border-radius:14px;
+      background:radial-gradient(ellipse at 50% 40%,rgba(160,80,255,.2),transparent 65%);
+    }
+    .tarot-card:not(.flipped):hover .card-back {
+      border-color:rgba(180,120,255,.6);
+      box-shadow:0 0 22px rgba(160,80,255,.3);
+    }
+
+    /* card face with image */
+    .card-face {
+      border:1.5px solid rgba(200,160,255,.35);
+      transform:rotateY(180deg);
+      display:flex; flex-direction:column;
+      background:#0d0820;
+    }
+    .card-img-box {
+      flex:1; overflow:hidden; position:relative;
+      display:flex; align-items:center; justify-content:center;
+    }
+    .card-img-box img {
+      width:100%; height:100%; object-fit:cover; display:block;
+      transition:opacity .4s;
+    }
+    .card-img-box.reversed img { transform:rotate(180deg); }
+    .card-img-fallback {
+      display:none; width:100%; height:100%;
+      align-items:center; justify-content:center; flex-direction:column; gap:6px;
+      background:linear-gradient(145deg,#1e0840,#16225a);
+    }
+    .card-img-fallback .fb-emoji { font-size:2.8rem; opacity:.6; }
+    .card-img-fallback .fb-name  { font-size:.72rem; color:var(--text-sub); text-align:center; padding:0 8px; }
+
+    /* shimmer while loading */
+    .card-img-box::before {
+      content:''; position:absolute; inset:0;
+      background:linear-gradient(90deg,transparent,rgba(180,120,255,.08),transparent);
+      animation:imgShimmer 1.5s infinite;
+      pointer-events:none; z-index:1;
+    }
+    .card-img-box.loaded::before { display:none; }
+    @keyframes imgShimmer {
+      0%   { transform:translateX(-100%); }
+      100% { transform:translateX(100%); }
+    }
+
+    .card-label {
+      padding:7px 8px 8px;
+      background:linear-gradient(0deg,rgba(8,2,20,.96),rgba(8,2,20,.75));
+      text-align:center; flex-shrink:0;
+    }
+    .card-label-name { font-size:.72rem; color:#e0c8ff; font-weight:600; }
+    .card-label-rv   {
+      font-size:.62rem; color:#b898e0; margin-top:2px; letter-spacing:.03em;
+    }
+
+    /* face glow for upright vs reversed */
+    .card-face.is-upright  { box-shadow:inset 0 0 20px rgba(180,120,255,.15); }
+    .card-face.is-reversed { box-shadow:inset 0 0 20px rgba(100,140,255,.18); }
+
+    /* loading */
+    .loading-section { display:none; text-align:center; padding:44px 0; }
+    .loading-section.show { display:block; }
+    .orb {
+      width:60px; height:60px; border-radius:50%; margin:0 auto 18px;
+      background:radial-gradient(circle at 35% 35%,#d8a0ff,#5f2fa8);
+      animation:orbPulse 2s ease-in-out infinite;
+      box-shadow:0 0 28px rgba(160,80,255,.5);
+    }
+    @keyframes orbPulse {
+      0%,100% { transform:scale(1);   box-shadow:0 0 28px rgba(160,80,255,.4); }
+      50%      { transform:scale(1.2); box-shadow:0 0 48px rgba(180,100,255,.7); }
+    }
+    .loading-text { color:var(--text-sub); font-size:.9rem; line-height:2; }
+
+    /* reading */
+    .reading-section { display:none; margin-top:36px; }
+    .reading-section.show { display:block; animation:fadeUp .8s ease; }
+    @keyframes fadeUp { from{opacity:0;transform:translateY(16px);} to{opacity:1;transform:translateY(0);} }
+
+    .reading-header { text-align:center; margin-bottom:22px; }
+    .reading-header .ltr-icon { font-size:1.9rem; display:block; margin-bottom:7px; }
+    .reading-header h3 { font-size:1.05rem; color:#e0c0ff; font-weight:400; }
+
+    .chips { display:flex; flex-wrap:wrap; gap:7px; margin-bottom:20px; }
+    .chip {
+      font-size:.7rem; padding:4px 11px; border-radius:20px;
+      background:rgba(180,100,255,.1); border:1px solid rgba(180,100,255,.22);
+      color:#c8a8f0;
+    }
+    .chip.rv {
+      background:rgba(100,140,255,.1); border-color:rgba(100,140,255,.22);
+      color:#a8c0f8;
+    }
+    .chip.rv::before { content:'↕ '; }
+
+    .reading-body {
+      line-height:2.1; font-size:.93rem; color:#d8c8f0;
+      white-space:pre-wrap; font-family:'Noto Serif KR',serif;
+    }
+    .reading-footer { text-align:center; margin-top:28px; }
+
+    footer.site-footer {
+      text-align:center; margin-top:60px; padding-bottom:38px;
+      color:var(--text-dim); font-size:.76rem; line-height:2;
+    }
+
+    /* reveal animation */
+    .reveal { opacity:0; transform:translateY(18px); transition:opacity .6s,transform .6s; }
+    .reveal.in { opacity:1; transform:translateY(0); }
+
+    /* ── 전면 광고 (인터스티셜) ── */
+    .itl-overlay {
+      position:fixed; inset:0; z-index:2000;
+      display:none; align-items:center; justify-content:center;
+      background:radial-gradient(ellipse at 20% 10%,rgba(30,8,60,.97) 0%,rgba(10,10,35,.97) 50%,rgba(8,18,35,.97) 100%);
+      backdrop-filter:blur(8px);
+    }
+    .itl-overlay.show { display:flex; animation:itlFadeIn .35s ease; }
+    @keyframes itlFadeIn { from{opacity:0;} to{opacity:1;} }
+
+    .itl-box {
+      max-width:440px; width:92%;
+      background:rgba(255,255,255,.04); border:1px solid rgba(200,160,255,.2);
+      border-radius:22px; overflow:hidden;
+      animation:itlUp .35s ease;
+    }
+    @keyframes itlUp { from{transform:translateY(18px);opacity:0;} to{transform:translateY(0);opacity:1;} }
+
+    .itl-rainbow { height:3px; background:linear-gradient(90deg,#ff6b6b,#ff9f43,#ffd32a,#0be881,#17c0eb,#7d5fff,#ef5777); }
+
+    .itl-header { text-align:center; padding:22px 22px 14px; }
+    .itl-icon   { font-size:2rem; display:block; margin-bottom:8px; animation:floatIcon 3s ease-in-out infinite; }
+    .itl-title  { font-size:.98rem; color:#e0c8ff; margin-bottom:5px; }
+    .itl-sub    { font-size:.78rem; color:var(--text-dim); }
+
+    .itl-ad-wrap { padding:0 18px 14px; min-height:100px; display:flex; align-items:center; justify-content:center; }
+    .itl-ad-wrap > div { width:100%; }
+
+    .itl-footer { padding:14px 22px 22px; text-align:center; }
+    .itl-close-btn {
+      padding:11px 30px; border-radius:12px; border:1px solid var(--border);
+      background:transparent; color:var(--text-sub);
+      font-family:'Noto Serif KR',serif; font-size:.88rem; cursor:pointer;
+      transition:all .25s; min-width:150px;
+    }
+    .itl-close-btn:not(:disabled):hover { background:rgba(200,160,255,.12); color:var(--text-main); border-color:rgba(200,160,255,.4); }
+    .itl-close-btn:disabled { opacity:.45; cursor:not-allowed; }
+
+    /* ── 리딩 하단 광고 ── */
+    .ad-in-reading {
+      margin-top:24px; padding-top:18px;
+      border-top:1px solid rgba(255,255,255,.06);
+    }
+
+    /* ── 하단 고정 배너 ── */
+    .ad-sticky {
+      position:fixed; bottom:0; left:0; right:0; z-index:100;
+      background:rgba(8,4,20,.92); border-top:1px solid rgba(200,160,255,.1);
+      backdrop-filter:blur(8px);
+      padding:6px 40px 6px 16px;
+      display:flex; align-items:center; justify-content:center;
+      transform:translateY(100%); transition:transform .45s ease;
+    }
+    .ad-sticky.show { transform:translateY(0); }
+    .ad-sticky-inner { flex:1; max-width:728px; }
+    .ad-sticky-close {
+      position:absolute; right:10px; top:50%; transform:translateY(-50%);
+      width:26px; height:26px; border-radius:50%;
+      background:rgba(255,255,255,.07); border:1px solid rgba(255,255,255,.1);
+      color:var(--text-dim); font-size:.72rem; cursor:pointer;
+      display:flex; align-items:center; justify-content:center;
+      transition:background .2s; flex-shrink:0;
+    }
+    .ad-sticky-close:hover { background:rgba(255,255,255,.16); }
+
+    /* 하단 배너 높이만큼 컨텐츠 여백 */
+    body.has-sticky { padding-bottom:68px; }
+
+    /* 공통 광고 레이블 */
+    .ad-label {
+      text-align:center; font-size:.62rem; color:var(--text-dim);
+      letter-spacing:.1em; margin-bottom:6px;
+    }
+
+    /* responsive */
+    @media(max-width:580px) {
+      .cards-grid { grid-template-columns:1fr; }
+      .card-slot  { max-width:190px; margin:0 auto; }
+      .input-row  { grid-template-columns:1fr; }
+    }
+    @media(min-width:581px) and (max-width:760px) {
+      --card-h:230px;
+    }
+  </style>
+</head>
+
+<body>
+  <div class="rainbow-bar"></div>
+  <div id="stars"></div>
+  <div id="petals"></div>
+
+  <!-- ★ 전면 광고 (인터스티셜) ── "다시 질문하기" 클릭 시 표시 -->
+  <div class="itl-overlay" id="itlOverlay">
+    <div class="itl-box">
+      <div class="itl-rainbow"></div>
+      <div class="itl-header">
+        <span class="itl-icon">🌙</span>
+        <p class="itl-title">잠시 쉬어가요</p>
+        <p class="itl-sub">다음 리딩을 준비하는 동안 숨을 고르세요</p>
+      </div>
+      <div class="itl-ad-wrap">
+        <div>
+          <p class="ad-label">광 고</p>
+          <!-- ★ data-ad-slot 을 인터스티셜용 슬롯 번호로 교체하세요 -->
+          <ins class="adsbygoogle"
+            style="display:block"
+            data-ad-client="ca-pub-XXXXXXXXXXXXXXXX"
+            data-ad-slot="1111111111"
+            data-ad-format="auto"
+            data-full-width-responsive="true"></ins>
+        </div>
+      </div>
+      <div class="itl-footer">
+        <button class="itl-close-btn" id="itlCloseBtn" disabled onclick="closeInterstitial()">
+          <span id="itlCd">5</span>초 후 닫기
+        </button>
+      </div>
+    </div>
+  </div>
+
+  <div class="page">
+    <div class="container">
+
+      <div class="header reveal">
+        <span class="icon">🐾</span>
+        <h1>무지개 다리 너머</h1>
+        <p class="sub">사랑하는 반려동물의 영혼과 연결되는 공간<br>
+          그들은 무지개 다리 너머에서 언제나 우리를 바라보고 있어요</p>
+      </div>
+
+      <details class="api-panel reveal">
+        <summary>Anthropic API 키 설정</summary>
+        <div class="api-row">
+          <input type="password" id="apiKey" placeholder="sk-ant-api03-…" autocomplete="off">
+          <button class="btn-small btn-purple" onclick="saveKey()">저장</button>
+        </div>
+        <p class="api-saved" id="keySaved" style="display:none">✓ 저장됨 (브라우저 로컬에만 보관)</p>
+      </details>
+
+      <div class="glass reveal">
+        <div class="input-row">
+          <div>
+            <label class="field-label">🐾 반려동물 이름</label>
+            <input type="text" id="petName" placeholder="예: 똘이, 초코, 루시…">
+          </div>
+          <div>
+            <label class="field-label">💌 반려동물이 나를 부르는 호칭</label>
+            <input type="text" id="ownerTitle" placeholder="예: 아빠, 엄마, 언니, 오빠, 집사…">
+          </div>
+        </div>
+        <label class="field-label">🌸 어떤 이야기를 나누고 싶으신가요?</label>
+        <textarea class="question" id="question"
+          placeholder="예: 너는 지금 행복하니? / 마지막으로 하고 싶은 말이 있어? / 내가 더 잘해줄 수 있었을까?"></textarea>
+        <button class="btn-draw" id="drawBtn" onclick="onDraw()">🌈 &nbsp;타로 카드 뽑기</button>
+      </div>
+
+      <div class="cards-section" id="cardsSection">
+        <p class="spread-hint"><em>✨</em> 카드를 하나씩 클릭하여 펼쳐보세요 <em>✨</em></p>
+        <div class="cards-grid" id="cardsGrid"></div>
+      </div>
+
+      <div class="loading-section" id="loadingSection">
+        <div class="orb"></div>
+        <p class="loading-text">영혼의 목소리를 듣고 있어요…<br>
+          <span style="font-size:.8rem;color:var(--text-dim)">잠시만 기다려주세요</span></p>
+      </div>
+
+      <div class="reading-section glass" id="readingSection">
+        <div class="reading-header">
+          <span class="ltr-icon">💌</span>
+          <h3 id="readingTitle"></h3>
+        </div>
+        <div class="chips" id="chipRow"></div>
+        <div class="reading-body" id="readingBody"></div>
+
+        <!-- ★ 리딩 하단 광고 ── AI 편지 아래, 자연스러운 여운 타이밍 -->
+        <div class="ad-in-reading">
+          <p class="ad-label">광 고</p>
+          <!-- ★ data-ad-slot 을 리딩하단용 슬롯 번호로 교체하세요 -->
+          <ins class="adsbygoogle"
+            style="display:block"
+            data-ad-client="ca-pub-XXXXXXXXXXXXXXXX"
+            data-ad-slot="2222222222"
+            data-ad-format="auto"
+            data-full-width-responsive="true"
+            id="adReading"></ins>
+        </div>
+
+        <div class="reading-footer">
+          <button class="btn-small btn-ghost" onclick="onReset()">🌙 &nbsp;다시 질문하기</button>
+        </div>
+      </div>
+
+      <footer class="site-footer">
+        <p>사랑하는 반려동물을 그리워하는 모든 분들을 위해 만들어졌습니다</p>
+        <p>🌈 무지개 다리 너머에서도 그들의 사랑은 영원합니다 🐾</p>
+      </footer>
+    </div>
+  </div>
+
+  <!-- ★ 하단 고정 배너 ── 3초 후 슬라이드업 -->
+  <div class="ad-sticky" id="adSticky">
+    <div class="ad-sticky-inner">
+      <!-- ★ data-ad-slot 을 하단배너용 슬롯 번호로 교체하세요 -->
+      <ins class="adsbygoogle"
+        style="display:block"
+        data-ad-client="ca-pub-XXXXXXXXXXXXXXXX"
+        data-ad-slot="3333333333"
+        data-ad-format="horizontal"
+        data-full-width-responsive="true"
+        id="adSticky-ins"></ins>
+    </div>
+    <button class="ad-sticky-close" onclick="closeStickyAd()" title="닫기">✕</button>
+  </div>
+
+<script>
+/* ── stars & petals ── */
+const $s = document.getElementById('stars');
+for (let i=0;i<180;i++){
+  const el=document.createElement('div'); el.className='star';
+  const sz=Math.random()*2.5+.5;
+  el.style.cssText=`width:${sz}px;height:${sz}px;left:${Math.random()*100}%;top:${Math.random()*100}%;--d:${(Math.random()*3+2).toFixed(1)}s;--delay:${(Math.random()*4).toFixed(1)}s;`;
+  $s.appendChild(el);
+}
+const petEmoji=['✨','⭐','🌟','💫','🌸','🍃'];
+const $p=document.getElementById('petals');
+for(let i=0;i<16;i++){
+  const el=document.createElement('div'); el.className='petal';
+  el.textContent=petEmoji[i%petEmoji.length];
+  el.style.cssText=`left:${Math.random()*100}%;--fd:${(Math.random()*10+6).toFixed(1)}s;--fdelay:${(Math.random()*10).toFixed(1)}s;`;
+  $p.appendChild(el);
+}
+
+/* ── reveal ── */
+const ro=new IntersectionObserver(entries=>entries.forEach(e=>{if(e.isIntersecting)e.target.classList.add('in');}),{threshold:.15});
+document.querySelectorAll('.reveal').forEach(el=>ro.observe(el));
+
+/* ── card data (78장 라이더 웨이트) ── */
+const B='https://commons.wikimedia.org/wiki/Special:FilePath/';
+const CARDS=[
+  // ── 메이저 아르카나 ──
+  {img:B+'RWS_Tarot_00_Fool.jpg',       name:'바보',              en:'The Fool',          suit:'major', upKw:'새로운 시작 · 순수함 · 자유',      rvKw:'준비 중 · 아직은 · 기다리는 시간'},
+  {img:B+'RWS_Tarot_01_Magician.jpg',   name:'마법사',            en:'The Magician',      suit:'major', upKw:'가능성 · 창조 · 의지',            rvKw:'내 안에서 · 천천히 · 찾는 중'},
+  {img:B+'RWS_Tarot_02_High_Priestess.jpg',name:'여사제',         en:'High Priestess',    suit:'major', upKw:'직관 · 신비 · 내면의 앎',          rvKw:'말없이 느끼는 · 깊은 곳에'},
+  {img:B+'RWS_Tarot_03_Empress.jpg',    name:'여황제',            en:'The Empress',       suit:'major', upKw:'풍요 · 사랑 · 따스한 품',          rvKw:'그리운 온기 · 아직 채워지는 중'},
+  {img:B+'RWS_Tarot_04_Emperor.jpg',    name:'황제',              en:'The Emperor',       suit:'major', upKw:'안정 · 보호 · 든든함',             rvKw:'흔들리는 마음도 · 괜찮아질 거야'},
+  {img:B+'RWS_Tarot_05_Hierophant.jpg', name:'교황',              en:'The Hierophant',    suit:'major', upKw:'인연 · 영적 연결 · 전통',           rvKw:'형식보다 마음으로 · 우리만의 방식'},
+  {img:B+'RWS_Tarot_06_Lovers.jpg',     name:'연인',              en:'The Lovers',        suit:'major', upKw:'사랑 · 유대 · 선택',               rvKw:'아직 닿아있는 · 분리되지 않은'},
+  {img:B+'RWS_Tarot_07_Chariot.jpg',    name:'전차',              en:'The Chariot',       suit:'major', upKw:'전진 · 의지 · 승리',               rvKw:'조금 쉬어가도 돼 · 서두르지 않아도'},
+  {img:B+'RWS_Tarot_08_Strength.jpg',   name:'힘',                en:'Strength',          suit:'major', upKw:'용기 · 내면의 힘 · 부드러운 강함',   rvKw:'지쳐있어도 괜찮아 · 함께 버텨왔잖아'},
+  {img:B+'RWS_Tarot_09_Hermit.jpg',     name:'은둔자',            en:'The Hermit',        suit:'major', upKw:'내면 탐색 · 빛 · 혼자만의 시간',    rvKw:'슬픔도 혼자 안고 있지 · 나 알고 있어'},
+  {img:B+'RWS_Tarot_10_Wheel_of_Fortune.jpg',name:'운명의 수레바퀴',en:'Wheel of Fortune',suit:'major', upKw:'순환 · 운명 · 전환점',              rvKw:'돌고 도는 인연 · 다시 만날 날'},
+  {img:B+'RWS_Tarot_11_Justice.jpg',    name:'정의',              en:'Justice',           suit:'major', upKw:'균형 · 진실 · 공정',               rvKw:'네 죄책감 내려놔 · 충분히 잘해줬어'},
+  {img:B+'RWS_Tarot_12_Hanged_Man.jpg', name:'매달린 사람',       en:'The Hanged Man',    suit:'major', upKw:'기다림 · 수용 · 새로운 시각',        rvKw:'시간이 걸리는 치유 · 천천히도 괜찮아'},
+  {img:B+'RWS_Tarot_13_Death.jpg',      name:'변화',              en:'Death',             suit:'major', upKw:'전환 · 끝과 시작 · 변화',            rvKw:'아직 받아들이는 중 · 곁에서 기다릴게'},
+  {img:B+'RWS_Tarot_14_Temperance.jpg', name:'절제',              en:'Temperance',        suit:'major', upKw:'균형 · 치유 · 조화',               rvKw:'마음이 혼란스럽지 · 조금씩 나아지고 있어'},
+  {img:B+'RWS_Tarot_15_Devil.jpg',      name:'해방',              en:'The Devil',         suit:'major', upKw:'집착 · 해방 · 놓아주기',             rvKw:'아직 놓지 못해도 · 나는 이미 자유로워'},
+  {img:B+'RWS_Tarot_16_Tower.jpg',      name:'탑',                en:'The Tower',         suit:'major', upKw:'급변 · 해체 · 새로운 기반',           rvKw:'충격이 아직 남아있지 · 같이 다시 세우자'},
+  {img:B+'RWS_Tarot_17_Star.jpg',       name:'별',                en:'The Star',          suit:'major', upKw:'희망 · 치유 · 영감',               rvKw:'별빛이 흐릿해 보여도 · 나는 여기 있어'},
+  {img:B+'RWS_Tarot_18_Moon.jpg',       name:'달',                en:'The Moon',          suit:'major', upKw:'꿈 · 무의식 · 직관',               rvKw:'혼란스러운 마음 · 꿈에서 만날게'},
+  {img:B+'RWS_Tarot_19_Sun.jpg',        name:'태양',              en:'The Sun',           suit:'major', upKw:'기쁨 · 활력 · 행복',               rvKw:'아직 환해지는 중 · 따뜻함이 돌아올 거야'},
+  {img:B+'RWS_Tarot_20_Judgement.jpg',  name:'심판',              en:'Judgement',         suit:'major', upKw:'각성 · 부활 · 소명',               rvKw:'자책하지 마 · 네 부름이 들려'},
+  {img:B+'RWS_Tarot_21_World.jpg',      name:'세계',              en:'The World',         suit:'major', upKw:'완성 · 달성 · 온전함',              rvKw:'아직 마무리 중 · 우리의 이야기는 계속돼'},
+  // ── 완드 (Wands) ──
+  {img:B+'Wands01.jpg', name:'완드 에이스', en:'Ace of Wands',    suit:'wands', upKw:'새 출발 · 열정 · 창의력',     rvKw:'불꽃이 숨어있어 · 곧 타오를 거야'},
+  {img:B+'Wands02.jpg', name:'완드 2',     en:'Two of Wands',    suit:'wands', upKw:'계획 · 미래 · 기다림',        rvKw:'아직 방향 찾는 중 · 서두르지 마'},
+  {img:B+'Wands03.jpg', name:'완드 3',     en:'Three of Wands',  suit:'wands', upKw:'확장 · 탐험 · 앞을 바라봄',   rvKw:'돌아보는 시간 · 네가 그리워'},
+  {img:B+'Wands04.jpg', name:'완드 4',     en:'Four of Wands',   suit:'wands', upKw:'축하 · 안식 · 함께',          rvKw:'아직 자리 잡는 중 · 여기도 따뜻해'},
+  {img:B+'Wands05.jpg', name:'완드 5',     en:'Five of Wands',   suit:'wands', upKw:'경쟁 · 갈등 · 에너지',        rvKw:'마음이 복잡하지 · 다 이해해'},
+  {img:B+'Wands06.jpg', name:'완드 6',     en:'Six of Wands',    suit:'wands', upKw:'승리 · 인정 · 자신감',        rvKw:'알아줘서 고마워 · 넌 충분히 잘했어'},
+  {img:B+'Wands07.jpg', name:'완드 7',     en:'Seven of Wands',  suit:'wands', upKw:'방어 · 도전 · 용기',          rvKw:'지쳐있지 · 이제 쉬어도 돼'},
+  {img:B+'Wands08.jpg', name:'완드 8',     en:'Eight of Wands',  suit:'wands', upKw:'속도 · 전달 · 빠른 변화',     rvKw:'서두르지 않아도 · 메시지는 전해져'},
+  {img:B+'Wands09.jpg', name:'완드 9',     en:'Nine of Wands',   suit:'wands', upKw:'인내 · 회복력 · 근성',        rvKw:'많이 힘들었지 · 버텨줘서 고마워'},
+  {img:B+'Wands10.jpg', name:'완드 10',    en:'Ten of Wands',    suit:'wands', upKw:'책임 · 부담 · 완성을 향해',   rvKw:'너무 많이 짊어졌지 · 조금 내려놔'},
+  {img:B+'Wands11.jpg', name:'완드 시종',  en:'Page of Wands',   suit:'wands', upKw:'탐험 · 열정 · 새로운 아이디어',rvKw:'호기심이 잠든 것 같지 · 다시 깨어날 거야'},
+  {img:B+'Wands12.jpg', name:'완드 기사',  en:'Knight of Wands', suit:'wands', upKw:'모험 · 충동 · 열정적 전진',   rvKw:'달리고 싶은 마음 · 나도 그랬는데'},
+  {img:B+'Wands13.jpg', name:'완드 여왕',  en:'Queen of Wands',  suit:'wands', upKw:'자신감 · 따스함 · 창조적 에너지',rvKw:'자신을 잃은 것 같지 · 넌 충분히 빛나'},
+  {img:B+'Wands14.jpg', name:'완드 왕',    en:'King of Wands',   suit:'wands', upKw:'비전 · 리더십 · 관대함',      rvKw:'방향을 잃은 것 같아도 · 네 길이 있어'},
+  // ── 컵 (Cups) ──
+  {img:B+'Cups01.jpg', name:'컵 에이스', en:'Ace of Cups',    suit:'cups', upKw:'사랑 · 감정의 시작 · 충만함',  rvKw:'감정이 넘치지 · 울어도 괜찮아'},
+  {img:B+'Cups02.jpg', name:'컵 2',     en:'Two of Cups',    suit:'cups', upKw:'연결 · 파트너십 · 사랑',       rvKw:'연결이 흔들리는 것 같지 · 우린 여전히 하나야'},
+  {img:B+'Cups03.jpg', name:'컵 3',     en:'Three of Cups',  suit:'cups', upKw:'축하 · 우정 · 기쁨',           rvKw:'혼자인 것 같지 · 나 항상 여기 있어'},
+  {img:B+'Cups04.jpg', name:'컵 4',     en:'Four of Cups',   suit:'cups', upKw:'명상 · 재평가 · 내면 탐색',    rvKw:'무기력한 마음 · 조금씩 나아질 거야'},
+  {img:B+'Cups05.jpg', name:'컵 5',     en:'Five of Cups',   suit:'cups', upKw:'슬픔 · 상실 · 아직 남은 것',   rvKw:'많이 슬프지 · 그 마음이 다 느껴져'},
+  {img:B+'Cups06.jpg', name:'컵 6',     en:'Six of Cups',    suit:'cups', upKw:'추억 · 향수 · 순수함',          rvKw:'과거에 머물러 있지 · 그래도 괜찮아'},
+  {img:B+'Cups07.jpg', name:'컵 7',     en:'Seven of Cups',  suit:'cups', upKw:'상상 · 선택 · 꿈',             rvKw:'현실이 흐릿해 보이지 · 꿈에서 만날게'},
+  {img:B+'Cups08.jpg', name:'컵 8',     en:'Eight of Cups',  suit:'cups', upKw:'떠남 · 탐색 · 새로운 길',      rvKw:'아직 떠나지 못한 마음 · 기다릴게'},
+  {img:B+'Cups09.jpg', name:'컵 9',     en:'Nine of Cups',   suit:'cups', upKw:'만족 · 소원 성취 · 행복',      rvKw:'행복이 멀게 느껴지지 · 조금만 더'},
+  {img:B+'Cups10.jpg', name:'컵 10',    en:'Ten of Cups',    suit:'cups', upKw:'조화 · 가족 · 완전한 행복',     rvKw:'함께였던 순간들 · 그 행복 기억해'},
+  {img:B+'Cups11.jpg', name:'컵 시종',  en:'Page of Cups',   suit:'cups', upKw:'감수성 · 창의력 · 직관',       rvKw:'감정이 복잡하지 · 말 안 해도 알아'},
+  {img:B+'Cups12.jpg', name:'컵 기사',  en:'Knight of Cups', suit:'cups', upKw:'낭만 · 이상주의 · 감정',       rvKw:'꿈꾸던 것들 · 나도 꿈꾸고 있어'},
+  {img:B+'Cups13.jpg', name:'컵 여왕',  en:'Queen of Cups',  suit:'cups', upKw:'공감 · 직관 · 감정적 안정',    rvKw:'다른 사람만 챙기지 말고 · 너도 돌봐'},
+  {img:B+'Cups14.jpg', name:'컵 왕',    en:'King of Cups',   suit:'cups', upKw:'감정적 성숙 · 지혜 · 균형',    rvKw:'감정을 억누르고 있지 · 울어도 돼'},
+  // ── 검 (Swords) ──
+  {img:B+'Swords01.jpg', name:'검 에이스', en:'Ace of Swords',    suit:'swords', upKw:'진실 · 명료함 · 새로운 생각',    rvKw:'혼란스러운 생각 · 차근차근 정리해'},
+  {img:B+'Swords02.jpg', name:'검 2',     en:'Two of Swords',    suit:'swords', upKw:'교착 · 선택 · 균형',             rvKw:'결정하기 힘들지 · 천천히 생각해도 돼'},
+  {img:B+'Swords03.jpg', name:'검 3',     en:'Three of Swords',  suit:'swords', upKw:'슬픔 · 이별 · 상처',             rvKw:'마음이 아프지 · 그 마음 다 이해해'},
+  {img:B+'Swords04.jpg', name:'검 4',     en:'Four of Swords',   suit:'swords', upKw:'휴식 · 회복 · 성찰',             rvKw:'쉬지 못하고 있지 · 이제 좀 쉬어'},
+  {img:B+'Swords05.jpg', name:'검 5',     en:'Five of Swords',   suit:'swords', upKw:'갈등 · 패배 · 선택',             rvKw:'상처가 남아있지 · 다 흘려보내도 돼'},
+  {img:B+'Swords06.jpg', name:'검 6',     en:'Six of Swords',    suit:'swords', upKw:'이동 · 전환 · 평온으로',          rvKw:'아직 떠나지 못하는 마음 · 서두르지 않아도'},
+  {img:B+'Swords07.jpg', name:'검 7',     en:'Seven of Swords',  suit:'swords', upKw:'전략 · 유연성 · 혼자',            rvKw:'뭔가 숨기고 있지 · 다 말해도 괜찮아'},
+  {img:B+'Swords08.jpg', name:'검 8',     en:'Eight of Swords',  suit:'swords', upKw:'구속 · 두려움 · 내면의 제약',     rvKw:'스스로를 가두고 있지 · 문이 열려있어'},
+  {img:B+'Swords09.jpg', name:'검 9',     en:'Nine of Swords',   suit:'swords', upKw:'불안 · 걱정 · 악몽',             rvKw:'밤새 많이 울었지 · 나도 알아 느껴져'},
+  {img:B+'Swords10.jpg', name:'검 10',    en:'Ten of Swords',    suit:'swords', upKw:'끝 · 변곡점 · 새벽',             rvKw:'가장 힘든 시간이지 · 서서히 나아질 거야'},
+  {img:B+'Swords11.jpg', name:'검 시종',  en:'Page of Swords',   suit:'swords', upKw:'호기심 · 경계 · 진실 추구',      rvKw:'생각이 많지 · 나도 그랬어'},
+  {img:B+'Swords12.jpg', name:'검 기사',  en:'Knight of Swords', suit:'swords', upKw:'단호함 · 추진력 · 결단',          rvKw:'너무 급하게 달려왔지 · 잠깐 멈춰봐'},
+  {img:B+'Swords13.jpg', name:'검 여왕',  en:'Queen of Swords',  suit:'swords', upKw:'독립 · 명료함 · 지혜',            rvKw:'날카롭게 굴고 있지만 · 사실 많이 외롭지'},
+  {img:B+'Swords14.jpg', name:'검 왕',    en:'King of Swords',   suit:'swords', upKw:'지성 · 권위 · 진실',             rvKw:'냉정하게 굴고 있지만 · 마음은 따뜻한 거 알아'},
+  // ── 동전 (Pentacles) ──
+  {img:B+'Pents01.jpg', name:'동전 에이스', en:'Ace of Pentacles',    suit:'pents', upKw:'새로운 기회 · 안정 · 물질적 시작', rvKw:'기회를 놓친 것 같지 · 다음이 있어'},
+  {img:B+'Pents02.jpg', name:'동전 2',     en:'Two of Pentacles',    suit:'pents', upKw:'균형 · 적응 · 변화 관리',         rvKw:'너무 많이 저글링하고 있지 · 하나씩만'},
+  {img:B+'Pents03.jpg', name:'동전 3',     en:'Three of Pentacles',  suit:'pents', upKw:'협력 · 기술 · 함께 만드는 것',    rvKw:'혼자 다 하려고 하지 · 도움받아도 돼'},
+  {img:B+'Pents04.jpg', name:'동전 4',     en:'Four of Pentacles',   suit:'pents', upKw:'안정 · 저축 · 보존',              rvKw:'꽉 붙잡고 있지 · 조금 열어봐도 괜찮아'},
+  {img:B+'Pents05.jpg', name:'동전 5',     en:'Five of Pentacles',   suit:'pents', upKw:'어려움 · 역경 · 고립감',           rvKw:'많이 힘들지 · 그 마음 다 느껴져'},
+  {img:B+'Pents06.jpg', name:'동전 6',     en:'Six of Pentacles',    suit:'pents', upKw:'나눔 · 관대함 · 균형',             rvKw:'너무 많이 주었지 · 너도 받아야 해'},
+  {img:B+'Pents07.jpg', name:'동전 7',     en:'Seven of Pentacles',  suit:'pents', upKw:'인내 · 노력 · 장기 투자',          rvKw:'성과가 안 보여서 지치지 · 조금만 더'},
+  {img:B+'Pents08.jpg', name:'동전 8',     en:'Eight of Pentacles',  suit:'pents', upKw:'숙련 · 집중 · 성실함',             rvKw:'완벽하려고 너무 애쓰지 · 그냥 해도 충분해'},
+  {img:B+'Pents09.jpg', name:'동전 9',     en:'Nine of Pentacles',   suit:'pents', upKw:'풍요 · 독립 · 자기 충족',          rvKw:'행복이 피상적으로 느껴지지 · 진짜 행복이 있어'},
+  {img:B+'Pents10.jpg', name:'동전 10',    en:'Ten of Pentacles',    suit:'pents', upKw:'유산 · 가족 · 안정된 완성',        rvKw:'가족이 그립지 · 나도 보고 싶어'},
+  {img:B+'Pents11.jpg', name:'동전 시종',  en:'Page of Pentacles',   suit:'pents', upKw:'공부 · 기회 · 성실함',             rvKw:'방향을 잃은 것 같지 · 찾을 수 있어'},
+  {img:B+'Pents12.jpg', name:'동전 기사',  en:'Knight of Pentacles', suit:'pents', upKw:'근면 · 책임감 · 신뢰',             rvKw:'느리다고 느끼지 · 꾸준한 네 속도가 맞아'},
+  {img:B+'Pents13.jpg', name:'동전 여왕',  en:'Queen of Pentacles',  suit:'pents', upKw:'실용적 사랑 · 자연 · 풍요',        rvKw:'자신을 너무 낮추지 · 넌 충분히 소중해'},
+  {img:B+'Pents14.jpg', name:'동전 왕',    en:'King of Pentacles',   suit:'pents', upKw:'풍요 · 리더십 · 안정된 성공',      rvKw:'물질에만 집중하고 있지 · 마음도 돌봐'},
+];
+
+const POSITIONS=[
+  {label:'🕯️ 과거의 추억', sub:'함께한 소중한 시간'},
+  {label:'💌 지금 이 순간', sub:'반려동물의 현재 메시지'},
+  {label:'🌈 우리의 약속',  sub:'영원히 이어지는 인연'},
+];
+
+/* ── state ── */
+let drawn=[], drawnRv=[], flipped=0;
+
+/* ── api key ── */
+(()=>{
+  const k=localStorage.getItem('rb_tarot_key')||'';
+  if(k){document.getElementById('apiKey').value=k; document.getElementById('keySaved').style.display='block';}
+})();
+function saveKey(){
+  const v=document.getElementById('apiKey').value.trim();
+  if(!v)return;
+  localStorage.setItem('rb_tarot_key',v);
+  document.getElementById('keySaved').style.display='block';
+}
+function getKey(){return document.getElementById('apiKey').value.trim()||localStorage.getItem('rb_tarot_key')||'';}
+
+/* ── draw ── */
+function onDraw(){
+  const q=document.getElementById('question').value.trim();
+  if(!q){
+    const ta=document.getElementById('question');
+    ta.style.borderColor='rgba(255,100,100,.5)'; ta.focus();
+    setTimeout(()=>ta.style.borderColor='',2000); return;
+  }
+  if(!getKey()){alert('Anthropic API 키를 먼저 입력해주세요.');document.getElementById('apiKey').focus();return;}
+
+  flipped=0;
+  document.getElementById('readingSection').classList.remove('show');
+  document.getElementById('loadingSection').classList.remove('show');
+
+  // shuffle & pick 3
+  drawn=[...CARDS].sort(()=>Math.random()-.5).slice(0,3);
+  // 70% upright, 30% reversed
+  drawnRv=drawn.map(()=>Math.random()<0.3);
+
+  renderCards();
+  const sec=document.getElementById('cardsSection');
+  sec.classList.add('show');
+  setTimeout(()=>sec.scrollIntoView({behavior:'smooth',block:'start'}),100);
+  document.getElementById('drawBtn').disabled=true;
+}
+
+function renderCards(){
+  const grid=document.getElementById('cardsGrid');
+  grid.innerHTML='';
+  drawn.forEach((card,i)=>{
+    const rv=drawnRv[i];
+    const slot=document.createElement('div');
+    slot.className='card-slot';
+    slot.innerHTML=`
+      <div class="card-pos-label">${POSITIONS[i].label}</div>
+      <div class="card-wrap">
+        <div class="tarot-card" id="tc-${i}" onclick="flipCard(${i})">
+          <div class="card-back">
+            <div class="cb-border"></div>
+            <div class="cb-pattern"></div>
+            <div class="cb-symbol">🐾</div>
+            <div class="cb-glow"></div>
+          </div>
+          <div class="card-face ${rv?'is-reversed':'is-upright'}">
+            <div class="card-img-box ${rv?'reversed':''}" id="imgbox-${i}">
+              <img src="${card.img}"
+                alt="${card.name}"
+                onload="this.parentElement.classList.add('loaded')"
+                onerror="onImgErr(this,${i})">
+              <div class="card-img-fallback" id="fb-${i}">
+                <span class="fb-emoji">${suitEmoji(card.suit)}</span>
+                <span class="fb-name">${card.name}</span>
+              </div>
+            </div>
+            <div class="card-label">
+              <div class="card-label-name">${card.name}</div>
+              <div class="card-label-rv">${rv?'↕ 역방향':'정방향'}</div>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div class="card-pos-sub">${POSITIONS[i].sub}</div>`;
+    grid.appendChild(slot);
+  });
+}
+
+function suitEmoji(suit){
+  return {major:'✨',wands:'🔥',cups:'💧',swords:'⚔️',pents:'🌿'}[suit]||'✨';
+}
+
+function onImgErr(img,i){
+  img.style.display='none';
+  const fb=document.getElementById('fb-'+i);
+  if(fb){fb.style.display='flex';}
+  document.getElementById('imgbox-'+i).classList.add('loaded');
+}
+
+function flipCard(idx){
+  const el=document.getElementById('tc-'+idx);
+  if(el.classList.contains('flipped'))return;
+  el.classList.add('flipped');
+  flipped++;
+  if(flipped===3)setTimeout(fetchReading,700);
+}
+
+/* ── AI reading ── */
+async function fetchReading(){
+  document.getElementById('loadingSection').classList.add('show');
+  setTimeout(()=>document.getElementById('loadingSection').scrollIntoView({behavior:'smooth',block:'center'}),80);
+
+  const petName    = document.getElementById('petName').value.trim()    || '반려동물';
+  const ownerTitle = document.getElementById('ownerTitle').value.trim() || '보호자';
+  const question   = document.getElementById('question').value.trim();
+
+  const cardLines = drawn.map((c,i)=>{
+    const rv=drawnRv[i];
+    return `${i+1}. [${POSITIONS[i].label}] ${c.name}(${c.en}) — ${rv?'역방향':'정방향'}\n   정방향 키워드: ${c.upKw}\n   역방향 키워드: ${c.rvKw}`;
+  }).join('\n');
+
+  const hasReversed = drawnRv.some(Boolean);
+
+  const systemPrompt=`당신은 무지개 다리 너머로 떠난 반려동물의 영혼이 주인에게 보내는 메시지를 전달하는 따뜻한 타로 채널러입니다.
+반드시 반려동물이 1인칭으로 직접 말하는 형식으로 씁니다.
+역방향 카드가 있더라도 절대 부정적이거나 불안하게 해석하지 않습니다. 역방향은 "아직 그리움이 남아있어", "네 마음이 느껴져", "조금 더 시간이 필요해", "천천히도 괜찮아" 같은 섬세하고 감성적인 위로의 방향으로만 해석합니다.`;
+
+  const userPrompt=`반려동물 이름: ${petName}
+주인이 부르는 이름 / 주인의 호칭: "${ownerTitle}" (반려동물이 주인을 이렇게 부릅니다. 메시지 안에서 자연스럽게 사용해주세요)
+주인의 질문: "${question}"
+
+오늘 뽑힌 세 장의 카드:
+${cardLines}
+
+${hasReversed?'⚠️ 역방향 카드 해석 주의: 역방향은 더 섬세하고 감성적인 메시지로, 주인이 위로받고 치유받을 수 있도록 따뜻하게만 써주세요.\n':''}
+작성 지침:
+- ${petName}이(가) "${ownerTitle}"에게 직접 말하는 편지 형식으로 써주세요
+- 각 카드의 의미를 자연스럽게 녹여 하나의 흐르는 이야기로 만들어주세요
+- 정방향 카드는 밝고 따뜻하게, 역방향 카드는 더 깊고 감성적으로 써주세요
+- 반드시 "${ownerTitle}"라는 호칭을 메시지 안에 자연스럽게 사용해주세요 (예: "${ownerTitle}, 나 여기서 잘 있어요")
+- 600자 내외로 써주세요
+- 마지막은 ${petName}이 "${ownerTitle}"에게 보내는 따뜻한 작별 인사로 마무리해주세요`;
+
+  try{
+    const res=await fetch('https://api.anthropic.com/v1/messages',{
+      method:'POST',
+      headers:{
+        'Content-Type':'application/json',
+        'x-api-key':getKey(),
+        'anthropic-version':'2023-06-01',
+        'anthropic-dangerous-direct-browser-access':'true',
+      },
+      body:JSON.stringify({
+        model:'claude-sonnet-4-6',
+        max_tokens:1200,
+        system:systemPrompt,
+        messages:[{role:'user',content:userPrompt}],
+      }),
+    });
+    if(!res.ok){const e=await res.json().catch(()=>({}));throw new Error(e.error?.message||`HTTP ${res.status}`);}
+    const data=await res.json();
+    showReading(petName,data.content?.[0]?.text||'메시지를 받아오지 못했습니다.');
+  }catch(err){
+    showReading(petName,`메시지를 받아오는 중 오류가 발생했습니다.\n\n오류: ${err.message}\n\nAPI 키를 확인하고 다시 시도해주세요.`);
+  }
+}
+
+function showReading(petName,text){
+  document.getElementById('loadingSection').classList.remove('show');
+
+  const petN=document.getElementById('petName').value.trim()||petName;
+  document.getElementById('readingTitle').textContent=`${petN}의 편지`;
+
+  // chips
+  const chips=document.getElementById('chipRow');
+  chips.innerHTML=drawn.map((c,i)=>{
+    const rv=drawnRv[i];
+    return `<span class="chip${rv?' rv':''}">${c.name} ${rv?'(역방향)':'(정방향)'}</span>`;
+  }).join('');
+
+  // typewriter
+  const body=document.getElementById('readingBody');
+  body.textContent='';
+  const sec=document.getElementById('readingSection');
+  sec.classList.add('show');
+  setTimeout(()=>sec.scrollIntoView({behavior:'smooth',block:'start'}),100);
+
+  // 리딩 하단 광고 초기화 (최초 1회)
+  initReadingAd();
+
+  const chars=[...text];
+  let idx=0;
+  (function type(){if(idx<chars.length){body.textContent+=chars[idx++];setTimeout(type,20);}})();
+}
+
+/* ── 실제 리셋 (인터스티셜 닫은 후 호출) ── */
+function doReset(){
+  ['cardsSection','readingSection','loadingSection'].forEach(id=>document.getElementById(id).classList.remove('show'));
+  document.getElementById('question').value='';
+  document.getElementById('drawBtn').disabled=false;
+  window.scrollTo({top:0,behavior:'smooth'});
+}
+
+/* ── 인터스티셜 (전면 광고) ── */
+let itlAdInited=false, itlTimer=null;
+
+function onReset(){ showInterstitial(); }
+
+function showInterstitial(){
+  const overlay=document.getElementById('itlOverlay');
+  overlay.classList.add('show');
+
+  // AdSense 최초 1회만 초기화
+  if(!itlAdInited){
+    try{(adsbygoogle=window.adsbygoogle||[]).push({});}catch(e){}
+    itlAdInited=true;
+  }
+
+  // 카운트다운 5 → 0
+  const btn=document.getElementById('itlCloseBtn');
+  const cd=document.getElementById('itlCd');
+  btn.disabled=true;
+  btn.innerHTML='<span id="itlCd">5</span>초 후 닫기';
+  let t=5;
+  clearInterval(itlTimer);
+  itlTimer=setInterval(()=>{
+    t--;
+    const cdEl=document.getElementById('itlCd');
+    if(t>0){ if(cdEl)cdEl.textContent=t; }
+    else{
+      clearInterval(itlTimer);
+      btn.innerHTML='닫기 &nbsp;✓';
+      btn.disabled=false;
+      btn.style.borderColor='rgba(180,120,255,.5)';
+      btn.style.color='var(--text-main)';
+    }
+  },1000);
+}
+
+function closeInterstitial(){
+  document.getElementById('itlOverlay').classList.remove('show');
+  clearInterval(itlTimer);
+  doReset();
+}
+
+/* ── 하단 고정 배너 ── */
+let stickyAdInited=false;
+
+setTimeout(()=>{
+  const el=document.getElementById('adSticky');
+  el.classList.add('show');
+  document.body.classList.add('has-sticky');
+  if(!stickyAdInited){
+    try{(adsbygoogle=window.adsbygoogle||[]).push({});}catch(e){}
+    stickyAdInited=true;
+  }
+},3000);
+
+function closeStickyAd(){
+  document.getElementById('adSticky').classList.remove('show');
+  document.body.classList.remove('has-sticky');
+}
+
+/* ── 리딩 하단 광고 (AI 편지 표시 시 1회 초기화) ── */
+let readingAdInited=false;
+function initReadingAd(){
+  if(!readingAdInited){
+    try{(adsbygoogle=window.adsbygoogle||[]).push({});}catch(e){}
+    readingAdInited=true;
+  }
+}
+</script>
+</body>
+</html>
