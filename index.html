@@ -304,6 +304,74 @@
       color:var(--text-dim); font-size:.76rem; line-height:2;
     }
 
+    /* ── 카드 스프레드 ── */
+    .spread-section { display:none; margin-top:40px; }
+    .spread-section.show { display:block; animation:fadeUp .5s ease; }
+    .spread-section.fading { animation:fadeOut .35s ease forwards; pointer-events:none; }
+    @keyframes fadeOut { to { opacity:0; transform:translateY(-8px); } }
+
+    .spread-header { text-align:center; margin-bottom:4px; padding:0 8px; }
+    .spread-instruction { font-size:.88rem; color:var(--text-sub); margin-bottom:10px; }
+    .spread-count {
+      display:inline-block;
+      background:rgba(180,100,255,.13); border:1px solid rgba(180,100,255,.28);
+      padding:3px 14px; border-radius:20px; font-size:.82rem; color:#d0a0ff;
+      transition:background .3s, border-color .3s, color .3s;
+    }
+    .spread-count.full {
+      background:rgba(200,160,60,.18); border-color:rgba(200,160,60,.42); color:#f0c870;
+    }
+
+    .spread-track {
+      display:flex; gap:5px; padding:28px 22px 18px;
+      overflow-x:auto; cursor:grab;
+      scrollbar-width:thin; scrollbar-color:rgba(180,100,255,.22) transparent;
+    }
+    .spread-track.dragging { cursor:grabbing; user-select:none; }
+    .spread-track::-webkit-scrollbar { height:3px; }
+    .spread-track::-webkit-scrollbar-thumb { background:rgba(180,100,255,.22); border-radius:2px; }
+
+    .spread-card {
+      flex-shrink:0; width:64px; height:98px; border-radius:9px;
+      background:linear-gradient(145deg,#140826,#1c1058,#091228);
+      border:1.5px solid rgba(130,80,210,.28);
+      cursor:pointer; position:relative; overflow:hidden;
+      transform:rotate(var(--rot,0deg)) translateY(0);
+      transition:transform .2s ease, box-shadow .2s, border-color .2s, opacity .35s;
+      user-select:none; -webkit-user-select:none;
+    }
+    .spread-card:hover:not(.selected):not(.disabled) {
+      transform:rotate(0deg) translateY(-14px);
+      border-color:rgba(180,120,255,.65);
+      box-shadow:0 10px 24px rgba(140,80,255,.32); z-index:10;
+    }
+    .spread-card.selected {
+      transform:rotate(0deg) translateY(-20px);
+      border-color:rgba(220,170,55,.8);
+      box-shadow:0 0 20px rgba(210,160,50,.55), 0 10px 28px rgba(200,150,50,.3);
+      z-index:11;
+    }
+    .spread-card.disabled:not(.selected) { opacity:.18; pointer-events:none; }
+    .sc-border {
+      position:absolute; inset:6px; border-radius:5px;
+      border:1px solid rgba(130,80,210,.14);
+    }
+    .sc-pattern {
+      position:absolute; inset:12px;
+      background-image:
+        repeating-linear-gradient(45deg,rgba(120,70,200,.09) 0,rgba(120,70,200,.09) 1px,transparent 0,transparent 8px),
+        repeating-linear-gradient(-45deg,rgba(120,70,200,.09) 0,rgba(120,70,200,.09) 1px,transparent 0,transparent 8px);
+    }
+    .sc-glow {
+      position:absolute; inset:0;
+      background:radial-gradient(ellipse at 50% 35%,rgba(140,70,230,.16),transparent 65%);
+    }
+    .sc-symbol {
+      position:absolute; inset:0; display:flex; align-items:center; justify-content:center;
+      font-size:1.3rem; opacity:.16;
+    }
+    .spread-card.selected .sc-symbol { opacity:.32; }
+
     /* reveal animation */
     .reveal { opacity:0; transform:translateY(18px); transition:opacity .6s,transform .6s; }
     .reveal.in { opacity:1; transform:translateY(0); }
@@ -453,6 +521,15 @@
         <textarea class="question" id="question"
           placeholder="예: 너는 지금 행복하니? / 마지막으로 하고 싶은 말이 있어? / 내가 더 잘해줄 수 있었을까?"></textarea>
         <button class="btn-draw" id="drawBtn" onclick="onDraw()">🌈 &nbsp;타로 카드 뽑기</button>
+      </div>
+
+      <!-- 78장 스프레드 -->
+      <div class="spread-section" id="spreadSection">
+        <div class="spread-header">
+          <p class="spread-instruction">✨ 카드를 천천히 살펴보고, 마음이 끌리는 3장을 골라주세요</p>
+          <span class="spread-count" id="spreadCount">0 / 3</span>
+        </div>
+        <div class="spread-track" id="spreadTrack"></div>
       </div>
 
       <div class="cards-section" id="cardsSection">
@@ -642,19 +719,84 @@ function onDraw(){
     setTimeout(()=>ta.style.borderColor='',2000); return;
   }
   flipped=0;
-  document.getElementById('readingSection').classList.remove('show');
-  document.getElementById('loadingSection').classList.remove('show');
+  ['readingSection','loadingSection','cardsSection','spreadSection']
+    .forEach(id=>document.getElementById(id).classList.remove('show'));
+  document.getElementById('drawBtn').disabled=true;
+  showSpread();
+}
 
-  // shuffle & pick 3
-  drawn=[...CARDS].sort(()=>Math.random()-.5).slice(0,3);
-  // 70% upright, 30% reversed
+/* ── 78장 스프레드 ── */
+let shuffledDeck=[], selectedFromSpread=[];
+
+function showSpread(){
+  shuffledDeck=[...CARDS].sort(()=>Math.random()-.5);
+  selectedFromSpread=[];
+
+  const track=document.getElementById('spreadTrack');
+  track.innerHTML='';
+  shuffledDeck.forEach((card,i)=>{
+    const rot=(Math.random()*6-3).toFixed(1);
+    const el=document.createElement('div');
+    el.className='spread-card';
+    el.style.setProperty('--rot',`${rot}deg`);
+    el.dataset.i=i;
+    el.innerHTML=`<div class="sc-border"></div><div class="sc-pattern"></div><div class="sc-glow"></div><div class="sc-symbol">🐾</div>`;
+    el.addEventListener('click',()=>pickCard(i));
+    track.appendChild(el);
+  });
+
+  // 마우스 드래그 스크롤
+  let dragging=false, startX, scrollLeft;
+  track.addEventListener('mousedown',e=>{
+    dragging=true; track.classList.add('dragging');
+    startX=e.pageX-track.offsetLeft; scrollLeft=track.scrollLeft;
+  });
+  ['mouseleave','mouseup'].forEach(ev=>track.addEventListener(ev,()=>{dragging=false;track.classList.remove('dragging');}));
+  track.addEventListener('mousemove',e=>{
+    if(!dragging)return; e.preventDefault();
+    track.scrollLeft=scrollLeft-(e.pageX-track.offsetLeft-startX);
+  });
+
+  const countEl=document.getElementById('spreadCount');
+  countEl.textContent='0 / 3'; countEl.classList.remove('full');
+  const sec=document.getElementById('spreadSection');
+  sec.classList.remove('fading'); sec.classList.add('show');
+  setTimeout(()=>sec.scrollIntoView({behavior:'smooth',block:'start'}),120);
+}
+
+function pickCard(i){
+  if(selectedFromSpread.includes(i)||selectedFromSpread.length>=3)return;
+  selectedFromSpread.push(i);
+  document.querySelector(`.spread-card[data-i="${i}"]`).classList.add('selected');
+
+  const count=selectedFromSpread.length;
+  const countEl=document.getElementById('spreadCount');
+  countEl.textContent=`${count} / 3`;
+
+  if(count===3){
+    countEl.textContent='3 / 3 ✓'; countEl.classList.add('full');
+    // 미선택 카드 흐리게
+    setTimeout(()=>{
+      document.querySelectorAll('.spread-card:not(.selected)').forEach(el=>el.classList.add('disabled'));
+    },200);
+    // 스프레드 → 카드 섹션 전환
+    setTimeout(transitionToCards,850);
+  }
+}
+
+function transitionToCards(){
+  drawn=selectedFromSpread.map(i=>shuffledDeck[i]);
   drawnRv=drawn.map(()=>Math.random()<0.3);
 
-  renderCards();
-  const sec=document.getElementById('cardsSection');
-  sec.classList.add('show');
-  setTimeout(()=>sec.scrollIntoView({behavior:'smooth',block:'start'}),100);
-  document.getElementById('drawBtn').disabled=true;
+  const spreadSec=document.getElementById('spreadSection');
+  spreadSec.classList.add('fading');
+  setTimeout(()=>{
+    spreadSec.classList.remove('show','fading');
+    renderCards();
+    const cardSec=document.getElementById('cardsSection');
+    cardSec.classList.add('show');
+    setTimeout(()=>cardSec.scrollIntoView({behavior:'smooth',block:'start'}),100);
+  },380);
 }
 
 function renderCards(){
@@ -799,7 +941,7 @@ function showReading(petName,text){
 
 /* ── 실제 리셋 (인터스티셜 닫은 후 호출) ── */
 function doReset(){
-  ['cardsSection','readingSection','loadingSection'].forEach(id=>document.getElementById(id).classList.remove('show'));
+  ['cardsSection','readingSection','loadingSection','spreadSection'].forEach(id=>document.getElementById(id).classList.remove('show'));
   document.getElementById('question').value='';
   document.getElementById('drawBtn').disabled=false;
   window.scrollTo({top:0,behavior:'smooth'});
