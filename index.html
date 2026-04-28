@@ -157,18 +157,15 @@
     @keyframes hintPulse { 0%,100%{opacity:.6;} 50%{opacity:1;} }
 
     .cards-grid {
-      display:grid; grid-template-columns:repeat(3,1fr);
-      gap:18px; justify-items:center;
+      display:flex; justify-content:center;
     }
 
-    .card-slot { width:100%; max-width:210px; text-align:center; }
-    .card-pos-label { font-size:.78rem; color:var(--text-sub); margin-bottom:9px; }
-    .card-pos-sub   { font-size:.7rem;  color:var(--text-dim); margin-top:8px; }
+    .card-slot { width:min(220px,65vw); text-align:center; }
 
     /* tarot card flip */
-    .card-wrap { perspective:1000px; width:100%; height:var(--card-h); }
+    .card-wrap { perspective:1000px; width:100%; aspect-ratio:350/572; }
     .tarot-card {
-      width:100%; height:var(--card-h); position:relative;
+      width:100%; height:100%; position:relative;
       transform-style:preserve-3d;
       transition:transform .85s cubic-bezier(.4,.2,.2,1);
       cursor:pointer;
@@ -218,7 +215,7 @@
       display:flex; align-items:center; justify-content:center;
     }
     .card-img-box img {
-      width:100%; height:100%; object-fit:cover; display:block;
+      width:100%; height:100%; object-fit:contain; display:block;
       transition:opacity .4s;
     }
     .card-img-box.reversed img { transform:rotate(180deg); }
@@ -299,6 +296,30 @@
     }
     .reading-footer { text-align:center; margin-top:28px; }
 
+    /* 2-stage reading */
+    .letter-trigger { display:none; justify-content:center; margin-top:28px; }
+    .btn-open-letter {
+      padding:14px 32px; border-radius:14px; cursor:pointer;
+      border:1px solid rgba(180,100,255,.4); background:rgba(180,100,255,.12);
+      color:#e0c0ff; font-family:'Noto Serif KR',serif; font-size:.95rem;
+      transition:all .25s;
+      animation:letterPulse 2.4s ease-in-out infinite;
+    }
+    @keyframes letterPulse {
+      0%,100% { box-shadow:0 0 0 rgba(180,100,255,0); }
+      50%      { box-shadow:0 0 18px rgba(180,100,255,.38); }
+    }
+    .btn-open-letter:hover { background:rgba(180,100,255,.24); transform:translateY(-2px); }
+
+    .letter-section { margin-top:24px; }
+    .letter-divider {
+      height:1px; margin-bottom:22px;
+      background:linear-gradient(90deg,transparent,rgba(200,160,255,.28),transparent);
+    }
+    .letter-header { text-align:center; margin-bottom:16px; }
+    .letter-header .ltr-icon { font-size:1.9rem; display:block; margin-bottom:7px; }
+    .letter-header h3 { font-size:1.05rem; color:#e0c0ff; font-weight:400; }
+
     footer.site-footer {
       text-align:center; margin-top:60px; padding-bottom:38px;
       color:var(--text-dim); font-size:.76rem; line-height:2;
@@ -322,36 +343,32 @@
       background:rgba(200,160,60,.18); border-color:rgba(200,160,60,.42); color:#f0c870;
     }
 
-    .spread-track {
-      display:flex; gap:5px; padding:28px 22px 18px;
-      overflow-x:auto; cursor:grab;
-      scrollbar-width:thin; scrollbar-color:rgba(180,100,255,.22) transparent;
+    /* fan spread */
+    .fan-wrap {
+      position:relative; width:100%; height:200px;
+      overflow:visible; margin:16px 0 8px;
     }
-    .spread-track.dragging { cursor:grabbing; user-select:none; }
-    .spread-track::-webkit-scrollbar { height:3px; }
-    .spread-track::-webkit-scrollbar-thumb { background:rgba(180,100,255,.22); border-radius:2px; }
+    @media(max-width:580px) { .fan-wrap { height:135px; } }
 
-    .spread-card {
-      flex-shrink:0; width:64px; height:98px; border-radius:9px;
+    .fan-card {
+      position:absolute; border-radius:8px;
       background:linear-gradient(145deg,#140826,#1c1058,#091228);
       border:1.5px solid rgba(130,80,210,.28);
-      cursor:pointer; position:relative; overflow:hidden;
-      transform:rotate(var(--rot,0deg)) translateY(0);
-      transition:transform .2s ease, box-shadow .2s, border-color .2s, opacity .35s;
+      cursor:pointer; overflow:hidden;
+      transform-origin:50% 100%;
+      will-change:transform;
       user-select:none; -webkit-user-select:none;
     }
-    .spread-card:hover:not(.selected):not(.disabled) {
-      transform:rotate(0deg) translateY(-14px);
+    .fan-card:hover:not(.fan-selected):not(.fan-disabled) {
       border-color:rgba(180,120,255,.65);
-      box-shadow:0 10px 24px rgba(140,80,255,.32); z-index:10;
+      box-shadow:0 0 14px rgba(140,80,255,.4);
     }
-    .spread-card.selected {
-      transform:rotate(0deg) translateY(-20px);
-      border-color:rgba(220,170,55,.8);
-      box-shadow:0 0 20px rgba(210,160,50,.55), 0 10px 28px rgba(200,150,50,.3);
-      z-index:11;
+    .fan-card.fan-selected {
+      border-color:rgba(220,170,55,.8) !important;
+      box-shadow:0 0 22px rgba(210,160,50,.6) !important;
     }
-    .spread-card.disabled:not(.selected) { opacity:.18; pointer-events:none; }
+    .fan-card.fan-disabled:not(.fan-selected) { opacity:.2; pointer-events:none; }
+
     .sc-border {
       position:absolute; inset:6px; border-radius:5px;
       border:1px solid rgba(130,80,210,.14);
@@ -370,7 +387,7 @@
       position:absolute; inset:0; display:flex; align-items:center; justify-content:center;
       font-size:1.3rem; opacity:.16;
     }
-    .spread-card.selected .sc-symbol { opacity:.32; }
+    .fan-card.fan-selected .sc-symbol { opacity:.32; }
 
     /* reveal animation */
     .reveal { opacity:0; transform:translateY(18px); transition:opacity .6s,transform .6s; }
@@ -526,14 +543,14 @@
       <!-- 78장 스프레드 -->
       <div class="spread-section" id="spreadSection">
         <div class="spread-header">
-          <p class="spread-instruction">✨ 카드를 천천히 살펴보고, 마음이 끌리는 3장을 골라주세요</p>
-          <span class="spread-count" id="spreadCount">0 / 3</span>
+          <p class="spread-instruction">✨ 마음이 끌리는 카드 한 장을 골라주세요</p>
+          <span class="spread-count" id="spreadCount">카드를 골라주세요</span>
         </div>
-        <div class="spread-track" id="spreadTrack"></div>
+        <div class="fan-wrap" id="fanWrap"></div>
       </div>
 
       <div class="cards-section" id="cardsSection">
-        <p class="spread-hint"><em>✨</em> 카드를 하나씩 클릭하여 펼쳐보세요 <em>✨</em></p>
+        <p class="spread-hint"><em>✨</em> 카드를 클릭하여 펼쳐보세요 <em>✨</em></p>
         <div class="cards-grid" id="cardsGrid"></div>
       </div>
 
@@ -545,16 +562,29 @@
 
       <div class="reading-section glass" id="readingSection">
         <div class="reading-header">
-          <span class="ltr-icon">💌</span>
+          <span class="ltr-icon">🔮</span>
           <h3 id="readingTitle"></h3>
         </div>
         <div class="chips" id="chipRow"></div>
+        <!-- 1단계: 카드 해석 -->
         <div class="reading-body" id="readingBody"></div>
+        <!-- 2단계: 편지 열기 버튼 -->
+        <div class="letter-trigger" id="letterTrigger">
+          <button class="btn-open-letter" onclick="openLetter()">💌 &nbsp;편지 열기</button>
+        </div>
+        <!-- 2단계: 편지 본문 -->
+        <div class="letter-section" id="letterSection" style="display:none">
+          <div class="letter-divider"></div>
+          <div class="letter-header">
+            <span class="ltr-icon">💌</span>
+            <h3 id="letterTitle"></h3>
+          </div>
+          <div class="reading-body" id="letterBody"></div>
+        </div>
 
-        <!-- ★ 리딩 하단 광고 ── AI 편지 아래, 자연스러운 여운 타이밍 -->
-        <div class="ad-in-reading">
+        <!-- ★ 리딩 하단 광고 -->
+        <div class="ad-in-reading" id="adInReading" style="display:none">
           <p class="ad-label">광 고</p>
-          <!-- ★ data-ad-slot 을 리딩하단용 슬롯 번호로 교체하세요 -->
           <ins class="adsbygoogle"
             style="display:block"
             data-ad-client="ca-pub-XXXXXXXXXXXXXXXX"
@@ -564,7 +594,7 @@
             id="adReading"></ins>
         </div>
 
-        <div class="reading-footer">
+        <div class="reading-footer" id="readingFooter" style="display:none">
           <button class="btn-small btn-ghost" onclick="onReset()">🌙 &nbsp;다시 질문하기</button>
         </div>
       </div>
@@ -708,7 +738,7 @@ const POSITIONS=[
 ];
 
 /* ── state ── */
-let drawn=[], drawnRv=[], flipped=0;
+let drawn=[], drawnRv=[];
 
 /* ── draw ── */
 function onDraw(){
@@ -718,75 +748,92 @@ function onDraw(){
     ta.style.borderColor='rgba(255,100,100,.5)'; ta.focus();
     setTimeout(()=>ta.style.borderColor='',2000); return;
   }
-  flipped=0;
   ['readingSection','loadingSection','cardsSection','spreadSection']
     .forEach(id=>document.getElementById(id).classList.remove('show'));
   document.getElementById('drawBtn').disabled=true;
   showSpread();
 }
 
-/* ── 78장 스프레드 ── */
+/* ── 78장 팬 스프레드 ── */
 let shuffledDeck=[], selectedFromSpread=[];
 
 function showSpread(){
   shuffledDeck=[...CARDS].sort(()=>Math.random()-.5);
   selectedFromSpread=[];
 
-  const track=document.getElementById('spreadTrack');
-  track.innerHTML='';
+  const wrap=document.getElementById('fanWrap');
+  wrap.innerHTML='';
+
+  const mobile=window.innerWidth<580;
+  const CARD_W=mobile?28:44;
+  const CARD_H=mobile?130:200;
+  const ARC=130, N=78;
+
   shuffledDeck.forEach((card,i)=>{
-    const rot=(Math.random()*6-3).toFixed(1);
+    const angle=-ARC/2+(i/(N-1))*ARC;
     const el=document.createElement('div');
-    el.className='spread-card';
-    el.style.setProperty('--rot',`${rot}deg`);
+    el.className='fan-card';
     el.dataset.i=i;
+    el.dataset.baseAngle=angle.toFixed(3);
+    el.style.cssText=`width:${CARD_W}px;height:${CARD_H}px;left:calc(50% - ${CARD_W/2}px);bottom:0;transform:rotate(${angle}deg);z-index:${Math.round(100-Math.abs(angle))};`;
     el.innerHTML=`<div class="sc-border"></div><div class="sc-pattern"></div><div class="sc-glow"></div><div class="sc-symbol">🐾</div>`;
     el.addEventListener('click',()=>pickCard(i));
-    track.appendChild(el);
+    wrap.appendChild(el);
   });
 
-  // 마우스 드래그 스크롤
-  let dragging=false, startX, scrollLeft;
-  track.addEventListener('mousedown',e=>{
-    dragging=true; track.classList.add('dragging');
-    startX=e.pageX-track.offsetLeft; scrollLeft=track.scrollLeft;
+  // 호버 팬아웃
+  const SIGMA=12, MAX_PUSH=16;
+  wrap.addEventListener('mousemove',e=>{
+    const rect=wrap.getBoundingClientRect();
+    const pivotX=rect.left+rect.width/2;
+    const pivotY=rect.bottom;
+    const dx=e.clientX-pivotX, dy=pivotY-e.clientY;
+    const ma=Math.atan2(dx,dy)*180/Math.PI;
+    wrap.querySelectorAll('.fan-card:not(.fan-selected):not(.fan-disabled)').forEach(el=>{
+      const base=parseFloat(el.dataset.baseAngle);
+      const diff=base-ma;
+      const g=Math.exp(-(diff*diff)/(2*SIGMA*SIGMA));
+      const push=MAX_PUSH*g*(diff>=0?1:-1);
+      const newZ=Math.round(100-Math.abs(base)+g*60);
+      el.style.transform=`rotate(${base+push}deg)`;
+      el.style.zIndex=newZ;
+    });
   });
-  ['mouseleave','mouseup'].forEach(ev=>track.addEventListener(ev,()=>{dragging=false;track.classList.remove('dragging');}));
-  track.addEventListener('mousemove',e=>{
-    if(!dragging)return; e.preventDefault();
-    track.scrollLeft=scrollLeft-(e.pageX-track.offsetLeft-startX);
+  wrap.addEventListener('mouseleave',()=>{
+    wrap.querySelectorAll('.fan-card:not(.fan-selected):not(.fan-disabled)').forEach(el=>{
+      const base=parseFloat(el.dataset.baseAngle);
+      el.style.transform=`rotate(${base}deg)`;
+      el.style.zIndex=Math.round(100-Math.abs(base));
+    });
   });
 
   const countEl=document.getElementById('spreadCount');
-  countEl.textContent='0 / 3'; countEl.classList.remove('full');
+  countEl.textContent='카드를 골라주세요'; countEl.classList.remove('full');
   const sec=document.getElementById('spreadSection');
   sec.classList.remove('fading'); sec.classList.add('show');
   setTimeout(()=>sec.scrollIntoView({behavior:'smooth',block:'start'}),120);
 }
 
 function pickCard(i){
-  if(selectedFromSpread.includes(i)||selectedFromSpread.length>=3)return;
+  if(selectedFromSpread.length>=1)return;
   selectedFromSpread.push(i);
-  document.querySelector(`.spread-card[data-i="${i}"]`).classList.add('selected');
+  const el=document.querySelector(`.fan-card[data-i="${i}"]`);
+  el.classList.add('fan-selected');
+  el.style.transform=`rotate(${el.dataset.baseAngle}deg) translateY(-18px)`;
+  el.style.zIndex=202;
 
-  const count=selectedFromSpread.length;
   const countEl=document.getElementById('spreadCount');
-  countEl.textContent=`${count} / 3`;
+  countEl.textContent='✓ 선택됨'; countEl.classList.add('full');
 
-  if(count===3){
-    countEl.textContent='3 / 3 ✓'; countEl.classList.add('full');
-    // 미선택 카드 흐리게
-    setTimeout(()=>{
-      document.querySelectorAll('.spread-card:not(.selected)').forEach(el=>el.classList.add('disabled'));
-    },200);
-    // 스프레드 → 카드 섹션 전환
-    setTimeout(transitionToCards,850);
-  }
+  setTimeout(()=>{
+    document.querySelectorAll('.fan-card:not(.fan-selected)').forEach(e=>e.classList.add('fan-disabled'));
+  },200);
+  setTimeout(transitionToCards,850);
 }
 
 function transitionToCards(){
-  drawn=selectedFromSpread.map(i=>shuffledDeck[i]);
-  drawnRv=drawn.map(()=>Math.random()<0.3);
+  drawn=[shuffledDeck[selectedFromSpread[0]]];
+  drawnRv=[Math.random()<0.3];
 
   const spreadSec=document.getElementById('spreadSection');
   spreadSec.classList.add('fading');
@@ -802,41 +849,36 @@ function transitionToCards(){
 function renderCards(){
   const grid=document.getElementById('cardsGrid');
   grid.innerHTML='';
-  drawn.forEach((card,i)=>{
-    const rv=drawnRv[i];
-    const slot=document.createElement('div');
-    slot.className='card-slot';
-    slot.innerHTML=`
-      <div class="card-pos-label">${POSITIONS[i].label}</div>
-      <div class="card-wrap">
-        <div class="tarot-card" id="tc-${i}" onclick="flipCard(${i})">
-          <div class="card-back">
-            <div class="cb-border"></div>
-            <div class="cb-pattern"></div>
-            <div class="cb-symbol">🐾</div>
-            <div class="cb-glow"></div>
+  const card=drawn[0], rv=drawnRv[0];
+  const slot=document.createElement('div');
+  slot.className='card-slot';
+  slot.innerHTML=`
+    <div class="card-wrap">
+      <div class="tarot-card" id="tc-0" onclick="flipCard(0)">
+        <div class="card-back">
+          <div class="cb-border"></div>
+          <div class="cb-pattern"></div>
+          <div class="cb-symbol">🐾</div>
+          <div class="cb-glow"></div>
+        </div>
+        <div class="card-face ${rv?'is-reversed':'is-upright'}">
+          <div class="card-img-box ${rv?'reversed':''}" id="imgbox-0">
+            <img src="${card.img}" alt="${card.name}"
+              onload="this.parentElement.classList.add('loaded')"
+              onerror="onImgErr(this,0)">
+            <div class="card-img-fallback" id="fb-0">
+              <span class="fb-emoji">${suitEmoji(card.suit)}</span>
+              <span class="fb-name">${card.name}</span>
+            </div>
           </div>
-          <div class="card-face ${rv?'is-reversed':'is-upright'}">
-            <div class="card-img-box ${rv?'reversed':''}" id="imgbox-${i}">
-              <img src="${card.img}"
-                alt="${card.name}"
-                onload="this.parentElement.classList.add('loaded')"
-                onerror="onImgErr(this,${i})">
-              <div class="card-img-fallback" id="fb-${i}">
-                <span class="fb-emoji">${suitEmoji(card.suit)}</span>
-                <span class="fb-name">${card.name}</span>
-              </div>
-            </div>
-            <div class="card-label">
-              <div class="card-label-name">${card.name}</div>
-              <div class="card-label-rv">${rv?'↕ 역방향':'정방향'}</div>
-            </div>
+          <div class="card-label">
+            <div class="card-label-name">${card.name}</div>
+            <div class="card-label-rv">${rv?'↕ 역방향':'정방향'}</div>
           </div>
         </div>
       </div>
-      <div class="card-pos-sub">${POSITIONS[i].sub}</div>`;
-    grid.appendChild(slot);
-  });
+    </div>`;
+  grid.appendChild(slot);
 }
 
 function suitEmoji(suit){
@@ -854,11 +896,12 @@ function flipCard(idx){
   const el=document.getElementById('tc-'+idx);
   if(el.classList.contains('flipped'))return;
   el.classList.add('flipped');
-  flipped++;
-  if(flipped===3)setTimeout(fetchReading,700);
+  setTimeout(fetchReading,700);
 }
 
 /* ── AI reading ── */
+let _pendingLetter='';
+
 async function fetchReading(){
   document.getElementById('loadingSection').classList.add('show');
   setTimeout(()=>document.getElementById('loadingSection').scrollIntoView({behavior:'smooth',block:'center'}),80);
@@ -866,33 +909,32 @@ async function fetchReading(){
   const petName    = document.getElementById('petName').value.trim()    || '반려동물';
   const ownerTitle = document.getElementById('ownerTitle').value.trim() || '보호자';
   const question   = document.getElementById('question').value.trim();
+  const card=drawn[0], rv=drawnRv[0];
 
-  const cardLines = drawn.map((c,i)=>{
-    const rv=drawnRv[i];
-    return `${i+1}. [${POSITIONS[i].label}] ${c.name}(${c.en}) — ${rv?'역방향':'정방향'}\n   정방향 키워드: ${c.upKw}\n   역방향 키워드: ${c.rvKw}`;
-  }).join('\n');
+  const systemPrompt=`당신은 무지개 다리 너머로 떠난 반려동물의 영혼과 연결하는 타로 채널러입니다.
+응답은 반드시 두 부분으로 구분합니다.
 
-  const hasReversed = drawnRv.some(Boolean);
+[1부: 카드 해석]
+이 카드가 어떤 카드인지, 어떤 의미를 가지는지 간결하게 설명합니다. 그 다음, 보호자의 질문과 연결하여 이 카드를 따뜻하게 해석합니다. 2~4문장.
 
-  const systemPrompt=`당신은 무지개 다리 너머로 떠난 반려동물의 영혼이 주인에게 보내는 메시지를 전달하는 따뜻한 타로 채널러입니다.
-반드시 반려동물이 1인칭으로 직접 말하는 형식으로 씁니다.
-역방향 카드가 있더라도 절대 부정적이거나 불안하게 해석하지 않습니다. 역방향은 "아직 그리움이 남아있어", "네 마음이 느껴져", "조금 더 시간이 필요해", "천천히도 괜찮아" 같은 섬세하고 감성적인 위로의 방향으로만 해석합니다.`;
+---LETTER---
+
+[2부: 반려동물의 편지]
+반려동물이 1인칭으로 직접 보호자에게 쓰는 짧은 편지. 카드의 의미에 기반해서만 씁니다.
+- 종(種)에 따른 신체 표현 절대 금지 (꼬리, 발, 냐옹, 멍멍 등 특정 동물 한정 표현 사용 불가)
+- 감정과 영혼의 언어만 사용 (예: "느껴져", "기억해", "곁에 있어", "사랑해")
+- 역방향 카드는 따뜻한 위로로만 해석
+- 200자 내외, 간결하게`;
 
   const userPrompt=`반려동물 이름: ${petName}
-주인이 부르는 이름 / 주인의 호칭: "${ownerTitle}" (반려동물이 주인을 이렇게 부릅니다. 메시지 안에서 자연스럽게 사용해주세요)
-주인의 질문: "${question}"
+보호자 호칭: "${ownerTitle}"
+보호자의 질문: "${question}"
 
-오늘 뽑힌 세 장의 카드:
-${cardLines}
+오늘 뽑힌 카드: ${card.name}(${card.en}) — ${rv?'역방향':'정방향'}
+정방향 키워드: ${card.upKw}
+역방향 키워드: ${card.rvKw}
 
-${hasReversed?'⚠️ 역방향 카드 해석 주의: 역방향은 더 섬세하고 감성적인 메시지로, 주인이 위로받고 치유받을 수 있도록 따뜻하게만 써주세요.\n':''}
-작성 지침:
-- ${petName}이(가) "${ownerTitle}"에게 직접 말하는 편지 형식으로 써주세요
-- 각 카드의 의미를 자연스럽게 녹여 하나의 흐르는 이야기로 만들어주세요
-- 정방향 카드는 밝고 따뜻하게, 역방향 카드는 더 깊고 감성적으로 써주세요
-- 반드시 "${ownerTitle}"라는 호칭을 메시지 안에 자연스럽게 사용해주세요 (예: "${ownerTitle}, 나 여기서 잘 있어요")
-- 600자 내외로 써주세요
-- 마지막은 ${petName}이 "${ownerTitle}"에게 보내는 따뜻한 작별 인사로 마무리해주세요`;
+---LETTER--- 구분자를 포함하여 두 부분으로 정확히 나누어 작성해주세요.`;
 
   try{
     const res=await fetch('/.netlify/functions/tarot',{
@@ -905,38 +947,71 @@ ${hasReversed?'⚠️ 역방향 카드 해석 주의: 역방향은 더 섬세하
     });
     if(!res.ok){const e=await res.json().catch(()=>({}));throw new Error(e.error?.message||`HTTP ${res.status}`);}
     const data=await res.json();
-    showReading(petName,data.content?.[0]?.text||'메시지를 받아오지 못했습니다.');
+    const full=data.content?.[0]?.text||'';
+    const parts=full.split('---LETTER---');
+    showReading(petName,(parts[0]||'').trim(),(parts[1]||'').trim());
   }catch(err){
-    showReading(petName,`메시지를 전달하는 중 오류가 발생했습니다.\n\n잠시 후 다시 시도해주세요.`);
+    showReading(petName,'메시지를 전달하는 중 오류가 발생했습니다.\n\n잠시 후 다시 시도해주세요.','');
   }
 }
 
-function showReading(petName,text){
+function showReading(petName,interpretation,letter){
   document.getElementById('loadingSection').classList.remove('show');
+  _pendingLetter=letter;
 
   const petN=document.getElementById('petName').value.trim()||petName;
-  document.getElementById('readingTitle').textContent=`${petN}의 편지`;
+  const rv=drawnRv[0];
+  document.getElementById('readingTitle').textContent=`${drawn[0].name} ${rv?'(역방향)':'(정방향)'}`;
 
-  // chips
   const chips=document.getElementById('chipRow');
-  chips.innerHTML=drawn.map((c,i)=>{
-    const rv=drawnRv[i];
-    return `<span class="chip${rv?' rv':''}">${c.name} ${rv?'(역방향)':'(정방향)'}</span>`;
-  }).join('');
+  chips.innerHTML=`<span class="chip${rv?' rv':''}">${drawn[0].name} ${rv?'(역방향)':'(정방향)'}</span>`;
 
-  // typewriter
   const body=document.getElementById('readingBody');
   body.textContent='';
+  document.getElementById('letterTrigger').style.display='none';
+  document.getElementById('letterSection').style.display='none';
+  document.getElementById('adInReading').style.display='none';
+  document.getElementById('readingFooter').style.display='none';
+
   const sec=document.getElementById('readingSection');
   sec.classList.add('show');
   setTimeout(()=>sec.scrollIntoView({behavior:'smooth',block:'start'}),100);
 
-  // 리딩 하단 광고 초기화 (최초 1회)
-  initReadingAd();
-
-  const chars=[...text];
+  const chars=[...interpretation];
   let idx=0;
-  (function type(){if(idx<chars.length){body.textContent+=chars[idx++];setTimeout(type,20);}})();
+  (function type(){
+    if(idx<chars.length){ body.textContent+=chars[idx++]; setTimeout(type,16); }
+    else { setTimeout(()=>{ document.getElementById('letterTrigger').style.display='flex'; },400); }
+  })();
+}
+
+function openLetter(){
+  document.getElementById('letterTrigger').style.display='none';
+  const petN=document.getElementById('petName').value.trim()||'반려동물';
+  document.getElementById('letterTitle').textContent=`${petN}의 편지`;
+
+  const ls=document.getElementById('letterSection');
+  ls.style.display='block';
+  ls.scrollIntoView({behavior:'smooth',block:'start'});
+
+  const body=document.getElementById('letterBody');
+  body.textContent='';
+  if(!_pendingLetter){
+    body.textContent='편지를 받아오지 못했습니다.';
+    showReadingFooter(); return;
+  }
+  const chars=[..._pendingLetter];
+  let idx=0;
+  (function type(){
+    if(idx<chars.length){ body.textContent+=chars[idx++]; setTimeout(type,20); }
+    else showReadingFooter();
+  })();
+}
+
+function showReadingFooter(){
+  initReadingAd();
+  document.getElementById('adInReading').style.display='block';
+  document.getElementById('readingFooter').style.display='block';
 }
 
 /* ── 실제 리셋 (인터스티셜 닫은 후 호출) ── */
@@ -944,6 +1019,11 @@ function doReset(){
   ['cardsSection','readingSection','loadingSection','spreadSection'].forEach(id=>document.getElementById(id).classList.remove('show'));
   document.getElementById('question').value='';
   document.getElementById('drawBtn').disabled=false;
+  document.getElementById('letterTrigger').style.display='none';
+  document.getElementById('letterSection').style.display='none';
+  document.getElementById('adInReading').style.display='none';
+  document.getElementById('readingFooter').style.display='none';
+  _pendingLetter='';
   window.scrollTo({top:0,behavior:'smooth'});
 }
 
