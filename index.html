@@ -89,19 +89,6 @@
       border-radius:20px; backdrop-filter:blur(12px); padding:24px 26px;
     }
 
-    /* api section */
-    details.api-panel { margin-bottom:24px; }
-    details.api-panel summary {
-      cursor:pointer; color:var(--text-sub); font-size:.86rem; list-style:none;
-      display:flex; align-items:center; gap:8px;
-      padding:11px 16px; border-radius:12px;
-      background:rgba(255,255,255,.04); border:1px solid var(--border);
-      transition:background .2s;
-    }
-    details.api-panel summary:hover { background:rgba(255,255,255,.08); }
-    details.api-panel summary::before { content:'🔑'; }
-    .api-row { display:flex; gap:10px; margin-top:12px; }
-    .api-saved { color:#7ef7a0; font-size:.78rem; margin-top:7px; }
 
     /* inputs */
     input, textarea, select {
@@ -451,15 +438,6 @@
           그들은 무지개 다리 너머에서 언제나 우리를 바라보고 있어요</p>
       </div>
 
-      <details class="api-panel reveal">
-        <summary>Anthropic API 키 설정</summary>
-        <div class="api-row">
-          <input type="password" id="apiKey" placeholder="sk-ant-api03-…" autocomplete="off">
-          <button class="btn-small btn-purple" onclick="saveKey()">저장</button>
-        </div>
-        <p class="api-saved" id="keySaved" style="display:none">✓ 저장됨 (브라우저 로컬에만 보관)</p>
-      </details>
-
       <div class="glass reveal">
         <div class="input-row">
           <div>
@@ -655,19 +633,6 @@ const POSITIONS=[
 /* ── state ── */
 let drawn=[], drawnRv=[], flipped=0;
 
-/* ── api key ── */
-(()=>{
-  const k=localStorage.getItem('rb_tarot_key')||'';
-  if(k){document.getElementById('apiKey').value=k; document.getElementById('keySaved').style.display='block';}
-})();
-function saveKey(){
-  const v=document.getElementById('apiKey').value.trim();
-  if(!v)return;
-  localStorage.setItem('rb_tarot_key',v);
-  document.getElementById('keySaved').style.display='block';
-}
-function getKey(){return document.getElementById('apiKey').value.trim()||localStorage.getItem('rb_tarot_key')||'';}
-
 /* ── draw ── */
 function onDraw(){
   const q=document.getElementById('question').value.trim();
@@ -676,8 +641,6 @@ function onDraw(){
     ta.style.borderColor='rgba(255,100,100,.5)'; ta.focus();
     setTimeout(()=>ta.style.borderColor='',2000); return;
   }
-  if(!getKey()){alert('Anthropic API 키를 먼저 입력해주세요.');document.getElementById('apiKey').focus();return;}
-
   flipped=0;
   document.getElementById('readingSection').classList.remove('show');
   document.getElementById('loadingSection').classList.remove('show');
@@ -790,17 +753,10 @@ ${hasReversed?'⚠️ 역방향 카드 해석 주의: 역방향은 더 섬세하
 - 마지막은 ${petName}이 "${ownerTitle}"에게 보내는 따뜻한 작별 인사로 마무리해주세요`;
 
   try{
-    const res=await fetch('https://api.anthropic.com/v1/messages',{
+    const res=await fetch('/.netlify/functions/tarot',{
       method:'POST',
-      headers:{
-        'Content-Type':'application/json',
-        'x-api-key':getKey(),
-        'anthropic-version':'2023-06-01',
-        'anthropic-dangerous-direct-browser-access':'true',
-      },
+      headers:{'Content-Type':'application/json'},
       body:JSON.stringify({
-        model:'claude-sonnet-4-6',
-        max_tokens:1200,
         system:systemPrompt,
         messages:[{role:'user',content:userPrompt}],
       }),
@@ -809,7 +765,7 @@ ${hasReversed?'⚠️ 역방향 카드 해석 주의: 역방향은 더 섬세하
     const data=await res.json();
     showReading(petName,data.content?.[0]?.text||'메시지를 받아오지 못했습니다.');
   }catch(err){
-    showReading(petName,`메시지를 받아오는 중 오류가 발생했습니다.\n\n오류: ${err.message}\n\nAPI 키를 확인하고 다시 시도해주세요.`);
+    showReading(petName,`메시지를 전달하는 중 오류가 발생했습니다.\n\n잠시 후 다시 시도해주세요.`);
   }
 }
 
