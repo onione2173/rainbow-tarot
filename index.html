@@ -345,17 +345,17 @@
 
     /* fan spread */
     .fan-wrap {
-      position:relative; width:100%; height:200px;
+      position:relative; width:100%; height:320px;
       overflow:visible; margin:16px 0 8px;
     }
-    @media(max-width:580px) { .fan-wrap { height:135px; } }
+    @media(max-width:580px) { .fan-wrap { height:175px; } }
 
     .fan-card {
       position:absolute; border-radius:8px;
       background:linear-gradient(145deg,#140826,#1c1058,#091228);
       border:1.5px solid rgba(130,80,210,.28);
       cursor:pointer; overflow:hidden;
-      transform-origin:50% 100%;
+      transform-origin:50% 50%;
       will-change:transform;
       user-select:none; -webkit-user-select:none;
     }
@@ -757,6 +757,31 @@ function onDraw(){
 /* ── 78장 팬 스프레드 ── */
 let shuffledDeck=[], selectedFromSpread=[];
 
+function spreadConfig(){
+  const mobile=window.innerWidth<580;
+  const W=Math.min(836,window.innerWidth-44);
+  return {
+    R:       mobile?135:330,
+    EXTRA:   mobile?0:70,      // circle center below container bottom (px)
+    CARD_W:  mobile?28:42,
+    CARD_H:  mobile?50:72,
+    ARC_HALF:mobile?75:78,     // half-arc degrees each side
+    containerH: mobile?175:320,
+    containerW: W,
+    cx: W/2,
+    get cy(){ return this.containerH+this.EXTRA; }
+  };
+}
+
+function applyArcPos(el, angle, cfg){
+  const rad=angle*Math.PI/180;
+  const x=cfg.cx+cfg.R*Math.sin(rad);
+  const y=cfg.cy-cfg.R*Math.cos(rad);
+  el.style.left=(x-cfg.CARD_W/2)+'px';
+  el.style.top =(y-cfg.CARD_H/2)+'px';
+  el.style.transform=`rotate(${angle}deg)`;
+}
+
 function showSpread(){
   shuffledDeck=[...CARDS].sort(()=>Math.random()-.5);
   selectedFromSpread=[];
@@ -764,45 +789,45 @@ function showSpread(){
   const wrap=document.getElementById('fanWrap');
   wrap.innerHTML='';
 
-  const mobile=window.innerWidth<580;
-  const CARD_W=mobile?28:44;
-  const CARD_H=mobile?130:200;
-  const ARC=130, N=78;
+  const cfg=spreadConfig();
+  const N=78;
 
   shuffledDeck.forEach((card,i)=>{
-    const angle=-ARC/2+(i/(N-1))*ARC;
+    const angle=-cfg.ARC_HALF+(i/(N-1))*cfg.ARC_HALF*2;
     const el=document.createElement('div');
     el.className='fan-card';
     el.dataset.i=i;
     el.dataset.baseAngle=angle.toFixed(3);
-    el.style.cssText=`width:${CARD_W}px;height:${CARD_H}px;left:calc(50% - ${CARD_W/2}px);bottom:0;transform:rotate(${angle}deg);z-index:${Math.round(100-Math.abs(angle))};`;
+    el.style.width =cfg.CARD_W+'px';
+    el.style.height=cfg.CARD_H+'px';
+    el.style.zIndex=Math.round(100-Math.abs(angle));
     el.innerHTML=`<div class="sc-border"></div><div class="sc-pattern"></div><div class="sc-glow"></div><div class="sc-symbol">🐾</div>`;
+    applyArcPos(el, angle, cfg);
     el.addEventListener('click',()=>pickCard(i));
     wrap.appendChild(el);
   });
 
   // 호버 팬아웃
-  const SIGMA=12, MAX_PUSH=16;
+  const SIGMA=10, MAX_PUSH=14;
   wrap.addEventListener('mousemove',e=>{
     const rect=wrap.getBoundingClientRect();
-    const pivotX=rect.left+rect.width/2;
-    const pivotY=rect.bottom;
-    const dx=e.clientX-pivotX, dy=pivotY-e.clientY;
+    const mx=e.clientX-rect.left;
+    const my=e.clientY-rect.top;
+    const dx=mx-cfg.cx, dy=cfg.cy-my;
     const ma=Math.atan2(dx,dy)*180/Math.PI;
     wrap.querySelectorAll('.fan-card:not(.fan-selected):not(.fan-disabled)').forEach(el=>{
       const base=parseFloat(el.dataset.baseAngle);
       const diff=base-ma;
       const g=Math.exp(-(diff*diff)/(2*SIGMA*SIGMA));
       const push=MAX_PUSH*g*(diff>=0?1:-1);
-      const newZ=Math.round(100-Math.abs(base)+g*60);
-      el.style.transform=`rotate(${base+push}deg)`;
-      el.style.zIndex=newZ;
+      applyArcPos(el, base+push, cfg);
+      el.style.zIndex=Math.round(100-Math.abs(base)+g*60);
     });
   });
   wrap.addEventListener('mouseleave',()=>{
     wrap.querySelectorAll('.fan-card:not(.fan-selected):not(.fan-disabled)').forEach(el=>{
       const base=parseFloat(el.dataset.baseAngle);
-      el.style.transform=`rotate(${base}deg)`;
+      applyArcPos(el, base, cfg);
       el.style.zIndex=Math.round(100-Math.abs(base));
     });
   });
@@ -819,7 +844,15 @@ function pickCard(i){
   selectedFromSpread.push(i);
   const el=document.querySelector(`.fan-card[data-i="${i}"]`);
   el.classList.add('fan-selected');
-  el.style.transform=`rotate(${el.dataset.baseAngle}deg) translateY(-18px)`;
+  // 선택된 카드를 호 바깥(중심에서 멀어지는 방향)으로 16px 띄우기
+  const cfg=spreadConfig();
+  const base=parseFloat(el.dataset.baseAngle);
+  const rad=base*Math.PI/180;
+  const x=cfg.cx+(cfg.R+16)*Math.sin(rad);
+  const y=cfg.cy-(cfg.R+16)*Math.cos(rad);
+  el.style.left=(x-cfg.CARD_W/2)+'px';
+  el.style.top =(y-cfg.CARD_H/2)+'px';
+  el.style.transform=`rotate(${base}deg)`;
   el.style.zIndex=202;
 
   const countEl=document.getElementById('spreadCount');
