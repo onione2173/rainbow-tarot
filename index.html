@@ -8,8 +8,11 @@
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Noto+Serif+KR:wght@300;400;600&family=Noto+Sans+KR:wght@300&display=swap" rel="stylesheet">
 
-  <!-- ★ AdSense: ca-pub-XXXXXXXXXXXXXXXX 를 본인 발행자 ID로 교체하세요 -->
-  <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-XXXXXXXXXXXXXXXX" crossorigin="anonymous"></script>
+  <!-- 카카오 애드핏 -->
+  <script type="text/javascript" src="//t1.kakaocdn.net/kas/static/ba.min.js" async></script>
+
+  <!-- ★ AdSense (리딩하단·하단배너용 — 교체 전까지 비활성) -->
+  <!-- <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-XXXXXXXXXXXXXXXX" crossorigin="anonymous"></script> -->
 
   <style>
     *, *::before, *::after { margin: 0; padding: 0; box-sizing: border-box; }
@@ -497,13 +500,10 @@
       <div class="itl-ad-wrap">
         <div>
           <p class="ad-label">광 고</p>
-          <!-- ★ data-ad-slot 을 인터스티셜용 슬롯 번호로 교체하세요 -->
-          <ins class="adsbygoogle"
-            style="display:block"
-            data-ad-client="ca-pub-XXXXXXXXXXXXXXXX"
-            data-ad-slot="1111111111"
-            data-ad-format="auto"
-            data-full-width-responsive="true"></ins>
+          <ins class="kakao_ad_area" style="display:none;"
+            data-ad-unit="DAN-foqz4jO1cBc5jQyZ"
+            data-ad-width="320"
+            data-ad-height="100"></ins>
         </div>
       </div>
       <div class="itl-footer">
@@ -1064,19 +1064,13 @@ function doReset(){
 }
 
 /* ── 인터스티셜 (전면 광고) ── */
-let itlAdInited=false, itlTimer=null;
+let itlTimer=null;
 
 function onReset(){ showInterstitial(); }
 
 function showInterstitial(){
   const overlay=document.getElementById('itlOverlay');
   overlay.classList.add('show');
-
-  // AdSense 최초 1회만 초기화
-  if(!itlAdInited){
-    try{(adsbygoogle=window.adsbygoogle||[]).push({});}catch(e){}
-    itlAdInited=true;
-  }
 
   // 카운트다운 5 → 0
   const btn=document.getElementById('itlCloseBtn');
