@@ -791,6 +791,8 @@ function showSpread(){
   const cfg=spreadConfig();
   const N=78;
 
+  const SIGMA=10, MAX_PUSH=8;
+
   shuffledDeck.forEach((card,i)=>{
     const angle=-cfg.ARC_HALF+(i/(N-1))*cfg.ARC_HALF*2;
     const el=document.createElement('div');
@@ -802,33 +804,37 @@ function showSpread(){
     el.style.zIndex=Math.round(100-Math.abs(angle));
     el.innerHTML=`<div class="sc-border"></div><div class="sc-pattern"></div><div class="sc-glow"></div><div class="sc-symbol">🐾</div>`;
     applyArcPos(el, angle, cfg);
+
+    // 호버: 이 카드를 바깥쪽으로 띄우고 이웃 카드 살짝 물러나게
+    el.addEventListener('mouseenter',()=>{
+      if(el.classList.contains('fan-selected')||el.classList.contains('fan-disabled'))return;
+      const rad=angle*Math.PI/180;
+      const x=cfg.cx+(cfg.R+16)*Math.sin(rad)-cfg.CARD_W/2;
+      const y=cfg.cy-(cfg.R+16)*Math.cos(rad)-cfg.CARD_H/2;
+      el.style.transform=`translate(${x}px,${y}px) rotate(${angle}deg)`;
+      el.style.zIndex=200;
+      wrap.querySelectorAll('.fan-card:not(.fan-selected):not(.fan-disabled)').forEach(other=>{
+        if(other===el)return;
+        const ob=parseFloat(other.dataset.baseAngle);
+        const diff=ob-angle;
+        const g=Math.exp(-(diff*diff)/(2*SIGMA*SIGMA));
+        const push=MAX_PUSH*g*(diff>=0?1:-1);
+        applyArcPos(other,ob+push,cfg);
+      });
+    });
+
+    // 마우스 떠나면 전체 복원
+    el.addEventListener('mouseleave',()=>{
+      if(el.classList.contains('fan-selected')||el.classList.contains('fan-disabled'))return;
+      wrap.querySelectorAll('.fan-card:not(.fan-selected):not(.fan-disabled)').forEach(other=>{
+        const ob=parseFloat(other.dataset.baseAngle);
+        applyArcPos(other,ob,cfg);
+        other.style.zIndex=Math.round(100-Math.abs(ob));
+      });
+    });
+
     el.addEventListener('click',()=>pickCard(i));
     wrap.appendChild(el);
-  });
-
-  // 호버 팬아웃
-  const SIGMA=14, MAX_PUSH=7;
-  wrap.addEventListener('mousemove',e=>{
-    const rect=wrap.getBoundingClientRect();
-    const mx=e.clientX-rect.left;
-    const my=e.clientY-rect.top;
-    const dx=mx-cfg.cx, dy=cfg.cy-my;
-    const ma=Math.atan2(dx,dy)*180/Math.PI;
-    wrap.querySelectorAll('.fan-card:not(.fan-selected):not(.fan-disabled)').forEach(el=>{
-      const base=parseFloat(el.dataset.baseAngle);
-      const diff=base-ma;
-      const g=Math.exp(-(diff*diff)/(2*SIGMA*SIGMA));
-      const push=MAX_PUSH*g*(diff>=0?1:-1);
-      applyArcPos(el, base+push, cfg);
-      el.style.zIndex=Math.round(100-Math.abs(base)+g*60);
-    });
-  });
-  wrap.addEventListener('mouseleave',()=>{
-    wrap.querySelectorAll('.fan-card:not(.fan-selected):not(.fan-disabled)').forEach(el=>{
-      const base=parseFloat(el.dataset.baseAngle);
-      applyArcPos(el, base, cfg);
-      el.style.zIndex=Math.round(100-Math.abs(base));
-    });
   });
 
   const countEl=document.getElementById('spreadCount');
