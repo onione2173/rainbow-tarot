@@ -583,16 +583,13 @@
           <div class="reading-body" id="letterBody"></div>
         </div>
 
-        <!-- ★ 리딩 하단 광고 -->
+        <!-- 리딩 하단 광고 -->
         <div class="ad-in-reading" id="adInReading" style="display:none">
           <p class="ad-label">광 고</p>
-          <ins class="adsbygoogle"
-            style="display:block"
-            data-ad-client="ca-pub-XXXXXXXXXXXXXXXX"
-            data-ad-slot="2222222222"
-            data-ad-format="auto"
-            data-full-width-responsive="true"
-            id="adReading"></ins>
+          <ins class="kakao_ad_area" style="display:none;"
+            data-ad-unit="DAN-QpeUnoNPzpR5Oflw"
+            data-ad-width="320"
+            data-ad-height="100"></ins>
         </div>
 
         <div class="reading-footer" id="readingFooter" style="display:none">
@@ -610,14 +607,10 @@
   <!-- ★ 하단 고정 배너 ── 3초 후 슬라이드업 -->
   <div class="ad-sticky" id="adSticky">
     <div class="ad-sticky-inner">
-      <!-- ★ data-ad-slot 을 하단배너용 슬롯 번호로 교체하세요 -->
-      <ins class="adsbygoogle"
-        style="display:block"
-        data-ad-client="ca-pub-XXXXXXXXXXXXXXXX"
-        data-ad-slot="3333333333"
-        data-ad-format="horizontal"
-        data-full-width-responsive="true"
-        id="adSticky-ins"></ins>
+      <ins class="kakao_ad_area" style="display:none;"
+        data-ad-unit="DAN-ejCFNgq7DI1au9h9"
+        data-ad-width="320"
+        data-ad-height="50"></ins>
     </div>
     <button class="ad-sticky-close" onclick="closeStickyAd()" title="닫기">✕</button>
   </div>
@@ -1100,16 +1093,10 @@ function closeInterstitial(){
 }
 
 /* ── 하단 고정 배너 ── */
-let stickyAdInited=false;
-
 setTimeout(()=>{
   const el=document.getElementById('adSticky');
   el.classList.add('show');
   document.body.classList.add('has-sticky');
-  if(!stickyAdInited){
-    try{(adsbygoogle=window.adsbygoogle||[]).push({});}catch(e){}
-    stickyAdInited=true;
-  }
 },3000);
 
 function closeStickyAd(){
@@ -1117,14 +1104,7 @@ function closeStickyAd(){
   document.body.classList.remove('has-sticky');
 }
 
-/* ── 리딩 하단 광고 (AI 편지 표시 시 1회 초기화) ── */
-let readingAdInited=false;
-function initReadingAd(){
-  if(!readingAdInited){
-    try{(adsbygoogle=window.adsbygoogle||[]).push({});}catch(e){}
-    readingAdInited=true;
-  }
-}
+function initReadingAd(){} // 카카오 애드핏은 스크립트가 자동 초기화
 </script>
 </body>
 </html>
