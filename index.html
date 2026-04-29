@@ -743,6 +743,11 @@ const POSITIONS=[
   {label:'🌈 우리의 약속',  sub:'영원히 이어지는 인연'},
 ];
 
+/* ── analytics helper ── */
+function track(eventName, params){
+  if(typeof gtag==='function') gtag('event', eventName, params||{});
+}
+
 /* ── state ── */
 let drawn=[], drawnRv=[];
 
@@ -757,6 +762,7 @@ function onDraw(){
   ['readingSection','loadingSection','cardsSection','spreadSection']
     .forEach(id=>document.getElementById(id).classList.remove('show'));
   document.getElementById('drawBtn').disabled=true;
+  track('draw_start');
   showSpread();
 }
 
@@ -863,6 +869,7 @@ function pickCard(i){
   el.style.transform=`translate(${x}px,${y}px) rotate(${base}deg)`;
   el.style.zIndex=202;
 
+  track('card_selected', {card_name: shuffledDeck[i]?.name||''});
   const countEl=document.getElementById('spreadCount');
   countEl.textContent='✓ 선택됨'; countEl.classList.add('full');
 
@@ -937,6 +944,7 @@ function flipCard(idx){
   const el=document.getElementById('tc-'+idx);
   if(el.classList.contains('flipped'))return;
   el.classList.add('flipped');
+  track('card_flipped', {card_name: drawn[0]?.name||'', reversed: drawnRv[0]});
   setTimeout(fetchReading,700);
 }
 
@@ -1027,6 +1035,7 @@ function showReading(petName,interpretation,letter){
 }
 
 function openLetter(){
+  track('letter_opened');
   document.getElementById('letterTrigger').style.display='none';
   const petN=document.getElementById('petName').value.trim()||'반려동물';
   document.getElementById('letterTitle').textContent=`${petN}의 편지`;
@@ -1071,7 +1080,7 @@ function doReset(){
 /* ── 인터스티셜 (전면 광고) ── */
 let itlTimer=null;
 
-function onReset(){ showInterstitial(); }
+function onReset(){ track('reset_click'); showInterstitial(); }
 
 function showInterstitial(){
   const overlay=document.getElementById('itlOverlay');
@@ -1099,6 +1108,7 @@ function showInterstitial(){
 }
 
 function closeInterstitial(){
+  track('interstitial_closed');
   document.getElementById('itlOverlay').classList.remove('show');
   clearInterval(itlTimer);
   doReset();
@@ -1112,6 +1122,7 @@ setTimeout(()=>{
 },3000);
 
 function closeStickyAd(){
+  track('sticky_ad_closed');
   document.getElementById('adSticky').classList.remove('show');
   document.body.classList.remove('has-sticky');
 }
