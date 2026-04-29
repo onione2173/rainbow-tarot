@@ -351,11 +351,12 @@
     @media(max-width:580px) { .fan-wrap { height:175px; } }
 
     .fan-card {
-      position:absolute; border-radius:8px;
+      position:absolute; left:0; top:0; border-radius:8px;
       background:linear-gradient(145deg,#140826,#1c1058,#091228);
       border:1.5px solid rgba(130,80,210,.28);
       cursor:pointer; overflow:hidden;
       transform-origin:50% 50%;
+      transition:transform .18s ease-out, border-color .12s, box-shadow .12s;
       will-change:transform;
       user-select:none; -webkit-user-select:none;
     }
@@ -775,11 +776,9 @@ function spreadConfig(){
 
 function applyArcPos(el, angle, cfg){
   const rad=angle*Math.PI/180;
-  const x=cfg.cx+cfg.R*Math.sin(rad);
-  const y=cfg.cy-cfg.R*Math.cos(rad);
-  el.style.left=(x-cfg.CARD_W/2)+'px';
-  el.style.top =(y-cfg.CARD_H/2)+'px';
-  el.style.transform=`rotate(${angle}deg)`;
+  const x=cfg.cx+cfg.R*Math.sin(rad)-cfg.CARD_W/2;
+  const y=cfg.cy-cfg.R*Math.cos(rad)-cfg.CARD_H/2;
+  el.style.transform=`translate(${x}px,${y}px) rotate(${angle}deg)`;
 }
 
 function showSpread(){
@@ -808,7 +807,7 @@ function showSpread(){
   });
 
   // 호버 팬아웃
-  const SIGMA=10, MAX_PUSH=14;
+  const SIGMA=14, MAX_PUSH=7;
   wrap.addEventListener('mousemove',e=>{
     const rect=wrap.getBoundingClientRect();
     const mx=e.clientX-rect.left;
@@ -848,11 +847,9 @@ function pickCard(i){
   const cfg=spreadConfig();
   const base=parseFloat(el.dataset.baseAngle);
   const rad=base*Math.PI/180;
-  const x=cfg.cx+(cfg.R+16)*Math.sin(rad);
-  const y=cfg.cy-(cfg.R+16)*Math.cos(rad);
-  el.style.left=(x-cfg.CARD_W/2)+'px';
-  el.style.top =(y-cfg.CARD_H/2)+'px';
-  el.style.transform=`rotate(${base}deg)`;
+  const x=cfg.cx+(cfg.R+16)*Math.sin(rad)-cfg.CARD_W/2;
+  const y=cfg.cy-(cfg.R+16)*Math.cos(rad)-cfg.CARD_H/2;
+  el.style.transform=`translate(${x}px,${y}px) rotate(${base}deg)`;
   el.style.zIndex=202;
 
   const countEl=document.getElementById('spreadCount');
