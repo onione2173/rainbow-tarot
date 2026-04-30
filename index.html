@@ -23,6 +23,9 @@
   <!-- 카카오 애드핏 -->
   <script type="text/javascript" src="//t1.kakaocdn.net/kas/static/ba.min.js" async></script>
 
+  <!-- 이미지 저장 -->
+  <script src="https://cdn.jsdelivr.net/npm/html2canvas@1.4.1/dist/html2canvas.min.js"></script>
+
   <!-- ★ AdSense (리딩하단·하단배너용 — 교체 전까지 비활성) -->
   <!-- <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-XXXXXXXXXXXXXXXX" crossorigin="anonymous"></script> -->
 
@@ -337,23 +340,80 @@
 
     /* ── 탭 네비 ── */
     .tab-nav {
-      display:flex; gap:5px; margin-bottom:28px;
-      background:rgba(255,255,255,.04);
-      border:1px solid var(--border); border-radius:16px; padding:5px;
+      display:flex; gap:6px; margin-bottom:32px;
+      background:rgba(10,5,25,.6);
+      border:1px solid rgba(180,100,255,.18); border-radius:20px; padding:6px;
     }
     .tab-btn {
       flex:1; display:flex; flex-direction:column; align-items:center;
-      gap:3px; padding:10px 4px;
-      border:1px solid transparent; border-radius:12px;
-      background:transparent; color:var(--text-sub);
-      font-family:'Noto Serif KR',serif; font-size:.7rem;
-      cursor:pointer; transition:all .22s; line-height:1.35;
+      gap:5px; padding:14px 6px 12px;
+      border:1px solid transparent; border-radius:15px;
+      background:transparent; color:var(--text-dim);
+      font-family:'Noto Serif KR',serif;
+      cursor:pointer; transition:all .25s ease;
+      position:relative; overflow:hidden;
     }
-    .tab-btn .tab-emoji { font-size:1.25rem; }
+    .tab-btn .tab-emoji {
+      font-size:1.6rem; display:block;
+      transition:transform .25s ease, filter .25s ease;
+      filter:grayscale(.6) opacity(.7);
+    }
+    .tab-btn .tab-name {
+      font-size:.65rem; line-height:1.45; text-align:center; color:inherit;
+      letter-spacing:.01em;
+    }
     .tab-btn.active {
-      background:rgba(180,100,255,.18); border-color:rgba(180,100,255,.35); color:var(--text-main);
+      background:linear-gradient(160deg, rgba(130,60,220,.28) 0%, rgba(80,120,240,.18) 100%);
+      border-color:rgba(160,100,255,.45);
+      color:var(--text-main);
+      box-shadow:0 2px 18px rgba(120,60,220,.22), inset 0 1px 0 rgba(255,255,255,.07);
     }
-    .tab-btn:not(.active):hover { background:rgba(255,255,255,.06); color:var(--text-main); }
+    .tab-btn.active .tab-emoji {
+      transform:scale(1.18) translateY(-1px);
+      filter:grayscale(0) opacity(1);
+    }
+    .tab-btn.active::after {
+      content:'';
+      position:absolute; bottom:7px; left:50%; transform:translateX(-50%);
+      width:22px; height:2px; border-radius:2px;
+      background:linear-gradient(90deg,#b060ff,#7090ff);
+    }
+    .tab-btn:not(.active):hover {
+      background:rgba(255,255,255,.05);
+      color:var(--text-sub);
+    }
+    .tab-btn:not(.active):hover .tab-emoji { filter:grayscale(.2) opacity(.9); }
+
+    /* ── 공유·저장 버튼 ── */
+    .footer-actions { display:flex; flex-direction:column; align-items:center; gap:14px; }
+    .share-btns { display:flex; gap:10px; }
+    .btn-share {
+      display:flex; align-items:center; gap:6px;
+      padding:9px 20px; border-radius:22px;
+      border:1px solid rgba(180,130,255,.28);
+      background:rgba(120,60,200,.12);
+      color:var(--text-sub); font-family:'Noto Serif KR',serif; font-size:.82rem;
+      cursor:pointer; transition:all .2s;
+    }
+    .btn-share:hover {
+      background:rgba(160,90,255,.22); border-color:rgba(180,130,255,.5);
+      color:var(--text-main); transform:translateY(-2px);
+      box-shadow:0 6px 18px rgba(120,60,200,.25);
+    }
+
+    /* 토스트 */
+    #toast {
+      position:fixed; bottom:80px; left:50%; transform:translateX(-50%) translateY(8px);
+      background:rgba(30,12,55,.96); border:1px solid rgba(180,100,255,.4);
+      color:#e0c0ff; padding:10px 22px; border-radius:26px;
+      font-family:'Noto Serif KR',serif; font-size:.82rem;
+      z-index:9999; opacity:0; pointer-events:none; white-space:nowrap;
+      transition:opacity .3s, transform .3s;
+    }
+    #toast.show { opacity:1; transform:translateX(-50%) translateY(0); }
+
+    /* shareCard (이미지 생성용, 화면 밖 고정) */
+    #shareCard { position:fixed; left:-9999px; top:0; width:360px; z-index:-1; }
 
     /* ── 관심사 칩 (보호자 타로) ── */
     .concern-chips { display:flex; flex-wrap:wrap; gap:8px; margin:10px 0 20px; }
@@ -570,13 +630,16 @@
       <!-- 탭 네비 -->
       <nav class="tab-nav">
         <button class="tab-btn active" id="tabBtn0" onclick="switchTab(0)">
-          <span class="tab-emoji">🌈</span>무지개<br>다리 너머
+          <span class="tab-emoji">🌈</span>
+          <span class="tab-name">무지개 다리<br>너머</span>
         </button>
         <button class="tab-btn" id="tabBtn1" onclick="switchTab(1)">
-          <span class="tab-emoji">🐾</span>기분<br>타로
+          <span class="tab-emoji">🐾</span>
+          <span class="tab-name">기분<br>타로</span>
         </button>
         <button class="tab-btn" id="tabBtn2" onclick="switchTab(2)">
-          <span class="tab-emoji">🪞</span>보호자<br>타로
+          <span class="tab-emoji">🪞</span>
+          <span class="tab-name">보호자<br>타로</span>
         </button>
       </nav>
 
@@ -687,7 +750,13 @@
         </div>
 
         <div class="reading-footer" id="readingFooter" style="display:none">
-          <button class="btn-small btn-ghost" onclick="onReset()">🌙 &nbsp;다시 질문하기</button>
+          <div class="footer-actions">
+            <div class="share-btns">
+              <button class="btn-share" onclick="shareResult()">📤 &nbsp;공유하기</button>
+              <button class="btn-share" onclick="saveImage()">💾 &nbsp;이미지 저장</button>
+            </div>
+            <button class="btn-small btn-ghost" onclick="onReset()">🌙 &nbsp;다시 질문하기</button>
+          </div>
         </div>
       </div>
 
@@ -697,6 +766,9 @@
       </footer>
     </div>
   </div>
+
+  <!-- 이미지 저장용 공유 카드 (화면 밖) -->
+  <div id="shareCard"></div>
 
   <!-- ★ 하단 고정 배너 ── 3초 후 슬라이드업 -->
   <div class="ad-sticky" id="adSticky">
@@ -1321,6 +1393,119 @@ function closeStickyAd(){
 }
 
 function initReadingAd(){} // 카카오 애드핏은 스크립트가 자동 초기화
+
+/* ── 공유하기 ── */
+function shareResult(){
+  track('share_click');
+  const tabNames=['무지개 다리 너머','우리 아이 기분 타로','보호자 타로'];
+  const card=drawn[0], rv=drawnRv[0];
+  const interpretation=document.getElementById('readingBody').textContent;
+  const letter=document.getElementById('letterBody').textContent;
+  const excerpt=(interpretation||'').slice(0,120);
+  const letterExcerpt=(letter||'').slice(0,80);
+  const text=[
+    `🌈 ${tabNames[currentMode]}`,
+    ``,
+    `🃏 ${card.name} (${rv?'역방향':'정방향'})`,
+    ``,
+    excerpt+(interpretation.length>120?'…':''),
+    letterExcerpt?(``+'\n'+`💌 `+letterExcerpt+(letter.length>80?'…':'')):'',
+    ``,
+    `✨ 무지개 다리 너머 타로`,
+  ].filter(Boolean).join('\n');
+
+  if(navigator.share){
+    navigator.share({title:tabNames[currentMode],text}).catch(()=>{});
+  } else {
+    navigator.clipboard.writeText(text)
+      .then(()=>showToast('클립보드에 복사되었어요!'))
+      .catch(()=>showToast('공유 기능을 지원하지 않는 환경이에요'));
+  }
+}
+
+/* ── 이미지 저장 ── */
+async function saveImage(){
+  track('save_image_click');
+  if(typeof html2canvas==='undefined'){ showToast('잠시 후 다시 시도해주세요'); return; }
+
+  const tabIcons=['🌈','🐾','🪞'];
+  const tabNames=['무지개 다리 너머','우리 아이 기분 타로','보호자 타로'];
+  const card=drawn[0], rv=drawnRv[0];
+  const petN=_currentPetName||'반려동물';
+  const interpretation=(document.getElementById('readingBody').textContent||'').trim();
+  const letter=(document.getElementById('letterBody').textContent||'').trim();
+  const excerpt=interpretation.slice(0,200)+(interpretation.length>200?'…':'');
+  const letterExcerpt=letter.slice(0,130)+(letter.length>130?'…':'');
+
+  const sc=document.getElementById('shareCard');
+  sc.innerHTML=`
+    <div style="width:360px;min-height:500px;padding:32px 26px 28px;
+      background:linear-gradient(150deg,#1a0835 0%,#0c1045 45%,#041520 100%);
+      font-family:Noto Serif KR,serif;color:#f0e6ff;border-radius:22px;position:relative;overflow:hidden;">
+      <div style="position:absolute;top:0;left:0;right:0;height:3px;
+        background:linear-gradient(90deg,#ff6b6b,#ff9f43,#ffd32a,#0be881,#17c0eb,#7d5fff,#ef5777);"></div>
+      <div style="position:absolute;inset:0;
+        background:radial-gradient(ellipse at 25% 15%,rgba(110,50,210,.18) 0%,transparent 55%);"></div>
+      <div style="position:relative;z-index:1;">
+        <div style="text-align:center;margin-bottom:22px;">
+          <div style="font-size:2.4rem;margin-bottom:6px;">${tabIcons[currentMode]}</div>
+          <div style="font-size:.72rem;color:#b090d0;letter-spacing:.08em;">${tabNames[currentMode]}</div>
+        </div>
+        <div style="text-align:center;margin-bottom:20px;padding:13px 16px;border-radius:14px;
+          background:rgba(160,80,255,.13);border:1px solid rgba(160,80,255,.28);">
+          <div style="font-size:1.08rem;font-weight:600;
+            background:linear-gradient(135deg,#e8c4ff,#c0deff);
+            -webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;">
+            ${card.name}</div>
+          <div style="font-size:.7rem;color:#b090d0;margin-top:4px;">
+            ${rv?'역방향':'정방향'} · ${card.en}</div>
+        </div>
+        <div style="font-size:.78rem;line-height:1.9;color:#d8c4f0;
+          border-left:2px solid rgba(160,80,255,.4);padding-left:13px;margin-bottom:${letterExcerpt?'18px':'0'};">
+          ${excerpt.replace(/\n/g,'<br>')}</div>
+        ${letterExcerpt?`
+        <div style="padding-top:16px;border-top:1px solid rgba(160,80,255,.18);">
+          <div style="font-size:.68rem;color:#a080c0;margin-bottom:7px;">💌 ${petN}의 메시지</div>
+          <div style="font-size:.76rem;line-height:1.9;color:#e0d0f8;">
+            ${letterExcerpt.replace(/\n/g,'<br>')}</div>
+        </div>`:''}
+        <div style="text-align:center;margin-top:22px;padding-top:14px;
+          border-top:1px solid rgba(255,255,255,.07);">
+          <div style="font-size:.62rem;color:rgba(160,130,200,.45);">
+            🌈 무지개 다리 너머 타로</div>
+        </div>
+      </div>
+    </div>`;
+
+  showToast('이미지 생성 중…');
+  try {
+    const el=sc.firstElementChild;
+    const canvas=await html2canvas(el,{
+      backgroundColor:null, scale:2, useCORS:true, logging:false,
+      width:360, height:el.offsetHeight,
+    });
+    const link=document.createElement('a');
+    link.download=`타로_${card.name}_${Date.now()}.png`;
+    link.href=canvas.toDataURL('image/png');
+    link.click();
+    showToast('이미지가 저장되었어요!');
+  } catch(e){
+    showToast('저장 중 오류가 발생했어요');
+  }
+}
+
+/* ── 토스트 알림 ── */
+function showToast(msg){
+  let t=document.getElementById('toast');
+  if(!t){
+    t=document.createElement('div'); t.id='toast';
+    document.body.appendChild(t);
+  }
+  t.textContent=msg;
+  t.classList.add('show');
+  clearTimeout(t._timer);
+  t._timer=setTimeout(()=>t.classList.remove('show'),2600);
+}
 </script>
 </body>
 </html>
