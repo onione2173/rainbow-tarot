@@ -335,6 +335,38 @@
     .letter-header .ltr-icon { font-size:1.9rem; display:block; margin-bottom:7px; }
     .letter-header h3 { font-size:1.05rem; color:#e0c0ff; font-weight:400; }
 
+    /* ── 탭 네비 ── */
+    .tab-nav {
+      display:flex; gap:5px; margin-bottom:28px;
+      background:rgba(255,255,255,.04);
+      border:1px solid var(--border); border-radius:16px; padding:5px;
+    }
+    .tab-btn {
+      flex:1; display:flex; flex-direction:column; align-items:center;
+      gap:3px; padding:10px 4px;
+      border:1px solid transparent; border-radius:12px;
+      background:transparent; color:var(--text-sub);
+      font-family:'Noto Serif KR',serif; font-size:.7rem;
+      cursor:pointer; transition:all .22s; line-height:1.35;
+    }
+    .tab-btn .tab-emoji { font-size:1.25rem; }
+    .tab-btn.active {
+      background:rgba(180,100,255,.18); border-color:rgba(180,100,255,.35); color:var(--text-main);
+    }
+    .tab-btn:not(.active):hover { background:rgba(255,255,255,.06); color:var(--text-main); }
+
+    /* ── 관심사 칩 (보호자 타로) ── */
+    .concern-chips { display:flex; flex-wrap:wrap; gap:8px; margin:10px 0 20px; }
+    .concern-chip {
+      padding:8px 14px; border-radius:20px;
+      border:1px solid var(--border); background:transparent;
+      color:var(--text-sub); font-family:'Noto Serif KR',serif;
+      font-size:.82rem; cursor:pointer; transition:all .2s;
+    }
+    .concern-chip.active {
+      background:rgba(180,100,255,.18); border-color:rgba(180,100,255,.38); color:#e0c0ff;
+    }
+
     footer.site-footer {
       text-align:center; margin-top:60px; padding-bottom:38px;
       color:var(--text-dim); font-size:.76rem; line-height:2;
@@ -530,27 +562,77 @@
     <div class="container">
 
       <div class="header reveal">
-        <span class="icon">🐾</span>
-        <h1>무지개 다리 너머</h1>
-        <p class="sub">사랑하는 반려동물의 영혼과 연결되는 공간<br>
-          그들은 무지개 다리 너머에서 언제나 우리를 바라보고 있어요</p>
+        <span class="icon" id="headerIcon">🌈</span>
+        <h1 id="headerTitle">무지개 다리 너머</h1>
+        <p class="sub" id="headerSub">사랑하는 반려동물의 영혼과 연결되는 공간<br>그들은 무지개 다리 너머에서 언제나 우리를 바라보고 있어요</p>
       </div>
 
-      <div class="glass reveal">
-        <div class="input-row">
-          <div>
-            <label class="field-label">🐾 반려동물 이름</label>
-            <input type="text" id="petName" placeholder="예: 똘이, 초코, 루시…">
+      <!-- 탭 네비 -->
+      <nav class="tab-nav">
+        <button class="tab-btn active" id="tabBtn0" onclick="switchTab(0)">
+          <span class="tab-emoji">🌈</span>무지개<br>다리 너머
+        </button>
+        <button class="tab-btn" id="tabBtn1" onclick="switchTab(1)">
+          <span class="tab-emoji">🐾</span>기분<br>타로
+        </button>
+        <button class="tab-btn" id="tabBtn2" onclick="switchTab(2)">
+          <span class="tab-emoji">🪞</span>보호자<br>타로
+        </button>
+      </nav>
+
+      <!-- 탭 0: 무지개 다리 너머 -->
+      <div class="tab-panel" id="tab0">
+        <div class="glass">
+          <div class="input-row">
+            <div>
+              <label class="field-label">🐾 반려동물 이름</label>
+              <input type="text" id="petName" placeholder="예: 똘이, 초코, 루시…">
+            </div>
+            <div>
+              <label class="field-label">💌 반려동물이 나를 부르는 호칭</label>
+              <input type="text" id="ownerTitle" placeholder="예: 아빠, 엄마, 언니, 오빠, 집사…">
+            </div>
           </div>
-          <div>
-            <label class="field-label">💌 반려동물이 나를 부르는 호칭</label>
-            <input type="text" id="ownerTitle" placeholder="예: 아빠, 엄마, 언니, 오빠, 집사…">
-          </div>
+          <label class="field-label">🌸 어떤 이야기를 나누고 싶으신가요?</label>
+          <textarea class="question" id="question"
+            placeholder="예: 너는 지금 행복하니? / 마지막으로 하고 싶은 말이 있어? / 내가 더 잘해줄 수 있었을까?"></textarea>
+          <button class="btn-draw" onclick="onDraw()">🌈 &nbsp;타로 카드 뽑기</button>
         </div>
-        <label class="field-label">🌸 어떤 이야기를 나누고 싶으신가요?</label>
-        <textarea class="question" id="question"
-          placeholder="예: 너는 지금 행복하니? / 마지막으로 하고 싶은 말이 있어? / 내가 더 잘해줄 수 있었을까?"></textarea>
-        <button class="btn-draw" id="drawBtn" onclick="onDraw()">🌈 &nbsp;타로 카드 뽑기</button>
+      </div>
+
+      <!-- 탭 1: 기분 타로 -->
+      <div class="tab-panel" id="tab1" style="display:none">
+        <div class="glass">
+          <div class="input-row">
+            <div>
+              <label class="field-label">🐾 반려동물 이름</label>
+              <input type="text" id="moodPetName" placeholder="예: 콩이, 하루, 뭉치…">
+            </div>
+            <div>
+              <label class="field-label">🏷️ 종류 (선택)</label>
+              <input type="text" id="moodPetType" placeholder="예: 강아지, 고양이, 토끼…">
+            </div>
+          </div>
+          <button class="btn-draw" onclick="onDraw()">🐾 &nbsp;오늘의 기분 카드 뽑기</button>
+        </div>
+      </div>
+
+      <!-- 탭 2: 보호자 타로 -->
+      <div class="tab-panel" id="tab2" style="display:none">
+        <div class="glass">
+          <label class="field-label">🐾 반려동물 이름</label>
+          <input type="text" id="guardianPetName" placeholder="예: 콩이, 하루, 뭉치…" style="margin-bottom:16px">
+          <label class="field-label">💭 요즘 고민</label>
+          <div class="concern-chips">
+            <button class="concern-chip active" data-concern="관계·유대">❤️ 관계·유대</button>
+            <button class="concern-chip" data-concern="건강 걱정">🏥 건강 걱정</button>
+            <button class="concern-chip" data-concern="입양 고려">🏠 입양 고려</button>
+            <button class="concern-chip" data-concern="행동 고민">🤔 행동 고민</button>
+            <button class="concern-chip" data-concern="이별 준비">🌈 이별 준비</button>
+            <button class="concern-chip" data-concern="기타">💬 기타</button>
+          </div>
+          <button class="btn-draw" onclick="onDraw()">🪞 &nbsp;보호자 타로 뽑기</button>
+        </div>
       </div>
 
       <!-- 78장 스프레드 -->
@@ -569,7 +651,7 @@
 
       <div class="loading-section" id="loadingSection">
         <div class="orb"></div>
-        <p class="loading-text">영혼의 목소리를 듣고 있어요…<br>
+        <p class="loading-text" id="loadingText">영혼의 목소리를 듣고 있어요…<br>
           <span style="font-size:.8rem;color:var(--text-dim)">잠시만 기다려주세요</span></p>
       </div>
 
@@ -748,21 +830,86 @@ function track(eventName, params){
   if(typeof gtag==='function') gtag('event', eventName, params||{});
 }
 
+/* ── 탭 설정 ── */
+const TAB_CONFIG=[
+  {icon:'🌈', title:'무지개 다리 너머',
+   sub:'사랑하는 반려동물의 영혼과 연결되는 공간<br>그들은 무지개 다리 너머에서 언제나 우리를 바라보고 있어요',
+   loading:'영혼의 목소리를 듣고 있어요…'},
+  {icon:'🐾', title:'우리 아이 기분 타로',
+   sub:'타로카드로 오늘 우리 아이의 기분과 에너지를 읽어봐요',
+   loading:'타로가 오늘의 기분을 읽고 있어요…'},
+  {icon:'🪞', title:'보호자 타로',
+   sub:'반려동물을 키우는 보호자를 위한 타로<br>고민에 대한 따뜻한 통찰을 카드에서 찾아보세요',
+   loading:'타로가 보호자님께 메시지를 전하고 있어요…'},
+];
+
+let currentMode=0;
+let selectedConcern='관계·유대';
+
+function switchTab(n){
+  if(currentMode===n)return;
+  currentMode=n;
+  // 탭 버튼
+  [0,1,2].forEach(i=>document.getElementById('tabBtn'+i).classList.toggle('active',i===n));
+  // 패널
+  [0,1,2].forEach(i=>document.getElementById('tab'+i).style.display=i===n?'':'none');
+  // 헤더
+  const cfg=TAB_CONFIG[n];
+  document.getElementById('headerIcon').textContent=cfg.icon;
+  document.getElementById('headerTitle').textContent=cfg.title;
+  document.getElementById('headerSub').innerHTML=cfg.sub;
+  // 공유 섹션 초기화
+  ['spreadSection','cardsSection','loadingSection','readingSection']
+    .forEach(id=>document.getElementById(id).classList.remove('show'));
+  document.getElementById('letterTrigger').style.display='none';
+  document.getElementById('letterSection').style.display='none';
+  document.getElementById('adInReading').style.display='none';
+  document.getElementById('readingFooter').style.display='none';
+  window.scrollTo({top:0,behavior:'smooth'});
+  track('tab_switch',{tab:n});
+}
+
+// 보호자 타로 관심사 칩 초기화
+document.querySelectorAll('.concern-chip').forEach(el=>{
+  el.addEventListener('click',()=>{
+    document.querySelectorAll('.concern-chip').forEach(c=>c.classList.remove('active'));
+    el.classList.add('active');
+    selectedConcern=el.dataset.concern;
+  });
+});
+
 /* ── state ── */
 let drawn=[], drawnRv=[];
 
 /* ── draw ── */
 function onDraw(){
-  const q=document.getElementById('question').value.trim();
-  if(!q){
-    const ta=document.getElementById('question');
-    ta.style.borderColor='rgba(255,100,100,.5)'; ta.focus();
-    setTimeout(()=>ta.style.borderColor='',2000); return;
+  // 모드별 유효성 검사
+  if(currentMode===0){
+    const q=document.getElementById('question').value.trim();
+    if(!q){
+      const ta=document.getElementById('question');
+      ta.style.borderColor='rgba(255,100,100,.5)'; ta.focus();
+      setTimeout(()=>ta.style.borderColor='',2000); return;
+    }
+  } else if(currentMode===1){
+    const n=document.getElementById('moodPetName').value.trim();
+    if(!n){
+      const el=document.getElementById('moodPetName');
+      el.style.borderColor='rgba(255,100,100,.5)'; el.focus();
+      setTimeout(()=>el.style.borderColor='',2000); return;
+    }
+  } else {
+    const n=document.getElementById('guardianPetName').value.trim();
+    if(!n){
+      const el=document.getElementById('guardianPetName');
+      el.style.borderColor='rgba(255,100,100,.5)'; el.focus();
+      setTimeout(()=>el.style.borderColor='',2000); return;
+    }
   }
   ['readingSection','loadingSection','cardsSection','spreadSection']
     .forEach(id=>document.getElementById(id).classList.remove('show'));
-  document.getElementById('drawBtn').disabled=true;
-  track('draw_start');
+  document.querySelectorAll('.btn-draw').forEach(b=>b.disabled=true);
+  track('draw_start',{mode:currentMode});
   showSpread();
 }
 
@@ -950,49 +1097,90 @@ function flipCard(idx){
 
 /* ── AI reading ── */
 let _pendingLetter='';
+let _currentPetName='';
 
-async function fetchReading(){
-  document.getElementById('loadingSection').classList.add('show');
-  setTimeout(()=>document.getElementById('loadingSection').scrollIntoView({behavior:'smooth',block:'center'}),80);
-
-  const petName    = document.getElementById('petName').value.trim()    || '반려동물';
-  const ownerTitle = document.getElementById('ownerTitle').value.trim() || '보호자';
-  const question   = document.getElementById('question').value.trim();
+function buildPrompt(){
   const card=drawn[0], rv=drawnRv[0];
+  const cardInfo=`카드: ${card.name}(${card.en}) — ${rv?'역방향':'정방향'}\n정방향 키워드: ${card.upKw}\n역방향 키워드: ${card.rvKw}`;
+  const sep='\n\n---LETTER--- 구분자를 포함하여 두 부분으로 정확히 나누어 작성해주세요.';
 
-  const systemPrompt=`당신은 무지개 다리 너머로 떠난 반려동물의 영혼과 연결하는 타로 채널러입니다.
+  if(currentMode===0){
+    const petName=document.getElementById('petName').value.trim()||'반려동물';
+    const ownerTitle=document.getElementById('ownerTitle').value.trim()||'보호자';
+    const question=document.getElementById('question').value.trim();
+    return {
+      petName,
+      system:`당신은 무지개 다리 너머로 떠난 반려동물의 영혼과 연결하는 타로 채널러입니다.
 응답은 반드시 두 부분으로 구분합니다.
 
 [1부: 카드 해석]
-이 카드가 어떤 카드인지, 어떤 의미를 가지는지 간결하게 설명합니다. 그 다음, 보호자의 질문과 연결하여 이 카드를 따뜻하게 해석합니다. 2~4문장.
+이 카드가 어떤 의미인지 간결하게 설명하고, 보호자의 질문과 연결하여 따뜻하게 해석합니다. 2~4문장.
 
 ---LETTER---
 
 [2부: 반려동물의 편지]
-반려동물이 1인칭으로 직접 보호자에게 쓰는 짧은 편지. 카드의 의미에 기반해서만 씁니다.
-- 종(種)에 따른 신체 표현 절대 금지 (꼬리, 발, 냐옹, 멍멍 등 특정 동물 한정 표현 사용 불가)
-- 감정과 영혼의 언어만 사용 (예: "느껴져", "기억해", "곁에 있어", "사랑해")
-- 역방향 카드는 따뜻한 위로로만 해석
-- 200자 내외, 간결하게`;
+반려동물이 1인칭으로 직접 보호자에게 쓰는 짧은 편지. 카드 의미에 기반해서만 씁니다.
+- 종에 따른 신체 표현 절대 금지 (꼬리·발바닥·냐옹·멍멍 등 특정 동물 한정 표현 불가)
+- 감정과 영혼의 언어만 사용 ("느껴져", "기억해", "곁에 있어", "사랑해")
+- 역방향 카드는 따뜻한 위로로만 해석 / 200자 내외`,
+      user:`반려동물 이름: ${petName}\n보호자 호칭: "${ownerTitle}"\n보호자의 질문: "${question}"\n\n${cardInfo}${sep}`,
+    };
+  }
 
-  const userPrompt=`반려동물 이름: ${petName}
-보호자 호칭: "${ownerTitle}"
-보호자의 질문: "${question}"
+  if(currentMode===1){
+    const petName=document.getElementById('moodPetName').value.trim()||'반려동물';
+    const petType=document.getElementById('moodPetType').value.trim();
+    return {
+      petName,
+      system:`당신은 반려동물의 오늘 기분과 에너지를 타로카드로 읽어주는 채널러입니다.
+카드를 통해 반려동물의 현재 상태를 따뜻하고 생동감 있게 전달해주세요.
+응답은 반드시 두 부분으로 나눕니다.
 
-오늘 뽑힌 카드: ${card.name}(${card.en}) — ${rv?'역방향':'정방향'}
-정방향 키워드: ${card.upKw}
-역방향 키워드: ${card.rvKw}
+[1부: 카드 해석]
+이 카드가 오늘 반려동물의 기분/에너지와 어떻게 연결되는지 2~3문장으로 설명합니다.
 
----LETTER--- 구분자를 포함하여 두 부분으로 정확히 나누어 작성해주세요.`;
+---LETTER---
+
+[2부: 오늘의 메시지]
+반려동물이 보호자에게 전하는 짧고 따뜻한 메시지. 이모지 포함. 한두 문장.`,
+      user:`반려동물 이름: ${petName}${petType?'\n반려동물 종류: '+petType:''}\n\n${cardInfo}${sep}`,
+    };
+  }
+
+  // mode 2
+  const petName=document.getElementById('guardianPetName').value.trim()||'반려동물';
+  return {
+    petName,
+    system:`당신은 반려동물을 키우는 보호자에게 타로카드로 따뜻한 통찰을 전달하는 채널러입니다.
+보호자의 고민을 카드를 통해 진심 어린 메시지로 해석해주세요.
+응답은 반드시 두 부분으로 나눕니다.
+
+[1부: 카드 해석]
+이 카드가 보호자의 고민과 어떻게 연결되는지 2~3문장으로 설명합니다.
+
+---LETTER---
+
+[2부: 보호자를 위한 메시지]
+보호자에게 전하는 따뜻하고 실용적인 메시지. 2~4문장.`,
+    user:`반려동물 이름: ${petName}\n보호자의 고민: ${selectedConcern}\n\n${cardInfo}${sep}`,
+  };
+}
+
+async function fetchReading(){
+  const loadEl=document.getElementById('loadingSection');
+  loadEl.classList.add('show');
+  document.getElementById('loadingText').innerHTML=
+    `${TAB_CONFIG[currentMode].loading}<br><span style="font-size:.8rem;color:var(--text-dim)">잠시만 기다려주세요</span>`;
+  setTimeout(()=>loadEl.scrollIntoView({behavior:'smooth',block:'center'}),80);
+
+  const {petName,system,user}=buildPrompt();
+  const card=drawn[0], rv=drawnRv[0];
 
   try{
     const res=await fetch('/.netlify/functions/tarot',{
       method:'POST',
       headers:{'Content-Type':'application/json'},
-      body:JSON.stringify({
-        system:systemPrompt,
-        messages:[{role:'user',content:userPrompt}],
-      }),
+      body:JSON.stringify({system,messages:[{role:'user',content:user}]}),
     });
     if(!res.ok){const e=await res.json().catch(()=>({}));throw new Error(e.error?.message||`HTTP ${res.status}`);}
     const data=await res.json();
@@ -1007,8 +1195,8 @@ async function fetchReading(){
 function showReading(petName,interpretation,letter){
   document.getElementById('loadingSection').classList.remove('show');
   _pendingLetter=letter;
+  _currentPetName=petName;
 
-  const petN=document.getElementById('petName').value.trim()||petName;
   const rv=drawnRv[0];
   document.getElementById('readingTitle').textContent=`${drawn[0].name} ${rv?'(역방향)':'(정방향)'}`;
 
@@ -1026,6 +1214,9 @@ function showReading(petName,interpretation,letter){
   sec.classList.add('show');
   setTimeout(()=>sec.scrollIntoView({behavior:'smooth',block:'start'}),100);
 
+  const btnLabels=['💌 &nbsp;편지 열기','✨ &nbsp;오늘의 메시지 보기','🪞 &nbsp;나를 위한 메시지 보기'];
+  document.querySelector('.btn-open-letter').innerHTML=btnLabels[currentMode];
+
   const chars=[...interpretation];
   let idx=0;
   (function type(){
@@ -1037,8 +1228,9 @@ function showReading(petName,interpretation,letter){
 function openLetter(){
   track('letter_opened');
   document.getElementById('letterTrigger').style.display='none';
-  const petN=document.getElementById('petName').value.trim()||'반려동물';
-  document.getElementById('letterTitle').textContent=`${petN}의 편지`;
+  const petN=_currentPetName||'반려동물';
+  const titles=[`💌 ${petN}의 편지`,'✨ 오늘의 메시지',`🪞 ${petN}를 위한 조언`];
+  document.getElementById('letterTitle').textContent=titles[currentMode];
 
   const ls=document.getElementById('letterSection');
   ls.style.display='block';
@@ -1068,12 +1260,13 @@ function showReadingFooter(){
 function doReset(){
   ['cardsSection','readingSection','loadingSection','spreadSection'].forEach(id=>document.getElementById(id).classList.remove('show'));
   document.getElementById('question').value='';
-  document.getElementById('drawBtn').disabled=false;
+  document.querySelectorAll('.btn-draw').forEach(b=>b.disabled=false);
   document.getElementById('letterTrigger').style.display='none';
   document.getElementById('letterSection').style.display='none';
   document.getElementById('adInReading').style.display='none';
   document.getElementById('readingFooter').style.display='none';
   _pendingLetter='';
+  _currentPetName='';
   window.scrollTo({top:0,behavior:'smooth'});
 }
 
