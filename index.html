@@ -312,6 +312,7 @@
       line-height:2.1; font-size:.93rem; color:#d8c8f0;
       white-space:pre-wrap; font-family:'Noto Serif KR',serif;
     }
+    .reading-body strong { color:#f0dfff; font-weight:600; }
     .reading-footer { text-align:center; margin-top:28px; }
 
     /* 2-stage reading */
@@ -556,15 +557,6 @@
     }
     .ad-sticky.show { transform:translateY(0); }
     .ad-sticky-inner { flex:1; max-width:728px; }
-    .ad-sticky-close {
-      position:absolute; right:10px; top:50%; transform:translateY(-50%);
-      width:26px; height:26px; border-radius:50%;
-      background:rgba(255,255,255,.07); border:1px solid rgba(255,255,255,.1);
-      color:var(--text-dim); font-size:.72rem; cursor:pointer;
-      display:flex; align-items:center; justify-content:center;
-      transition:background .2s; flex-shrink:0;
-    }
-    .ad-sticky-close:hover { background:rgba(255,255,255,.16); }
 
     /* 하단 배너 높이만큼 컨텐츠 여백 */
     body.has-sticky { padding-bottom:68px; }
@@ -778,7 +770,6 @@
         data-ad-width="320"
         data-ad-height="50"></ins>
     </div>
-    <button class="ad-sticky-close" onclick="closeStickyAd()" title="닫기">✕</button>
   </div>
 
 <script>
@@ -947,6 +938,7 @@ document.querySelectorAll('.concern-chip').forEach(el=>{
     document.querySelectorAll('.concern-chip').forEach(c=>c.classList.remove('active'));
     el.classList.add('active');
     selectedConcern=el.dataset.concern;
+    track('concern_selected',{concern:el.dataset.concern});
   });
 });
 
@@ -1088,7 +1080,7 @@ function pickCard(i){
   el.style.transform=`translate(${x}px,${y}px) rotate(${base}deg)`;
   el.style.zIndex=202;
 
-  track('card_selected', {card_name: shuffledDeck[i]?.name||''});
+  track('card_selected', {card_name: shuffledDeck[i]?.en||'', mode: currentMode});
   const countEl=document.getElementById('spreadCount');
   countEl.textContent='✓ 선택됨'; countEl.classList.add('full');
 
@@ -1264,6 +1256,34 @@ async function fetchReading(){
   }
 }
 
+/* ── **볼드** 지원 타이핑 ── */
+function typeText(el, rawText, speed, onDone){
+  // **text** → bold / 나머지 → plain / \n → <br>
+  const ops=[];
+  rawText.split(/\*\*(.*?)\*\*/gs).forEach((part,idx)=>{
+    const bold=idx%2===1;
+    for(const ch of part) ops.push({ch,bold});
+  });
+  el.innerHTML='';
+  let i=0, curSpan=null, curBold=null;
+  function tick(){
+    if(i>=ops.length){ if(onDone) onDone(); return; }
+    const {ch,bold}=ops[i++];
+    if(ch==='\n'){
+      el.appendChild(document.createElement('br'));
+      curSpan=null; curBold=null;
+    } else {
+      if(curSpan===null||bold!==curBold){
+        curSpan=document.createElement(bold?'strong':'span');
+        el.appendChild(curSpan); curBold=bold;
+      }
+      curSpan.textContent+=ch;
+    }
+    setTimeout(tick,speed);
+  }
+  tick();
+}
+
 function showReading(petName,interpretation,letter){
   document.getElementById('loadingSection').classList.remove('show');
   _pendingLetter=letter;
@@ -1276,7 +1296,7 @@ function showReading(petName,interpretation,letter){
   chips.innerHTML=`<span class="chip${rv?' rv':''}">${drawn[0].en} ${rv?'(역방향)':'(정방향)'}</span>`;
 
   const body=document.getElementById('readingBody');
-  body.textContent='';
+  body.innerHTML='';
   document.getElementById('letterTrigger').style.display='none';
   document.getElementById('letterSection').style.display='none';
   document.getElementById('adInReading').style.display='none';
@@ -1289,12 +1309,9 @@ function showReading(petName,interpretation,letter){
   const btnLabels=['💌 &nbsp;편지 열기','✨ &nbsp;오늘의 메시지 보기','🪞 &nbsp;나를 위한 메시지 보기'];
   document.querySelector('.btn-open-letter').innerHTML=btnLabels[currentMode];
 
-  const chars=[...interpretation];
-  let idx=0;
-  (function type(){
-    if(idx<chars.length){ body.textContent+=chars[idx++]; setTimeout(type,16); }
-    else { setTimeout(()=>{ document.getElementById('letterTrigger').style.display='flex'; },400); }
-  })();
+  typeText(body, interpretation, 16, ()=>{
+    setTimeout(()=>{ document.getElementById('letterTrigger').style.display='flex'; },400);
+  });
 }
 
 function openLetter(){
@@ -1309,17 +1326,12 @@ function openLetter(){
   ls.scrollIntoView({behavior:'smooth',block:'start'});
 
   const body=document.getElementById('letterBody');
-  body.textContent='';
+  body.innerHTML='';
   if(!_pendingLetter){
     body.textContent='편지를 받아오지 못했습니다.';
     showReadingFooter(); return;
   }
-  const chars=[..._pendingLetter];
-  let idx=0;
-  (function type(){
-    if(idx<chars.length){ body.textContent+=chars[idx++]; setTimeout(type,20); }
-    else showReadingFooter();
-  })();
+  typeText(body, _pendingLetter, 20, showReadingFooter);
 }
 
 function showReadingFooter(){
@@ -1400,8 +1412,9 @@ function buildShareCardEl(){
   const card=drawn[0], rv=drawnRv[0];
   const petN=_currentPetName||'반려동물';
   const title=TAB_CONFIG[currentMode].title;
-  const interpretation=(document.getElementById('readingBody').textContent||'').trim();
-  const letter=(document.getElementById('letterBody').textContent||'').trim();
+  const mdToHtml=s=>s.replace(/\*\*(.*?)\*\*/gs,'<strong style="color:#f0dfff;font-weight:600;">$1</strong>').replace(/\n/g,'<br>');
+  const interpretation=mdToHtml((document.getElementById('readingBody').innerText||'').trim());
+  const letter=mdToHtml((document.getElementById('letterBody').innerText||'').trim());
   const letterLabels=[`💌 ${petN}의 편지`,'✨ 오늘의 메시지',`🪞 ${petN}를 위한 조언`];
 
   const sc=document.getElementById('shareCard');
@@ -1425,12 +1438,12 @@ function buildShareCardEl(){
         </div>
         <div style="font-size:.76rem;line-height:1.95;color:#d8c4f0;
           border-left:2px solid rgba(160,80,255,.4);padding-left:13px;margin-bottom:${letter?'20px':'0'};">
-          ${interpretation.replace(/\n/g,'<br>')}</div>
+          ${interpretation}</div>
         ${letter?`
         <div style="padding-top:16px;border-top:1px solid rgba(160,80,255,.18);">
           <div style="font-size:.68rem;color:#a080c0;margin-bottom:8px;">${letterLabels[currentMode]}</div>
           <div style="font-size:.75rem;line-height:1.95;color:#e0d0f8;">
-            ${letter.replace(/\n/g,'<br>')}</div>
+            ${letter}</div>
         </div>`:''}
         <div style="text-align:center;margin-top:24px;padding-top:14px;
           border-top:1px solid rgba(255,255,255,.07);">
@@ -1452,7 +1465,7 @@ async function renderShareCanvas(){
 
 /* ── 공유하기 (이미지 + URL) ── */
 async function shareResult(){
-  track('share_click');
+  track('share_click',{mode:currentMode});
   if(typeof html2canvas==='undefined'){
     navigator.clipboard?.writeText(window.location.href)
       .then(()=>showToast('링크가 복사되었어요!')).catch(()=>{});
@@ -1483,7 +1496,7 @@ async function shareResult(){
 
 /* ── 이미지 저장 ── */
 async function saveImage(){
-  track('save_image_click');
+  track('save_image_click',{mode:currentMode});
   if(typeof html2canvas==='undefined'){ showToast('잠시 후 다시 시도해주세요'); return; }
   showToast('이미지 생성 중…');
   try{
