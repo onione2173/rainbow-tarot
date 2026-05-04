@@ -430,8 +430,53 @@
 
     footer.site-footer {
       text-align:center; margin-top:60px; padding-bottom:38px;
-      color:var(--text-dim); font-size:.76rem; line-height:2;
+      color:var(--text-dim); font-size:.76rem; line-height:2.2;
     }
+    footer.site-footer .footer-operator {
+      margin-top:10px; padding-top:10px;
+      border-top:1px solid rgba(255,255,255,.06);
+      font-size:.7rem; color:var(--text-dim);
+    }
+    footer.site-footer a {
+      color:var(--text-dim); text-decoration:underline; text-underline-offset:3px;
+      cursor:pointer;
+    }
+    footer.site-footer a:hover { color:var(--text-sub); }
+
+    /* ── 개인정보처리방침 모달 ── */
+    .privacy-overlay {
+      position:fixed; inset:0; background:rgba(0,0,0,.72);
+      z-index:2000; display:flex; align-items:flex-end;
+      opacity:0; pointer-events:none; transition:opacity .3s;
+    }
+    .privacy-overlay.show { opacity:1; pointer-events:all; }
+    .privacy-modal {
+      width:100%; max-height:80vh; overflow-y:auto;
+      background:linear-gradient(160deg,#1a0835 0%,#0c1045 100%);
+      border-top:1px solid rgba(180,100,255,.25);
+      border-radius:20px 20px 0 0; padding:28px 24px 40px;
+      transform:translateY(100%); transition:transform .35s ease;
+    }
+    .privacy-overlay.show .privacy-modal { transform:translateY(0); }
+    .privacy-modal h2 {
+      font-size:1rem; font-weight:600; color:var(--text-main);
+      margin-bottom:18px; display:flex; align-items:center; gap:8px;
+    }
+    .privacy-modal h3 {
+      font-size:.82rem; color:#c8a8f0; margin:18px 0 6px; font-weight:600;
+    }
+    .privacy-modal p, .privacy-modal li {
+      font-size:.78rem; color:var(--text-sub); line-height:1.85;
+    }
+    .privacy-modal ul { padding-left:16px; margin:4px 0; }
+    .privacy-close {
+      display:block; margin:24px auto 0; padding:10px 32px;
+      border-radius:22px; border:1px solid rgba(180,100,255,.35);
+      background:rgba(120,60,200,.15); color:var(--text-sub);
+      font-family:'Noto Serif KR',serif; font-size:.82rem; cursor:pointer;
+      transition:all .2s;
+    }
+    .privacy-close:hover { background:rgba(160,90,255,.25); color:var(--text-main); }
 
     /* ── 카드 스프레드 ── */
     .spread-section { display:none; margin-top:40px; }
@@ -755,12 +800,58 @@
       <footer class="site-footer">
         <p>사랑하는 반려동물을 그리워하는 모든 분들을 위해 만들어졌습니다</p>
         <p>🌈 무지개 다리 너머에서도 그들의 사랑은 영원합니다 🐾</p>
+        <div class="footer-operator">
+          <p>운영자: 브랜드윅 &nbsp;|&nbsp; 문의: <a href="mailto:ralra_1@naver.com">ralra_1@naver.com</a></p>
+          <p><a onclick="openPrivacy()">개인정보처리방침</a></p>
+        </div>
       </footer>
     </div>
   </div>
 
   <!-- 이미지 저장용 공유 카드 (화면 밖) -->
   <div id="shareCard"></div>
+
+  <!-- 개인정보처리방침 모달 -->
+  <div class="privacy-overlay" id="privacyOverlay" onclick="closePrivacy(event)">
+    <div class="privacy-modal">
+      <h2>🔒 개인정보처리방침</h2>
+
+      <h3>운영자 정보</h3>
+      <p>운영자: 브랜드윅 &nbsp;|&nbsp; 문의: ralra_1@naver.com</p>
+
+      <h3>수집하는 정보</h3>
+      <p>이 서비스는 이용자의 개인정보를 직접 수집·저장하지 않습니다.<br>
+      단, 아래 제3자 서비스가 자동으로 이용 통계를 수집합니다.</p>
+
+      <h3>Google Analytics 4</h3>
+      <p>서비스 이용 통계(방문 수, 클릭 이벤트 등)를 파악하기 위해 Google Analytics를 사용합니다. 쿠키를 통해 익명 데이터가 수집되며, 개인을 특정하지 않습니다.</p>
+      <ul>
+        <li>수집 항목: 접속 기기·브라우저 정보, 페이지 체류 시간, 버튼 클릭 이벤트</li>
+        <li>보관 기간: Google 정책에 따름 (기본 14개월)</li>
+        <li>거부 방법: <a href="https://tools.google.com/dlpage/gaoptout" target="_blank" rel="noopener">Google Analytics 차단 플러그인</a> 설치</li>
+      </ul>
+
+      <h3>Google AdSense</h3>
+      <p>맞춤형 광고 제공을 위해 Google AdSense를 사용합니다. Google이 쿠키를 통해 이용자의 관심사를 파악하고 광고를 표시할 수 있습니다.</p>
+      <ul>
+        <li>광고 개인화 거부: <a href="https://www.google.com/settings/ads" target="_blank" rel="noopener">Google 광고 설정</a></li>
+      </ul>
+
+      <h3>카카오 애드핏 (Kakao Adfit)</h3>
+      <p>광고 게재를 위해 카카오 애드핏을 사용합니다. 카카오가 쿠키를 통해 광고 효과를 측정할 수 있습니다.</p>
+      <ul>
+        <li>카카오 개인정보처리방침: <a href="https://www.kakao.com/policy/privacy" target="_blank" rel="noopener">kakao.com/policy/privacy</a></li>
+      </ul>
+
+      <h3>쿠키 거부 방법</h3>
+      <p>브라우저 설정에서 쿠키를 비활성화할 수 있습니다. 단, 일부 기능이 제한될 수 있습니다.</p>
+
+      <h3>방침 변경</h3>
+      <p>본 방침은 법령 또는 서비스 변경 시 업데이트될 수 있습니다. 변경 사항은 이 페이지에 게시됩니다.</p>
+
+      <button class="privacy-close" onclick="closePrivacy()">닫기</button>
+    </div>
+  </div>
 
   <!-- ★ 하단 고정 배너 ── 3초 후 슬라이드업 -->
   <div class="ad-sticky" id="adSticky">
@@ -1405,6 +1496,17 @@ function closeStickyAd(){
 }
 
 function initReadingAd(){} // 카카오 애드핏은 스크립트가 자동 초기화
+
+/* ── 개인정보처리방침 모달 ── */
+function openPrivacy(){
+  document.getElementById('privacyOverlay').classList.add('show');
+  document.body.style.overflow='hidden';
+}
+function closePrivacy(e){
+  if(e && e.target!==document.getElementById('privacyOverlay'))return;
+  document.getElementById('privacyOverlay').classList.remove('show');
+  document.body.style.overflow='';
+}
 
 /* ── 공유 카드 공통 빌더 ── */
 function buildShareCardEl(){
