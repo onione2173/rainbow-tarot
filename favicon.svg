@@ -1,20 +1,32 @@
 <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100">
-  <!-- 배경: 연한 라벤더 라운드 사각형 -->
-  <rect width="100" height="100" rx="22" fill="#f5eeff"/>
+  <!-- 배경: 연한 핑크 -->
+  <rect width="100" height="100" rx="20" fill="#fceef3"/>
 
-  <!-- 흰색 털 뭉치 (paw 뒤 배경) -->
-  <circle cx="50" cy="62" r="33" fill="white"/>
+  <!-- 흰색 발바닥 실루엣 (발가락 범프 4개 + 메인 패드) -->
+  <circle cx="20" cy="50" r="13" fill="white"/>
+  <circle cx="37" cy="37" r="14" fill="white"/>
+  <circle cx="63" cy="37" r="14" fill="white"/>
+  <circle cx="80" cy="50" r="13" fill="white"/>
+  <ellipse cx="50" cy="72" rx="35" ry="23" fill="white"/>
 
-  <!-- 발가락 콩 4개 -->
-  <!-- 왼쪽 바깥 -->
-  <ellipse cx="23" cy="48" rx="11" ry="10" fill="#FFB0C8"/>
-  <!-- 왼쪽 안쪽 -->
-  <ellipse cx="39" cy="35" rx="10.5" ry="10" fill="#FFB0C8"/>
-  <!-- 오른쪽 안쪽 -->
-  <ellipse cx="61" cy="35" rx="10.5" ry="10" fill="#FFB0C8"/>
-  <!-- 오른쪽 바깥 -->
-  <ellipse cx="77" cy="48" rx="11" ry="10" fill="#FFB0C8"/>
+  <!-- 분홍 발가락 콩 -->
+  <!-- 좌 바깥: 낮고 둥글게 -->
+  <ellipse cx="20" cy="50" rx="7.5" ry="8" fill="#C98E97"/>
+  <!-- 좌 안쪽: 세로로 긴 타원 -->
+  <ellipse cx="37" cy="37" rx="8.5" ry="10" fill="#C98E97"/>
+  <!-- 우 안쪽: 세로로 긴 타원 -->
+  <ellipse cx="63" cy="37" rx="8.5" ry="10" fill="#C98E97"/>
+  <!-- 우 바깥: 낮고 둥글게 -->
+  <ellipse cx="80" cy="50" rx="7.5" ry="8" fill="#C98E97"/>
 
-  <!-- 메인 발바닥 -->
-  <ellipse cx="50" cy="70" rx="22" ry="19" fill="#FFB0C8"/>
+  <!-- 하트 모양 메인 패드 -->
+  <path d="
+    M 50 85
+    C 36 79, 27 72, 27 65
+    C 27 58, 33 55, 39 55
+    C 44 55, 48 58, 50 62
+    C 52 58, 56 55, 61 55
+    C 67 55, 73 58, 73 65
+    C 73 72, 64 79, 50 85 Z"
+    fill="#C98E97"/>
 </svg>
