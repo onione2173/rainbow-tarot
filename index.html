@@ -507,8 +507,8 @@
 
     .fan-card {
       position:absolute; left:0; top:0; border-radius:8px;
-      background:linear-gradient(145deg,#140826,#1c1058,#091228);
-      border:1.5px solid rgba(130,80,210,.28);
+      background:linear-gradient(145deg,#2e1255,#2a1c7a,#111e42);
+      border:1.5px solid rgba(160,100,240,.5);
       cursor:pointer; overflow:hidden;
       transform-origin:50% 50%;
       transition:transform .18s ease-out, border-color .12s, box-shadow .12s;
@@ -527,21 +527,21 @@
 
     .sc-border {
       position:absolute; inset:6px; border-radius:5px;
-      border:1px solid rgba(130,80,210,.14);
+      border:1px solid rgba(160,100,240,.3);
     }
     .sc-pattern {
       position:absolute; inset:12px;
       background-image:
-        repeating-linear-gradient(45deg,rgba(120,70,200,.09) 0,rgba(120,70,200,.09) 1px,transparent 0,transparent 8px),
-        repeating-linear-gradient(-45deg,rgba(120,70,200,.09) 0,rgba(120,70,200,.09) 1px,transparent 0,transparent 8px);
+        repeating-linear-gradient(45deg,rgba(150,90,230,.18) 0,rgba(150,90,230,.18) 1px,transparent 0,transparent 8px),
+        repeating-linear-gradient(-45deg,rgba(150,90,230,.18) 0,rgba(150,90,230,.18) 1px,transparent 0,transparent 8px);
     }
     .sc-glow {
       position:absolute; inset:0;
-      background:radial-gradient(ellipse at 50% 35%,rgba(140,70,230,.16),transparent 65%);
+      background:radial-gradient(ellipse at 50% 35%,rgba(160,90,255,.32),transparent 65%);
     }
     .sc-symbol {
       position:absolute; inset:0; display:flex; align-items:center; justify-content:center;
-      font-size:1.3rem; opacity:.16;
+      font-size:1.3rem; opacity:.28;
     }
     .fan-card.fan-selected .sc-symbol { opacity:.32; }
 
@@ -1005,6 +1005,7 @@ let selectedConcern='관계·유대';
 function switchTab(n){
   if(currentMode===n)return;
   currentMode=n;
+  document.querySelectorAll('.btn-draw').forEach(b=>b.disabled=false);
   // 탭 버튼
   [0,1,2].forEach(i=>document.getElementById('tabBtn'+i).classList.toggle('active',i===n));
   // 패널
@@ -1428,8 +1429,9 @@ function openLetter(){
 }
 
 function showReadingFooter(){
-  initReadingAd();
+  document.querySelectorAll('.btn-draw').forEach(b=>b.disabled=false);
   document.getElementById('adInReading').style.display='block';
+  initReadingAd();
   document.getElementById('readingFooter').style.display='block';
 }
 
@@ -1497,7 +1499,29 @@ function closeStickyAd(){
   document.body.classList.remove('has-sticky');
 }
 
-function initReadingAd(){} // 카카오 애드핏은 스크립트가 자동 초기화
+function initReadingAd(){
+  const wrap = document.getElementById('adInReading');
+  const old = wrap.querySelector('ins.kakao_ad_area');
+  if(old) old.remove();
+  const ins = document.createElement('ins');
+  ins.className = 'kakao_ad_area';
+  ins.style.display = 'none';
+  ins.setAttribute('data-ad-unit', 'DAN-QpeUnoNPzpR5Oflw');
+  ins.setAttribute('data-ad-width', '320');
+  ins.setAttribute('data-ad-height', '100');
+  wrap.appendChild(ins);
+  // 부모 display:block 후 브라우저 레이아웃 완료 시점에 호출
+  requestAnimationFrame(()=>{
+    if(window.kakao_adfit && typeof kakao_adfit.display==='function'){
+      kakao_adfit.display('DAN-QpeUnoNPzpR5Oflw');
+    } else {
+      // adfit API 없으면 스크립트 재주입으로 새 ins 초기화
+      const s=document.createElement('script');
+      s.src='//t1.kakaocdn.net/kas/static/ba.min.js';
+      document.head.appendChild(s);
+    }
+  });
+}
 
 /* ── 개인정보처리방침 모달 ── */
 function openPrivacy(){
