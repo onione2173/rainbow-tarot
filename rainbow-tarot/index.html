@@ -1,0 +1,242 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>무지개 다리 너머 — 반려동물 타로</title>
+  <link rel="icon" type="image/svg+xml" href="/favicon.svg">
+  <link rel="apple-touch-icon" href="/favicon.svg">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Noto+Serif+KR:wght@300;400;600&family=Noto+Sans+KR:wght@300&display=swap" rel="stylesheet">
+  <script async src="https://www.googletagmanager.com/gtag/js?id=G-ZDTC39TEKD"></script>
+  <script>
+    window.dataLayer = window.dataLayer || [];
+    function gtag(){dataLayer.push(arguments);}
+    gtag('js', new Date());
+    gtag('config', 'G-ZDTC39TEKD');
+  </script>
+  <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-1748357161143369" crossorigin="anonymous"></script>
+  <script type="text/javascript" src="//t1.kakaocdn.net/kas/static/ba.min.js" async></script>
+  <script src="https://cdn.jsdelivr.net/npm/html2canvas@1.4.1/dist/html2canvas.min.js"></script>
+  <link rel="stylesheet" href="/assets/style.css">
+  <style>
+    .back-nav { margin-bottom: 24px; }
+    .back-btn {
+      display: inline-flex; align-items: center; gap: 6px;
+      font-size: .8rem; color: var(--text-dim); text-decoration: none;
+      padding: 7px 14px; border-radius: 20px;
+      border: 1px solid rgba(255,255,255,.08);
+      transition: all .2s;
+    }
+    .back-btn:hover { color: var(--text-sub); background: rgba(255,255,255,.05); }
+  </style>
+</head>
+<body>
+  <div class="rainbow-bar"></div>
+  <div id="stars"></div>
+  <div id="petals"></div>
+
+  <div class="itl-overlay" id="itlOverlay">
+    <div class="itl-box">
+      <div class="itl-rainbow"></div>
+      <div class="itl-header">
+        <span class="itl-icon">🌙</span>
+        <p class="itl-title">잠시 쉬어가요</p>
+        <p class="itl-sub">다음 리딩을 준비하는 동안 숨을 고르세요</p>
+      </div>
+      <div class="itl-ad-wrap">
+        <div>
+          <p class="ad-label">광 고</p>
+          <ins class="kakao_ad_area" style="display:none;"
+            data-ad-unit="DAN-foqz4jO1cBc5jQyZ"
+            data-ad-width="320"
+            data-ad-height="100"></ins>
+        </div>
+      </div>
+      <div class="itl-footer">
+        <button class="itl-close-btn" id="itlCloseBtn" disabled onclick="closeInterstitial()">
+          <span id="itlCd">5</span>초 후 닫기
+        </button>
+      </div>
+    </div>
+  </div>
+
+  <div class="page">
+    <div class="container">
+      <nav class="back-nav">
+        <a href="/" class="back-btn">← 홈으로</a>
+      </nav>
+
+      <div class="header reveal">
+        <span class="icon">🌈</span>
+        <h1>무지개 다리 너머</h1>
+        <p class="sub">사랑하는 반려동물의 영혼과 연결되는 공간<br>그들은 무지개 다리 너머에서 언제나 우리를 바라보고 있어요</p>
+      </div>
+
+      <div class="glass">
+        <div class="input-row">
+          <div>
+            <label class="field-label">🐾 반려동물 이름</label>
+            <input type="text" id="petName" placeholder="예: 똘이, 초코, 루시…">
+          </div>
+          <div>
+            <label class="field-label">💌 반려동물이 나를 부르는 호칭</label>
+            <input type="text" id="ownerTitle" placeholder="예: 아빠, 엄마, 언니, 오빠, 집사…">
+          </div>
+        </div>
+        <label class="field-label">🌸 어떤 이야기를 나누고 싶으신가요?</label>
+        <textarea class="question" id="question"
+          placeholder="예: 너는 지금 행복하니? / 마지막으로 하고 싶은 말이 있어? / 내가 더 잘해줄 수 있었을까?"></textarea>
+        <button class="btn-draw" onclick="onDraw()">🌈 &nbsp;타로 카드 뽑기</button>
+      </div>
+
+      <div class="spread-section" id="spreadSection">
+        <div class="spread-header">
+          <p class="spread-instruction">✨ 마음이 끌리는 카드 한 장을 골라주세요</p>
+          <span class="spread-count" id="spreadCount">카드를 골라주세요</span>
+        </div>
+        <div class="fan-wrap" id="fanWrap"></div>
+      </div>
+
+      <div class="cards-section" id="cardsSection">
+        <p class="spread-hint"><em>✨</em> 카드를 클릭하여 펼쳐보세요 <em>✨</em></p>
+        <div class="cards-grid" id="cardsGrid"></div>
+      </div>
+
+      <div class="loading-section" id="loadingSection">
+        <div class="orb"></div>
+        <p class="loading-text" id="loadingText">영혼의 목소리를 듣고 있어요…<br>
+          <span style="font-size:.8rem;color:var(--text-dim)">잠시만 기다려주세요</span></p>
+      </div>
+
+      <div class="reading-section glass" id="readingSection">
+        <div class="reading-header">
+          <span class="ltr-icon">🔮</span>
+          <h3 id="readingTitle"></h3>
+        </div>
+        <div class="chips" id="chipRow"></div>
+        <div class="reading-body" id="readingBody"></div>
+        <div class="letter-trigger" id="letterTrigger">
+          <button class="btn-open-letter" onclick="openLetter()">💌 &nbsp;편지 열기</button>
+        </div>
+        <div class="letter-section" id="letterSection" style="display:none">
+          <div class="letter-divider"></div>
+          <div class="letter-header">
+            <span class="ltr-icon">💌</span>
+            <h3 id="letterTitle"></h3>
+          </div>
+          <div class="reading-body" id="letterBody"></div>
+        </div>
+        <div class="ad-in-reading" id="adInReading" style="display:none">
+          <p class="ad-label">광 고</p>
+          <ins class="kakao_ad_area" style="display:none;"
+            data-ad-unit="DAN-QpeUnoNPzpR5Oflw"
+            data-ad-width="320"
+            data-ad-height="100"></ins>
+        </div>
+        <div class="reading-footer" id="readingFooter" style="display:none">
+          <div class="footer-actions">
+            <div class="share-btns">
+              <button class="btn-share" onclick="shareResult()">📤 &nbsp;공유하기</button>
+              <button class="btn-share" onclick="saveImage()">💾 &nbsp;이미지 저장</button>
+            </div>
+            <button class="btn-small btn-ghost" onclick="onReset()">🌙 &nbsp;다시 질문하기</button>
+          </div>
+        </div>
+      </div>
+
+      <footer class="site-footer">
+        <p>사랑하는 반려동물을 그리워하는 모든 분들을 위해 만들어졌습니다</p>
+        <p>🌈 무지개 다리 너머에서도 그들의 사랑은 영원합니다 🐾</p>
+        <div class="footer-operator">
+          <p>운영자: BrandWick &nbsp;|&nbsp; 문의: <a href="mailto:ralra_1@naver.com">ralra_1@naver.com</a></p>
+          <p><a onclick="openPrivacy()">개인정보처리방침</a></p>
+        </div>
+      </footer>
+    </div>
+  </div>
+
+  <div id="shareCard"></div>
+
+  <div class="privacy-overlay" id="privacyOverlay" onclick="closePrivacy(event)">
+    <div class="privacy-modal">
+      <h2>🔒 개인정보처리방침</h2>
+      <h3>운영자 정보</h3>
+      <p>운영자: BrandWick &nbsp;|&nbsp; 문의: ralra_1@naver.com</p>
+      <h3>수집하는 정보</h3>
+      <p>이 서비스는 이용자의 개인정보를 직접 수집·저장하지 않습니다.<br>단, 아래 제3자 서비스가 자동으로 이용 통계를 수집합니다.</p>
+      <h3>Google Analytics 4</h3>
+      <p>서비스 이용 통계 파악을 위해 Google Analytics를 사용합니다.</p>
+      <h3>Google AdSense</h3>
+      <p>맞춤형 광고 제공을 위해 Google AdSense를 사용합니다.</p>
+      <h3>카카오 애드핏 (Kakao Adfit)</h3>
+      <p>광고 게재를 위해 카카오 애드핏을 사용합니다.</p>
+      <h3>쿠키 거부 방법</h3>
+      <p>브라우저 설정에서 쿠키를 비활성화할 수 있습니다.</p>
+      <button class="privacy-close" onclick="closePrivacy()">닫기</button>
+    </div>
+  </div>
+
+  <div class="ad-sticky" id="adSticky">
+    <div class="ad-sticky-inner">
+      <ins class="kakao_ad_area" style="display:none;"
+        data-ad-unit="DAN-ejCFNgq7DI1au9h9"
+        data-ad-width="320"
+        data-ad-height="50"></ins>
+    </div>
+  </div>
+
+  <script src="/assets/cards.js"></script>
+  <script>
+    const currentMode = 0;
+    const PAGE_ICON = '🌈';
+    const PAGE_TITLE = '무지개 다리 너머';
+    const PAGE_LOADING = '영혼의 목소리를 듣고 있어요…';
+    const PAGE_LETTER_BTN = '💌 &nbsp;편지 열기';
+    const PAGE_LETTER_TITLE = petN => `💌 ${petN}의 편지`;
+    const PAGE_SHARE_LABEL = petN => `💌 ${petN}의 편지`;
+
+    function onDraw(){
+      const q = document.getElementById('question').value.trim();
+      if(!q){
+        const ta = document.getElementById('question');
+        ta.style.borderColor='rgba(255,100,100,.5)'; ta.focus();
+        setTimeout(()=>ta.style.borderColor='',2000); return;
+      }
+      ['readingSection','loadingSection','cardsSection','spreadSection']
+        .forEach(id=>document.getElementById(id).classList.remove('show'));
+      document.querySelectorAll('.btn-draw').forEach(b=>b.disabled=true);
+      track('draw_start',{mode:currentMode});
+      showSpread();
+    }
+
+    function buildPrompt(){
+      const card=drawn[0], rv=drawnRv[0];
+      const cardInfo=`카드: ${card.name}(${card.en}) — ${rv?'역방향':'정방향'}\n정방향 키워드: ${card.upKw}\n역방향 키워드: ${card.rvKw}`;
+      const sep='\n\n---LETTER--- 구분자를 포함하여 두 부분으로 정확히 나누어 작성해주세요.';
+      const petName=document.getElementById('petName').value.trim()||'반려동물';
+      const ownerTitle=document.getElementById('ownerTitle').value.trim()||'보호자';
+      const question=document.getElementById('question').value.trim();
+      return {
+        petName,
+        system:`당신은 무지개 다리 너머로 떠난 반려동물의 영혼과 연결하는 타로 채널러입니다.
+응답은 반드시 두 부분으로 구분합니다.
+
+[1부: 카드 해석]
+이 카드가 어떤 의미인지 간결하게 설명하고, 보호자의 질문과 연결하여 따뜻하게 해석합니다. 2~4문장.
+
+---LETTER---
+
+[2부: 반려동물의 편지]
+반려동물이 1인칭으로 직접 보호자에게 쓰는 짧은 편지. 카드 의미에 기반해서만 씁니다.
+- 종에 따른 신체 표현 절대 금지 (꼬리·발바닥·냐옹·멍멍 등 특정 동물 한정 표현 불가)
+- 감정과 영혼의 언어만 사용 ("느껴져", "기억해", "곁에 있어", "사랑해")
+- 역방향 카드는 따뜻한 위로로만 해석 / 200자 내외`,
+        user:`반려동물 이름: ${petName}\n보호자 호칭: "${ownerTitle}"\n보호자의 질문: "${question}"\n\n${cardInfo}${sep}`,
+      };
+    }
+  </script>
+  <script src="/assets/shared.js"></script>
+</body>
+</html>
