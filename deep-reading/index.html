@@ -671,10 +671,10 @@
             <div class="dot done"></div><div class="dot done"></div>
             <div class="dot done"></div><div class="dot active"></div>
           </div>
-          <h1 class="step-title">이번 주 행동 카드를 골라주세요</h1>
+          <h1 class="step-title">앞으로의 행동 가이드 카드를 골라주세요</h1>
           <p class="action-pool-notice">
             마음에 끌리는 카드를 <strong style="color:#d8aaff">1~3장</strong> 골라주세요.<br>
-            이 카드들이 이번 주 실천할 행동의 방향이 돼요.<br>
+            이 카드들이 앞으로의 행동 방향이 돼요.<br>
             <span style="font-size:.76rem;color:var(--text-dim)">건너뛰기를 누르면 카드 없이 행동 가이드를 작성해드려요.</span>
           </p>
         </div>
@@ -721,13 +721,11 @@
             <div class="paywall-sub" id="paywallSub"></div>
 
             <!-- 비로그인 상태 -->
-            <div id="loginGate" style="display:none;width:100%">
-              <div class="auth-gate-box" style="background:transparent;border:none;padding:0">
-                <p style="color:rgba(240,230,255,.7);margin-bottom:14px" id="loginGateMsg"></p>
-                <button class="pay-btn" onclick="loginAndSave()" style="background:linear-gradient(135deg,#3a1a00,#7a4500);">
-                  카카오 로그인 후 전체 리포트 받기
-                </button>
-              </div>
+            <div id="loginGate" style="display:none;width:100%;text-align:center">
+              <p style="color:rgba(240,230,255,.7);margin-bottom:14px" id="loginGateMsg"></p>
+              <button class="pay-btn" onclick="loginAndSave()" style="background:linear-gradient(135deg,#3a1a00,#7a4500);width:auto;">
+                카카오 로그인 후 전체 리포트 받기
+              </button>
             </div>
 
             <!-- 로그인 상태 -->
@@ -1356,7 +1354,7 @@ ${petInfo.name}의 1인칭 시점으로 쓰는 내면 독백. 아이가 보호�
 ## ✨ 앞으로의 행동 가이드
 ${actionSummary
   ? `보호자가 뽑은 행동 가이드 카드(${actionSummary})를 각각 해석하여 구체적인 실천 방법을 제시하세요. 각 항목마다: **[카드 이름]** — 이 카드가 말하는 행동, 구체적인 실천 방법, 이렇게 해야 하는 이유(카드 상징과 연결하여). 1~${actionCards.length}가지.`
-  : `위 스프레드 카드들을 바탕으로 이번 주 실천할 수 있는 행동 가이드 1~3가지를 제시하세요. 각 항목마다: 구체적인 실천 방법, 이렇게 해야 하는 이유.`}`;
+  : `위 스프레드 카드들을 바탕으로 앞으로 실천할 수 있는 행동 가이드 1~3가지를 제시하세요. 각 항목마다: 구체적인 실천 방법, 이렇게 해야 하는 이유.`}`;
 
       try {
         const res = await fetch('/.netlify/functions/deep-tarot', {
