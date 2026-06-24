@@ -119,6 +119,30 @@
 
     /* Cards display */
     .cards-area{display:flex;flex-wrap:wrap;gap:10px;justify-content:center;margin:24px 0 28px;}
+
+    /* Spread layouts */
+    .cards-area.spread-cross {
+      display:grid;
+      grid-template-columns:repeat(3,80px);
+      grid-template-rows:repeat(3,auto);
+      gap:8px; justify-content:center;
+    }
+    .cards-area.spread-cross .tarot-card-wrap:nth-child(1){grid-column:2;grid-row:1;}
+    .cards-area.spread-cross .tarot-card-wrap:nth-child(2){grid-column:1;grid-row:2;}
+    .cards-area.spread-cross .tarot-card-wrap:nth-child(3){grid-column:3;grid-row:2;}
+    .cards-area.spread-cross .tarot-card-wrap:nth-child(4){grid-column:2;grid-row:3;}
+
+    .cards-area.spread-horseshoe {
+      display:grid;
+      grid-template-columns:repeat(3,80px);
+      grid-template-rows:auto auto;
+      gap:8px; justify-content:center;
+    }
+    .cards-area.spread-horseshoe .tarot-card-wrap:nth-child(1){grid-column:1;grid-row:1;}
+    .cards-area.spread-horseshoe .tarot-card-wrap:nth-child(2){grid-column:2;grid-row:1;}
+    .cards-area.spread-horseshoe .tarot-card-wrap:nth-child(3){grid-column:3;grid-row:1;}
+    .cards-area.spread-horseshoe .tarot-card-wrap:nth-child(4){grid-column:1;grid-row:2;justify-self:end;}
+    .cards-area.spread-horseshoe .tarot-card-wrap:nth-child(5){grid-column:3;grid-row:2;justify-self:start;}
     .tarot-card-wrap{display:flex;flex-direction:column;align-items:center;gap:8px;}
     .tarot-card{
       width:80px;height:130px;border-radius:10px;
@@ -188,9 +212,9 @@
     }
     .paywall-overlay{
       position:absolute;inset:0;
-      background:linear-gradient(to bottom,transparent 0%,rgba(10,5,25,.97) 45%);
+      background:linear-gradient(to bottom,transparent 0%,rgba(10,5,25,.98) 30%);
       display:flex;flex-direction:column;align-items:center;justify-content:flex-end;
-      padding:28px 20px;
+      padding:28px 20px 32px;
     }
     .paywall-lock{font-size:1.8rem;margin-bottom:10px;}
     .paywall-msg{
@@ -1125,6 +1149,10 @@
     // ── 카드 렌더링 ──
     function renderCards(containerId, cards, animate) {
       const area = document.getElementById(containerId);
+      area.classList.remove('spread-cross','spread-horseshoe');
+      const spreadKey = currentSpread ? Object.keys(SPREADS).find(k => SPREADS[k] === currentSpread) : null;
+      if (spreadKey === 'mind') area.classList.add('spread-cross');
+      else if (spreadKey === 'behavior') area.classList.add('spread-horseshoe');
       area.innerHTML = cards.map((c, i) => `
         <div class="tarot-card-wrap">
           <div class="tarot-card">
