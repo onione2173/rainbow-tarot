@@ -1401,16 +1401,20 @@ ${actionSummary
 
         reportLoadBox.style.display = 'none';
         reportContent.style.display = '';
+
+        if (!text) {
+          const errMsg = data.error?.message || data.message || `API 오류 (${res.status})`;
+          reportText.textContent = `리포트 생성 중 오류가 발생했습니다: ${errMsg}`;
+          return;
+        }
+
         renderReportText(reportText, text);
-
-        // Supabase에 저장
         saveReading(text);
-
         if (typeof gtag === 'function') gtag('event', 'deep_reading_complete', { spread: currentSpread.name });
-      } catch {
+      } catch (e) {
         reportLoadBox.style.display = 'none';
         reportContent.style.display = '';
-        reportText.textContent = '리포트를 불러오는 중 오류가 발생했습니다. 잠시 후 다시 시도해주세요.';
+        reportText.textContent = `리포트를 불러오는 중 오류가 발생했습니다: ${e.message}`;
       }
     }
 
