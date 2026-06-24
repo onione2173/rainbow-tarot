@@ -778,6 +778,7 @@
 
   <script src="/assets/auth.js"></script>
   <script src="/assets/cards.js"></script>
+  <script id="nicepayScript"></script>
   <script>
     // NicePay 연동 전 테스트 모드
     const DEV_MODE = true;
@@ -1245,25 +1246,70 @@ ${speciesCtx}
       }
     }
 
+    // ── NicePay 설정 로드 (페이지 진입 시 1회) ──
+    let _nicepayConfig = null;
+    async function loadNicepayConfig() {
+      if (_nicepayConfig) return _nicepayConfig;
+      try {
+        const res = await fetch('/.netlify/functions/payment-config');
+        _nicepayConfig = await res.json();
+        const sdkUrl = _nicepayConfig.sandbox
+          ? 'https://sandbox-pay.nicepay.co.kr/v1/js/'
+          : 'https://pay.nicepay.co.kr/v1/js/';
+        await new Promise((resolve, reject) => {
+          const s = document.getElementById('nicepayScript');
+          s.src = sdkUrl;
+          s.onload = resolve;
+          s.onerror = reject;
+        });
+      } catch (e) {
+        console.warn('nicepay config load failed', e);
+        _nicepayConfig = null;
+      }
+      return _nicepayConfig;
+    }
+
     // ── 5단계: 결제 ──
-    function startPayment() {
+    async function startPayment() {
       if (DEV_MODE) {
-        // 테스트 모드: 바로 전체 리포트 생성
         goTo('secFullReport');
         renderCards('cardsAreaReport', drawnCards, false);
         generateFullReport(null);
         return;
       }
 
-      // TODO: 나이스페이 결제 연동
-      // AUTHNICE.requestPay({
-      //   clientId: 'YOUR_NICEPAY_CLIENT_ID',
-      //   method: 'card',
-      //   orderId: 'PETAROT_' + Date.now(),
-      //   amount: 1500,
-      //   goodsName: '펫타로 심층 콤보 분석',
-      //   returnUrl: window.location.origin + '/deep-reading/',
-      // });
+      const payBtn = document.getElementById('payBtn');
+      if (payBtn) { payBtn.disabled = true; payBtn.textContent = '결제창 여는 중…'; }
+
+      const cfg = await loadNicepayConfig();
+      if (!cfg || !cfg.clientId) {
+        alert('결제 설정을 불러오지 못했어요. 잠시 후 다시 시도해주세요.');
+        if (payBtn) { payBtn.disabled = false; payBtn.innerHTML = '전체 리포트 받기 <span class="pay-price">1,500원</span>'; }
+        return;
+      }
+
+      // 결제 후 복귀를 위해 상태 저장
+      try {
+        const spreadKey = Object.keys(SPREADS).find(k => SPREADS[k].name === currentSpread.name);
+        sessionStorage.setItem('petarot_dr', JSON.stringify({
+          spreadKey, petInfo,
+          drawnCards: drawnCards.map(({ img, name, en, suit, upKw, rvKw, reversed, position }) =>
+            ({ img, name, en, suit, upKw, rvKw, reversed, position })),
+          actionCards: actionCards.map(({ img, name, en, suit, upKw, rvKw, reversed }) =>
+            ({ img, name, en, suit, upKw, rvKw, reversed })),
+          freeText: freeReadingText,
+          awaitingPayment: true
+        }));
+      } catch(e) { console.warn('state save failed', e); }
+
+      AUTHNICE.requestPay({
+        clientId: cfg.clientId,
+        method: 'card',
+        orderId: 'PETAROT_' + Date.now(),
+        amount: 1500,
+        goodsName: `${petInfo.name || '펫'} 타로 심층 콤보 분석`,
+        returnUrl: window.location.origin + '/.netlify/functions/nicepay-confirm',
+      });
     }
 
     // ── 전체 리포트 생성 ──
@@ -1363,12 +1409,21 @@ ${actionSummary
       }
     }
 
-    // ── 로그인 후 상태 복원 ──
+    // ── 로그인/결제 후 상태 복원 ──
     document.addEventListener('DOMContentLoaded', async () => {
       const saved = sessionStorage.getItem('petarot_dr');
       if (!saved) return;
       let state;
       try { state = JSON.parse(saved); } catch { return; }
+
+      const urlParams = new URLSearchParams(window.location.search);
+      const paidOk = urlParams.get('paid') === 'true';
+      const payFail = urlParams.get('payment') === 'fail';
+
+      // URL 파라미터 제거
+      if (paidOk || payFail) {
+        window.history.replaceState({}, '', window.location.pathname);
+      }
 
       const user = await getUser();
       if (!user) return;
@@ -1381,6 +1436,21 @@ ${actionSummary
       drawnCards = state.drawnCards || [];
       actionCards = state.actionCards || [];
       freeReadingText = state.freeText || '';
+
+      // 결제 완료 → 바로 전체 리포트
+      if (paidOk) {
+        const tid = urlParams.get('tid') || null;
+        goTo('secFullReport');
+        renderCards('cardsAreaReport', drawnCards, false);
+        generateFullReport(tid);
+        return;
+      }
+
+      // 결제 실패 → 페이월로 복귀 + 안내
+      if (payFail) {
+        const msg = urlParams.get('msg') || '결제가 취소되었어요.';
+        alert(msg + ' 다시 시도해주세요.');
+      }
 
       goTo('secFreeRead');
       renderCards('cardsAreaSmall', drawnCards, false);
@@ -1401,7 +1471,6 @@ ${actionSummary
         return;
       }
 
-      // 이미 로그인 → 페이월에서 결제 버튼 바로 표시
       updatePaywallText();
       document.getElementById('paywallBox').style.display = '';
       document.getElementById('payGate').style.display = '';
