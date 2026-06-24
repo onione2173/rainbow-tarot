@@ -27,6 +27,7 @@ exports.handler = async (event) => {
   payload.model = 'claude-sonnet-4-6';
   payload.max_tokens = isPaid ? 4500 : 900;
   delete payload.paid;
+  delete payload.paymentKey;
 
   // TODO: 나이스페이 결제 검증 추가 예정
   // isPaid === true 일 때 payload.paymentKey 로 나이스페이 서버 검증 후 리포트 발급
