@@ -202,14 +202,22 @@
       text-align:center;margin-bottom:20px;line-height:1.7;
     }
     .pay-btn{
-      display:flex;align-items:center;justify-content:center;gap:8px;
-      width:100%;padding:16px 20px;
+      display:inline-flex;align-items:center;justify-content:center;gap:8px;
+      width:auto;max-width:100%;padding:14px 24px;
       background:linear-gradient(135deg,#7d5fff,#ef5777);
       border:none;border-radius:14px;
       color:#fff;font-size:1rem;font-weight:700;
       font-family:'Noto Sans KR',sans-serif;cursor:pointer;
       transition:opacity .2s,transform .15s;letter-spacing:.02em;
     }
+    #payGate .pay-btn { width:100%; }
+    .free-preview-wrap { position:relative; }
+    .free-preview-wrap::after {
+      content:''; position:absolute; bottom:0; left:0; right:0; height:80px;
+      background:linear-gradient(transparent, var(--bg,#0d0a1e));
+      pointer-events:none;
+    }
+    .preview-blurred { filter:blur(3.5px); user-select:none; opacity:.6; }
     .pay-btn:hover{opacity:.9;transform:translateY(-1px);}
     .pay-btn:active{transform:translateY(0);}
     .pay-price{
@@ -1080,7 +1088,7 @@
         const divider = document.createElement('div');
         divider.className = 'reveal-section-divider';
         divider.style.flexBasis = '100%';
-        divider.textContent = '✦ 이번 주 행동 가이드 카드 ✦';
+        divider.textContent = '✦ 앞으로의 행동 가이드 카드 ✦';
         row.appendChild(divider);
         actionCards.forEach((card, idx) => {
           row.appendChild(makeRevealCard(card, `rac-${idx}`, 'action'));
@@ -1139,7 +1147,7 @@
     // ── 페이월 텍스트 동적 업데이트 ──
     function updatePaywallText() {
       const remaining = drawnCards.length - 1;
-      const actionHint = actionCards.length > 0 ? `행동 가이드 카드 ${actionCards.length}장 해석` : '이번 주 행동 가이드';
+      const actionHint = actionCards.length > 0 ? `행동 가이드 카드 ${actionCards.length}장 해석` : '앞으로의 행동 가이드';
       const name = petInfo.name || '아이';
 
       const preview = document.getElementById('paywallPreview');
@@ -1196,7 +1204,9 @@ ${speciesCtx}
         freeReadLabel.style.display = '';
         freeReadText.style.display = '';
         if (text) {
+          freeReadText.classList.add('free-preview-wrap');
           renderReportText(freeReadText, text);
+          applyFreePreviewBlur(freeReadText);
         } else {
           freeReadText.textContent = `${firstCard.name}(${firstCard.reversed ? '역방향' : '정방향'})이(가) ${petInfo.name}의 ${firstCard.position} 자리에 놓였어요. 전체 리포트에서 깊은 이야기를 확인해보세요.`;
         }
@@ -1343,7 +1353,7 @@ ${petInfo.name}의 1인칭 시점으로 쓰는 내면 독백. 아이가 보호�
 ## 🐾 보호자님께
 보호자가 놓치고 있을 수 있는 관점 제시. 아이의 행동을 다른 시선으로 해석해주는 내용. 감정적 위로와 공감 포함. (6~8줄)
 
-## ✨ 이번 주 행동 가이드
+## ✨ 앞으로의 행동 가이드
 ${actionSummary
   ? `보호자가 뽑은 행동 가이드 카드(${actionSummary})를 각각 해석하여 구체적인 실천 방법을 제시하세요. 각 항목마다: **[카드 이름]** — 이 카드가 말하는 행동, 구체적인 실천 방법, 이렇게 해야 하는 이유(카드 상징과 연결하여). 1~${actionCards.length}가지.`
   : `위 스프레드 카드들을 바탕으로 이번 주 실천할 수 있는 행동 가이드 1~3가지를 제시하세요. 각 항목마다: 구체적인 실천 방법, 이렇게 해야 하는 이유.`}`;
@@ -1378,6 +1388,15 @@ ${actionSummary
     }
 
     // 마크다운 섹션 렌더링
+    function applyFreePreviewBlur(el) {
+      const spans = el.querySelectorAll('.report-text');
+      let nonEmpty = 0;
+      spans.forEach(s => {
+        if (s.textContent.trim()) nonEmpty++;
+        if (nonEmpty > 4) s.classList.add('preview-blurred');
+      });
+    }
+
     function renderReportText(el, text) {
       const html = text
         .replace(/## (.*)/g, '<div class="report-section-title">$1</div><div class="report-divider"></div>')
