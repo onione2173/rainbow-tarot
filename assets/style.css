@@ -477,7 +477,7 @@
       border:1.5px solid rgba(160,100,240,.5);
       cursor:pointer; overflow:hidden;
       transform-origin:50% 50%;
-      transition:transform .18s ease-out, border-color .12s, box-shadow .12s;
+      transition:transform .28s ease-out, border-color .15s, box-shadow .15s;
       will-change:transform;
       user-select:none; -webkit-user-select:none;
     }

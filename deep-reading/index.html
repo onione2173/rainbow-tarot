@@ -1,0 +1,1421 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>심층 콤보 분석 — 펫타로</title>
+  <link rel="icon" type="image/svg+xml" href="/favicon.svg">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Noto+Serif+KR:wght@300;400;600&family=Noto+Sans+KR:wght@300;400;600&display=swap" rel="stylesheet">
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/dist/umd/supabase.min.js"></script>
+  <script async src="https://www.googletagmanager.com/gtag/js?id=G-ZDTC39TEKD"></script>
+  <script>window.dataLayer=window.dataLayer||[];function gtag(){dataLayer.push(arguments);}gtag('js',new Date());gtag('config','G-ZDTC39TEKD');</script>
+
+  <style>
+    *,*::before,*::after{margin:0;padding:0;box-sizing:border-box;}
+    :root{
+      --text-main:#f0e6ff; --text-sub:#c0aad8; --text-dim:#8070a0;
+      --bg:radial-gradient(ellipse at 20% 10%,#2a0a4a 0%,#0d0d2b 40%,#0a1428 70%,#001a1a 100%);
+      --card-bg:rgba(255,255,255,.04); --card-border:rgba(200,160,255,.15);
+    }
+    body{
+      min-height:100vh; background:var(--bg);
+      font-family:'Noto Serif KR',serif; color:var(--text-main);
+    }
+    .rainbow-bar{position:fixed;top:0;left:0;right:0;height:3px;z-index:300;background:linear-gradient(90deg,#ff6b6b,#ff9f43,#ffd32a,#0be881,#17c0eb,#7d5fff,#ef5777);}
+    .site-header{position:sticky;top:3px;z-index:200;background:rgba(10,8,28,.92);backdrop-filter:blur(18px);border-bottom:1px solid rgba(200,160,255,.1);height:56px;display:flex;align-items:center;justify-content:space-between;padding:0 20px;}
+    .header-brand{display:flex;align-items:center;gap:9px;text-decoration:none;}
+    .brand-icon{font-size:1.35rem;}
+    .brand-name{font-size:1.15rem;font-weight:600;background:linear-gradient(135deg,#e8c4ff 0%,#c8e6ff 100%);-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;}
+    .hamburger-btn{background:none;border:none;cursor:pointer;display:flex;flex-direction:column;gap:5px;padding:8px;margin-right:-8px;}
+    .hamburger-btn span{display:block;width:22px;height:2px;background:#c0aad8;border-radius:2px;}
+    .menu-overlay{position:fixed;inset:0;z-index:998;background:rgba(0,0,0,.55);opacity:0;pointer-events:none;transition:opacity .3s;}
+    .menu-overlay.show{opacity:1;pointer-events:all;}
+    .menu-drawer{position:fixed;top:0;right:-100%;width:min(300px,82vw);height:100vh;z-index:999;background:linear-gradient(160deg,#130428 0%,#0b1032 100%);border-left:1px solid rgba(200,160,255,.15);overflow-y:auto;transition:right .3s ease;}
+    .menu-drawer.show{right:0;}
+    .menu-top{display:flex;align-items:center;justify-content:space-between;padding:24px 20px 18px;}
+    .menu-label{font-size:1.25rem;font-weight:700;color:#f0e6ff;font-family:'Noto Sans KR',sans-serif;}
+    .menu-close-btn{background:none;border:none;color:#8070a0;font-size:1.1rem;cursor:pointer;padding:6px;line-height:1;}
+    .menu-hr{border:none;border-top:1px solid rgba(200,160,255,.12);margin:0 0 6px;}
+    .menu-item{display:flex;align-items:center;padding:16px 20px;font-size:1rem;color:#f0e6ff;text-decoration:none;cursor:pointer;border:none;background:none;width:100%;text-align:left;font-family:'Noto Serif KR',serif;transition:background .15s;line-height:1.4;}
+    .menu-item:hover{background:rgba(255,255,255,.04);}
+    .menu-item-disabled{color:#8070a0;cursor:default;pointer-events:none;}
+    .menu-item-disabled:hover{background:none;}
+    .chip-soon{margin-left:8px;font-size:.65rem;padding:2px 9px;border-radius:10px;background:rgba(180,100,255,.12);border:1px solid rgba(180,100,255,.28);color:#c0a0ff;font-family:'Noto Sans KR',sans-serif;}
+
+    /* Page layout */
+    .page{position:relative;z-index:10;}
+    .wrap{max-width:680px;margin:0 auto;padding:32px 16px 80px;}
+
+    /* Step header */
+    .step-header{margin-bottom:28px;}
+    .back-link{display:inline-flex;align-items:center;gap:6px;color:var(--text-dim);font-size:.82rem;font-family:'Noto Sans KR',sans-serif;background:none;border:none;cursor:pointer;padding:0;margin-bottom:20px;transition:color .2s;}
+    .back-link:hover{color:var(--text-sub);}
+    .step-title{font-size:1.35rem;font-weight:600;color:#e8d0ff;margin-bottom:8px;}
+    .step-desc{font-size:.85rem;color:var(--text-sub);font-family:'Noto Sans KR',sans-serif;font-weight:300;line-height:1.8;}
+
+    /* Progress dots */
+    .progress-dots{display:flex;gap:7px;margin-bottom:28px;}
+    .dot{width:7px;height:7px;border-radius:50%;background:rgba(200,160,255,.2);}
+    .dot.active{background:#a070e0;transform:scale(1.3);}
+    .dot.done{background:rgba(200,160,255,.5);}
+
+    /* Spread selection */
+    .spread-list{display:flex;flex-direction:column;gap:12px;}
+    .spread-btn{
+      display:flex;align-items:center;gap:16px;
+      padding:20px 20px;
+      background:var(--card-bg);border:1px solid var(--card-border);
+      border-radius:18px;cursor:pointer;text-align:left;
+      width:100%;transition:all .22s;
+      font-family:'Noto Serif KR',serif;
+    }
+    .spread-btn:hover{border-color:rgba(170,90,255,.4);background:rgba(170,90,255,.06);transform:translateY(-2px);}
+    .spread-btn.selected{border-color:rgba(170,90,255,.6);background:rgba(170,90,255,.12);}
+    .spread-icon{font-size:2rem;flex-shrink:0;}
+    .spread-info{}
+    .spread-name{font-size:.95rem;font-weight:600;color:#e8d0ff;margin-bottom:5px;line-height:1.4;}
+    .spread-meta{font-size:.76rem;color:var(--text-dim);font-family:'Noto Sans KR',sans-serif;}
+    .spread-meta span{display:inline-block;margin-right:8px;padding:2px 8px;border-radius:8px;background:rgba(170,90,255,.1);border:1px solid rgba(170,90,255,.2);color:#c0a0ff;}
+
+    /* Form */
+    .form-group{margin-bottom:20px;}
+    .form-label{display:block;font-size:.82rem;font-weight:600;color:var(--text-sub);font-family:'Noto Sans KR',sans-serif;margin-bottom:8px;}
+    .form-label .req{color:#ff8080;margin-left:3px;}
+    .form-row{display:flex;gap:10px;}
+    .form-row .form-group{flex:1;}
+    .form-input,.form-select,.form-textarea{
+      width:100%;padding:13px 15px;
+      background:rgba(255,255,255,.05);border:1px solid rgba(200,160,255,.2);
+      border-radius:12px;color:var(--text-main);
+      font-family:'Noto Sans KR',sans-serif;font-size:.88rem;
+      appearance:none;-webkit-appearance:none;transition:border-color .2s;
+    }
+    .form-input::placeholder,.form-textarea::placeholder{color:var(--text-dim);}
+    .form-input:focus,.form-select:focus,.form-textarea:focus{outline:none;border-color:rgba(170,90,255,.5);}
+    .form-select{background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='14' height='14' viewBox='0 0 24 24' fill='none' stroke='%238070a0' stroke-width='2'%3E%3Cpath d='M6 9l6 6 6-6'/%3E%3C/svg%3E");background-repeat:no-repeat;background-position:right 13px center;padding-right:36px;cursor:pointer;}
+    .form-select option{background:#1a0838;color:#f0e6ff;}
+    .form-textarea{resize:vertical;min-height:120px;line-height:1.7;}
+    .char-count{font-size:.72rem;color:var(--text-dim);font-family:'Noto Sans KR',sans-serif;text-align:right;margin-top:5px;}
+
+    /* Buttons */
+    .btn-primary{
+      display:block;width:100%;padding:16px;
+      background:rgba(170,90,255,.22);border:1px solid rgba(170,90,255,.45);
+      border-radius:14px;color:#e0c0ff;font-size:1rem;font-weight:600;
+      font-family:'Noto Sans KR',sans-serif;cursor:pointer;transition:all .2s;letter-spacing:.02em;
+    }
+    .btn-primary:hover{background:rgba(170,90,255,.34);}
+    .btn-primary:disabled{opacity:.4;cursor:not-allowed;}
+    .btn-outline{
+      display:block;width:100%;padding:14px;
+      background:none;border:1px solid rgba(200,160,255,.2);
+      border-radius:14px;color:var(--text-dim);font-size:.88rem;
+      font-family:'Noto Sans KR',sans-serif;cursor:pointer;transition:all .2s;
+      margin-top:10px;
+    }
+    .btn-outline:hover{border-color:rgba(200,160,255,.35);color:var(--text-sub);}
+
+    /* Cards display */
+    .cards-area{display:flex;flex-wrap:wrap;gap:10px;justify-content:center;margin:24px 0 28px;}
+    .tarot-card-wrap{display:flex;flex-direction:column;align-items:center;gap:8px;}
+    .tarot-card{
+      width:80px;height:130px;border-radius:10px;
+      position:relative;perspective:600px;cursor:default;
+    }
+    .card-inner{
+      width:100%;height:100%;position:relative;
+      transform-style:preserve-3d;
+      transition:transform .7s cubic-bezier(.4,0,.2,1);
+    }
+    .card-inner.flipped{transform:rotateY(180deg);}
+    .card-face,.card-back-face{
+      position:absolute;inset:0;border-radius:10px;
+      backface-visibility:hidden;-webkit-backface-visibility:hidden;
+    }
+    .card-back-face{
+      background:linear-gradient(135deg,#2a0845 0%,#4a1a80 50%,#1a0535 100%);
+      border:1px solid rgba(200,160,255,.3);
+      display:flex;align-items:center;justify-content:center;
+      font-size:1.5rem;
+    }
+    .card-face{
+      background:linear-gradient(160deg,#1e0840 0%,#2d1060 50%,#0f1a40 100%);
+      border:1px solid rgba(170,90,255,.4);
+      transform:rotateY(180deg);
+      display:flex;flex-direction:column;align-items:center;justify-content:center;
+      padding:8px 5px;text-align:center;
+    }
+    .card-face.reversed{background:linear-gradient(160deg,#200a10 0%,#3d1025 50%,#0f1520 100%);}
+    .card-name{
+      font-size:.6rem;font-weight:600;color:#e8d0ff;
+      font-family:'Noto Sans KR',sans-serif;line-height:1.4;
+    }
+    .card-direction{font-size:.55rem;color:var(--text-dim);margin-top:3px;font-family:'Noto Sans KR',sans-serif;}
+    .card-position-label{
+      font-size:.68rem;color:var(--text-dim);
+      font-family:'Noto Sans KR',sans-serif;
+      text-align:center;line-height:1.4;max-width:90px;
+    }
+
+    /* Reading sections */
+    .reading-box{
+      background:var(--card-bg);border:1px solid var(--card-border);
+      border-radius:18px;padding:24px 20px;margin-bottom:20px;
+    }
+    .reading-box-title{
+      font-size:.76rem;font-weight:600;color:var(--text-dim);
+      letter-spacing:.1em;text-transform:uppercase;
+      font-family:'Noto Sans KR',sans-serif;margin-bottom:14px;
+    }
+    #freeReadText{
+      font-size:.88rem;color:var(--text-sub);line-height:2;
+      font-family:'Noto Sans KR',sans-serif;font-weight:300;
+      white-space:pre-wrap;
+    }
+
+    /* Paywall */
+    .paywall-box{
+      position:relative;border-radius:18px;overflow:hidden;
+      border:1px solid rgba(170,90,255,.35);margin-bottom:20px;
+    }
+    .paywall-preview{
+      padding:24px 20px;
+      font-size:.85rem;color:var(--text-sub);line-height:2;
+      font-family:'Noto Sans KR',sans-serif;font-weight:300;
+      filter:blur(4px);user-select:none;pointer-events:none;
+    }
+    .paywall-overlay{
+      position:absolute;inset:0;
+      background:linear-gradient(to bottom,transparent 0%,rgba(10,5,25,.97) 45%);
+      display:flex;flex-direction:column;align-items:center;justify-content:flex-end;
+      padding:28px 20px;
+    }
+    .paywall-lock{font-size:1.8rem;margin-bottom:10px;}
+    .paywall-msg{
+      font-size:.9rem;font-weight:600;color:#e8d0ff;
+      text-align:center;margin-bottom:5px;
+    }
+    .paywall-sub{
+      font-size:.78rem;color:var(--text-dim);font-family:'Noto Sans KR',sans-serif;
+      text-align:center;margin-bottom:20px;line-height:1.7;
+    }
+    .pay-btn{
+      display:flex;align-items:center;justify-content:center;gap:8px;
+      width:100%;padding:16px 20px;
+      background:linear-gradient(135deg,#7d5fff,#ef5777);
+      border:none;border-radius:14px;
+      color:#fff;font-size:1rem;font-weight:700;
+      font-family:'Noto Sans KR',sans-serif;cursor:pointer;
+      transition:opacity .2s,transform .15s;letter-spacing:.02em;
+    }
+    .pay-btn:hover{opacity:.9;transform:translateY(-1px);}
+    .pay-btn:active{transform:translateY(0);}
+    .pay-price{
+      font-size:.75rem;font-weight:400;opacity:.85;
+      background:rgba(255,255,255,.2);border-radius:8px;
+      padding:2px 8px;margin-left:4px;
+    }
+
+    /* Loading */
+    .loading-box{
+      text-align:center;padding:32px 20px;
+    }
+    .loading-spinner{
+      width:36px;height:36px;border-radius:50%;
+      border:3px solid rgba(170,90,255,.2);
+      border-top-color:#a070e0;
+      animation:spin .9s linear infinite;
+      margin:0 auto 16px;
+    }
+    @keyframes spin{to{transform:rotate(360deg);}}
+    .loading-text{font-size:.85rem;color:var(--text-sub);font-family:'Noto Sans KR',sans-serif;line-height:1.8;}
+
+    /* Full report */
+    .report-section{margin-bottom:24px;}
+    .report-section-title{
+      font-size:.9rem;font-weight:600;color:#c8a8f0;
+      margin-bottom:12px;display:flex;align-items:center;gap:8px;
+    }
+    .report-text{
+      font-size:.86rem;color:var(--text-sub);line-height:2.05;
+      font-family:'Noto Sans KR',sans-serif;font-weight:300;
+      white-space:pre-wrap;
+    }
+    .report-divider{height:1px;background:rgba(200,160,255,.1);margin:20px 0;}
+
+    /* Save badge */
+    .saved-badge{
+      display:inline-flex;align-items:center;gap:6px;
+      padding:8px 16px;border-radius:12px;
+      background:rgba(100,200,120,.1);border:1px solid rgba(100,200,120,.25);
+      color:#90d8a0;font-size:.78rem;font-family:'Noto Sans KR',sans-serif;
+    }
+
+    /* Auth gate */
+    .auth-gate-box{
+      background:var(--card-bg);border:1px solid var(--card-border);
+      border-radius:18px;padding:32px 20px;text-align:center;margin-bottom:20px;
+    }
+    .auth-gate-box p{font-size:.88rem;color:var(--text-sub);font-family:'Noto Sans KR',sans-serif;margin-bottom:18px;line-height:1.8;}
+    .btn-login-inline{
+      display:inline-block;padding:11px 28px;
+      background:rgba(170,90,255,.18);border:1px solid rgba(170,90,255,.4);
+      border-radius:22px;color:#d8aaff;text-decoration:none;
+      font-size:.88rem;font-family:'Noto Sans KR',sans-serif;transition:all .2s;
+    }
+    .btn-login-inline:hover{background:rgba(170,90,255,.28);}
+
+    /* Card pool (grid selection) */
+    .card-pool-header{margin-bottom:12px;}
+    .pool-counter{
+      font-size:.85rem;color:var(--text-sub);font-family:'Noto Sans KR',sans-serif;
+      margin-bottom:14px;
+    }
+    .pool-counter strong{color:#d8aaff;}
+    .selected-slots{
+      display:flex;gap:8px;flex-wrap:wrap;margin-bottom:18px;
+    }
+    .slot{
+      display:flex;flex-direction:column;align-items:center;gap:6px;
+    }
+    .slot-card{
+      width:72px;height:116px;border-radius:10px;
+      border:2px dashed rgba(170,90,255,.3);
+      background:rgba(170,90,255,.06);
+      display:flex;align-items:center;justify-content:center;
+      font-size:1.4rem;color:var(--text-dim);
+      position:relative;overflow:hidden;
+      transition:all .3s;
+    }
+    .slot-card.filled{
+      border-style:solid;border-color:rgba(170,90,255,.6);
+    }
+    .slot-card img{
+      width:100%;height:100%;object-fit:cover;border-radius:8px;
+    }
+    .slot-card .card-rev-badge{
+      position:absolute;bottom:4px;right:4px;
+      font-size:.55rem;background:rgba(200,80,80,.8);
+      color:#fff;border-radius:4px;padding:1px 4px;
+      font-family:'Noto Sans KR',sans-serif;
+    }
+    .slot-label{
+      font-size:.65rem;color:var(--text-dim);
+      font-family:'Noto Sans KR',sans-serif;
+      text-align:center;max-width:80px;line-height:1.35;
+    }
+    .card-pool{
+      display:grid;grid-template-columns:repeat(9,1fr);
+      gap:4px;padding:4px;
+    }
+    @media(min-width:520px){.card-pool{grid-template-columns:repeat(13,1fr);}}
+    .pool-card{
+      aspect-ratio:2/3;border-radius:6px;cursor:pointer;
+      background:linear-gradient(145deg,#2e1255,#2a1c7a,#111e42);
+      border:1px solid rgba(160,100,240,.35);
+      display:flex;align-items:center;justify-content:center;
+      overflow:hidden;transition:transform .15s,border-color .15s,box-shadow .15s;
+      user-select:none;position:relative;
+    }
+    .pool-card-back{
+      width:100%;height:100%;border-radius:5px;
+      background:linear-gradient(145deg,#3a0e6a 0%,#1e1060 50%,#0d1535 100%);
+      display:flex;align-items:center;justify-content:center;
+      font-size:.7rem;
+    }
+    .pool-card:hover:not(.pool-selected){
+      transform:translateY(-3px) scale(1.05);
+      border-color:rgba(200,140,255,.7);
+      box-shadow:0 4px 12px rgba(140,80,255,.2);
+    }
+    .pool-card.pool-selected{
+      border-color:rgba(255,200,60,.85);
+      box-shadow:0 0 8px rgba(255,180,40,.4);
+    }
+    .pool-sel-num{
+      font-size:.55rem;font-weight:700;color:#ffd060;
+      font-family:'Noto Sans KR',sans-serif;line-height:1;
+      background:rgba(60,30,0,.6);padding:1px 2px;border-radius:2px;
+    }
+
+    /* ── Reveal overlay ── */
+    #revealOverlay{
+      position:fixed;inset:0;z-index:600;
+      background:radial-gradient(ellipse at 50% 40%,#1e0640 0%,#060010 80%);
+      flex-direction:column;align-items:center;justify-content:center;
+      padding:20px 16px;overflow:hidden;
+    }
+    .reveal-title{
+      font-size:.95rem;color:rgba(232,208,255,.9);
+      font-family:'Noto Sans KR',sans-serif;
+      margin-bottom:22px;letter-spacing:.06em;text-align:center;
+      animation:fadePulse 2.2s ease-in-out infinite;
+    }
+    @keyframes fadePulse{0%,100%{opacity:.65;}50%{opacity:1;}}
+    .reveal-cards-row{
+      display:flex;gap:10px;flex-wrap:wrap;
+      justify-content:center;margin-bottom:24px;
+    }
+    .reveal-card-wrap{
+      display:flex;flex-direction:column;align-items:center;gap:5px;
+      position:relative;
+    }
+    .reveal-card{width:82px;height:132px;position:relative;perspective:600px;}
+    .rcard-inner{
+      width:100%;height:100%;position:relative;
+      transform-style:preserve-3d;
+      transition:transform .75s cubic-bezier(.4,0,.2,1);
+    }
+    .rcard-inner.flipped{transform:rotateY(180deg);}
+    .rcard-back,.rcard-front{
+      position:absolute;inset:0;border-radius:11px;
+      backface-visibility:hidden;-webkit-backface-visibility:hidden;
+    }
+    .rcard-back{
+      background:linear-gradient(135deg,#2a0845 0%,#4a1a80 50%,#1a0535 100%);
+      border:1.5px solid rgba(200,160,255,.4);
+      display:flex;align-items:center;justify-content:center;font-size:1.8rem;
+    }
+    .rcard-front{
+      transform:rotateY(180deg);
+      border:1.5px solid rgba(170,90,255,.5);
+      overflow:hidden;border-radius:11px;
+    }
+    .rcard-front img{width:100%;height:100%;object-fit:cover;display:block;}
+    .rcard-front .reversed-tint{
+      position:absolute;inset:0;background:rgba(180,40,40,.22);pointer-events:none;
+    }
+    .reveal-pos-label{
+      font-size:.58rem;color:var(--text-dim);
+      font-family:'Noto Sans KR',sans-serif;
+      text-align:center;max-width:82px;line-height:1.4;
+    }
+    .reveal-card-name{
+      font-size:.7rem;color:#e8d0ff;
+      font-family:'Noto Sans KR',sans-serif;text-align:center;font-weight:600;
+    }
+    .reveal-card-dir{
+      font-size:.6rem;color:var(--text-dim);
+      font-family:'Noto Sans KR',sans-serif;text-align:center;
+    }
+    .reveal-proceed-btn{
+      padding:13px 38px;
+      background:linear-gradient(135deg,#7d5fff,#ef5777);
+      border:none;border-radius:14px;
+      color:#fff;font-size:1rem;font-weight:700;
+      font-family:'Noto Sans KR',sans-serif;cursor:pointer;
+      transition:opacity .2s,transform .15s;letter-spacing:.02em;
+      animation:glowPulse 2s ease-in-out infinite;
+    }
+    @keyframes glowPulse{
+      0%,100%{box-shadow:0 0 14px rgba(130,80,255,.4);}
+      50%{box-shadow:0 0 32px rgba(200,80,200,.65),0 0 60px rgba(130,80,255,.25);}
+    }
+    .reveal-proceed-btn:hover{opacity:.9;transform:translateY(-2px);}
+
+    /* Sparkle particles */
+    .sparkle-particle{
+      position:absolute;pointer-events:none;z-index:20;
+      font-size:.72rem;line-height:1;
+      animation:sparkleOut 1.3s ease-out forwards;
+      top:50%;left:50%;
+    }
+    @keyframes sparkleOut{
+      0%{opacity:1;transform:translate(-50%,-50%) translate(0,0) scale(.3);}
+      60%{opacity:.9;}
+      100%{opacity:0;transform:translate(-50%,-50%) translate(var(--dx),var(--dy)) scale(1.1);}
+    }
+    .magic-ring{
+      position:absolute;inset:-5px;border-radius:15px;pointer-events:none;
+      border:2px solid rgba(190,120,255,.7);
+      animation:ringExpand .9s ease-out forwards;
+    }
+    .magic-ring-2{
+      position:absolute;inset:-5px;border-radius:15px;pointer-events:none;
+      border:1.5px solid rgba(100,180,255,.5);
+      animation:ringExpand .9s ease-out .18s forwards;
+    }
+    @keyframes ringExpand{
+      0%{transform:scale(.7);opacity:.9;}
+      100%{transform:scale(2);opacity:0;}
+    }
+
+    /* Action card step */
+    .action-pool-notice{
+      font-size:.84rem;color:var(--text-sub);
+      font-family:'Noto Sans KR',sans-serif;
+      line-height:1.9;margin-bottom:14px;
+    }
+    .reveal-section-divider{
+      width:100%;text-align:center;
+      font-size:.78rem;color:#ffd060;letter-spacing:.08em;
+      font-family:'Noto Sans KR',sans-serif;
+      margin:18px 0 14px;
+    }
+    .reveal-card-wrap.action .rcard-back{
+      background:linear-gradient(135deg,#2a1800 0%,#5a3600 50%,#1a0e00 100%);
+      border-color:rgba(255,200,60,.45);
+    }
+    .reveal-card-wrap.action .rcard-front{
+      border-color:rgba(255,200,60,.6);
+    }
+
+    /* DEV notice */
+    .dev-notice{
+      font-size:.74rem;color:#f0c878;font-family:'Noto Sans KR',sans-serif;
+      text-align:center;padding:10px 14px;
+      background:rgba(255,180,50,.07);border:1px solid rgba(255,180,50,.2);
+      border-radius:10px;margin-bottom:14px;line-height:1.6;
+    }
+
+    @media(max-width:480px){
+      .tarot-card{width:65px;height:106px;}
+      .cards-area{gap:7px;}
+      .form-row{flex-direction:column;gap:0;}
+    }
+  </style>
+</head>
+<body>
+  <div class="rainbow-bar"></div>
+
+  <header class="site-header">
+    <a href="/" class="header-brand">
+      <span class="brand-icon">🐾</span>
+      <span class="brand-name">펫타로</span>
+    </a>
+    <button class="hamburger-btn" id="hamburgerBtn" aria-label="메뉴 열기">
+      <span></span><span></span><span></span>
+    </button>
+  </header>
+
+  <div class="menu-overlay" id="menuOverlay"></div>
+  <nav class="menu-drawer" id="menuDrawer">
+    <div class="menu-top">
+      <span class="menu-label">메뉴</span>
+      <button class="menu-close-btn" id="menuClose">✕</button>
+    </div>
+    <hr class="menu-hr">
+    <a href="/" class="menu-item">홈</a>
+    <a href="/auth/" class="menu-item" id="miSignup">회원가입</a>
+    <a href="/auth/" class="menu-item" id="miLogin">로그인</a>
+    <a href="/mypage/" class="menu-item" id="miMypage">마이페이지</a>
+    <button class="menu-item" id="miLogout" style="display:none">로그아웃</button>
+    <span class="menu-item menu-item-disabled">선물하기 <span class="chip-soon">준비중</span></span>
+    <span class="menu-item menu-item-disabled">추천하기 <span class="chip-soon">준비중</span></span>
+    <a href="/contact/" class="menu-item">문의하기</a>
+  </nav>
+
+  <div class="page">
+    <div class="wrap">
+
+      <!-- ① 배열 선택 -->
+      <section id="secCategory">
+        <div class="step-header">
+          <a href="/" class="back-link">
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M19 12H5M12 5l-7 7 7 7"/></svg>
+            홈으로
+          </a>
+          <div class="progress-dots">
+            <div class="dot active" id="dot1"></div>
+            <div class="dot" id="dot2"></div>
+            <div class="dot" id="dot3"></div>
+            <div class="dot" id="dot4"></div>
+          </div>
+          <h1 class="step-title">어떤 고민이신가요?</h1>
+          <p class="step-desc">고민 유형에 따라 가장 적합한 카드 배열로 분석해드려요.</p>
+        </div>
+
+        <div class="spread-list">
+          <button class="spread-btn" onclick="selectSpread('mind')">
+            <span class="spread-icon">💭</span>
+            <div class="spread-info">
+              <div class="spread-name">아이가 무슨 생각 하는지 궁금해요</div>
+              <div class="spread-meta">
+                <span>크로스 스프레드</span>
+                <span>카드 4장</span>
+              </div>
+            </div>
+          </button>
+          <button class="spread-btn" onclick="selectSpread('behavior')">
+            <span class="spread-icon">🔍</span>
+            <div class="spread-info">
+              <div class="spread-name">갑자기 행동이 이상해졌어요</div>
+              <div class="spread-meta">
+                <span>호스슈 스프레드</span>
+                <span>카드 5장</span>
+              </div>
+            </div>
+          </button>
+          <button class="spread-btn" onclick="selectSpread('change')">
+            <span class="spread-icon">🌿</span>
+            <div class="spread-info">
+              <div class="spread-name">이사·합사 등 변화를 앞두고 있어요</div>
+              <div class="spread-meta">
+                <span>쓰리카드 스프레드</span>
+                <span>카드 3장</span>
+              </div>
+            </div>
+          </button>
+        </div>
+      </section>
+
+      <!-- ② 반려동물 정보 입력 -->
+      <section id="secForm" style="display:none">
+        <div class="step-header">
+          <button class="back-link" onclick="goTo('secCategory')">
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M19 12H5M12 5l-7 7 7 7"/></svg>
+            이전
+          </button>
+          <div class="progress-dots">
+            <div class="dot done" id="dot1b"></div>
+            <div class="dot active" id="dot2b"></div>
+            <div class="dot" id="dot3b"></div>
+            <div class="dot" id="dot4b"></div>
+          </div>
+          <h1 class="step-title" id="formTitle">아이 정보를 알려주세요</h1>
+          <p class="step-desc">입력한 정보를 바탕으로 아이에게 맞는 리딩을 드려요.</p>
+        </div>
+
+        <div class="form-row">
+          <div class="form-group">
+            <label class="form-label" for="petName">아이 이름 <span class="req">*</span></label>
+            <input type="text" class="form-input" id="petName" placeholder="예: 초코, 나비" maxlength="10">
+          </div>
+          <div class="form-group">
+            <label class="form-label" for="petSpecies">종류 <span class="req">*</span></label>
+            <select class="form-select" id="petSpecies" onchange="toggleOtherSpecies(this.value)">
+              <option value="">선택</option>
+              <option value="강아지">강아지</option>
+              <option value="고양이">고양이</option>
+              <option value="토끼">토끼</option>
+              <option value="새">새</option>
+              <option value="기타">기타</option>
+            </select>
+          </div>
+        </div>
+        <div class="form-group" id="otherSpeciesGroup" style="display:none">
+          <label class="form-label" for="otherSpecies">어떤 동물인지 알려주세요</label>
+          <input type="text" class="form-input" id="otherSpecies" placeholder="예: 햄스터, 도마뱀, 거북이…" maxlength="20">
+        </div>
+
+        <div class="form-row">
+          <div class="form-group">
+            <label class="form-label" for="petAge">나이</label>
+            <input type="text" class="form-input" id="petAge" placeholder="예: 3살, 7개월" maxlength="10">
+          </div>
+          <div class="form-group">
+            <label class="form-label" for="petGender">성별</label>
+            <select class="form-select" id="petGender">
+              <option value="">선택 안 함</option>
+              <option value="남아">남아</option>
+              <option value="여아">여아</option>
+              <option value="중성화">중성화</option>
+            </select>
+          </div>
+        </div>
+
+        <div class="form-group">
+          <label class="form-label" for="concern">고민 내용 <span class="req">*</span> <span style="font-size:.72rem;color:#b09fd0;font-weight:400;">— 구체적일수록 더 자세한 리딩이 가능해요</span></label>
+          <textarea class="form-textarea" id="concern" placeholder="예시) 이사한 지 2주가 됐는데 그때부터 밥을 잘 안 먹고 자꾸 침대 밑에 숨어요. 원래는 사람을 잘 따르는 아이인데 요즘은 만지려 해도 피하고, 밤에 자다가 우는 경우도 있어요. 단순 스트레스인지, 아니면 어디 아픈 건지 걱정돼서요." maxlength="300" oninput="updateCharCount(this, 'concernCount')"></textarea>
+          <div class="char-count"><span id="concernCount">0</span>/300</div>
+        </div>
+
+        <button class="btn-primary" onclick="submitForm()">카드 뽑기</button>
+        <button class="btn-outline" onclick="goTo('secCategory')">배열 다시 선택</button>
+      </section>
+
+      <!-- ③ 카드 직접 선택 -->
+      <section id="secCards" style="display:none">
+        <div class="step-header">
+          <button class="back-link" onclick="goTo('secForm')">
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M19 12H5M12 5l-7 7 7 7"/></svg>
+            이전
+          </button>
+          <div class="progress-dots">
+            <div class="dot done"></div>
+            <div class="dot done"></div>
+            <div class="dot active"></div>
+            <div class="dot"></div>
+          </div>
+          <h1 class="step-title" id="cardsTitle">카드를 골라주세요</h1>
+          <p class="step-desc" id="poolCounter">마음이 이끄는 카드를 순서대로 선택해주세요.</p>
+        </div>
+
+        <!-- 카드 풀 (78장 그리드) -->
+        <div class="card-pool" id="cardPool"></div>
+
+        <button class="btn-primary" id="proceedBtn" style="margin-top:14px" disabled onclick="proceedToReading()">
+          분석 시작하기 ✨
+        </button>
+        <button class="btn-outline" onclick="resetSelection()">다시 선택</button>
+      </section>
+
+      <!-- ③.5 행동 가이드 카드 선택 -->
+      <section id="secActionCards" style="display:none">
+        <div class="step-header">
+          <button class="back-link" onclick="goTo('secCards')">
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M19 12H5M12 5l-7 7 7 7"/></svg>
+            이전
+          </button>
+          <div class="progress-dots">
+            <div class="dot done"></div><div class="dot done"></div>
+            <div class="dot done"></div><div class="dot active"></div>
+          </div>
+          <h1 class="step-title">이번 주 행동 카드를 골라주세요</h1>
+          <p class="action-pool-notice">
+            마음에 끌리는 카드를 <strong style="color:#d8aaff">1~3장</strong> 골라주세요.<br>
+            이 카드들이 이번 주 실천할 행동의 방향이 돼요.<br>
+            <span style="font-size:.76rem;color:var(--text-dim)">건너뛰기를 누르면 카드 없이 행동 가이드를 작성해드려요.</span>
+          </p>
+        </div>
+        <div class="pool-counter" id="actionCounter"></div>
+        <div class="card-pool" id="actionPool"></div>
+        <button class="btn-primary" style="margin-top:14px" onclick="startReveal()">리딩 시작하기 ✨</button>
+        <button class="btn-outline" onclick="skipActionCards()">행동 카드 없이 진행하기</button>
+      </section>
+
+      <!-- ④ 무료 리딩 + 페이월 -->
+      <section id="secFreeRead" style="display:none">
+        <div class="step-header">
+          <div class="progress-dots">
+            <div class="dot done"></div>
+            <div class="dot done"></div>
+            <div class="dot done"></div>
+            <div class="dot active"></div>
+          </div>
+          <h1 class="step-title" id="freeReadTitle">리딩 결과</h1>
+        </div>
+
+        <!-- 뽑힌 카드 요약 -->
+        <div class="reading-box">
+          <div class="reading-box-title">뽑힌 카드</div>
+          <div class="cards-area" id="cardsAreaSmall" style="margin:0;"></div>
+        </div>
+
+        <!-- 무료 미리보기 -->
+        <div class="reading-box" id="freeReadBox">
+          <div class="loading-box" id="freeLoadBox">
+            <div class="loading-spinner"></div>
+            <div class="loading-text">아이의 메시지를 읽고 있어요…<br>잠시만 기다려주세요.</div>
+          </div>
+          <div class="reading-box-title" style="display:none" id="freeReadLabel"></div>
+          <div id="freeReadText" style="display:none"></div>
+        </div>
+
+        <!-- 페이월 -->
+        <div class="paywall-box" id="paywallBox" style="display:none">
+          <div class="paywall-preview" id="paywallPreview"></div>
+          <div class="paywall-overlay">
+            <div class="paywall-lock">🔒</div>
+            <div class="paywall-msg" id="paywallMsg">전체 리포트 보기</div>
+            <div class="paywall-sub" id="paywallSub"></div>
+
+            <!-- 비로그인 상태 -->
+            <div id="loginGate" style="display:none;width:100%">
+              <div class="auth-gate-box" style="background:transparent;border:none;padding:0">
+                <p style="color:rgba(240,230,255,.7);margin-bottom:14px" id="loginGateMsg"></p>
+                <button class="pay-btn" onclick="loginAndSave()" style="background:linear-gradient(135deg,#3a1a00,#7a4500);">
+                  카카오 로그인 후 전체 리포트 받기
+                </button>
+              </div>
+            </div>
+
+            <!-- 로그인 상태 -->
+            <div id="payGate" style="display:none;width:100%">
+              <div class="dev-notice" id="devNotice" style="display:none">⚙️ 결제 연동 준비 중 — 지금은 테스트 모드로 전체 리포트를 확인할 수 있어요.</div>
+              <button class="pay-btn" id="payBtn" onclick="startPayment()">
+                전체 리포트 받기
+                <span class="pay-price">1,500원</span>
+              </button>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <!-- ⑤ 전체 리포트 (유료) -->
+      <section id="secFullReport" style="display:none">
+        <div class="step-header">
+          <h1 class="step-title" id="reportTitle">전체 리포트</h1>
+        </div>
+
+        <!-- 뽑힌 카드 -->
+        <div class="reading-box">
+          <div class="reading-box-title">뽑힌 카드</div>
+          <div class="cards-area" id="cardsAreaReport" style="margin:0;"></div>
+        </div>
+
+        <!-- 로딩 -->
+        <div class="loading-box" id="reportLoadBox">
+          <div class="loading-spinner"></div>
+          <div class="loading-text">심층 리포트를 작성하는 중이에요…<br>조금만 기다려주세요.</div>
+        </div>
+
+        <!-- 리포트 본문 -->
+        <div id="reportContent" style="display:none">
+          <div class="reading-box">
+            <div id="reportText" class="report-text"></div>
+          </div>
+          <div style="text-align:center;margin-top:8px">
+            <span class="saved-badge" id="savedBadge" style="display:none">✓ 마이페이지에 저장되었어요</span>
+          </div>
+          <button class="btn-outline" style="margin-top:20px" onclick="window.location.href='/'">홈으로 돌아가기</button>
+        </div>
+      </section>
+
+    </div>
+  </div>
+
+  <!-- 카드 공개 오버레이 -->
+  <div id="revealOverlay" style="display:none;position:fixed;inset:0;z-index:600;background:radial-gradient(ellipse at 50% 40%,#1e0640 0%,#060010 80%);flex-direction:column;align-items:center;justify-content:center;padding:20px 16px;overflow:hidden;">
+    <div class="reveal-title" id="revealTitle">카드가 당신에게 말을 걸어요 ✨</div>
+    <div class="reveal-cards-row" id="revealCardsRow"></div>
+    <button class="reveal-proceed-btn" id="revealProceedBtn" style="display:none" onclick="finishReveal()">
+      리딩 시작하기
+    </button>
+  </div>
+
+  <script src="/assets/auth.js"></script>
+  <script src="/assets/cards.js"></script>
+  <script>
+    // NicePay 연동 전 테스트 모드
+    const DEV_MODE = true;
+
+    const SPREADS = {
+      mind: {
+        name: '크로스 스프레드',
+        fullName: '아이가 무슨 생각 하는지 궁금해요 — 크로스 스프레드',
+        cardCount: 4,
+        positions: ['현재 아이의 마음', '보호자가 미치는 영향', '숨겨진 진짜 원인', '관계 회복을 위한 조언']
+      },
+      behavior: {
+        name: '호스슈 스프레드',
+        fullName: '갑자기 행동이 이상해졌어요 — 호스슈 스프레드',
+        cardCount: 5,
+        positions: ['과거의 계기', '현재 상황', '숨겨진 영향', '취할 수 있는 행동', '앞으로의 흐름']
+      },
+      change: {
+        name: '쓰리카드 스프레드',
+        fullName: '이사·합사 등 변화를 앞두고 있어요 — 쓰리카드 스프레드',
+        cardCount: 3,
+        positions: ['과거의 흔적', '지금 아이의 마음', '변화 이후의 흐름']
+      }
+    };
+
+    let currentSpread = null;
+    let drawnCards = [];
+    let actionCards = [];
+    let petInfo = {};
+    let shuffledPool = [];
+    let selectedIndices = [];
+    let freeReadingText = '';
+
+    // ── 섹션 전환 ──
+    function goTo(id) {
+      ['secCategory','secForm','secCards','secActionCards','secFreeRead','secFullReport'].forEach(s => {
+        document.getElementById(s).style.display = s === id ? '' : 'none';
+      });
+      window.scrollTo({ top: 0, behavior: 'smooth' });
+    }
+
+    // ── 기타 종류 필드 토글 ──
+    function toggleOtherSpecies(val) {
+      document.getElementById('otherSpeciesGroup').style.display = val === '기타' ? '' : 'none';
+    }
+
+    // ── 동물 종/나이 컨텍스트 생성 ──
+    function buildSpeciesContext() {
+      const sp = petInfo.species;
+      const displaySpecies = sp === '기타' ? (petInfo.otherSpecies || '반려동물') : sp;
+      const ageText = petInfo.age || '';
+      const ageNum = parseFloat(ageText.replace(/[^0-9.]/g, ''));
+      const isMonths = ageText.includes('개월') || ageText.includes('month');
+      let notes = [];
+
+      if (sp === '강아지') {
+        if (!isMonths && ageNum >= 10) notes.push('노령견 — 관절 이상, 인지 저하, 분리 불안 등 노화 관련 문제 고려');
+        else if (!isMonths && ageNum <= 1 || isMonths && ageNum <= 12) notes.push('강아지 시기 — 사회화 과정 중, 에너지 과잉, 경계 학습 단계');
+        notes.push('무리 동물로 보호자 감정에 매우 민감하고 유대가 심리의 핵심');
+      } else if (sp === '고양이') {
+        if (!isMonths && ageNum >= 12) notes.push('노령묘 — 신장 기능 저하, 갑상선 문제, 활동 감소 등 고려');
+        else if (!isMonths && ageNum <= 1 || isMonths && ageNum <= 12) notes.push('어린 고양이 — 탐색 욕구 강함, 영역 확립 중');
+        notes.push('독립적이며 스트레스를 숨기는 경향이 강하고 환경 변화에 예민');
+      } else if (sp === '토끼') {
+        notes.push('매우 예민하여 스트레스가 건강에 직접 영향을 줌. 사회적이지만 혼자만의 공간도 필요');
+      } else if (sp === '새') {
+        notes.push('지능이 높고 외로움에 취약. 반복 행동이나 털 뽑기는 스트레스 신호');
+      } else if (sp === '기타') {
+        notes.push(`${displaySpecies} 종 특성을 고려하여 리딩`);
+      }
+
+      return `[동물 정보] 종: ${displaySpecies}${ageText ? ', 나이: ' + ageText : ''}${petInfo.gender ? ', ' + petInfo.gender : ''}. ${notes.join('. ')}`;
+    }
+
+    // ── 1단계: 배열 선택 ──
+    function selectSpread(type) {
+      currentSpread = SPREADS[type];
+      goTo('secForm');
+    }
+
+    // ── 2단계: 폼 제출 ──
+    function submitForm() {
+      const name = document.getElementById('petName').value.trim();
+      const species = document.getElementById('petSpecies').value;
+      const concern = document.getElementById('concern').value.trim();
+      if (!name) { alert('아이 이름을 입력해주세요.'); return; }
+      if (!species) { alert('종류를 선택해주세요.'); return; }
+      if (!concern) { alert('고민 내용을 입력해주세요.'); return; }
+
+      petInfo = {
+        name, species,
+        otherSpecies: document.getElementById('otherSpecies').value.trim(),
+        age: document.getElementById('petAge').value.trim(),
+        gender: document.getElementById('petGender').value,
+        concern
+      };
+
+      document.getElementById('cardsTitle').textContent = `${name}의 카드를 골라주세요`;
+      goTo('secCards');
+      initCardPool();
+    }
+
+    // ── 3단계: 카드 풀 초기화 ──
+    function initCardPool() {
+      shuffledPool = [...CARDS].sort(() => Math.random() - .5);
+      selectedIndices = [];
+      drawnCards = [];
+      renderPool();
+      updateCounter();
+      document.getElementById('proceedBtn').disabled = true;
+    }
+
+    function renderPool() {
+      const pool = document.getElementById('cardPool');
+      pool.innerHTML = shuffledPool.map((c, i) => `
+        <div class="pool-card" data-i="${i}" onclick="selectCard(${i})" title="카드 선택">
+          <div class="pool-card-back">✨</div>
+        </div>
+      `).join('');
+    }
+
+    function updateCounter() {
+      const n = currentSpread.cardCount;
+      const done = drawnCards.length;
+      document.getElementById('poolCounter').innerHTML =
+        `마음이 이끄는 카드를 순서대로 선택해주세요 &nbsp;<strong style="color:#d8aaff">(${done}/${n})</strong>`;
+    }
+
+    function selectCard(i) {
+      const n = currentSpread.cardCount;
+      const poolEl = document.querySelector(`.pool-card[data-i="${i}"]`);
+
+      // 이미 선택된 카드 → 선택 해제
+      if (selectedIndices.includes(i)) {
+        const pos = selectedIndices.indexOf(i);
+        selectedIndices.splice(pos, 1);
+        drawnCards.splice(pos, 1);
+        drawnCards.forEach((c, idx) => { c.position = currentSpread.positions[idx]; });
+        if (poolEl) { poolEl.classList.remove('pool-selected'); poolEl.innerHTML = '<div class="pool-card-back">✨</div>'; }
+        refreshPoolNumbers();
+        updateCounter();
+        document.getElementById('proceedBtn').disabled = drawnCards.length < n;
+        return;
+      }
+
+      if (drawnCards.length >= n) return;
+
+      const selNum = drawnCards.length + 1;
+      selectedIndices.push(i);
+      const card = shuffledPool[i];
+      drawnCards.push({ ...card, reversed: Math.random() < .35, position: currentSpread.positions[drawnCards.length] });
+
+      if (poolEl) {
+        poolEl.classList.add('pool-selected');
+        poolEl.innerHTML = `<div class="pool-card-back"><span class="pool-sel-num">${selNum}</span></div>`;
+      }
+
+      updateCounter();
+      if (drawnCards.length >= n) document.getElementById('proceedBtn').disabled = false;
+    }
+
+    function refreshPoolNumbers() {
+      selectedIndices.forEach((poolIdx, selIdx) => {
+        const el = document.querySelector(`.pool-card[data-i="${poolIdx}"]`);
+        if (el) el.innerHTML = `<div class="pool-card-back"><span class="pool-sel-num">${selIdx + 1}</span></div>`;
+      });
+    }
+
+    function resetSelection() {
+      drawnCards = [];
+      selectedIndices = [];
+      actionCards = [];
+      renderPool();
+      updateCounter();
+      document.getElementById('proceedBtn').disabled = true;
+    }
+
+    // ── 3→3.5단계: 행동 카드 선택으로 ──
+    function proceedToReading() {
+      goTo('secActionCards');
+      initActionPool();
+    }
+
+    // ── 행동 카드 풀 초기화 ──
+    function initActionPool() {
+      actionCards = [];
+      const pool = document.getElementById('actionPool');
+      pool.innerHTML = shuffledPool.map((c, i) => {
+        if (selectedIndices.includes(i)) return '';
+        return `<div class="pool-card" data-ai="${i}" onclick="selectActionCard(${i})" title="카드 선택"><div class="pool-card-back">✦</div></div>`;
+      }).join('');
+      updateActionCounter();
+    }
+
+    function selectActionCard(i) {
+      const poolEl = document.querySelector(`.pool-card[data-ai="${i}"]`);
+      const existIdx = actionCards.findIndex(c => c._pi === i);
+      if (existIdx >= 0) {
+        actionCards.splice(existIdx, 1);
+        if (poolEl) { poolEl.classList.remove('pool-selected'); poolEl.innerHTML = '<div class="pool-card-back">✦</div>'; }
+        actionCards.forEach((c, idx) => {
+          const el = document.querySelector(`.pool-card[data-ai="${c._pi}"]`);
+          if (el) el.innerHTML = `<div class="pool-card-back" style="background:linear-gradient(145deg,#3d2800,#6a4200,#2a1800)"><span class="pool-sel-num" style="color:#ffd060">${idx+1}</span></div>`;
+        });
+        updateActionCounter();
+        return;
+      }
+      if (actionCards.length >= 3) return;
+      const card = shuffledPool[i];
+      actionCards.push({ ...card, _pi: i, reversed: Math.random() < .35 });
+      if (poolEl) {
+        poolEl.classList.add('pool-selected');
+        poolEl.innerHTML = `<div class="pool-card-back" style="background:linear-gradient(145deg,#3d2800,#6a4200,#2a1800)"><span class="pool-sel-num" style="color:#ffd060">${actionCards.length}</span></div>`;
+      }
+      updateActionCounter();
+    }
+
+    function updateActionCounter() {
+      document.getElementById('actionCounter').innerHTML =
+        `행동 가이드 카드 &nbsp;<strong style="color:#ffd060">${actionCards.length} / 3장</strong> 선택`;
+    }
+
+    function skipActionCards() { actionCards = []; startReveal(); }
+
+    // ── 유틸 ──
+    function sleep(ms) { return new Promise(r => setTimeout(r, ms)); }
+
+    function spawnSparkles(parentEl) {
+      const symbols = ['✦','✧','⋆','·','★','✨','∗'];
+      const colors = ['#fff9','#ffd700cc','#c8a0ffcc','#80c8ffcc','#ff80c8cc','#a0ffb0cc'];
+      for (let i = 0; i < 16; i++) {
+        const sp = document.createElement('span');
+        sp.className = 'sparkle-particle';
+        sp.textContent = symbols[i % symbols.length];
+        const angle = (i / 16) * Math.PI * 2 + Math.random() * .4;
+        const dist = 55 + Math.random() * 65;
+        sp.style.setProperty('--dx', (Math.cos(angle) * dist) + 'px');
+        sp.style.setProperty('--dy', (Math.sin(angle) * dist) + 'px');
+        sp.style.color = colors[Math.floor(Math.random() * colors.length)];
+        sp.style.animationDelay = (Math.random() * .25) + 's';
+        parentEl.appendChild(sp);
+        setTimeout(() => sp.remove(), 1600);
+      }
+    }
+
+    // ── 행동카드 선택 → 오버레이: 카드 공개 애니메이션 ──
+    function makeRevealCard(card, id, extraClass) {
+      const wrap = document.createElement('div');
+      wrap.className = 'reveal-card-wrap' + (extraClass ? ' ' + extraClass : '');
+      wrap.id = id;
+      const imgStyle = card.reversed ? 'transform:rotate(180deg);' : '';
+      const posLabel = card.position ? `<div class="reveal-pos-label">${escHtml(card.position)}</div>` : '';
+      wrap.innerHTML = `
+        <div class="reveal-card">
+          <div class="rcard-inner" id="${id}-inner">
+            <div class="rcard-back">✨</div>
+            <div class="rcard-front">
+              <img src="${card.img}" alt="${escHtml(card.name)}" style="${imgStyle}width:100%;height:100%;object-fit:cover;" onerror="this.style.display='none'">
+              ${card.reversed ? '<div class="reversed-tint"></div>' : ''}
+            </div>
+          </div>
+        </div>
+        ${posLabel}
+        <div class="reveal-card-name" id="${id}-name" style="display:none">${escHtml(card.name)}</div>
+        <div class="reveal-card-dir" id="${id}-dir" style="display:none">${card.reversed ? '↓ 역방향' : '↑ 정방향'}</div>
+      `;
+      return wrap;
+    }
+
+    async function flipRevealCard(id) {
+      const wrap = document.getElementById(id);
+      const inner = document.getElementById(`${id}-inner`);
+      const cardEl = wrap.querySelector('.reveal-card');
+      const ring1 = document.createElement('div'); ring1.className = 'magic-ring'; cardEl.appendChild(ring1);
+      const ring2 = document.createElement('div'); ring2.className = 'magic-ring-2'; cardEl.appendChild(ring2);
+      setTimeout(() => { ring1.remove(); ring2.remove(); }, 1100);
+      spawnSparkles(wrap);
+      inner.classList.add('flipped');
+      await sleep(750);
+      document.getElementById(`${id}-name`).style.display = '';
+      document.getElementById(`${id}-dir`).style.display = '';
+    }
+
+    async function startReveal() {
+      const overlay = document.getElementById('revealOverlay');
+      overlay.style.display = 'flex';
+      document.getElementById('revealProceedBtn').style.display = 'none';
+
+      const row = document.getElementById('revealCardsRow');
+      row.innerHTML = '';
+
+      // 스프레드 카드
+      drawnCards.forEach((card, idx) => {
+        row.appendChild(makeRevealCard(card, `rsp-${idx}`, ''));
+      });
+
+      // 행동 카드 구분선 + 카드
+      if (actionCards.length > 0) {
+        const divider = document.createElement('div');
+        divider.className = 'reveal-section-divider';
+        divider.style.flexBasis = '100%';
+        divider.textContent = '✦ 이번 주 행동 가이드 카드 ✦';
+        row.appendChild(divider);
+        actionCards.forEach((card, idx) => {
+          row.appendChild(makeRevealCard(card, `rac-${idx}`, 'action'));
+        });
+      }
+
+      await sleep(500);
+
+      // 스프레드 카드 순차 플립
+      for (let idx = 0; idx < drawnCards.length; idx++) {
+        if (idx > 0) await sleep(700);
+        await flipRevealCard(`rsp-${idx}`);
+        if (idx === drawnCards.length - 1) { await sleep(300); spawnSparkles(document.getElementById(`rsp-${idx}`)); }
+      }
+
+      // 행동 카드 순차 플립
+      if (actionCards.length > 0) {
+        await sleep(800);
+        for (let idx = 0; idx < actionCards.length; idx++) {
+          if (idx > 0) await sleep(700);
+          await flipRevealCard(`rac-${idx}`);
+        }
+      }
+
+      await sleep(600);
+      document.getElementById('revealProceedBtn').style.display = '';
+    }
+
+    function finishReveal() {
+      document.getElementById('revealOverlay').style.display = 'none';
+      goTo('secFreeRead');
+      renderCards('cardsAreaSmall', drawnCards, false);
+      generateFreeReading();
+    }
+
+    // ── 카드 렌더링 ──
+    function renderCards(containerId, cards, animate) {
+      const area = document.getElementById(containerId);
+      area.innerHTML = cards.map((c, i) => `
+        <div class="tarot-card-wrap">
+          <div class="tarot-card">
+            <div class="card-inner${animate ? '' : ' flipped'}">
+              <div class="card-back-face">✨</div>
+              <div class="card-face${c.reversed ? ' reversed' : ''}" style="padding:0;overflow:hidden;">
+                <img src="${c.img}" alt="${escHtml(c.name)}"
+                  style="width:100%;height:100%;object-fit:cover;border-radius:10px;${c.reversed ? 'transform:rotate(180deg);' : ''}"
+                  onerror="this.style.display='none';this.parentNode.style.padding='8px 5px';this.parentNode.innerHTML+='<div class=\\'card-name\\'>${escHtml(c.name)}</div><div class=\\'card-direction\\'>${c.reversed ? '↓ 역방향' : '↑ 정방향'}</div>'">
+              </div>
+            </div>
+          </div>
+          <div class="card-position-label">${escHtml(c.position)}</div>
+        </div>
+      `).join('');
+    }
+
+    // ── 페이월 텍스트 동적 업데이트 ──
+    function updatePaywallText() {
+      const remaining = drawnCards.length - 1;
+      const actionHint = actionCards.length > 0 ? `행동 가이드 카드 ${actionCards.length}장 해석` : '이번 주 행동 가이드';
+      const name = petInfo.name || '아이';
+
+      const preview = document.getElementById('paywallPreview');
+      if (preview) preview.textContent =
+        `나머지 ${remaining}장의 카드 심층 해석, ${name}의 속마음 편지, 보호자님께 전하는 말, ${actionHint}까지 — 전체 리포트에서 확인해보세요.`;
+
+      const sub = document.getElementById('paywallSub');
+      if (sub) sub.innerHTML =
+        `나머지 카드 ${remaining}장 해석 · 속마음 편지 · 보호자님께 · ${actionHint}<br>단 한 번으로 ${name}의 마음을 깊이 들여다봐요`;
+
+      const gateMsg = document.getElementById('loginGateMsg');
+      if (gateMsg) gateMsg.textContent = `나머지 내용을 보려면 로그인이 필요해요`;
+    }
+
+    // ── 4단계: 무료 리딩 (첫 카드 심층 해석) ──
+    async function generateFreeReading() {
+      const freeReadLabel = document.getElementById('freeReadLabel');
+      const freeReadText = document.getElementById('freeReadText');
+      const freeLoadBox = document.getElementById('freeLoadBox');
+
+      const firstCard = drawnCards[0];
+      const cardSummary = drawnCards.map(c => `[${c.position}] ${c.name}(${c.reversed ? '역' : '정'})`).join(', ');
+      const speciesCtx = buildSpeciesContext();
+
+      freeReadLabel.textContent = `🃏 ${firstCard.position} — 무료 공개`;
+
+      const systemPrompt = `당신은 반려동물 타로 전문가입니다. 따뜻하고 감성적인 한국어로 작성하세요. 동물의 종과 나이에 따른 특성을 자연스럽게 반영하세요. 반드시 사용자가 입력한 구체적인 정보를 직접 언급하세요. 누구에게나 해당될 수 있는 일반적 표현은 절대 쓰지 마세요.`;
+      const userPrompt = `반려동물: ${petInfo.name} (${petInfo.species}${petInfo.age ? ', ' + petInfo.age : ''}${petInfo.gender ? ', ' + petInfo.gender : ''})
+${speciesCtx}
+고민: ${petInfo.concern}
+배열법: ${currentSpread.fullName}
+전체 카드: ${cardSummary}
+
+첫 번째 카드 "[${firstCard.position}] ${firstCard.name}(${firstCard.reversed ? '역방향' : '정방향'})"만 심층 해석해주세요. (4~6줄)
+- 이 포지션의 의미 + 카드 상징이 이 자리에서 갖는 의미
+- ${petInfo.name}의 고민 상황에 직접 연결
+- 감성적이고 구체적으로`;
+
+      try {
+        const res = await fetch('/.netlify/functions/deep-tarot', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({
+            system: systemPrompt,
+            messages: [{ role: 'user', content: userPrompt }],
+            paid: false
+          })
+        });
+        const data = await res.json();
+        const text = data.content?.[0]?.text || '';
+        freeReadingText = text;
+
+        freeLoadBox.style.display = 'none';
+        freeReadLabel.style.display = '';
+        freeReadText.style.display = '';
+        if (text) {
+          renderReportText(freeReadText, text);
+        } else {
+          freeReadText.textContent = `${firstCard.name}(${firstCard.reversed ? '역방향' : '정방향'})이(가) ${petInfo.name}의 ${firstCard.position} 자리에 놓였어요. 전체 리포트에서 깊은 이야기를 확인해보세요.`;
+        }
+      } catch (e) {
+        console.warn('free reading error', e);
+        freeReadingText = '';
+        freeLoadBox.style.display = 'none';
+        freeReadLabel.style.display = '';
+        freeReadText.style.display = '';
+        freeReadText.textContent = `${firstCard.name}(${firstCard.reversed ? '역방향' : '정방향'})이(가) ${petInfo.name}의 ${firstCard.position} 자리에 놓였어요. 전체 리포트에서 깊은 이야기를 확인해보세요.`;
+      }
+
+      setTimeout(() => showPaywall(), 400);
+    }
+
+    async function showPaywall() {
+      updatePaywallText();
+      document.getElementById('paywallBox').style.display = '';
+      const user = await getUser();
+      if (user) {
+        document.getElementById('payGate').style.display = '';
+        if (DEV_MODE) document.getElementById('devNotice').style.display = '';
+      } else {
+        document.getElementById('loginGate').style.display = '';
+      }
+    }
+
+    // ── 로그인 후 상태 보존 ──
+    function loginAndSave() {
+      try {
+        const spreadKey = Object.keys(SPREADS).find(k => SPREADS[k].name === currentSpread.name);
+        sessionStorage.setItem('petarot_dr', JSON.stringify({
+          spreadKey,
+          petInfo,
+          drawnCards: drawnCards.map(({ img, name, en, suit, upKw, rvKw, reversed, position }) =>
+            ({ img, name, en, suit, upKw, rvKw, reversed, position })),
+          actionCards: actionCards.map(({ img, name, en, suit, upKw, rvKw, reversed }) =>
+            ({ img, name, en, suit, upKw, rvKw, reversed })),
+          freeText: freeReadingText
+        }));
+      } catch(e) { console.warn('state save failed', e); }
+
+      if (typeof signInWithKakao === 'function') {
+        signInWithKakao('/deep-reading/');
+      } else {
+        window.location.href = '/auth/';
+      }
+    }
+
+    // ── 5단계: 결제 ──
+    function startPayment() {
+      if (DEV_MODE) {
+        // 테스트 모드: 바로 전체 리포트 생성
+        goTo('secFullReport');
+        renderCards('cardsAreaReport', drawnCards, false);
+        generateFullReport(null);
+        return;
+      }
+
+      // TODO: 나이스페이 결제 연동
+      // AUTHNICE.requestPay({
+      //   clientId: 'YOUR_NICEPAY_CLIENT_ID',
+      //   method: 'card',
+      //   orderId: 'PETAROT_' + Date.now(),
+      //   amount: 1500,
+      //   goodsName: '펫타로 심층 콤보 분석',
+      //   returnUrl: window.location.origin + '/deep-reading/',
+      // });
+    }
+
+    // ── 전체 리포트 생성 ──
+    async function generateFullReport(paymentKey) {
+      const reportLoadBox = document.getElementById('reportLoadBox');
+      const reportContent = document.getElementById('reportContent');
+      const reportText = document.getElementById('reportText');
+
+      const cardSummary = drawnCards.map(c => `[${c.position}] ${c.name}(${c.reversed ? '역방향' : '정방향'})`).join('\n');
+      const actionSummary = actionCards.length > 0
+        ? actionCards.map(c => `${c.name}(${c.reversed ? '역방향' : '정방향'})`).join(', ')
+        : null;
+      const speciesCtx = buildSpeciesContext();
+      const systemPrompt = `당신은 반려동물 타로 전문가이자 동물 행동 상담사입니다. 따뜻하고 감성적이면서도 실용적인 한국어로 작성하세요. 동물의 종과 나이에 따른 특성을 리딩에 자연스럽게 반영하세요. 반드시 사용자가 입력한 구체적 정보(이름, 종, 나이, 고민)를 직접 언급하세요. 누구에게나 해당될 수 있는 일반적 표현은 절대 쓰지 마세요. 오직 이 아이에게만 해당하는 이야기를 쓰세요. 각 섹션은 충분한 분량으로 깊이 있게 작성하세요.`;
+      const userPrompt = `반려동물: ${petInfo.name} (${petInfo.species}${petInfo.age ? ', ' + petInfo.age : ''}${petInfo.gender ? ', ' + petInfo.gender : ''})
+${speciesCtx}
+고민: ${petInfo.concern}
+배열법: ${currentSpread.fullName}
+뽑힌 카드:
+${cardSummary}
+${actionSummary ? `\n행동 가이드 카드: ${actionSummary}` : ''}
+
+아래 네 섹션으로 심층 리포트를 작성하세요. 각 섹션은 충분한 분량(섹션당 최소 200자 이상)으로 작성하세요:
+
+## 🃏 카드별 포지션 심층 해석
+각 카드를 해당 포지션의 의미와 결합하여 해석. "${petInfo.name}의 상황"에 직접 연결. 카드 상징이 이 포지션에서 갖는 고유한 의미를 설명. (각 카드 4~5줄씩)
+
+## 💌 ${petInfo.name}의 속마음
+${petInfo.name}의 1인칭 시점으로 쓰는 내면 독백. 아이가 보호자에게 직접 말하는 형식. 감성적이고 구체적으로. 아이의 행동, 감정, 바람을 솔직하게. (8~12줄)
+
+## 🐾 보호자님께
+보호자가 놓치고 있을 수 있는 관점 제시. 아이의 행동을 다른 시선으로 해석해주는 내용. 감정적 위로와 공감 포함. (6~8줄)
+
+## ✨ 이번 주 행동 가이드
+${actionSummary
+  ? `보호자가 뽑은 행동 가이드 카드(${actionSummary})를 각각 해석하여 구체적인 실천 방법을 제시하세요. 각 항목마다: **[카드 이름]** — 이 카드가 말하는 행동, 구체적인 실천 방법, 이렇게 해야 하는 이유(카드 상징과 연결하여). 1~${actionCards.length}가지.`
+  : `위 스프레드 카드들을 바탕으로 이번 주 실천할 수 있는 행동 가이드 1~3가지를 제시하세요. 각 항목마다: 구체적인 실천 방법, 이렇게 해야 하는 이유.`}`;
+
+      try {
+        const res = await fetch('/.netlify/functions/deep-tarot', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({
+            system: systemPrompt,
+            messages: [{ role: 'user', content: userPrompt }],
+            paid: true,
+            paymentKey
+          })
+        });
+        const data = await res.json();
+        const text = data.content?.[0]?.text || '';
+
+        reportLoadBox.style.display = 'none';
+        reportContent.style.display = '';
+        renderReportText(reportText, text);
+
+        // Supabase에 저장
+        saveReading(text);
+
+        if (typeof gtag === 'function') gtag('event', 'deep_reading_complete', { spread: currentSpread.name });
+      } catch {
+        reportLoadBox.style.display = 'none';
+        reportContent.style.display = '';
+        reportText.textContent = '리포트를 불러오는 중 오류가 발생했습니다. 잠시 후 다시 시도해주세요.';
+      }
+    }
+
+    // 마크다운 섹션 렌더링
+    function renderReportText(el, text) {
+      const html = text
+        .replace(/## (.*)/g, '<div class="report-section-title">$1</div><div class="report-divider"></div>')
+        .replace(/\*\*(.*?)\*\*/g, '<strong>$1</strong>');
+      el.innerHTML = html.split('\n').map(line => {
+        if (line.startsWith('<div class="report-section')) return line;
+        return `<span class="report-text" style="display:block">${line}</span>`;
+      }).join('');
+    }
+
+    // Supabase 저장
+    async function saveReading(fullText) {
+      const user = await getUser();
+      if (!user || !window._sb) return;
+      try {
+        await window._sb.from('reading_history').insert({
+          user_id: user.id,
+          spread_type: currentSpread.name,
+          pet_name: petInfo.name,
+          pet_species: petInfo.species,
+          concern: petInfo.concern,
+          cards_drawn: drawnCards.map(c => ({ name: c.name, reversed: c.reversed, position: c.position })),
+          full_reading: fullText,
+          amount: 1500
+        });
+        document.getElementById('savedBadge').style.display = '';
+      } catch (e) {
+        console.warn('reading save failed', e);
+      }
+    }
+
+    // ── 로그인 후 상태 복원 ──
+    document.addEventListener('DOMContentLoaded', async () => {
+      const saved = sessionStorage.getItem('petarot_dr');
+      if (!saved) return;
+      let state;
+      try { state = JSON.parse(saved); } catch { return; }
+
+      const user = await getUser();
+      if (!user) return;
+
+      sessionStorage.removeItem('petarot_dr');
+      currentSpread = SPREADS[state.spreadKey];
+      if (!currentSpread) return;
+
+      petInfo = state.petInfo || {};
+      drawnCards = state.drawnCards || [];
+      actionCards = state.actionCards || [];
+      freeReadingText = state.freeText || '';
+
+      goTo('secFreeRead');
+      renderCards('cardsAreaSmall', drawnCards, false);
+
+      const freeLoadBox = document.getElementById('freeLoadBox');
+      const freeReadLabel = document.getElementById('freeReadLabel');
+      const freeReadText = document.getElementById('freeReadText');
+      freeLoadBox.style.display = 'none';
+      freeReadLabel.style.display = '';
+      freeReadText.style.display = '';
+
+      if (freeReadingText) {
+        const firstCard = drawnCards[0];
+        if (firstCard) freeReadLabel.textContent = `🃏 ${firstCard.position} — 무료 공개`;
+        renderReportText(freeReadText, freeReadingText);
+      } else if (drawnCards.length > 0) {
+        generateFreeReading();
+        return;
+      }
+
+      // 이미 로그인 → 페이월에서 결제 버튼 바로 표시
+      updatePaywallText();
+      document.getElementById('paywallBox').style.display = '';
+      document.getElementById('payGate').style.display = '';
+      if (DEV_MODE) document.getElementById('devNotice').style.display = '';
+    });
+
+    // ── 유틸 ──
+    function updateCharCount(el, countId) {
+      document.getElementById(countId).textContent = el.value.length;
+    }
+
+    function escHtml(s) {
+      return String(s).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;');
+    }
+  </script>
+</body>
+</html>

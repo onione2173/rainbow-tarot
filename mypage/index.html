@@ -1,0 +1,320 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>마이페이지 — 펫타로</title>
+  <link rel="icon" type="image/svg+xml" href="/favicon.svg">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Noto+Serif+KR:wght@300;400;600&family=Noto+Sans+KR:wght@300;400&display=swap" rel="stylesheet">
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/dist/umd/supabase.min.js"></script>
+  <script async src="https://www.googletagmanager.com/gtag/js?id=G-ZDTC39TEKD"></script>
+  <script>
+    window.dataLayer=window.dataLayer||[];
+    function gtag(){dataLayer.push(arguments);}
+    gtag('js',new Date()); gtag('config','G-ZDTC39TEKD');
+  </script>
+
+  <style>
+    *,*::before,*::after{margin:0;padding:0;box-sizing:border-box;}
+    :root{
+      --text-main:#f0e6ff; --text-sub:#c0aad8; --text-dim:#8070a0;
+      --card-bg:rgba(255,255,255,.04); --card-border:rgba(200,160,255,.15);
+    }
+    body{
+      min-height:100vh;
+      background:radial-gradient(ellipse at 20% 10%,#2a0a4a 0%,#0d0d2b 40%,#0a1428 70%,#001a1a 100%);
+      font-family:'Noto Serif KR',serif;
+      color:var(--text-main);
+    }
+    .rainbow-bar{
+      position:fixed;top:0;left:0;right:0;height:3px;z-index:300;
+      background:linear-gradient(90deg,#ff6b6b,#ff9f43,#ffd32a,#0be881,#17c0eb,#7d5fff,#ef5777);
+    }
+    .site-header{
+      position:sticky;top:3px;z-index:200;
+      background:rgba(10,8,28,.92);backdrop-filter:blur(18px);
+      border-bottom:1px solid rgba(200,160,255,.1);
+      height:56px;display:flex;align-items:center;justify-content:space-between;
+      padding:0 20px;
+    }
+    .header-brand{
+      display:flex;align-items:center;gap:9px;text-decoration:none;
+    }
+    .brand-icon{font-size:1.35rem;}
+    .brand-name{
+      font-size:1.15rem;font-weight:600;
+      background:linear-gradient(135deg,#e8c4ff 0%,#c8e6ff 100%);
+      -webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;
+    }
+    .hamburger-btn{
+      background:none;border:none;cursor:pointer;
+      display:flex;flex-direction:column;gap:5px;
+      padding:8px;margin-right:-8px;
+    }
+    .hamburger-btn span{
+      display:block;width:22px;height:2px;
+      background:#c0aad8;border-radius:2px;
+    }
+    .menu-overlay{
+      position:fixed;inset:0;z-index:998;
+      background:rgba(0,0,0,.55);
+      opacity:0;pointer-events:none;transition:opacity .3s;
+    }
+    .menu-overlay.show{opacity:1;pointer-events:all;}
+    .menu-drawer{
+      position:fixed;top:0;right:-100%;
+      width:min(300px,82vw);height:100vh;z-index:999;
+      background:linear-gradient(160deg,#130428 0%,#0b1032 100%);
+      border-left:1px solid rgba(200,160,255,.15);
+      overflow-y:auto;transition:right .3s ease;
+    }
+    .menu-drawer.show{right:0;}
+    .menu-top{display:flex;align-items:center;justify-content:space-between;padding:24px 20px 18px;}
+    .menu-label{font-size:1.25rem;font-weight:700;color:#f0e6ff;font-family:'Noto Sans KR',sans-serif;}
+    .menu-close-btn{background:none;border:none;color:#8070a0;font-size:1.1rem;cursor:pointer;padding:6px;line-height:1;}
+    .menu-hr{border:none;border-top:1px solid rgba(200,160,255,.12);margin:0 0 6px;}
+    .menu-item{
+      display:flex;align-items:center;
+      padding:16px 20px;font-size:1rem;color:#f0e6ff;
+      text-decoration:none;cursor:pointer;
+      border:none;background:none;width:100%;
+      text-align:left;font-family:'Noto Serif KR',serif;
+      transition:background .15s;line-height:1.4;
+    }
+    .menu-item:hover{background:rgba(255,255,255,.04);}
+    .menu-item-disabled{color:#8070a0;cursor:default;pointer-events:none;}
+    .menu-item-disabled:hover{background:none;}
+    .chip-soon{
+      margin-left:8px;font-size:.65rem;padding:2px 9px;
+      border-radius:10px;background:rgba(180,100,255,.12);
+      border:1px solid rgba(180,100,255,.28);color:#c0a0ff;
+      font-family:'Noto Sans KR',sans-serif;
+    }
+
+    .page{position:relative;z-index:10;}
+    .wrap{max-width:680px;margin:0 auto;padding:32px 20px 80px;}
+
+    /* Loading / auth gate */
+    .auth-gate{
+      text-align:center;padding:80px 20px;
+    }
+    .auth-gate p{font-size:.9rem;color:var(--text-sub);margin-bottom:20px;font-family:'Noto Sans KR',sans-serif;}
+    .btn-login{
+      display:inline-block;padding:12px 32px;
+      background:rgba(170,90,255,.18);border:1px solid rgba(170,90,255,.4);
+      border-radius:22px;color:#d8aaff;text-decoration:none;
+      font-size:.88rem;font-family:'Noto Sans KR',sans-serif;
+      transition:all .2s;
+    }
+    .btn-login:hover{background:rgba(170,90,255,.28);}
+
+    /* User profile section */
+    .profile-section{
+      display:flex;align-items:center;gap:16px;
+      background:var(--card-bg);border:1px solid var(--card-border);
+      border-radius:18px;padding:22px 20px;margin-bottom:24px;
+    }
+    .profile-avatar{
+      width:52px;height:52px;border-radius:50%;
+      background:linear-gradient(135deg,#7d5fff,#ef5777);
+      display:flex;align-items:center;justify-content:center;
+      font-size:1.4rem;flex-shrink:0;overflow:hidden;
+    }
+    .profile-avatar img{width:100%;height:100%;object-fit:cover;}
+    .profile-name{font-size:1rem;font-weight:600;color:var(--text-main);margin-bottom:3px;}
+    .profile-email{font-size:.78rem;color:var(--text-dim);font-family:'Noto Sans KR',sans-serif;}
+
+    /* Section card */
+    .section-card{
+      background:var(--card-bg);border:1px solid var(--card-border);
+      border-radius:18px;padding:24px 20px;margin-bottom:16px;
+    }
+    .section-title{
+      font-size:.78rem;font-weight:600;color:var(--text-dim);
+      letter-spacing:.1em;text-transform:uppercase;
+      font-family:'Noto Sans KR',sans-serif;margin-bottom:16px;
+    }
+
+    /* Reading history */
+    .history-empty{
+      text-align:center;padding:24px 0 8px;
+    }
+    .history-empty-icon{font-size:2.5rem;display:block;margin-bottom:12px;}
+    .history-empty p{
+      font-size:.82rem;color:var(--text-dim);
+      font-family:'Noto Sans KR',sans-serif;line-height:1.8;
+    }
+    .history-item{
+      border-bottom:1px solid rgba(200,160,255,.1);
+      padding:14px 0;
+    }
+    .history-item:last-child{border-bottom:none;padding-bottom:0;}
+    .history-item-title{font-size:.88rem;color:var(--text-main);margin-bottom:4px;}
+    .history-item-meta{font-size:.74rem;color:var(--text-dim);font-family:'Noto Sans KR',sans-serif;}
+    .history-item-btn{
+      display:inline-block;margin-top:8px;padding:5px 14px;
+      background:rgba(170,90,255,.12);border:1px solid rgba(170,90,255,.3);
+      border-radius:12px;color:#d0aaff;font-size:.74rem;
+      font-family:'Noto Sans KR',sans-serif;text-decoration:none;
+      cursor:pointer;border:none;
+    }
+
+    /* Link list */
+    .link-list a,.link-list button{
+      display:flex;align-items:center;justify-content:space-between;
+      padding:14px 0;border-bottom:1px solid rgba(200,160,255,.08);
+      color:var(--text-sub);text-decoration:none;
+      font-size:.88rem;font-family:'Noto Sans KR',sans-serif;
+      background:none;border-left:none;border-right:none;border-top:none;
+      width:100%;text-align:left;cursor:pointer;
+      transition:color .2s;
+    }
+    .link-list a:last-child,.link-list button:last-child{border-bottom:none;}
+    .link-list a:hover,.link-list button:hover{color:var(--text-main);}
+    .link-arrow{font-size:.75rem;opacity:.5;}
+
+    .logout-btn{
+      display:block;width:100%;padding:14px;margin-top:16px;
+      background:none;border:1px solid rgba(200,160,255,.15);
+      border-radius:14px;color:var(--text-dim);
+      font-size:.85rem;font-family:'Noto Sans KR',sans-serif;
+      cursor:pointer;transition:all .2s;text-align:center;
+    }
+    .logout-btn:hover{border-color:rgba(200,160,255,.3);color:var(--text-sub);}
+  </style>
+</head>
+<body>
+  <div class="rainbow-bar"></div>
+
+  <header class="site-header">
+    <a href="/" class="header-brand">
+      <span class="brand-icon">🐾</span>
+      <span class="brand-name">펫타로</span>
+    </a>
+    <button class="hamburger-btn" id="hamburgerBtn" aria-label="메뉴 열기">
+      <span></span><span></span><span></span>
+    </button>
+  </header>
+
+  <div class="menu-overlay" id="menuOverlay"></div>
+  <nav class="menu-drawer" id="menuDrawer">
+    <div class="menu-top">
+      <span class="menu-label">메뉴</span>
+      <button class="menu-close-btn" id="menuClose">✕</button>
+    </div>
+    <hr class="menu-hr">
+    <a href="/" class="menu-item">홈</a>
+    <a href="/auth/" class="menu-item" id="miSignup">회원가입</a>
+    <a href="/auth/" class="menu-item" id="miLogin">로그인</a>
+    <a href="/mypage/" class="menu-item" id="miMypage">마이페이지</a>
+    <button class="menu-item" id="miLogout" style="display:none">로그아웃</button>
+    <span class="menu-item menu-item-disabled">선물하기 <span class="chip-soon">준비중</span></span>
+    <span class="menu-item menu-item-disabled">추천하기 <span class="chip-soon">준비중</span></span>
+    <a href="/contact/" class="menu-item">문의하기</a>
+  </nav>
+
+  <div class="page">
+    <div class="wrap">
+
+      <!-- Auth gate (shown when not logged in) -->
+      <div class="auth-gate" id="authGate" style="display:none">
+        <p>마이페이지를 이용하려면<br>먼저 로그인해주세요.</p>
+        <a href="/auth/" class="btn-login">로그인 / 회원가입</a>
+      </div>
+
+      <!-- Main content (shown when logged in) -->
+      <div id="mainContent" style="display:none">
+
+        <!-- Profile -->
+        <div class="profile-section">
+          <div class="profile-avatar" id="profileAvatar">🐾</div>
+          <div>
+            <div class="profile-name" id="profileName">불러오는 중…</div>
+            <div class="profile-email" id="profileEmail"></div>
+          </div>
+        </div>
+
+        <!-- Reading history -->
+        <div class="section-card">
+          <div class="section-title">나의 펫타로 리딩 히스토리</div>
+          <div id="historyList">
+            <div class="history-empty">
+              <span class="history-empty-icon">🔮</span>
+              <p>아직 유료 리딩 기록이 없어요.<br>심층 콤보 분석이 출시되면 여기서 확인할 수 있어요.</p>
+            </div>
+          </div>
+        </div>
+
+        <!-- Settings / links -->
+        <div class="section-card">
+          <div class="section-title">안내</div>
+          <div class="link-list">
+            <a href="/terms/">이용약관 <span class="link-arrow">›</span></a>
+            <a href="/privacy/">개인정보처리방침 <span class="link-arrow">›</span></a>
+            <a href="/contact/">문의하기 <span class="link-arrow">›</span></a>
+          </div>
+        </div>
+
+        <button class="logout-btn" onclick="signOutUser()">로그아웃</button>
+
+      </div>
+    </div>
+  </div>
+
+  <script src="/assets/auth.js"></script>
+  <script>
+    async function initMypage() {
+      const user = await getUser();
+
+      if (!user) {
+        document.getElementById('authGate').style.display = 'block';
+        return;
+      }
+
+      document.getElementById('mainContent').style.display = 'block';
+
+      // Profile
+      const meta = user.user_metadata || {};
+      const name = meta.full_name || meta.name || meta.preferred_username || '사용자';
+      const email = user.email || '';
+      const avatar = meta.avatar_url || meta.picture || '';
+
+      document.getElementById('profileName').textContent = name;
+      document.getElementById('profileEmail').textContent = email;
+
+      const avatarEl = document.getElementById('profileAvatar');
+      if (avatar) {
+        avatarEl.innerHTML = `<img src="${avatar}" alt="">`;
+      }
+
+      // Load paid reading history
+      if (window._sb) {
+        const { data: readings } = await window._sb
+          .from('reading_history')
+          .select('*')
+          .eq('user_id', user.id)
+          .order('created_at', { ascending: false })
+          .limit(20);
+
+        if (readings && readings.length > 0) {
+          const list = document.getElementById('historyList');
+          list.innerHTML = readings.map(r => `
+            <div class="history-item">
+              <div class="history-item-title">${escHtml(r.reading_type || '리딩')}</div>
+              <div class="history-item-meta">${new Date(r.created_at).toLocaleDateString('ko-KR')}</div>
+            </div>
+          `).join('');
+        }
+      }
+    }
+
+    function escHtml(s) {
+      return String(s).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;');
+    }
+
+    initMypage();
+  </script>
+</body>
+</html>

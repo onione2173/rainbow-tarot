@@ -3,13 +3,15 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>무지개 다리 너머 타로 — 반려동물과 영혼으로 연결되는 공간</title>
+  <title>펫타로 — 반려동물 타로 서비스</title>
+  <meta name="description" content="펫타로 — 반려동물의 마음을 타로로 읽어봐요. 무지개 다리 너머, 기분 읽기, 고민 타로 무료 서비스.">
   <link rel="icon" type="image/svg+xml" href="/favicon.svg">
   <link rel="apple-touch-icon" href="/favicon.svg">
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=Noto+Serif+KR:wght@300;400;600&family=Noto+Sans+KR:wght@300&display=swap" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=Noto+Serif+KR:wght@300;400;600&family=Noto+Sans+KR:wght@300;400&display=swap" rel="stylesheet">
 
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/dist/umd/supabase.min.js"></script>
   <script async src="https://www.googletagmanager.com/gtag/js?id=G-ZDTC39TEKD"></script>
   <script>
     window.dataLayer = window.dataLayer || [];
@@ -27,7 +29,8 @@
       --text-main: #f0e6ff;
       --text-sub:  #c0aad8;
       --text-dim:  #8070a0;
-      --border:    rgba(200,160,255,.22);
+      --header-h:  56px;
+      --tabs-h:    50px;
     }
 
     body {
@@ -39,7 +42,7 @@
     }
 
     .rainbow-bar {
-      position:fixed; top:0; left:0; right:0; height:3px; z-index:200;
+      position:fixed; top:0; left:0; right:0; height:3px; z-index:300;
       background:linear-gradient(90deg,#ff6b6b,#ff9f43,#ffd32a,#0be881,#17c0eb,#7d5fff,#ef5777);
     }
 
@@ -53,140 +56,151 @@
       50%{opacity:1;transform:scale(1.6);}
     }
 
-    .petal {
-      position:fixed; font-size:13px; opacity:0; pointer-events:none; z-index:1;
-      animation:floatUp var(--fd,8s) var(--fdelay,0s) infinite linear;
+    /* Header */
+    .site-header {
+      position:sticky; top:3px; z-index:200;
+      background:rgba(10,8,28,.92); backdrop-filter:blur(18px);
+      border-bottom:1px solid rgba(200,160,255,.1);
+      height:var(--header-h);
+      display:flex; align-items:center; justify-content:space-between;
+      padding:0 20px;
     }
-    @keyframes floatUp {
-      0%{transform:translateY(100vh) rotate(0deg);opacity:0;}
-      10%{opacity:.35;}
-      90%{opacity:.25;}
-      100%{transform:translateY(-10vh) rotate(360deg);opacity:0;}
+    .header-brand { display:flex; align-items:center; gap:9px; text-decoration:none; }
+    .brand-icon { font-size:1.35rem; }
+    .brand-name {
+      font-size:1.15rem; font-weight:600;
+      background:linear-gradient(135deg,#e8c4ff 0%,#c8e6ff 100%);
+      -webkit-background-clip:text; -webkit-text-fill-color:transparent; background-clip:text;
+    }
+    .header-tagline {
+      font-size:.72rem; color:var(--text-dim);
+      font-family:'Noto Sans KR',sans-serif; font-weight:300;
     }
 
+    /* Filter tab nav */
+    .filter-nav {
+      position:sticky; top:calc(3px + var(--header-h)); z-index:199;
+      background:rgba(10,8,28,.92); backdrop-filter:blur(18px);
+      border-bottom:1px solid rgba(200,160,255,.08);
+    }
+    .filter-inner {
+      max-width:680px; margin:0 auto;
+      padding:0 16px; height:var(--tabs-h);
+      display:flex; align-items:center; gap:6px;
+      overflow-x:auto; scrollbar-width:none;
+    }
+    .filter-inner::-webkit-scrollbar { display:none; }
+    .filter-tab {
+      flex-shrink:0; padding:7px 18px; border-radius:22px;
+      border:1px solid transparent; cursor:pointer;
+      font-family:'Noto Sans KR',sans-serif; font-size:.82rem;
+      transition:all .2s; background:transparent; color:var(--text-dim);
+    }
+    .filter-tab:hover { color:var(--text-sub); background:rgba(255,255,255,.05); }
+    .filter-tab.active {
+      background:rgba(170,90,255,.16); border-color:rgba(170,90,255,.38);
+      color:#d8aaff; font-weight:600;
+    }
+
+    /* Page wrapper */
     .page { position:relative; z-index:10; }
-    .container { max-width:880px; margin:0 auto; padding:72px 22px 80px; }
+    .content-wrap { max-width:680px; margin:0 auto; padding:20px 16px 80px; }
 
-    /* hero */
-    .hero {
-      text-align:center;
-      margin-bottom:64px;
+    /* Banner cards */
+    .banner-card {
+      display:block; text-decoration:none; color:inherit;
+      position:relative; border-radius:22px; overflow:hidden;
+      margin-bottom:16px;
+      transition:transform .3s ease, box-shadow .3s ease;
     }
-    .hero-icon {
-      font-size:4rem; display:block; margin-bottom:20px;
-      animation:floatIcon 4s ease-in-out infinite;
+    .banner-card:not([data-category="soon"]):hover {
+      transform:translateY(-4px);
+      box-shadow:0 20px 50px rgba(0,0,0,.45);
     }
-    @keyframes floatIcon {
-      0%,100%{transform:translateY(0) rotate(-4deg);}
-      50%{transform:translateY(-14px) rotate(4deg);}
-    }
-    .hero h1 {
-      font-size:clamp(1.9rem,5vw,2.9rem); font-weight:600; line-height:1.3;
-      background:linear-gradient(135deg,#e8c4ff 0%,#c8e6ff 50%,#ffcce8 100%);
-      -webkit-background-clip:text; -webkit-text-fill-color:transparent; background-clip:text;
-      margin-bottom:14px;
-    }
-    .hero-sub {
-      font-size:.95rem; color:var(--text-sub); line-height:2; font-weight:300;
-      max-width:520px; margin:0 auto;
-    }
+    .banner-card[data-category="soon"] { cursor:default; pointer-events:none; }
 
-    /* section title */
-    .section-label {
-      text-align:center; font-size:.72rem; letter-spacing:.14em;
-      color:var(--text-dim); text-transform:uppercase;
-      margin-bottom:28px;
+    .banner-bg {
+      display:block; width:100%;
+      transition:transform .5s ease;
     }
-    .section-label::before,
-    .section-label::after {
-      content:''; display:inline-block; width:32px; height:1px;
-      background:rgba(200,160,255,.25); vertical-align:middle; margin:0 10px;
+    .banner-bg img { display:block; width:100%; height:auto; }
+    .banner-card:not([data-category="soon"]):hover .banner-bg { transform:scale(1.04); }
+
+    .banner-overlay {
+      position:absolute; inset:0;
+      background:linear-gradient(to bottom, rgba(0,0,0,0) 20%, rgba(5,2,20,.92) 100%);
     }
 
-    /* service cards grid */
-    .services-grid {
-      display:grid;
-      grid-template-columns:repeat(auto-fit,minmax(240px,1fr));
-      gap:18px;
-      margin-bottom:60px;
+    .banner-content {
+      position:absolute; bottom:0; left:0; right:0;
+      padding:26px 26px 30px;
+    }
+    .banner-badges { display:flex; gap:7px; margin-bottom:11px; flex-wrap:wrap; }
+    .badge {
+      display:inline-block; padding:4px 13px; border-radius:22px;
+      font-size:.68rem; font-family:'Noto Sans KR',sans-serif;
+      letter-spacing:.02em;
+    }
+    .badge-free {
+      background:rgba(90,200,120,.14); border:1px solid rgba(90,200,120,.4); color:#88d8a0;
+    }
+    .badge-soon {
+      background:rgba(160,120,255,.14); border:1px solid rgba(160,120,255,.4); color:#c0a0ff;
+    }
+    .badge-new {
+      background:rgba(255,120,80,.14); border:1px solid rgba(255,120,80,.4); color:#ff9878;
+    }
+    .banner-title {
+      font-size:1.55rem; font-weight:600; color:#fff;
+      line-height:1.3; margin-bottom:9px;
+    }
+    .banner-desc {
+      font-size:.82rem; color:rgba(255,255,255,.7);
+      line-height:1.7; font-family:'Noto Sans KR',sans-serif; font-weight:300;
     }
 
-    .service-card {
-      display:block; text-decoration:none;
-      background:rgba(255,255,255,.04); border:1px solid rgba(200,160,255,.18);
-      border-radius:20px; padding:28px 24px 24px;
-      backdrop-filter:blur(12px);
-      transition:transform .22s ease, border-color .22s, box-shadow .22s;
-      position:relative; overflow:hidden;
+    /* Card gradient backgrounds — replace .banner-bg with actual img via style="background-image:url(...)" */
+    /* 1. 무지개 다리 너머: 몽환적 보라+핑크 톤. 추천 이미지: 무지개빛 다리 위 강아지/고양이 실루엣, 별빛 배경 */
+    .bg-rainbow {
+      background:
+        radial-gradient(circle at 72% 28%, rgba(200,100,255,.55) 0%, transparent 48%),
+        radial-gradient(circle at 22% 72%, rgba(255,100,160,.45) 0%, transparent 50%),
+        radial-gradient(circle at 50% 50%, rgba(80,40,160,.3) 0%, transparent 70%),
+        linear-gradient(140deg, #1a0438 0%, #3d1068 45%, #1a1f55 100%);
     }
-    .service-card::before {
-      content:''; position:absolute; inset:0; border-radius:20px;
-      background:radial-gradient(ellipse at 30% 20%,rgba(130,60,220,.1),transparent 65%);
-      pointer-events:none;
+    /* 2. 오늘 우리 아이 어때요?: 따뜻한 햇살 톤. 추천 이미지: 햇빛 받는 강아지/고양이, 밝고 자연스러운 분위기 */
+    .bg-mood {
+      background:
+        radial-gradient(circle at 60% 22%, rgba(80,210,155,.45) 0%, transparent 52%),
+        radial-gradient(circle at 18% 78%, rgba(255,210,80,.35) 0%, transparent 50%),
+        radial-gradient(circle at 80% 75%, rgba(60,160,100,.3) 0%, transparent 45%),
+        linear-gradient(140deg, #092216 0%, #174532 45%, #082535 100%);
     }
-    .service-card:hover {
-      transform:translateY(-5px);
-      border-color:rgba(180,100,255,.45);
-      box-shadow:0 14px 40px rgba(100,50,200,.25);
+    /* 3. 우리 아이 걱정될 때: 신비로운 파랑-보라 톤. 추천 이미지: 달빛 아래 반려동물, 타로카드와 발바닥 */
+    .bg-guardian {
+      background:
+        radial-gradient(circle at 28% 28%, rgba(70,140,255,.5) 0%, transparent 55%),
+        radial-gradient(circle at 75% 68%, rgba(180,80,255,.38) 0%, transparent 50%),
+        radial-gradient(circle at 50% 88%, rgba(40,80,200,.4) 0%, transparent 40%),
+        linear-gradient(140deg, #050c22 0%, #0d1c50 42%, #1e0945 100%);
+    }
+    /* 4. 심층 콤보 분석: 신비로운 골드-퍼플. 추천 이미지: 수정구슬 또는 여러 타로카드 스프레드 */
+    .bg-paid {
+      background:
+        radial-gradient(circle at 50% 22%, rgba(255,210,100,.35) 0%, transparent 50%),
+        radial-gradient(circle at 25% 70%, rgba(180,80,255,.4) 0%, transparent 52%),
+        radial-gradient(circle at 78% 58%, rgba(80,100,255,.3) 0%, transparent 45%),
+        linear-gradient(140deg, #0b0420 0%, #1e0845 48%, #0a1438 100%);
     }
 
-    .sc-emoji { font-size:2.4rem; display:block; margin-bottom:14px; }
-    .sc-title {
-      font-size:1.05rem; font-weight:600; color:#e8d0ff;
-      margin-bottom:8px; line-height:1.4;
-    }
-    .sc-desc {
-      font-size:.8rem; color:var(--text-sub); line-height:1.85; font-weight:300;
-    }
-    .sc-badge {
-      display:inline-block; margin-top:14px;
-      font-size:.68rem; padding:3px 12px; border-radius:20px;
-      background:rgba(100,200,120,.12); border:1px solid rgba(100,200,120,.3);
-      color:#90d8a0;
-    }
-
-    /* paid teaser card */
-    .paid-card {
-      background:linear-gradient(135deg,rgba(180,100,255,.1) 0%,rgba(80,120,240,.1) 100%);
-      border:1px solid rgba(180,100,255,.3);
-      border-radius:20px; padding:32px 28px;
-      text-align:center; margin-bottom:60px;
-      position:relative; overflow:hidden;
-    }
-    .paid-card::before {
-      content:''; position:absolute; inset:0;
-      background:radial-gradient(ellipse at 50% 0%,rgba(160,80,255,.18),transparent 60%);
-      pointer-events:none;
-    }
-    .paid-rainbow {
-      height:3px; border-radius:3px; margin-bottom:24px;
-      background:linear-gradient(90deg,#ff6b6b,#ff9f43,#ffd32a,#0be881,#17c0eb,#7d5fff,#ef5777);
-    }
-    .paid-emoji { font-size:2.8rem; display:block; margin-bottom:14px; }
-    .paid-title {
-      font-size:1.2rem; font-weight:600;
-      background:linear-gradient(135deg,#e8c4ff,#c8e6ff);
-      -webkit-background-clip:text; -webkit-text-fill-color:transparent; background-clip:text;
-      margin-bottom:10px;
-    }
-    .paid-desc {
-      font-size:.85rem; color:var(--text-sub); line-height:2; margin-bottom:20px;
-      max-width:480px; margin-left:auto; margin-right:auto;
-    }
-    .paid-chip {
-      display:inline-block; font-size:.72rem; padding:5px 16px; border-radius:20px;
-      background:rgba(180,100,255,.15); border:1px solid rgba(180,100,255,.35);
-      color:#d0a0ff; letter-spacing:.03em;
-    }
+    .banner-card.hidden { display:none; }
 
     footer.site-footer {
       text-align:center; padding-top:32px;
       border-top:1px solid rgba(255,255,255,.06);
       color:var(--text-dim); font-size:.76rem; line-height:2.2;
     }
-    footer.site-footer .footer-operator {
-      margin-top:10px; font-size:.7rem;
-    }
+    footer.site-footer .footer-operator { margin-top:10px; font-size:.7rem; }
     footer.site-footer a {
       color:var(--text-dim); text-decoration:underline;
       text-underline-offset:3px; cursor:pointer;
@@ -219,73 +233,160 @@
     }
     .privacy-close:hover { background:rgba(160,90,255,.25); color:var(--text-main); }
 
-    @media(max-width:580px) {
-      .services-grid { grid-template-columns:1fr; }
+    /* Hamburger button */
+    .hamburger-btn {
+      background:none; border:none; cursor:pointer;
+      display:flex; flex-direction:column; gap:5px;
+      padding:8px; margin-right:-8px;
+    }
+    .hamburger-btn span {
+      display:block; width:22px; height:2px;
+      background:#c0aad8; border-radius:2px;
+      transition:background .2s;
+    }
+    .hamburger-btn:hover span { background:#e8d0ff; }
+
+    /* Menu overlay + drawer */
+    .menu-overlay {
+      position:fixed; inset:0; z-index:998;
+      background:rgba(0,0,0,.55);
+      opacity:0; pointer-events:none; transition:opacity .3s;
+    }
+    .menu-overlay.show { opacity:1; pointer-events:all; }
+    .menu-drawer {
+      position:fixed; top:0; right:-100%;
+      width:min(300px,82vw); height:100vh; z-index:999;
+      background:linear-gradient(160deg,#130428 0%,#0b1032 100%);
+      border-left:1px solid rgba(200,160,255,.15);
+      overflow-y:auto; transition:right .3s ease;
+    }
+    .menu-drawer.show { right:0; }
+    .menu-top {
+      display:flex; align-items:center; justify-content:space-between;
+      padding:24px 20px 18px;
+    }
+    .menu-label {
+      font-size:1.25rem; font-weight:700; color:#f0e6ff;
+      font-family:'Noto Sans KR',sans-serif;
+    }
+    .menu-close-btn {
+      background:none; border:none; color:#8070a0;
+      font-size:1.1rem; cursor:pointer; padding:6px; line-height:1;
+    }
+    .menu-hr { border:none; border-top:1px solid rgba(200,160,255,.12); margin:0 0 6px; }
+    .menu-item {
+      display:flex; align-items:center;
+      padding:16px 20px; font-size:1rem; color:#f0e6ff;
+      text-decoration:none; cursor:pointer;
+      border:none; background:none; width:100%;
+      text-align:left; font-family:'Noto Serif KR',serif;
+      transition:background .15s; line-height:1.4;
+    }
+    .menu-item:hover { background:rgba(255,255,255,.04); }
+    .menu-item-disabled { color:#8070a0; cursor:default; pointer-events:none; }
+    .menu-item-disabled:hover { background:none; }
+    .chip-soon {
+      margin-left:8px; font-size:.65rem; padding:2px 9px;
+      border-radius:10px; background:rgba(180,100,255,.12);
+      border:1px solid rgba(180,100,255,.28); color:#c0a0ff;
+      font-family:'Noto Sans KR',sans-serif;
+    }
+
+    @media(max-width:480px) {
+      .banner-title { font-size:1.3rem; }
     }
   </style>
 </head>
 <body>
   <div class="rainbow-bar"></div>
   <div id="stars"></div>
-  <div id="petals"></div>
+
+  <header class="site-header">
+    <a href="/" class="header-brand">
+      <span class="brand-icon">🐾</span>
+      <span class="brand-name">펫타로</span>
+    </a>
+    <button class="hamburger-btn" id="hamburgerBtn" aria-label="메뉴 열기">
+      <span></span><span></span><span></span>
+    </button>
+  </header>
+
+  <div class="menu-overlay" id="menuOverlay"></div>
+  <nav class="menu-drawer" id="menuDrawer">
+    <div class="menu-top">
+      <span class="menu-label">메뉴</span>
+      <button class="menu-close-btn" id="menuClose">✕</button>
+    </div>
+    <hr class="menu-hr">
+    <a href="/" class="menu-item">홈</a>
+    <a href="/auth/" class="menu-item" id="miSignup">회원가입</a>
+    <a href="/auth/" class="menu-item" id="miLogin">로그인</a>
+    <a href="/mypage/" class="menu-item" id="miMypage">마이페이지</a>
+    <button class="menu-item" id="miLogout" style="display:none">로그아웃</button>
+    <span class="menu-item menu-item-disabled">선물하기 <span class="chip-soon">준비중</span></span>
+    <span class="menu-item menu-item-disabled">추천하기 <span class="chip-soon">준비중</span></span>
+    <a href="/contact/" class="menu-item">문의하기</a>
+  </nav>
+
+  <nav class="filter-nav">
+    <div class="filter-inner">
+      <button class="filter-tab active" data-filter="all">전체</button>
+      <button class="filter-tab" data-filter="simple">간단한 분석</button>
+      <button class="filter-tab" data-filter="deep">심층분석</button>
+    </div>
+  </nav>
 
   <div class="page">
-    <div class="container">
+    <div class="content-wrap">
 
-      <div class="hero">
-        <span class="hero-icon">🌈</span>
-        <h1>무지개 다리 너머 타로</h1>
-        <p class="hero-sub">
-          반려동물의 영혼과 연결되는 신비로운 공간<br>
-          타로카드를 통해 아이의 마음과 에너지를 읽어봐요
-        </p>
-      </div>
-
-      <p class="section-label">무료 서비스</p>
-
-      <div class="services-grid">
-        <a href="/rainbow-tarot/" class="service-card">
-          <span class="sc-emoji">🌈</span>
-          <div class="sc-title">무지개 다리 너머</div>
-          <div class="sc-desc">
-            무지개 다리를 건넌 반려동물의 영혼과 타로로 연결해요.
-            보내고 싶은 말, 듣고 싶은 말을 전해보세요.
+      <a href="/rainbow-tarot/" class="banner-card" data-category="simple">
+        <div class="banner-bg"><img src="/assets/images/1.png" alt="무지개 다리 너머"></div>
+        <div class="banner-overlay"></div>
+        <div class="banner-content">
+          <div class="banner-badges">
+            <span class="badge badge-free">무료</span>
+            <span class="badge badge-new">NEW</span>
           </div>
-          <span class="sc-badge">무료</span>
-        </a>
+          <h2 class="banner-title">무지개 다리 너머</h2>
+          <p class="banner-desc">무지개 다리를 건넌 반려동물의 영혼과<br>타로로 연결해보세요</p>
+        </div>
+      </a>
 
-        <a href="/mood-reading/" class="service-card">
-          <span class="sc-emoji">🐾</span>
-          <div class="sc-title">오늘 우리 아이 어때요?</div>
-          <div class="sc-desc">
-            지금 함께하는 반려동물의 오늘 기분과 에너지를 타로로 읽어봐요.
-            아이의 마음을 살짝 들여다보는 시간.
+      <a href="/mood-reading/" class="banner-card" data-category="simple">
+        <div class="banner-bg"><img src="/assets/images/2.png" alt="오늘 우리 아이 어때요?"></div>
+        <div class="banner-overlay"></div>
+        <div class="banner-content">
+          <div class="banner-badges">
+            <span class="badge badge-free">무료</span>
           </div>
-          <span class="sc-badge">무료</span>
-        </a>
+          <h2 class="banner-title">오늘 우리 아이 어때요?</h2>
+          <p class="banner-desc">지금 함께하는 반려동물의 오늘 기분과<br>에너지를 타로로 읽어봐요</p>
+        </div>
+      </a>
 
-        <a href="/guardian-tarot/" class="service-card">
-          <span class="sc-emoji">🪞</span>
-          <div class="sc-title">우리 아이 걱정될 때</div>
-          <div class="sc-desc">
-            건강, 행동, 관계… 반려동물로 인한 고민을 타로에게 물어봐요.
-            보호자님께 따뜻한 통찰을 전해드려요.
+      <a href="/guardian-tarot/" class="banner-card" data-category="simple">
+        <div class="banner-bg"><img src="/assets/images/3.png" alt="우리 아이 걱정될 때"></div>
+        <div class="banner-overlay"></div>
+        <div class="banner-content">
+          <div class="banner-badges">
+            <span class="badge badge-free">무료</span>
           </div>
-          <span class="sc-badge">무료</span>
-        </a>
-      </div>
+          <h2 class="banner-title">우리 아이 걱정될 때</h2>
+          <p class="banner-desc">건강, 행동, 관계… 반려동물 고민을<br>타로에게 물어봐요</p>
+        </div>
+      </a>
 
-      <div class="paid-card">
-        <div class="paid-rainbow"></div>
-        <span class="paid-emoji">🔮</span>
-        <div class="paid-title">심층 콤보 분석 <span style="font-size:.75rem;color:#a080c0;font-weight:300;">(출시 예정)</span></div>
-        <p class="paid-desc">
-          반려동물에 대한 고민을 구체적으로 적으면<br>
-          여러 카드를 통한 심층적인 콤보 리딩을 제공해드립니다.<br>
-          더 깊은 통찰과 맞춤형 메시지를 받아보세요.
-        </p>
-        <span class="paid-chip">준비 중</span>
-      </div>
+      <a href="/deep-reading/" class="banner-card" data-category="deep">
+        <div class="banner-bg"><img src="/assets/images/4.png" alt="심층 콤보 분석"></div>
+        <div class="banner-overlay"></div>
+        <div class="banner-content">
+          <div class="banner-badges">
+            <span class="badge badge-new">NEW</span>
+          </div>
+          <h2 class="banner-title">심층 콤보 분석</h2>
+          <p class="banner-desc">반려동물의 고민을 구체적으로 입력하면<br>여러 카드의 심층 콤보 리딩을 제공해드려요</p>
+        </div>
+      </a>
 
       <footer class="site-footer">
         <p>사랑하는 반려동물을 그리워하는 모든 분들을 위해 만들어졌습니다</p>
@@ -320,37 +421,45 @@
 
   <script>
     /* stars */
-    const $s=document.getElementById('stars');
-    for(let i=0;i<180;i++){
-      const el=document.createElement('div'); el.className='star';
-      const sz=Math.random()*2.5+.5;
-      el.style.cssText=`width:${sz}px;height:${sz}px;left:${Math.random()*100}%;top:${Math.random()*100}%;--d:${(Math.random()*3+2).toFixed(1)}s;--delay:${(Math.random()*4).toFixed(1)}s;`;
+    const $s = document.getElementById('stars');
+    for(let i = 0; i < 160; i++){
+      const el = document.createElement('div'); el.className = 'star';
+      const sz = Math.random() * 2.5 + .5;
+      el.style.cssText = `width:${sz}px;height:${sz}px;left:${Math.random()*100}%;top:${Math.random()*100}%;--d:${(Math.random()*3+2).toFixed(1)}s;--delay:${(Math.random()*4).toFixed(1)}s;`;
       $s.appendChild(el);
     }
-    /* petals */
-    const petEmoji=['✨','⭐','🌟','💫','🌸','🍃'];
-    const $p=document.getElementById('petals');
-    for(let i=0;i<16;i++){
-      const el=document.createElement('div'); el.className='petal';
-      el.textContent=petEmoji[i%petEmoji.length];
-      el.style.cssText=`left:${Math.random()*100}%;--fd:${(Math.random()*10+6).toFixed(1)}s;--fdelay:${(Math.random()*10).toFixed(1)}s;`;
-      $p.appendChild(el);
-    }
+
+    /* filter tabs */
+    document.querySelectorAll('.filter-tab').forEach(tab => {
+      tab.addEventListener('click', () => {
+        document.querySelectorAll('.filter-tab').forEach(t => t.classList.remove('active'));
+        tab.classList.add('active');
+        const f = tab.dataset.filter;
+        document.querySelectorAll('.banner-card').forEach(card => {
+          card.classList.toggle('hidden', f !== 'all' && card.dataset.category !== f);
+        });
+      });
+    });
+
     /* privacy */
     function openPrivacy(){
       document.getElementById('privacyOverlay').classList.add('show');
-      document.body.style.overflow='hidden';
+      document.body.style.overflow = 'hidden';
     }
     function closePrivacy(e){
-      if(e && e.target!==document.getElementById('privacyOverlay'))return;
+      if(e && e.target !== document.getElementById('privacyOverlay')) return;
       document.getElementById('privacyOverlay').classList.remove('show');
-      document.body.style.overflow='';
+      document.body.style.overflow = '';
     }
+
     /* analytics */
-    function track(n,p){ if(typeof gtag==='function') gtag('event',n,p||{}); }
-    document.querySelectorAll('.service-card').forEach(el=>{
-      el.addEventListener('click',()=>track('service_click',{href:el.getAttribute('href')}));
+    function track(n, p){ if(typeof gtag === 'function') gtag('event', n, p || {}); }
+    document.querySelectorAll('.banner-card').forEach(el => {
+      el.addEventListener('click', () =>
+        track('service_click', {href: el.getAttribute('href') || 'coming-soon', category: el.dataset.category})
+      );
     });
   </script>
+  <script src="/assets/auth.js"></script>
 </body>
 </html>

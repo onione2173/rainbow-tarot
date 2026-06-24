@@ -61,7 +61,7 @@ function showSpread(){
   wrap.innerHTML='';
   const cfg=spreadConfig();
   const N=78;
-  const SIGMA=10, MAX_PUSH=8;
+  const SIGMA=8, MAX_PUSH=4;
   shuffledDeck.forEach((card,i)=>{
     const angle=-cfg.ARC_HALF+(i/(N-1))*cfg.ARC_HALF*2;
     const el=document.createElement('div');
