@@ -1265,7 +1265,8 @@ ${speciesCtx}
     function loginAndSave() {
       try {
         const spreadKey = Object.keys(SPREADS).find(k => SPREADS[k].name === currentSpread.name);
-        sessionStorage.setItem('petarot_dr', JSON.stringify({
+        localStorage.setItem('petarot_dr', JSON.stringify({
+          _loginPending: true,
           spreadKey,
           petInfo,
           drawnCards: drawnCards.map(({ img, name, en, suit, upKw, rvKw, reversed, position }) =>
@@ -1461,7 +1462,7 @@ ${actionSummary
 
     // ── 로그인/결제 후 상태 복원 ──
     document.addEventListener('DOMContentLoaded', async () => {
-      const saved = sessionStorage.getItem('petarot_dr');
+      const saved = localStorage.getItem('petarot_dr');
       if (!saved) return;
       let state;
       try { state = JSON.parse(saved); } catch { return; }
@@ -1469,16 +1470,20 @@ ${actionSummary
       const urlParams = new URLSearchParams(window.location.search);
       const paidOk = urlParams.get('paid') === 'true';
       const payFail = urlParams.get('payment') === 'fail';
+      const hasAuthCallback = window.location.hash.includes('access_token') ||
+                              urlParams.has('code');
 
-      // URL 파라미터 제거
-      if (paidOk || payFail) {
+      if (!state._loginPending && !paidOk && !payFail) return;
+
+      // URL 파라미터/해시 제거
+      if (paidOk || payFail || hasAuthCallback) {
         window.history.replaceState({}, '', window.location.pathname);
       }
 
       const user = await getUser();
       if (!user) return;
 
-      sessionStorage.removeItem('petarot_dr');
+      localStorage.removeItem('petarot_dr');
       currentSpread = SPREADS[state.spreadKey];
       if (!currentSpread) return;
 

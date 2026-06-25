@@ -461,5 +461,18 @@
     });
   </script>
   <script src="/assets/auth.js"></script>
+  <script>
+    // 로그인 후 deep-reading 복귀 처리 (Supabase가 홈으로 튕겼을 때 대비)
+    (async () => {
+      const saved = localStorage.getItem('petarot_dr');
+      if (!saved) return;
+      let state;
+      try { state = JSON.parse(saved); } catch { return; }
+      if (!state._loginPending) return;
+      const user = await getUser();
+      if (!user) return;
+      window.location.replace('/deep-reading/');
+    })();
+  </script>
 </body>
 </html>
