@@ -1,0 +1,37 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>로그인 중...</title>
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/dist/umd/supabase.min.js"></script>
+  <script src="/assets/auth.js"></script>
+  <style>
+    body { display:flex; align-items:center; justify-content:center; min-height:100vh; margin:0; font-family:sans-serif; color:#666; }
+  </style>
+</head>
+<body>
+  <p>로그인 처리 중...</p>
+  <script>
+    (async () => {
+      // Supabase가 hash의 access_token을 처리할 시간을 줌
+      await new Promise(r => setTimeout(r, 800));
+
+      let user = await getUser();
+      if (!user) {
+        await new Promise(r => setTimeout(r, 1200));
+        user = await getUser();
+      }
+
+      const saved = localStorage.getItem('petarot_dr');
+      let returnPath = '/';
+      if (saved) {
+        try { returnPath = JSON.parse(saved)._returnPath || '/'; } catch {}
+      }
+
+      if (user) localStorage.removeItem('petarot_dr');
+      window.location.replace(returnPath);
+    })();
+  </script>
+</body>
+</html>

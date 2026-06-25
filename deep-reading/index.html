@@ -1267,6 +1267,7 @@ ${speciesCtx}
         const spreadKey = Object.keys(SPREADS).find(k => SPREADS[k].name === currentSpread.name);
         localStorage.setItem('petarot_dr', JSON.stringify({
           _loginPending: true,
+          _returnPath: '/deep-reading/',
           spreadKey,
           petInfo,
           drawnCards: drawnCards.map(({ img, name, en, suit, upKw, rvKw, reversed, position }) =>
@@ -1278,7 +1279,7 @@ ${speciesCtx}
       } catch(e) { console.warn('state save failed', e); }
 
       if (typeof signInWithKakao === 'function') {
-        signInWithKakao('/deep-reading/');
+        signInWithKakao('/auth-callback/');
       } else {
         window.location.href = '/auth/';
       }
