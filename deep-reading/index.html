@@ -272,7 +272,7 @@
       margin-bottom:12px;display:flex;align-items:center;gap:8px;
     }
     .report-text{
-      font-size:.86rem;color:var(--text-sub);line-height:2.05;
+      font-size:.86rem;color:#ddd6fe;line-height:2.05;
       font-family:'Noto Sans KR',sans-serif;font-weight:300;
       white-space:pre-wrap;
     }
@@ -1437,6 +1437,7 @@ ${actionSummary
         .replace(/\*\*(.*?)\*\*/g, '<strong>$1</strong>');
       el.innerHTML = html.split('\n').map(line => {
         if (line.startsWith('<div class="report-section')) return line;
+        if (/^-{2,}$/.test(line.trim())) return '';
         return `<span class="report-text" style="display:block">${line}</span>`;
       }).join('');
     }
