@@ -1360,7 +1360,7 @@ ${speciesCtx}
         ? actionCards.map(c => `${c.name}(${c.reversed ? '역방향' : '정방향'})`).join(', ')
         : null;
       const speciesCtx = buildSpeciesContext();
-      const systemPrompt = `당신은 반려동물 타로 전문가이자 동물 행동 상담사입니다. 따뜻하고 감성적이면서도 실용적인 한국어로 작성하세요. 동물의 종과 나이에 따른 특성을 리딩에 자연스럽게 반영하세요. 반드시 사용자가 입력한 구체적 정보(이름, 종, 나이, 고민)를 직접 언급하세요. 누구에게나 해당될 수 있는 일반적 표현은 절대 쓰지 마세요. 오직 이 아이에게만 해당하는 이야기를 쓰세요. 각 섹션은 충분한 분량으로 깊이 있게 작성하세요.`;
+      const systemPrompt = `당신은 반려동물 타로 전문가입니다. 따뜻하고 감성적인 한국어로 작성하세요. 반드시 이 아이의 이름, 종, 고민을 직접 언급하세요. 일반적인 표현은 쓰지 마세요.`;
       const userPrompt = `반려동물: ${petInfo.name} (${petInfo.species}${petInfo.age ? ', ' + petInfo.age : ''}${petInfo.gender ? ', ' + petInfo.gender : ''})
 ${speciesCtx}
 고민: ${petInfo.concern}
@@ -1369,53 +1369,98 @@ ${speciesCtx}
 ${cardSummary}
 ${actionSummary ? `\n행동 가이드 카드: ${actionSummary}` : ''}
 
-아래 네 섹션으로 심층 리포트를 작성하세요. 각 섹션은 충분한 분량(섹션당 최소 200자 이상)으로 작성하세요:
+아래 네 섹션으로 리포트를 작성하세요:
 
-## 🃏 카드별 포지션 심층 해석
-각 카드를 해당 포지션의 의미와 결합하여 해석. "${petInfo.name}의 상황"에 직접 연결. 카드 상징이 이 포지션에서 갖는 고유한 의미를 설명. (각 카드 4~5줄씩)
+## 🃏 카드별 포지션 해석
+각 카드를 포지션 의미와 결합하여 해석. ${petInfo.name}의 상황에 직접 연결. (각 카드 2~3줄)
 
 ## 💌 ${petInfo.name}의 속마음
-${petInfo.name}의 1인칭 시점으로 쓰는 내면 독백. 아이가 보호자에게 직접 말하는 형식. 감성적이고 구체적으로. 아이의 행동, 감정, 바람을 솔직하게. (8~12줄)
+${petInfo.name}의 1인칭 시점 내면 독백. 보호자에게 직접 말하는 형식. (5~6줄)
 
 ## 🐾 보호자님께
-보호자가 놓치고 있을 수 있는 관점 제시. 아이의 행동을 다른 시선으로 해석해주는 내용. 감정적 위로와 공감 포함. (6~8줄)
+놓치고 있을 수 있는 관점 제시, 위로와 공감. (3~4줄)
 
 ## ✨ 앞으로의 행동 가이드
 ${actionSummary
-  ? `보호자가 뽑은 행동 가이드 카드(${actionSummary})를 각각 해석하여 구체적인 실천 방법을 제시하세요. 각 항목마다: **[카드 이름]** — 이 카드가 말하는 행동, 구체적인 실천 방법, 이렇게 해야 하는 이유(카드 상징과 연결하여). 1~${actionCards.length}가지.`
-  : `위 스프레드 카드들을 바탕으로 앞으로 실천할 수 있는 행동 가이드 1~3가지를 제시하세요. 각 항목마다: 구체적인 실천 방법, 이렇게 해야 하는 이유.`}`;
+  ? `행동 가이드 카드(${actionSummary})를 해석하여 실천 방법 제시. 각 항목: **[카드 이름]** — 행동과 이유. 1~${actionCards.length}가지.`
+  : `카드를 바탕으로 실천할 수 있는 행동 가이드 2가지. 각 항목: 실천 방법과 이유.`}`;
 
+      let res;
       try {
-        const res = await fetch('/.netlify/functions/deep-tarot', {
+        res = await fetch('/.netlify/functions/deep-tarot', {
           method: 'POST',
           headers: { 'Content-Type': 'application/json' },
           body: JSON.stringify({
             system: systemPrompt,
             messages: [{ role: 'user', content: userPrompt }],
             paid: true,
+            stream: true,
             paymentKey
           })
         });
-        const data = await res.json();
-        const text = data.content?.[0]?.text || '';
-
-        reportLoadBox.style.display = 'none';
-        reportContent.style.display = '';
-
-        if (!text) {
-          const errMsg = data.error?.message || data.message || `API 오류 (${res.status})`;
-          reportText.textContent = `리포트 생성 중 오류가 발생했습니다: ${errMsg}`;
-          return;
-        }
-
-        renderReportText(reportText, text);
-        saveReading(text);
-        if (typeof gtag === 'function') gtag('event', 'deep_reading_complete', { spread: currentSpread.name });
       } catch (e) {
         reportLoadBox.style.display = 'none';
         reportContent.style.display = '';
-        reportText.textContent = `리포트를 불러오는 중 오류가 발생했습니다: ${e.message}`;
+        reportText.textContent = `네트워크 오류: ${e.message}`;
+        return;
       }
+
+      if (!res.ok) {
+        const errData = await res.json().catch(() => ({}));
+        const errMsg = errData.error?.message || `API 오류 (${res.status})`;
+        reportLoadBox.style.display = 'none';
+        reportContent.style.display = '';
+        reportText.textContent = `리포트 생성 중 오류가 발생했습니다: ${errMsg}`;
+        return;
+      }
+
+      reportLoadBox.style.display = 'none';
+      reportContent.style.display = '';
+      reportText.innerHTML = '';
+
+      const reader = res.body.getReader();
+      const decoder = new TextDecoder();
+      let buffer = '';
+      let fullText = '';
+      let renderScheduled = false;
+
+      function scheduleRender() {
+        if (renderScheduled) return;
+        renderScheduled = true;
+        requestAnimationFrame(() => {
+          renderReportText(reportText, fullText + '▌');
+          renderScheduled = false;
+        });
+      }
+
+      try {
+        while (true) {
+          const { done, value } = await reader.read();
+          if (done) break;
+          buffer += decoder.decode(value, { stream: true });
+          const lines = buffer.split('\n');
+          buffer = lines.pop();
+          for (const line of lines) {
+            if (!line.startsWith('data: ')) continue;
+            const raw = line.slice(6).trim();
+            if (raw === '[DONE]') break;
+            try {
+              const parsed = JSON.parse(raw);
+              if (parsed.type === 'content_block_delta' && parsed.delta?.type === 'text_delta') {
+                fullText += parsed.delta.text;
+                scheduleRender();
+              }
+            } catch {}
+          }
+        }
+      } catch (e) {
+        reportText.textContent = `스트리밍 오류: ${e.message}`;
+        return;
+      }
+
+      renderReportText(reportText, fullText);
+      saveReading(fullText);
+      if (typeof gtag === 'function') gtag('event', 'deep_reading_complete', { spread: currentSpread.name });
     }
 
     // 마크다운 섹션 렌더링
