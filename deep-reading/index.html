@@ -1385,82 +1385,37 @@ ${actionSummary
   ? `행동 가이드 카드(${actionSummary})를 해석하여 실천 방법 제시. 각 항목: **[카드 이름]** — 행동과 이유. 1~${actionCards.length}가지.`
   : `카드를 바탕으로 실천할 수 있는 행동 가이드 2가지. 각 항목: 실천 방법과 이유.`}`;
 
-      let res;
       try {
-        res = await fetch('/.netlify/functions/deep-tarot', {
+        const res = await fetch('/.netlify/functions/deep-tarot', {
           method: 'POST',
           headers: { 'Content-Type': 'application/json' },
           body: JSON.stringify({
             system: systemPrompt,
             messages: [{ role: 'user', content: userPrompt }],
             paid: true,
-            stream: true,
             paymentKey
           })
         });
-      } catch (e) {
+        const data = await res.json();
+        const text = data.content?.[0]?.text || '';
+
         reportLoadBox.style.display = 'none';
         reportContent.style.display = '';
-        reportText.textContent = `네트워크 오류: ${e.message}`;
-        return;
-      }
 
-      if (!res.ok) {
-        const errData = await res.json().catch(() => ({}));
-        const errMsg = errData.error?.message || `API 오류 (${res.status})`;
-        reportLoadBox.style.display = 'none';
-        reportContent.style.display = '';
-        reportText.textContent = `리포트 생성 중 오류가 발생했습니다: ${errMsg}`;
-        return;
-      }
-
-      reportLoadBox.style.display = 'none';
-      reportContent.style.display = '';
-      reportText.innerHTML = '';
-
-      const reader = res.body.getReader();
-      const decoder = new TextDecoder();
-      let buffer = '';
-      let fullText = '';
-      let renderScheduled = false;
-
-      function scheduleRender() {
-        if (renderScheduled) return;
-        renderScheduled = true;
-        requestAnimationFrame(() => {
-          renderReportText(reportText, fullText + '▌');
-          renderScheduled = false;
-        });
-      }
-
-      try {
-        while (true) {
-          const { done, value } = await reader.read();
-          if (done) break;
-          buffer += decoder.decode(value, { stream: true });
-          const lines = buffer.split('\n');
-          buffer = lines.pop();
-          for (const line of lines) {
-            if (!line.startsWith('data: ')) continue;
-            const raw = line.slice(6).trim();
-            if (raw === '[DONE]') break;
-            try {
-              const parsed = JSON.parse(raw);
-              if (parsed.type === 'content_block_delta' && parsed.delta?.type === 'text_delta') {
-                fullText += parsed.delta.text;
-                scheduleRender();
-              }
-            } catch {}
-          }
+        if (!text) {
+          const errMsg = data.error?.message || data.message || `API 오류 (${res.status})`;
+          reportText.textContent = `리포트 생성 중 오류가 발생했습니다: ${errMsg}`;
+          return;
         }
-      } catch (e) {
-        reportText.textContent = `스트리밍 오류: ${e.message}`;
-        return;
-      }
 
-      renderReportText(reportText, fullText);
-      saveReading(fullText);
-      if (typeof gtag === 'function') gtag('event', 'deep_reading_complete', { spread: currentSpread.name });
+        renderReportText(reportText, text);
+        saveReading(text);
+        if (typeof gtag === 'function') gtag('event', 'deep_reading_complete', { spread: currentSpread.name });
+      } catch (e) {
+        reportLoadBox.style.display = 'none';
+        reportContent.style.display = '';
+        reportText.textContent = `리포트를 불러오는 중 오류가 발생했습니다: ${e.message}`;
+      }
     }
 
     // 마크다운 섹션 렌더링
