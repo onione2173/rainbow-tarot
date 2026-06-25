@@ -29,24 +29,29 @@ exports.handler = async (event) => {
   delete payload.paid;
   delete payload.paymentKey;
 
-  // TODO: 나이스페이 결제 검증 추가 예정
-  // isPaid === true 일 때 payload.paymentKey 로 나이스페이 서버 검증 후 리포트 발급
+  try {
+    const response = await fetch('https://api.anthropic.com/v1/messages', {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+        'x-api-key': apiKey,
+        'anthropic-version': '2023-06-01',
+      },
+      body: JSON.stringify(payload),
+    });
 
-  const response = await fetch('https://api.anthropic.com/v1/messages', {
-    method: 'POST',
-    headers: {
-      'Content-Type': 'application/json',
-      'x-api-key': apiKey,
-      'anthropic-version': '2023-06-01',
-    },
-    body: JSON.stringify(payload),
-  });
+    const data = await response.json();
 
-  const data = await response.json();
-
-  return {
-    statusCode: response.status,
-    headers: { 'Content-Type': 'application/json' },
-    body: JSON.stringify(data),
-  };
+    return {
+      statusCode: response.status,
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify(data),
+    };
+  } catch (e) {
+    return {
+      statusCode: 500,
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ error: { message: e.message || '서버 오류' } }),
+    };
+  }
 };
