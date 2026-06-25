@@ -269,7 +269,13 @@
     .report-section{margin-bottom:24px;}
     .report-section-title{
       font-size:.9rem;font-weight:600;color:#c8a8f0;
-      margin-bottom:12px;display:flex;align-items:center;gap:8px;
+      margin-top:2.5rem;margin-bottom:12px;display:flex;align-items:center;gap:8px;
+    }
+    .report-section-title:first-child{ margin-top:0; }
+    .report-card-header{
+      display:block;font-size:.86rem;font-weight:600;color:#c8a8f0;
+      margin-top:1.6rem;margin-bottom:4px;
+      font-family:'Noto Sans KR',sans-serif;
     }
     .report-text{
       font-size:.86rem;color:#ddd6fe;line-height:2.05;
@@ -1433,11 +1439,15 @@ ${actionSummary
 
     function renderReportText(el, text) {
       const html = text
+        .replace(/^# .+$/gm, '')
         .replace(/## (.*)/g, '<div class="report-section-title">$1</div><div class="report-divider"></div>')
         .replace(/\*\*(.*?)\*\*/g, '<strong>$1</strong>');
       el.innerHTML = html.split('\n').map(line => {
         if (line.startsWith('<div class="report-section')) return line;
         if (/^-{2,}$/.test(line.trim())) return '';
+        if (/^\[.+\]/.test(line.trim())) {
+          return `<span class="report-card-header">${line}</span>`;
+        }
         return `<span class="report-text" style="display:block">${line}</span>`;
       }).join('');
     }
