@@ -469,6 +469,10 @@
       let state;
       try { state = JSON.parse(saved); } catch { return; }
       if (!state._loginPending) return;
+      if (state._savedAt && Date.now() - state._savedAt > 30 * 60 * 1000) {
+        localStorage.removeItem('petarot_dr');
+        return;
+      }
       const user = await getUser();
       if (!user) return;
       window.location.replace('/deep-reading/');

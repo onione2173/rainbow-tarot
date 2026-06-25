@@ -26,10 +26,14 @@
       const saved = localStorage.getItem('petarot_dr');
       let returnPath = '/';
       if (saved) {
-        try { returnPath = JSON.parse(saved)._returnPath || '/'; } catch {}
+        try {
+          const state = JSON.parse(saved);
+          const expired = state._savedAt && Date.now() - state._savedAt > 30 * 60 * 1000;
+          returnPath = (!expired && state._returnPath) ? state._returnPath : '/';
+        } catch {}
       }
 
-      if (user) localStorage.removeItem('petarot_dr');
+      localStorage.removeItem('petarot_dr');
       window.location.replace(returnPath);
     })();
   </script>

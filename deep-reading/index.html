@@ -1268,6 +1268,7 @@ ${speciesCtx}
         localStorage.setItem('petarot_dr', JSON.stringify({
           _loginPending: true,
           _returnPath: '/deep-reading/',
+          _savedAt: Date.now(),
           spreadKey,
           petInfo,
           drawnCards: drawnCards.map(({ img, name, en, suit, upKw, rvKw, reversed, position }) =>
@@ -1473,6 +1474,12 @@ ${actionSummary
       const payFail = urlParams.get('payment') === 'fail';
       const hasAuthCallback = window.location.hash.includes('access_token') ||
                               urlParams.has('code');
+
+      // 30분 지난 저장 데이터는 무효 처리
+      if (state._savedAt && Date.now() - state._savedAt > 30 * 60 * 1000) {
+        localStorage.removeItem('petarot_dr');
+        return;
+      }
 
       if (!state._loginPending && !paidOk && !payFail) return;
 
