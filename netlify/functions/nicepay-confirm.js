@@ -1,6 +1,16 @@
 exports.handler = async (event) => {
-  const p = event.queryStringParameters || {};
-  const { authResultCode, tid, orderId, amount } = p;
+  // NicePay 서버승인: POST body (form-urlencoded) 또는 GET 쿼리파라미터 모두 처리
+  let p = { ...(event.queryStringParameters || {}) };
+  if (event.body) {
+    const raw = event.isBase64Encoded
+      ? Buffer.from(event.body, 'base64').toString()
+      : event.body;
+    try {
+      new URLSearchParams(raw).forEach((v, k) => { p[k] = v; });
+    } catch {}
+  }
+
+  const { authResultCode, authResultMsg, tid, orderId, amount } = p;
 
   const fail = (msg) => ({
     statusCode: 302,
@@ -9,7 +19,7 @@ exports.handler = async (event) => {
   });
 
   if (authResultCode !== '0000') {
-    return fail(p.authResultMsg || '결제 인증 실패');
+    return fail(authResultMsg || '결제 인증 실패');
   }
 
   const clientId = process.env.NICEPAY_CLIENT_KEY;
