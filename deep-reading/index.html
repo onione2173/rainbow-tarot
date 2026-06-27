@@ -1495,11 +1495,20 @@ ${actionSummary
       }
     }
 
-    // Supabase 저장 (결제 미완료 — 3일 보관)
+    // Supabase 저장 (결제 미완료 — 3일 보관, full_reading에 상태 스냅샷 저장)
     async function savePendingReading() {
       const user = await getUser();
       if (!user || !window._sb) return;
       const expires = new Date(Date.now() + 3 * 24 * 60 * 60 * 1000).toISOString();
+      const spreadKey = Object.keys(SPREADS).find(k => SPREADS[k].name === currentSpread?.name);
+      const snapshot = JSON.stringify({
+        _pending: true,
+        spreadKey,
+        petInfo,
+        drawnCards,
+        actionCards,
+        freeText: freeReadingText
+      });
       try {
         await window._sb.from('reading_history').insert({
           user_id: user.id,
@@ -1508,7 +1517,7 @@ ${actionSummary
           pet_species: petInfo?.species || '',
           concern: petInfo?.concern || '',
           cards_drawn: drawnCards.map(c => ({ name: c.name, reversed: c.reversed, position: c.position })),
-          full_reading: null,
+          full_reading: snapshot,
           amount: 1500,
           status: '결제 필요',
           expires_at: expires
@@ -1537,7 +1546,7 @@ ${actionSummary
         return;
       }
 
-      if (!state._loginPending && !paidOk && !payFail) return;
+      if (!state._loginPending && !state._resumePending && !paidOk && !payFail) return;
 
       // URL 파라미터/해시 제거
       if (paidOk || payFail || hasAuthCallback) {

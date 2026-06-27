@@ -170,6 +170,25 @@
       font-size:.7rem;color:var(--text-dim);
       font-family:'Noto Sans KR',sans-serif;margin-top:2px;
     }
+    .btn-resume{
+      display:inline-block;margin-top:10px;padding:7px 16px;
+      background:rgba(255,160,60,.14);border:1px solid rgba(255,160,60,.38);
+      border-radius:12px;color:#ffb86c;font-size:.78rem;
+      font-family:'Noto Sans KR',sans-serif;cursor:pointer;
+    }
+    .btn-view{
+      display:inline-block;margin-top:10px;padding:7px 16px;
+      background:rgba(170,90,255,.12);border:1px solid rgba(170,90,255,.3);
+      border-radius:12px;color:#d0aaff;font-size:.78rem;
+      font-family:'Noto Sans KR',sans-serif;cursor:pointer;
+    }
+    .reading-expand{
+      margin-top:14px;padding:14px;
+      background:rgba(255,255,255,.03);border:1px solid rgba(200,160,255,.1);
+      border-radius:10px;font-size:.82rem;color:var(--text-sub);
+      line-height:1.85;font-family:'Noto Serif KR',serif;
+      white-space:pre-wrap;display:none;
+    }
 
     /* Link list */
     .link-list a,.link-list button{
@@ -320,7 +339,7 @@
 
           if (visible.length > 0) {
             const list = document.getElementById('historyList');
-            list.innerHTML = visible.map(r => {
+            list.innerHTML = visible.map((r, i) => {
               const isPending = r.status === '결제 필요';
               const title = escHtml(r.spread_type || r.reading_type || '리딩');
               const petName = r.pet_name ? ` — ${escHtml(r.pet_name)}` : '';
@@ -328,14 +347,25 @@
               const expireStr = isPending && r.expires_at
                 ? `<div class="history-item-expires">보관 만료: ${new Date(r.expires_at).toLocaleDateString('ko-KR')}</div>`
                 : '';
+              const actionBtn = isPending
+                ? `<button class="btn-resume" onclick="resumeReading(${i})">이어서 결제하기</button>`
+                : r.full_reading
+                  ? `<button class="btn-view" onclick="toggleReading(${i})">다시 보기</button>`
+                  : '';
+              const expandDiv = (!isPending && r.full_reading)
+                ? `<div class="reading-expand" id="expand-${i}">${renderMd(r.full_reading)}</div>`
+                : '';
               return `
                 <div class="history-item">
                   <div class="history-item-title">${title}${petName}${badge}</div>
                   <div class="history-item-meta">${new Date(r.created_at).toLocaleDateString('ko-KR')}</div>
                   ${expireStr}
+                  ${actionBtn}
+                  ${expandDiv}
                 </div>
               `;
             }).join('');
+            window._readings = visible;
           }
         }
       }
@@ -343,6 +373,41 @@
 
     function escHtml(s) {
       return String(s).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;');
+    }
+
+    function renderMd(text) {
+      return escHtml(text)
+        .replace(/^## (.+)$/gm, '<strong style="display:block;margin-top:14px;color:#e8c4ff">$1</strong>')
+        .replace(/\*\*(.+?)\*\*/g, '<strong>$1</strong>')
+        .replace(/\n/g, '<br>');
+    }
+
+    function resumeReading(idx) {
+      const r = window._readings?.[idx];
+      if (!r || !r.full_reading) return;
+      let snap;
+      try { snap = JSON.parse(r.full_reading); } catch { return; }
+      if (!snap._pending) return;
+      localStorage.setItem('petarot_dr', JSON.stringify({
+        ...snap,
+        _pending: undefined,
+        _resumePending: true,
+        _savedAt: Date.now()
+      }));
+      window.location.href = '/deep-reading/';
+    }
+
+    function toggleReading(idx) {
+      const el = document.getElementById('expand-' + idx);
+      if (!el) return;
+      const btn = el.previousElementSibling;
+      if (el.style.display === 'none' || !el.style.display) {
+        el.style.display = 'block';
+        if (btn) btn.textContent = '접기';
+      } else {
+        el.style.display = 'none';
+        if (btn) btn.textContent = '다시 보기';
+      }
     }
 
     initMypage();
