@@ -160,6 +160,16 @@
       font-family:'Noto Sans KR',sans-serif;text-decoration:none;
       cursor:pointer;border:none;
     }
+    .badge-pending{
+      display:inline-block;margin-left:8px;padding:2px 8px;
+      background:rgba(255,160,60,.12);border:1px solid rgba(255,160,60,.35);
+      border-radius:10px;color:#ffb86c;font-size:.68rem;
+      font-family:'Noto Sans KR',sans-serif;vertical-align:middle;
+    }
+    .history-item-expires{
+      font-size:.7rem;color:var(--text-dim);
+      font-family:'Noto Sans KR',sans-serif;margin-top:2px;
+    }
 
     /* Link list */
     .link-list a,.link-list button{
@@ -289,7 +299,7 @@
         avatarEl.innerHTML = `<img src="${avatar}" alt="">`;
       }
 
-      // Load paid reading history
+      // Load reading history (completed + pending)
       if (window._sb) {
         const { data: readings } = await window._sb
           .from('reading_history')
@@ -299,13 +309,34 @@
           .limit(20);
 
         if (readings && readings.length > 0) {
-          const list = document.getElementById('historyList');
-          list.innerHTML = readings.map(r => `
-            <div class="history-item">
-              <div class="history-item-title">${escHtml(r.reading_type || '리딩')}</div>
-              <div class="history-item-meta">${new Date(r.created_at).toLocaleDateString('ko-KR')}</div>
-            </div>
-          `).join('');
+          const now = Date.now();
+          // 만료된 미완료 항목 제외
+          const visible = readings.filter(r => {
+            if (r.status === '결제 필요' && r.expires_at) {
+              return new Date(r.expires_at).getTime() > now;
+            }
+            return true;
+          });
+
+          if (visible.length > 0) {
+            const list = document.getElementById('historyList');
+            list.innerHTML = visible.map(r => {
+              const isPending = r.status === '결제 필요';
+              const title = escHtml(r.spread_type || r.reading_type || '리딩');
+              const petName = r.pet_name ? ` — ${escHtml(r.pet_name)}` : '';
+              const badge = isPending ? `<span class="badge-pending">결제 필요</span>` : '';
+              const expireStr = isPending && r.expires_at
+                ? `<div class="history-item-expires">보관 만료: ${new Date(r.expires_at).toLocaleDateString('ko-KR')}</div>`
+                : '';
+              return `
+                <div class="history-item">
+                  <div class="history-item-title">${title}${petName}${badge}</div>
+                  <div class="history-item-meta">${new Date(r.created_at).toLocaleDateString('ko-KR')}</div>
+                  ${expireStr}
+                </div>
+              `;
+            }).join('');
+          }
         }
       }
     }

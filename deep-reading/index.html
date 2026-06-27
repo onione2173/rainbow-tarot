@@ -1350,17 +1350,18 @@ ${speciesCtx}
         return;
       }
 
-      // 결제 후 복귀를 위해 상태 저장
+      // 결제 후 복귀를 위해 상태 저장 (localStorage: 결제 redirect 후에도 유지)
       try {
         const spreadKey = Object.keys(SPREADS).find(k => SPREADS[k].name === currentSpread.name);
-        sessionStorage.setItem('petarot_dr', JSON.stringify({
+        localStorage.setItem('petarot_dr', JSON.stringify({
           spreadKey, petInfo,
           drawnCards: drawnCards.map(({ img, name, en, suit, upKw, rvKw, reversed, position }) =>
             ({ img, name, en, suit, upKw, rvKw, reversed, position })),
           actionCards: actionCards.map(({ img, name, en, suit, upKw, rvKw, reversed }) =>
             ({ img, name, en, suit, upKw, rvKw, reversed })),
           freeText: freeReadingText,
-          awaitingPayment: true
+          awaitingPayment: true,
+          _savedAt: Date.now()
         }));
       } catch(e) { console.warn('state save failed', e); }
 
@@ -1373,6 +1374,7 @@ ${speciesCtx}
         returnUrl: window.location.origin + '/.netlify/functions/nicepay-confirm',
         fnError: function(result) {
           alert(result.errorMsg || '결제 오류가 발생했습니다. 다시 시도해주세요.');
+          savePendingReading();
         }
       });
     }
@@ -1471,7 +1473,7 @@ ${actionSummary
       }).join('');
     }
 
-    // Supabase 저장
+    // Supabase 저장 (결제 완료)
     async function saveReading(fullText) {
       const user = await getUser();
       if (!user || !window._sb) return;
@@ -1484,11 +1486,35 @@ ${actionSummary
           concern: petInfo.concern,
           cards_drawn: drawnCards.map(c => ({ name: c.name, reversed: c.reversed, position: c.position })),
           full_reading: fullText,
-          amount: 100
+          amount: 1500,
+          status: 'completed'
         });
         document.getElementById('savedBadge').style.display = '';
       } catch (e) {
         console.warn('reading save failed', e);
+      }
+    }
+
+    // Supabase 저장 (결제 미완료 — 3일 보관)
+    async function savePendingReading() {
+      const user = await getUser();
+      if (!user || !window._sb) return;
+      const expires = new Date(Date.now() + 3 * 24 * 60 * 60 * 1000).toISOString();
+      try {
+        await window._sb.from('reading_history').insert({
+          user_id: user.id,
+          spread_type: currentSpread?.name || '',
+          pet_name: petInfo?.name || '',
+          pet_species: petInfo?.species || '',
+          concern: petInfo?.concern || '',
+          cards_drawn: drawnCards.map(c => ({ name: c.name, reversed: c.reversed, position: c.position })),
+          full_reading: null,
+          amount: 1500,
+          status: '결제 필요',
+          expires_at: expires
+        });
+      } catch(e) {
+        console.warn('pending reading save failed', e);
       }
     }
 
@@ -1539,10 +1565,11 @@ ${actionSummary
         return;
       }
 
-      // 결제 실패 → 페이월로 복귀 + 안내
+      // 결제 실패 → 페이월로 복귀 + 안내 + 미완료 기록 저장
       if (payFail) {
         const msg = urlParams.get('msg') || '결제가 취소되었어요.';
         alert(msg + ' 다시 시도해주세요.');
+        savePendingReading();
       }
 
       goTo('secFreeRead');
