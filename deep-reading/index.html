@@ -746,6 +746,14 @@
           <div id="freeReadText" style="display:none"></div>
         </div>
 
+        <!-- 광고 -->
+        <div style="margin:20px 0;text-align:center">
+          <ins class="kakao_ad_area" style="display:none;"
+            data-ad-unit="DAN-ejCFNgq7DI1au9h9"
+            data-ad-width="320"
+            data-ad-height="100"></ins>
+        </div>
+
         <!-- 페이월 -->
         <div class="paywall-box" id="paywallBox" style="display:none">
           <div class="paywall-preview" id="paywallPreview"></div>
@@ -1391,6 +1399,9 @@ ${speciesCtx}
         : null;
       const speciesCtx = buildSpeciesContext();
       const systemPrompt = `당신은 반려동물 타로 전문가입니다. 따뜻하고 감성적인 한국어로 작성하세요. 반드시 이 아이의 이름, 종, 고민을 직접 언급하세요. 일반적인 표현은 쓰지 마세요.`;
+      const freeCtx = freeReadingText
+        ? `\n무료 미리보기에서 제공된 첫 카드 해석 (이를 참고하여 더 깊이 확장하세요):\n${freeReadingText}\n`
+        : '';
       const userPrompt = `반려동물: ${petInfo.name} (${petInfo.species}${petInfo.age ? ', ' + petInfo.age : ''}${petInfo.gender ? ', ' + petInfo.gender : ''})
 ${speciesCtx}
 고민: ${petInfo.concern}
@@ -1398,22 +1409,22 @@ ${speciesCtx}
 뽑힌 카드:
 ${cardSummary}
 ${actionSummary ? `\n행동 가이드 카드: ${actionSummary}` : ''}
-
-아래 네 섹션으로 리포트를 작성하세요:
+${freeCtx}
+아래 네 섹션으로 충분히 풍부하게 리포트를 작성하세요:
 
 ## 🃏 카드별 포지션 해석
-각 카드를 포지션 의미와 결합하여 해석. ${petInfo.name}의 상황에 직접 연결. (각 카드 2~3줄)
+각 카드를 포지션 의미와 결합하여 깊이 있게 해석. ${petInfo.name}의 상황에 직접 연결. 카드 간 흐름과 연결도 언급. (각 카드 3~4줄)
 
 ## 💌 ${petInfo.name}의 속마음
-${petInfo.name}의 1인칭 시점 내면 독백. 보호자에게 직접 말하는 형식. (5~6줄)
+${petInfo.name}의 1인칭 시점 내면 독백. 보호자에게 직접 말하는 형식. 감정과 바람을 구체적으로 표현. (6~8줄)
 
 ## 🐾 보호자님께
-놓치고 있을 수 있는 관점 제시, 위로와 공감. (3~4줄)
+카드 전체 흐름을 바탕으로 놓치고 있을 수 있는 관점, 위로와 공감. 구체적인 인사이트 포함. (4~5줄)
 
 ## ✨ 앞으로의 행동 가이드
 ${actionSummary
-  ? `행동 가이드 카드(${actionSummary})를 해석하여 실천 방법 제시. 각 항목: **[카드 이름]** — 행동과 이유. 1~${actionCards.length}가지.`
-  : `카드를 바탕으로 실천할 수 있는 행동 가이드 2가지. 각 항목: 실천 방법과 이유.`}`;
+  ? `행동 가이드 카드(${actionSummary})를 해석하여 실천 방법 제시. 각 항목: **[카드 이름]** — 구체적인 행동과 이유. 1~${actionCards.length}가지.`
+  : `카드를 바탕으로 실천할 수 있는 구체적인 행동 가이드 3가지. 각 항목: **행동** — 이유와 방법.`}`;
 
       try {
         const res = await fetch('/.netlify/functions/deep-tarot', {
@@ -1460,9 +1471,11 @@ ${actionSummary
 
     function renderReportText(el, text) {
       const html = text
+        .replace(/^#{1,6}\s*$/gm, '')
         .replace(/^# .+$/gm, '')
         .replace(/## (.*)/g, '<div class="report-section-title">$1</div><div class="report-divider"></div>')
-        .replace(/\*\*(.*?)\*\*/g, '<strong>$1</strong>');
+        .replace(/\*\*(.*?)\*\*/g, '<strong>$1</strong>')
+        .replace(/\*(.*?)\*/g, '<em>$1</em>');
       el.innerHTML = html.split('\n').map(line => {
         if (line.startsWith('<div class="report-section')) return line;
         if (/^-{2,}$/.test(line.trim())) return '';

@@ -25,7 +25,7 @@ exports.handler = async (event) => {
 
   const isPaid = payload.paid === true;
   payload.model = 'claude-sonnet-4-6';
-  payload.max_tokens = isPaid ? 1200 : 600;
+  payload.max_tokens = isPaid ? 2500 : 600;
   delete payload.paid;
   delete payload.paymentKey;
   delete payload.stream;
