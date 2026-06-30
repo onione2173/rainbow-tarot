@@ -331,7 +331,7 @@
           const now = Date.now();
           // 만료된 미완료 항목 제외
           const visible = readings.filter(r => {
-            if (r.status === '결제 필요' && r.expires_at) {
+            if ((r.status === '결제 필요' || r.status === '생성 중' || r.status === '오류') && r.expires_at) {
               return new Date(r.expires_at).getTime() > now;
             }
             return true;
@@ -341,14 +341,24 @@
             const list = document.getElementById('historyList');
             list.innerHTML = visible.map((r, i) => {
               const isPending = r.status === '결제 필요';
+              const isGenerating = r.status === '생성 중';
+              const isError = r.status === '오류';
               const title = escHtml(r.spread_type || r.reading_type || '리딩');
               const petName = r.pet_name ? ` — ${escHtml(r.pet_name)}` : '';
-              const badge = isPending ? `<span class="badge-pending">결제 필요</span>` : '';
-              const expireStr = isPending && r.expires_at
+              const badge = isPending
+                ? `<span class="badge-pending">결제 필요</span>`
+                : isGenerating ? `<span class="badge-pending" style="color:#a0d8ff;border-color:rgba(100,180,255,.35);background:rgba(100,180,255,.08)">생성 중</span>`
+                : isError ? `<span class="badge-pending" style="color:#f09090;border-color:rgba(240,100,100,.35);background:rgba(240,100,100,.08)">오류</span>`
+                : '';
+              const expireStr = (isPending || isGenerating || isError) && r.expires_at
                 ? `<div class="history-item-expires">보관 만료: ${new Date(r.expires_at).toLocaleDateString('ko-KR')}</div>`
                 : '';
               const actionBtn = isPending
                 ? `<button class="btn-resume" onclick="resumeReading(${i})">이어서 결제하기</button>`
+                : isGenerating
+                  ? `<button class="btn-resume" onclick="checkGenerating(${i})" style="background:rgba(100,180,255,.12);color:#a0d8ff;border-color:rgba(100,180,255,.3)">완료됐는지 확인하기</button>`
+                : isError
+                  ? `<button class="btn-resume" onclick="resumeReading(${i})" style="background:rgba(200,160,255,.12);color:#c8a8f0;border-color:rgba(200,160,255,.3)">다시 시도하기</button>`
                 : r.full_reading
                   ? `<button class="btn-view" onclick="toggleReading(${i})">다시 보기</button>`
                   : '';
@@ -395,6 +405,18 @@
         _savedAt: Date.now()
       }));
       window.location.href = '/deep-reading/';
+    }
+
+    async function checkGenerating(idx) {
+      const r = window._readings?.[idx];
+      if (!r?.id) return;
+      const { data } = await window._sb.from('reading_history').select('status,full_reading').eq('id', r.id).single();
+      if (!data) return;
+      if (data.status === 'completed') {
+        window.location.reload();
+      } else {
+        alert('아직 생성 중이에요. 잠시 후 다시 확인해주세요.');
+      }
     }
 
     function toggleReading(idx) {

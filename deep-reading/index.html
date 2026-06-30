@@ -516,6 +516,56 @@
       .cards-area{gap:7px;}
       .form-row{flex-direction:column;gap:0;}
     }
+
+    /* ── 로딩 대기 화면 ── */
+    .loading-status-bar{
+      background:rgba(255,180,50,.08);border:1px solid rgba(255,180,50,.2);
+      border-radius:12px;padding:14px 18px;margin-bottom:28px;
+      font-family:'Noto Sans KR',sans-serif;font-size:.82rem;color:#e8d090;line-height:1.7;
+    }
+    .loading-status-bar strong{color:#ffd32a;}
+    .loading-dots span{animation:dotPulse 1.4s infinite both;}
+    .loading-dots span:nth-child(2){animation-delay:.2s;}
+    .loading-dots span:nth-child(3){animation-delay:.4s;}
+    @keyframes dotPulse{0%,80%,100%{opacity:.2;}40%{opacity:1;}}
+    .major-card-showcase{
+      background:rgba(255,255,255,.03);border:1px solid rgba(200,160,255,.15);
+      border-radius:20px;padding:28px 20px 24px;text-align:center;
+      position:relative;min-height:360px;
+    }
+    .major-card-label{
+      font-size:.7rem;color:#8070a0;letter-spacing:.1em;text-transform:uppercase;
+      font-family:'Noto Sans KR',sans-serif;margin-bottom:18px;
+    }
+    .major-card-img{
+      width:100px;height:163px;object-fit:cover;border-radius:10px;
+      box-shadow:0 8px 32px rgba(0,0,0,.5);margin:0 auto 20px;display:block;
+      transition:opacity .4s;
+    }
+    .major-card-num{font-size:.72rem;color:#8070a0;font-family:'Noto Sans KR',sans-serif;margin-bottom:4px;}
+    .major-card-name{font-size:1.5rem;font-weight:600;color:#e8d0ff;margin-bottom:2px;}
+    .major-card-en{font-size:.8rem;color:#9080b0;font-family:'Noto Sans KR',sans-serif;margin-bottom:14px;}
+    .major-card-kw{
+      display:flex;gap:6px;flex-wrap:wrap;justify-content:center;margin-bottom:14px;
+    }
+    .major-card-kw span{
+      background:rgba(200,160,255,.12);border:1px solid rgba(200,160,255,.25);
+      border-radius:20px;padding:3px 10px;font-size:.72rem;color:#c8a8f0;
+      font-family:'Noto Sans KR',sans-serif;
+    }
+    .major-card-desc{font-size:.8rem;color:#b0a0c8;line-height:1.8;font-family:'Noto Sans KR',sans-serif;padding:0 8px;}
+    .major-card-nav{display:flex;align-items:center;justify-content:space-between;margin-top:20px;}
+    .major-card-counter{font-size:.75rem;color:#8070a0;font-family:'Noto Sans KR',sans-serif;}
+    .major-card-btn{
+      background:rgba(200,160,255,.12);border:1px solid rgba(200,160,255,.25);
+      color:#c8a8f0;border-radius:20px;padding:7px 18px;font-size:.78rem;cursor:pointer;
+      font-family:'Noto Sans KR',sans-serif;transition:background .2s;
+    }
+    .major-card-btn:hover{background:rgba(200,160,255,.22);}
+    .major-card-progress{
+      position:absolute;bottom:0;left:0;height:2px;background:linear-gradient(90deg,#7d5fff,#c8a8f0);
+      border-radius:0 0 0 20px;transition:width 8s linear;
+    }
   </style>
   <script type="text/javascript" src="//t1.kakaocdn.net/kas/static/ba.min.js" async></script>
   <script>
@@ -796,7 +846,33 @@
         </div>
       </section>
 
-      <!-- ⑤ 전체 리포트 (유료) -->
+      <!-- ⑤ 리포트 생성 대기 -->
+      <section id="secLoading" style="display:none">
+        <div class="step-header">
+          <h1 class="step-title">리포트 생성 중</h1>
+        </div>
+        <div class="loading-status-bar">
+          ✨ <strong>정성껏 작성하고 있어요</strong><span class="loading-dots"><span>.</span><span>.</span><span>.</span></span><br>
+          최대 3분까지 소요될 수 있어요. 창을 닫아도 마이페이지에서 나중에 확인할 수 있답니다.
+        </div>
+        <div class="major-card-showcase">
+          <div class="major-card-label">막간을 이용한 타로 메이저 카드 소개</div>
+          <img id="mcImg" class="major-card-img" src="" alt="">
+          <div id="mcNum" class="major-card-num"></div>
+          <div id="mcName" class="major-card-name"></div>
+          <div id="mcEn" class="major-card-en"></div>
+          <div id="mcKw" class="major-card-kw"></div>
+          <div id="mcDesc" class="major-card-desc"></div>
+          <div class="major-card-nav">
+            <button class="major-card-btn" onclick="mcPrev()">← 이전</button>
+            <span id="mcCounter" class="major-card-counter"></span>
+            <button class="major-card-btn" onclick="mcNext()">다음 →</button>
+          </div>
+          <div id="mcProgress" class="major-card-progress" style="width:0%"></div>
+        </div>
+      </section>
+
+      <!-- ⑥ 전체 리포트 (유료) -->
       <section id="secFullReport" style="display:none">
         <div class="step-header">
           <h1 class="step-title" id="reportTitle">전체 리포트</h1>
@@ -889,7 +965,7 @@
 
     // ── 섹션 전환 ──
     function goTo(id) {
-      ['secCategory','secForm','secCards','secActionCards','secFreeRead','secFullReport'].forEach(s => {
+      ['secCategory','secForm','secCards','secActionCards','secFreeRead','secLoading','secFullReport'].forEach(s => {
         document.getElementById(s).style.display = s === id ? '' : 'none';
       });
       window.scrollTo({ top: 0, behavior: 'smooth' });
@@ -1401,11 +1477,89 @@ ${speciesCtx}
       });
     }
 
-    // ── 전체 리포트 생성 ──
-    async function generateFullReport(paymentKey) {
-      const reportLoadBox = document.getElementById('reportLoadBox');
-      const reportContent = document.getElementById('reportContent');
-      const reportText = document.getElementById('reportText');
+    // ── 메이저 아르카나 슬라이드쇼 ──
+    const MAJOR_CARDS = [
+      { num:0,  name:'바보',           en:'The Fool',           kw:['새로운 시작','순수함','자유'],          desc:'두려움 없이 첫 발을 내딛는 용기. 아직 모르는 것이 있어도 괜찮아요, 길은 걸으면서 만들어져요.' },
+      { num:1,  name:'마법사',          en:'The Magician',       kw:['가능성','창조','의지'],                desc:'내 안에 이미 모든 도구가 있어요. 집중과 의지로 현실을 원하는 모습으로 빚어낼 수 있어요.' },
+      { num:2,  name:'여사제',          en:'The High Priestess', kw:['직관','신비','내면의 앎'],              desc:'말하지 않아도 이미 알고 있어요. 침묵 속에 담긴 깊은 지혜를 믿어보세요.' },
+      { num:3,  name:'여황제',          en:'The Empress',        kw:['풍요','사랑','따스한 품'],              desc:'대지처럼 넉넉하게 품어주는 사랑. 돌봄과 온기로 주변을 풍요롭게 만드는 힘이에요.' },
+      { num:4,  name:'황제',            en:'The Emperor',        kw:['안정','보호','든든함'],                desc:'흔들리지 않는 기둥처럼 곁을 지켜요. 구조와 질서 안에서 진정한 안정이 찾아와요.' },
+      { num:5,  name:'교황',            en:'The Hierophant',     kw:['인연','영적 연결','전통'],              desc:'오래된 지혜와 따뜻한 가르침. 마음과 마음을 연결하는 보이지 않는 실이에요.' },
+      { num:6,  name:'연인',            en:'The Lovers',         kw:['사랑','유대','선택'],                  desc:'진심으로 연결된 존재들. 선택의 순간에도 마음이 이끄는 곳을 따라가세요.' },
+      { num:7,  name:'전차',            en:'The Chariot',        kw:['전진','의지','승리'],                  desc:'방향을 정했다면 흔들리지 마세요. 내면의 두 힘을 하나로 모아 앞으로 나아가요.' },
+      { num:8,  name:'힘',              en:'Strength',           kw:['용기','부드러운 강함','인내'],           desc:'진정한 힘은 부드러움에서 나와요. 억누르지 않고 사랑으로 다스리는 내면의 용기.' },
+      { num:9,  name:'은둔자',          en:'The Hermit',         kw:['내면 탐색','빛','성찰'],               desc:'혼자만의 시간이 필요할 때가 있어요. 내면의 등불을 들고 깊은 곳을 들여다봐요.' },
+      { num:10, name:'운명의 수레바퀴',  en:'Wheel of Fortune',   kw:['순환','운명','전환점'],                desc:'모든 것은 돌고 돌아요. 지금의 위치가 전부가 아니에요, 바퀴는 계속 움직여요.' },
+      { num:11, name:'정의',            en:'Justice',            kw:['균형','진실','공정'],                  desc:'있는 그대로를 바라보는 눈. 진실과 균형 위에 세워진 결정은 오래 지속돼요.' },
+      { num:12, name:'매달린 사람',      en:'The Hanged Man',     kw:['기다림','수용','새로운 시각'],           desc:'잠깐 멈추고 거꾸로 바라볼 때 새로운 것이 보여요. 내려놓음이 곧 깨달음이에요.' },
+      { num:13, name:'변화',            en:'Death',              kw:['전환','끝과 시작','해방'],              desc:'두려운 이름이지만 사실은 해방이에요. 끝이 있어야 새로운 시작이 찾아와요.' },
+      { num:14, name:'절제',            en:'Temperance',         kw:['균형','치유','조화'],                  desc:'급하지 않게, 천천히, 조화롭게. 서로 다른 것들이 섞여 아름다운 것이 만들어져요.' },
+      { num:15, name:'해방',            en:'The Devil',          kw:['집착','해방','놓아주기'],               desc:'사슬처럼 느껴지지만 사실 스스로 풀 수 있어요. 무엇이 나를 붙잡고 있는지 직면해봐요.' },
+      { num:16, name:'탑',              en:'The Tower',          kw:['급변','해체','새로운 기반'],            desc:'흔들려야 할 것들이 흔들리는 순간. 무너짐 뒤에 더 단단한 것이 세워져요.' },
+      { num:17, name:'별',              en:'The Star',           kw:['희망','치유','영감'],                  desc:'폭풍 뒤에 밤하늘에 뜨는 별처럼. 희망은 언제나 어둠 속에서 더 밝게 빛나요.' },
+      { num:18, name:'달',              en:'The Moon',           kw:['꿈','무의식','직관'],                  desc:'보이는 것이 전부가 아닌 밤. 깊은 무의식의 속삭임에 귀를 기울여보세요.' },
+      { num:19, name:'태양',            en:'The Sun',            kw:['기쁨','활력','행복'],                  desc:'따뜻하게 쏟아지는 빛 속에서 기뻐해요. 숨김없이 빛나도 괜찮은 시간이에요.' },
+      { num:20, name:'심판',            en:'Judgement',          kw:['각성','부활','소명'],                  desc:'내면 깊은 곳에서 울려오는 부름. 과거를 용서하고 진정한 나로 깨어나는 순간이에요.' },
+      { num:21, name:'세계',            en:'The World',          kw:['완성','달성','온전함'],                desc:'한 바퀴를 다 돌아 온전해지는 순간. 완성의 기쁨을 느끼며 새로운 여정을 준비해요.' },
+    ];
+
+    let mcIndex = 0;
+    let mcTimer = null;
+    let mcProgressTimer = null;
+
+    const MC_SLUGS = ['fool','magician','high-priestess','empress','emperor','hierophant','lovers','chariot','strength','hermit','wheel','justice','hanged-man','death','temperance','devil','tower','star','moon','sun','judgement','world'];
+
+    function mcShow(idx) {
+      mcIndex = ((idx % MAJOR_CARDS.length) + MAJOR_CARDS.length) % MAJOR_CARDS.length;
+      const c = MAJOR_CARDS[mcIndex];
+      const img = document.getElementById('mcImg');
+      img.style.opacity = '0';
+      setTimeout(() => {
+        img.src = `/assets/images/major-${String(c.num).padStart(2,'0')}-${MC_SLUGS[c.num]}.png`;
+        img.style.opacity = '1';
+      }, 200);
+      document.getElementById('mcNum').textContent = `${c.num < 10 ? '0' : ''}${c.num}`;
+      document.getElementById('mcName').textContent = c.name;
+      document.getElementById('mcEn').textContent = c.en;
+      document.getElementById('mcKw').innerHTML = c.kw.map(k => `<span>${k}</span>`).join('');
+      document.getElementById('mcDesc').textContent = c.desc;
+      document.getElementById('mcCounter').textContent = `${mcIndex + 1} / ${MAJOR_CARDS.length}`;
+      mcResetProgress();
+    }
+
+    function mcNext() { mcShow(mcIndex + 1); }
+    function mcPrev() { mcShow(mcIndex - 1); }
+
+    function mcResetProgress() {
+      const bar = document.getElementById('mcProgress');
+      if (!bar) return;
+      clearTimeout(mcProgressTimer);
+      bar.style.transition = 'none';
+      bar.style.width = '0%';
+      requestAnimationFrame(() => requestAnimationFrame(() => {
+        bar.style.transition = 'width 8s linear';
+        bar.style.width = '100%';
+      }));
+      clearTimeout(mcTimer);
+      mcTimer = setTimeout(mcNext, 8000);
+    }
+
+    function mcStart() {
+      const shuffled = Math.floor(Math.random() * MAJOR_CARDS.length);
+      mcShow(shuffled);
+    }
+
+    function mcStop() {
+      clearTimeout(mcTimer);
+      clearTimeout(mcProgressTimer);
+    }
+
+    // ── 백그라운드 리포트 생성 + 폴링 ──
+    let _pollTimer = null;
+
+    async function startBackgroundReport(paymentKey) {
+      const user = await getUser();
+      if (!user || !window._sb) return;
 
       const cardSummary = drawnCards.map(c => `[${c.position}] ${c.name}(${c.reversed ? '역방향' : '정방향'})`).join('\n');
       const actionSummary = actionCards.length > 0
@@ -1440,63 +1594,113 @@ ${actionSummary
   ? `행동 가이드 카드(${actionSummary})를 해석하여 실천 방법 제시. 각 항목: **[카드 이름]** — 구체적인 행동과 이유. 1~${actionCards.length}가지.`
   : `카드를 바탕으로 실천할 수 있는 구체적인 행동 가이드 3가지. 각 항목: **행동** — 이유와 방법.`}`;
 
-      try {
-        const res = await fetch('/.netlify/functions/deep-tarot', {
-          method: 'POST',
-          headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify({
-            system: systemPrompt,
-            messages: [{ role: 'user', content: userPrompt }],
-            paid: true,
-            paymentKey
-          })
-        });
+      // 1. 대기 중 pending 레코드 Supabase에 저장 → ID 획득
+      const snapshot = JSON.stringify({
+        _pending: true, _paidPending: true,
+        spreadKey: Object.keys(SPREADS).find(k => SPREADS[k].name === currentSpread?.name),
+        petInfo, drawnCards, actionCards, freeText: freeReadingText
+      });
+      const expires = new Date(Date.now() + 7 * 24 * 60 * 60 * 1000).toISOString();
+      const { data: inserted, error: insertErr } = await window._sb.from('reading_history').insert({
+        user_id: user.id,
+        spread_type: currentSpread?.name || '',
+        pet_name: petInfo?.name || '',
+        pet_species: petInfo?.species || '',
+        concern: petInfo?.concern || '',
+        cards_drawn: drawnCards.map(c => ({ name: c.name, reversed: c.reversed, position: c.position })),
+        full_reading: snapshot,
+        amount: 1500,
+        status: '생성 중',
+        expires_at: expires
+      }).select('id').single();
 
-        if (!res.ok) {
-          const errMsg = `API 오류 (${res.status})`;
-          reportLoadBox.style.display = 'none';
-          reportContent.style.display = '';
-          reportText.innerHTML = `<p style="color:#f09090">리포트 생성 중 오류가 발생했습니다: ${errMsg}</p>
-            <p style="margin-top:12px;font-size:.85rem;color:#c0aad8">결제는 정상 처리됐어요. 아래 버튼으로 다시 시도해보세요.</p>
-            <button onclick="generateFullReport()" style="margin-top:16px;padding:10px 24px;background:#7d5fff;color:#fff;border:none;border-radius:8px;cursor:pointer;font-size:.9rem">다시 시도</button>`;
-          saveErrorReading();
-          return;
-        }
-
-        // 스트리밍 응답 읽기
-        const reader = res.body.getReader();
-        const decoder = new TextDecoder();
-        let text = '';
-
-        reportLoadBox.style.display = 'none';
-        reportContent.style.display = '';
-        reportText.textContent = '';
-
-        while (true) {
-          const { done, value } = await reader.read();
-          if (done) break;
-          text += decoder.decode(value, { stream: true });
-        }
-
-        if (!text.trim()) {
-          reportText.innerHTML = `<p style="color:#f09090">리포트 생성 중 오류가 발생했습니다.</p>
-            <p style="margin-top:12px;font-size:.85rem;color:#c0aad8">결제는 정상 처리됐어요. 아래 버튼으로 다시 시도해보세요.</p>
-            <button onclick="generateFullReport()" style="margin-top:16px;padding:10px 24px;background:#7d5fff;color:#fff;border:none;border-radius:8px;cursor:pointer;font-size:.9rem">다시 시도</button>`;
-          saveErrorReading();
-          return;
-        }
-
-        renderReportText(reportText, text);
-        saveReading(text);
-        if (typeof gtag === 'function') gtag('event', 'deep_reading_complete', { spread: currentSpread.name });
-      } catch (e) {
-        reportLoadBox.style.display = 'none';
-        reportContent.style.display = '';
-        reportText.innerHTML = `<p style="color:#f09090">리포트를 불러오는 중 오류가 발생했습니다: ${e.message}</p>
-            <p style="margin-top:12px;font-size:.85rem;color:#c0aad8">결제는 정상 처리됐어요. 아래 버튼으로 다시 시도해보세요.</p>
-            <button onclick="generateFullReport()" style="margin-top:16px;padding:10px 24px;background:#7d5fff;color:#fff;border:none;border-radius:8px;cursor:pointer;font-size:.9rem">다시 시도</button>`;
-        saveErrorReading();
+      if (insertErr || !inserted?.id) {
+        console.error('pending insert failed', insertErr);
+        goTo('secFullReport');
+        document.getElementById('reportLoadBox').style.display = 'none';
+        document.getElementById('reportContent').style.display = '';
+        document.getElementById('reportText').innerHTML = `<p style="color:#f09090">오류가 발생했어요. 마이페이지에서 다시 시도해주세요.</p>`;
+        return;
       }
+
+      const readingId = inserted.id;
+
+      // 2. 로딩 화면 표시 + 카드 슬라이드 시작
+      goTo('secLoading');
+      mcStart();
+
+      // 3. 백그라운드 함수 호출 (응답 기다리지 않음)
+      fetch('/.netlify/functions/deep-tarot-background', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          readingId,
+          system: systemPrompt,
+          messages: [{ role: 'user', content: userPrompt }]
+        })
+      }).catch(() => {});
+
+      // 4. 폴링 시작
+      _pollTimer = setInterval(() => pollReport(readingId), 5000);
+    }
+
+    async function pollReport(readingId) {
+      if (!window._sb) return;
+      try {
+        const { data, error } = await window._sb
+          .from('reading_history')
+          .select('status, full_reading')
+          .eq('id', readingId)
+          .single();
+        if (error) return;
+
+        if (data.status === 'completed') {
+          clearInterval(_pollTimer);
+          mcStop();
+          let text = data.full_reading;
+          try {
+            const parsed = JSON.parse(data.full_reading);
+            if (parsed._pending) return; // 아직 스냅샷 상태
+          } catch {}
+          goTo('secFullReport');
+          renderCards('cardsAreaReport', drawnCards, false);
+          const reportText = document.getElementById('reportText');
+          document.getElementById('reportLoadBox').style.display = 'none';
+          document.getElementById('reportContent').style.display = '';
+          renderReportText(reportText, text);
+          document.getElementById('savedBadge').style.display = '';
+          if (typeof gtag === 'function') gtag('event', 'deep_reading_complete', { spread: currentSpread.name });
+        } else if (data.status === '오류') {
+          clearInterval(_pollTimer);
+          mcStop();
+          goTo('secFullReport');
+          document.getElementById('reportLoadBox').style.display = 'none';
+          document.getElementById('reportContent').style.display = '';
+          document.getElementById('reportText').innerHTML = `<p style="color:#f09090">리포트 생성 중 오류가 발생했습니다.</p>
+            <p style="margin-top:12px;font-size:.85rem;color:#c0aad8">결제는 정상 처리됐어요. 마이페이지에서 다시 시도하거나 문의해주세요.</p>`;
+        }
+      } catch {}
+    }
+
+    // ── 전체 리포트 생성 (백그라운드 방식으로 위임) ──
+    async function generateFullReport(paymentKey) {
+      if (DEV_MODE) {
+        goTo('secLoading');
+        mcStart();
+        setTimeout(() => {
+          mcStop();
+          clearInterval(_pollTimer);
+          goTo('secFullReport');
+          renderCards('cardsAreaReport', drawnCards, false);
+          const reportText = document.getElementById('reportText');
+          document.getElementById('reportLoadBox').style.display = 'none';
+          document.getElementById('reportContent').style.display = '';
+          renderReportText(reportText, `## 🃏 카드별 포지션 해석\n**[DEV] 테스트 리포트입니다.**\n카드 해석 내용이 여기에 표시돼요.\n\n## 💌 ${petInfo.name || '아이'}의 속마음\n보호자님, 저 여기 있어요. 테스트 속마음 내용입니다.\n\n## 🐾 보호자님께\n테스트 위로 메시지입니다.\n\n## ✨ 앞으로의 행동 가이드\n**테스트 행동 1** — 이유와 방법.\n**테스트 행동 2** — 이유와 방법.`);
+          document.getElementById('savedBadge').style.display = '';
+        }, 8000);
+        return;
+      }
+      await startBackgroundReport(paymentKey);
     }
 
     // 마크다운 섹션 렌더링
