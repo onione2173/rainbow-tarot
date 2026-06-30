@@ -518,6 +518,20 @@
     }
   </style>
   <script type="text/javascript" src="//t1.kakaocdn.net/kas/static/ba.min.js" async></script>
+  <script>
+    (function(){
+      try {
+        var s = localStorage.getItem('petarot_dr');
+        if (!s) return;
+        var st = JSON.parse(s);
+        var p = new URLSearchParams(window.location.search);
+        if (st._loginPending || st._resumePending || st._paidPending ||
+            p.get('paid') === 'true' || p.get('payment') === 'fail') {
+          document.documentElement.style.visibility = 'hidden';
+        }
+      } catch(e) {}
+    })();
+  </script>
 </head>
 <body>
   <div class="rainbow-bar"></div>
@@ -1606,16 +1620,18 @@ ${actionSummary
       }
 
       const user = await getUser();
-      if (!user) return;
+      if (!user) { document.documentElement.style.visibility = ''; return; }
 
       localStorage.removeItem('petarot_dr');
       currentSpread = SPREADS[state.spreadKey];
-      if (!currentSpread) return;
+      if (!currentSpread) { document.documentElement.style.visibility = ''; return; }
 
       petInfo = state.petInfo || {};
       drawnCards = state.drawnCards || [];
       actionCards = state.actionCards || [];
       freeReadingText = state.freeText || '';
+
+      document.documentElement.style.visibility = '';
 
       // 결제 완료 또는 결제 후 리포트 오류로 재시도 → 바로 전체 리포트
       if (paidOk || state._paidPending) {
