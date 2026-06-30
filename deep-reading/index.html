@@ -1445,7 +1445,10 @@ ${actionSummary
 
         if (!text) {
           const errMsg = data.error?.message || data.message || `API 오류 (${res.status})`;
-          reportText.textContent = `리포트 생성 중 오류가 발생했습니다: ${errMsg}`;
+          reportText.innerHTML = `<p style="color:#f09090">리포트 생성 중 오류가 발생했습니다: ${errMsg}</p>
+            <p style="margin-top:12px;font-size:.85rem;color:#c0aad8">결제는 정상 처리됐어요. 아래 버튼으로 다시 시도해보세요.</p>
+            <button onclick="generateFullReport()" style="margin-top:16px;padding:10px 24px;background:#7d5fff;color:#fff;border:none;border-radius:8px;cursor:pointer;font-size:.9rem">다시 시도</button>`;
+          saveErrorReading();
           return;
         }
 
@@ -1455,7 +1458,10 @@ ${actionSummary
       } catch (e) {
         reportLoadBox.style.display = 'none';
         reportContent.style.display = '';
-        reportText.textContent = `리포트를 불러오는 중 오류가 발생했습니다: ${e.message}`;
+        reportText.innerHTML = `<p style="color:#f09090">리포트를 불러오는 중 오류가 발생했습니다: ${e.message}</p>
+            <p style="margin-top:12px;font-size:.85rem;color:#c0aad8">결제는 정상 처리됐어요. 아래 버튼으로 다시 시도해보세요.</p>
+            <button onclick="generateFullReport()" style="margin-top:16px;padding:10px 24px;background:#7d5fff;color:#fff;border:none;border-radius:8px;cursor:pointer;font-size:.9rem">다시 시도</button>`;
+        saveErrorReading();
       }
     }
 
@@ -1505,6 +1511,39 @@ ${actionSummary
         document.getElementById('savedBadge').style.display = '';
       } catch (e) {
         console.warn('reading save failed', e);
+      }
+    }
+
+    // 결제 완료 후 리포트 생성 실패 시 — 마이페이지에서 재시도 가능하게 pending 저장
+    async function saveErrorReading() {
+      const user = await getUser();
+      if (!user || !window._sb) return;
+      const spreadKey = Object.keys(SPREADS).find(k => SPREADS[k].name === currentSpread?.name);
+      const snapshot = JSON.stringify({
+        _pending: true,
+        _paidPending: true,
+        spreadKey,
+        petInfo,
+        drawnCards,
+        actionCards,
+        freeText: freeReadingText
+      });
+      const expires = new Date(Date.now() + 7 * 24 * 60 * 60 * 1000).toISOString();
+      try {
+        await window._sb.from('reading_history').insert({
+          user_id: user.id,
+          spread_type: currentSpread?.name || '',
+          pet_name: petInfo?.name || '',
+          pet_species: petInfo?.species || '',
+          concern: petInfo?.concern || '',
+          cards_drawn: drawnCards.map(c => ({ name: c.name, reversed: c.reversed, position: c.position })),
+          full_reading: snapshot,
+          amount: 1500,
+          status: '결제 필요',
+          expires_at: expires
+        });
+      } catch(e) {
+        console.warn('error reading save failed', e);
       }
     }
 
@@ -1559,7 +1598,7 @@ ${actionSummary
         return;
       }
 
-      if (!state._loginPending && !state._resumePending && !paidOk && !payFail) return;
+      if (!state._loginPending && !state._resumePending && !state._paidPending && !paidOk && !payFail) return;
 
       // URL 파라미터/해시 제거
       if (paidOk || payFail || hasAuthCallback) {
@@ -1578,8 +1617,8 @@ ${actionSummary
       actionCards = state.actionCards || [];
       freeReadingText = state.freeText || '';
 
-      // 결제 완료 → 바로 전체 리포트
-      if (paidOk) {
+      // 결제 완료 또는 결제 후 리포트 오류로 재시도 → 바로 전체 리포트
+      if (paidOk || state._paidPending) {
         const tid = urlParams.get('tid') || null;
         goTo('secFullReport');
         renderCards('cardsAreaReport', drawnCards, false);
