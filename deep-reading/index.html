@@ -1451,15 +1451,35 @@ ${actionSummary
             paymentKey
           })
         });
-        const data = await res.json();
-        const text = data.content?.[0]?.text || '';
+
+        if (!res.ok) {
+          const errMsg = `API 오류 (${res.status})`;
+          reportLoadBox.style.display = 'none';
+          reportContent.style.display = '';
+          reportText.innerHTML = `<p style="color:#f09090">리포트 생성 중 오류가 발생했습니다: ${errMsg}</p>
+            <p style="margin-top:12px;font-size:.85rem;color:#c0aad8">결제는 정상 처리됐어요. 아래 버튼으로 다시 시도해보세요.</p>
+            <button onclick="generateFullReport()" style="margin-top:16px;padding:10px 24px;background:#7d5fff;color:#fff;border:none;border-radius:8px;cursor:pointer;font-size:.9rem">다시 시도</button>`;
+          saveErrorReading();
+          return;
+        }
+
+        // 스트리밍 응답 읽기
+        const reader = res.body.getReader();
+        const decoder = new TextDecoder();
+        let text = '';
 
         reportLoadBox.style.display = 'none';
         reportContent.style.display = '';
+        reportText.textContent = '';
 
-        if (!text) {
-          const errMsg = data.error?.message || data.message || `API 오류 (${res.status})`;
-          reportText.innerHTML = `<p style="color:#f09090">리포트 생성 중 오류가 발생했습니다: ${errMsg}</p>
+        while (true) {
+          const { done, value } = await reader.read();
+          if (done) break;
+          text += decoder.decode(value, { stream: true });
+        }
+
+        if (!text.trim()) {
+          reportText.innerHTML = `<p style="color:#f09090">리포트 생성 중 오류가 발생했습니다.</p>
             <p style="margin-top:12px;font-size:.85rem;color:#c0aad8">결제는 정상 처리됐어요. 아래 버튼으로 다시 시도해보세요.</p>
             <button onclick="generateFullReport()" style="margin-top:16px;padding:10px 24px;background:#7d5fff;color:#fff;border:none;border-radius:8px;cursor:pointer;font-size:.9rem">다시 시도</button>`;
           saveErrorReading();
