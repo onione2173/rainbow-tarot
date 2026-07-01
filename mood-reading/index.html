@@ -21,21 +21,57 @@
   <script src="https://cdn.jsdelivr.net/npm/html2canvas@1.4.1/dist/html2canvas.min.js"></script>
   <link rel="stylesheet" href="/assets/style.css">
   <style>
-    .back-nav { margin-bottom: 24px; }
-    .back-btn {
-      display: inline-flex; align-items: center; gap: 6px;
-      font-size: .8rem; color: var(--text-dim); text-decoration: none;
-      padding: 7px 14px; border-radius: 20px;
-      border: 1px solid rgba(255,255,255,.08);
-      transition: all .2s;
-    }
-    .back-btn:hover { color: var(--text-sub); background: rgba(255,255,255,.05); }
+    .site-header{position:sticky;top:3px;z-index:200;background:rgba(10,8,28,.92);backdrop-filter:blur(18px);border-bottom:1px solid rgba(200,160,255,.1);height:56px;display:flex;align-items:center;justify-content:space-between;padding:0 20px;}
+    .header-brand{display:flex;align-items:center;gap:9px;text-decoration:none;}
+    .brand-icon{font-size:1.35rem;}
+    .brand-name{font-size:1.15rem;font-weight:600;background:linear-gradient(135deg,#e8c4ff 0%,#c8e6ff 100%);-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;}
+    .hamburger-btn{background:none;border:none;cursor:pointer;display:flex;flex-direction:column;gap:5px;padding:8px;margin-right:-8px;}
+    .hamburger-btn span{display:block;width:22px;height:2px;background:#c0aad8;border-radius:2px;transition:background .2s;}
+    .hamburger-btn:hover span{background:#e8d0ff;}
+    .menu-overlay{position:fixed;inset:0;z-index:998;background:rgba(0,0,0,.55);opacity:0;pointer-events:none;transition:opacity .3s;}
+    .menu-overlay.show{opacity:1;pointer-events:all;}
+    .menu-drawer{position:fixed;top:0;right:-100%;width:min(300px,82vw);height:100vh;z-index:999;background:linear-gradient(160deg,#130428 0%,#0b1032 100%);border-left:1px solid rgba(200,160,255,.15);overflow-y:auto;transition:right .3s ease;}
+    .menu-drawer.show{right:0;}
+    .menu-top{display:flex;align-items:center;justify-content:space-between;padding:24px 20px 18px;}
+    .menu-label{font-size:1.25rem;font-weight:700;color:#f0e6ff;font-family:'Noto Sans KR',sans-serif;}
+    .menu-close-btn{background:none;border:none;color:#8070a0;font-size:1.1rem;cursor:pointer;padding:6px;line-height:1;}
+    .menu-hr{border:none;border-top:1px solid rgba(200,160,255,.12);margin:0 0 6px;}
+    .menu-item{display:flex;align-items:center;padding:16px 20px;font-size:1rem;color:#f0e6ff;text-decoration:none;cursor:pointer;border:none;background:none;width:100%;text-align:left;font-family:'Noto Serif KR',serif;transition:background .15s;line-height:1.4;}
+    .menu-item:hover{background:rgba(255,255,255,.04);}
+    .menu-item-disabled{color:#8070a0;cursor:default;pointer-events:none;}
+    .chip-soon{margin-left:8px;font-size:.65rem;padding:2px 9px;border-radius:10px;background:rgba(180,100,255,.12);border:1px solid rgba(180,100,255,.28);color:#c0a0ff;font-family:'Noto Sans KR',sans-serif;}
   </style>
 </head>
 <body>
   <div class="rainbow-bar"></div>
   <div id="stars"></div>
   <div id="petals"></div>
+
+  <header class="site-header">
+    <a href="/" class="header-brand">
+      <span class="brand-icon">🐾</span>
+      <span class="brand-name">펫타로</span>
+    </a>
+    <button class="hamburger-btn" id="hamburgerBtn" aria-label="메뉴 열기">
+      <span></span><span></span><span></span>
+    </button>
+  </header>
+  <div class="menu-overlay" id="menuOverlay"></div>
+  <nav class="menu-drawer" id="menuDrawer">
+    <div class="menu-top">
+      <span class="menu-label">메뉴</span>
+      <button class="menu-close-btn" id="menuClose">✕</button>
+    </div>
+    <hr class="menu-hr">
+    <a href="/" class="menu-item">홈</a>
+    <a href="/auth/" class="menu-item" id="miSignup">회원가입</a>
+    <a href="/auth/" class="menu-item" id="miLogin">로그인</a>
+    <a href="/mypage/" class="menu-item" id="miMypage">마이페이지</a>
+    <button class="menu-item" id="miLogout" style="display:none">로그아웃</button>
+    <span class="menu-item menu-item-disabled">선물하기 <span class="chip-soon">준비중</span></span>
+    <span class="menu-item menu-item-disabled">추천하기 <span class="chip-soon">준비중</span></span>
+    <a href="/contact/" class="menu-item">문의하기</a>
+  </nav>
 
   <div class="itl-overlay" id="itlOverlay">
     <div class="itl-box">
@@ -64,10 +100,6 @@
 
   <div class="page">
     <div class="container">
-      <nav class="back-nav">
-        <a href="/" class="back-btn">← 홈으로</a>
-      </nav>
-
       <div class="header reveal">
         <span class="icon">🐾</span>
         <h1>오늘, 우리 아이 어때요?</h1>
@@ -83,6 +115,12 @@
           <div>
             <label class="field-label">🏷️ 종류 (선택)</label>
             <input type="text" id="moodPetType" placeholder="예: 강아지, 고양이, 토끼…">
+          </div>
+        </div>
+        <div class="input-row">
+          <div>
+            <label class="field-label">💌 반려동물이 나를 부르는 호칭</label>
+            <input type="text" id="moodOwnerTitle" placeholder="예: 아빠, 엄마, 언니, 집사…">
           </div>
         </div>
         <button class="btn-draw" onclick="onDraw()">🐾 &nbsp;오늘의 기분 카드 뽑기</button>
@@ -214,6 +252,7 @@
       const sep='\n\n---LETTER--- 구분자를 포함하여 두 부분으로 정확히 나누어 작성해주세요.';
       const petName=document.getElementById('moodPetName').value.trim()||'반려동물';
       const petType=document.getElementById('moodPetType').value.trim();
+      const ownerTitle=document.getElementById('moodOwnerTitle').value.trim()||'보호자';
       return {
         petName,
         system:`당신은 반려동물의 오늘 기분과 에너지를 타로카드로 읽어주는 채널러입니다.
@@ -226,11 +265,13 @@
 ---LETTER---
 
 [2부: 오늘의 메시지]
-반려동물이 보호자에게 전하는 짧고 따뜻한 메시지. 이모지 포함. 한두 문장.`,
-        user:`반려동물 이름: ${petName}${petType?'\n반려동물 종류: '+petType:''}\n\n${cardInfo}${sep}`,
+반려동물이 "${ownerTitle}"(이)라고 부르며 보호자에게 전하는 짧고 따뜻한 메시지. 이모지 포함. 한두 문장.`,
+        user:`반려동물 이름: ${petName}${petType?'\n반려동물 종류: '+petType:''}\n보호자 호칭: "${ownerTitle}"\n\n${cardInfo}${sep}`,
       };
     }
   </script>
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/dist/umd/supabase.min.js"></script>
+  <script src="/assets/auth.js"></script>
   <script src="/assets/shared.js"></script>
 </body>
 </html>

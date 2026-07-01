@@ -723,6 +723,11 @@
         </div>
 
         <div class="form-group">
+          <label class="form-label" for="ownerTitle">💌 반려동물이 나를 부르는 호칭</label>
+          <input type="text" class="form-input" id="ownerTitle" placeholder="예: 아빠, 엄마, 언니, 오빠, 집사…" maxlength="10">
+        </div>
+
+        <div class="form-group">
           <label class="form-label" for="concern">고민 내용 <span class="req">*</span> <span style="font-size:.72rem;color:#b09fd0;font-weight:400;">— 구체적일수록 더 자세한 리딩이 가능해요</span></label>
           <textarea class="form-textarea" id="concern" placeholder="예시) 이사한 지 2주가 됐는데 그때부터 밥을 잘 안 먹고 자꾸 침대 밑에 숨어요. 원래는 사람을 잘 따르는 아이인데 요즘은 만지려 해도 피하고, 밤에 자다가 우는 경우도 있어요. 단순 스트레스인지, 아니면 어디 아픈 건지 걱정돼서요." maxlength="300" oninput="updateCharCount(this, 'concernCount')"></textarea>
           <div class="char-count"><span id="concernCount">0</span>/300</div>
@@ -1024,6 +1029,7 @@
         otherSpecies: document.getElementById('otherSpecies').value.trim(),
         age: document.getElementById('petAge').value.trim(),
         gender: document.getElementById('petGender').value,
+        ownerTitle: document.getElementById('ownerTitle').value.trim() || '보호자',
         concern
       };
 
@@ -1323,6 +1329,7 @@
 
       const systemPrompt = `당신은 반려동물 타로 전문가입니다. 따뜻하고 감성적인 한국어로 작성하세요. 동물의 종과 나이에 따른 특성을 자연스럽게 반영하세요. 반드시 사용자가 입력한 구체적인 정보를 직접 언급하세요. 누구에게나 해당될 수 있는 일반적 표현은 절대 쓰지 마세요.`;
       const userPrompt = `반려동물: ${petInfo.name} (${petInfo.species}${petInfo.age ? ', ' + petInfo.age : ''}${petInfo.gender ? ', ' + petInfo.gender : ''})
+보호자 호칭: "${petInfo.ownerTitle}"
 ${speciesCtx}
 고민: ${petInfo.concern}
 배열법: ${currentSpread.fullName}
@@ -1571,6 +1578,7 @@ ${speciesCtx}
         ? `\n무료 미리보기에서 제공된 첫 카드 해석 (이를 참고하여 더 깊이 확장하세요):\n${freeReadingText}\n`
         : '';
       const userPrompt = `반려동물: ${petInfo.name} (${petInfo.species}${petInfo.age ? ', ' + petInfo.age : ''}${petInfo.gender ? ', ' + petInfo.gender : ''})
+보호자 호칭: "${petInfo.ownerTitle}"
 ${speciesCtx}
 고민: ${petInfo.concern}
 배열법: ${currentSpread.fullName}
@@ -1584,7 +1592,7 @@ ${freeCtx}
 각 카드를 포지션 의미와 결합하여 깊이 있게 해석. ${petInfo.name}의 상황에 직접 연결. 카드 간 흐름과 연결도 언급. (각 카드 3~4줄)
 
 ## 💌 ${petInfo.name}의 속마음
-${petInfo.name}의 1인칭 시점 내면 독백. 보호자에게 직접 말하는 형식. 감정과 바람을 구체적으로 표현. (6~8줄)
+${petInfo.name}의 1인칭 시점 내면 독백. 보호자를 "${petInfo.ownerTitle}"(이)라고 부르며 직접 말하는 형식. 감정과 바람을 구체적으로 표현. (6~8줄)
 
 ## 🐾 보호자님께
 카드 전체 흐름을 바탕으로 놓치고 있을 수 있는 관점, 위로와 공감. 구체적인 인사이트 포함. (4~5줄)
