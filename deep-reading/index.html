@@ -1474,7 +1474,7 @@ ${speciesCtx}
         clientId: cfg.clientId,
         method: 'card',
         orderId: 'PETAROT_' + Date.now(),
-        amount: 100,
+        amount: 1500,
         goodsName: `${petInfo.name || '펫'} 타로 심층 콤보 분석`,
         returnUrl: window.location.origin + '/.netlify/functions/nicepay-confirm',
         fnError: function(result) {
