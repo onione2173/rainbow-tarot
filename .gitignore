@@ -3,3 +3,7 @@
 
 # Local Netlify folder
 .netlify
+
+# Local env (contains secrets)
+.env
+.env.local

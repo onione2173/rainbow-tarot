@@ -6,8 +6,8 @@
  * 4. Authentication > Providers > Kakao 활성화
  *    (Kakao Developers에서 앱 생성 후 REST API Key, Client Secret 입력)
  */
-const SUPABASE_URL = 'https://rtkxydzbydcawfaeasew.supabase.co';
-const SUPABASE_ANON_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InJ0a3h5ZHpieWRjYXdmYWVhc2V3Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3Nzg5NDAyNDYsImV4cCI6MjA5NDUxNjI0Nn0.oXzFOmyNuyPvyjd77zF7Gojq2_doYnfOG9PvaCbb6OY';
+const SUPABASE_URL = '__SUPABASE_URL__';
+const SUPABASE_ANON_KEY = '__SUPABASE_ANON_KEY__';
 
 const _sbReady = SUPABASE_URL.includes('supabase.co') && !SUPABASE_URL.includes('YOUR_PROJECT');
 
