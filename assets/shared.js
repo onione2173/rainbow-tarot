@@ -253,6 +253,7 @@ function showReading(petName,interpretation,letter){
   document.getElementById('loadingSection').classList.remove('show');
   _pendingLetter=letter;
   _currentPetName=petName;
+  track('reading_complete', { mode: currentMode, card: drawn[0]?.en || '' });
 
   const rv=drawnRv[0];
   document.getElementById('readingTitle').textContent=`${drawn[0].en} ${rv?'(역방향)':'(정방향)'}`;

@@ -296,6 +296,7 @@
   <script>
     async function initMypage() {
       const user = await getUser();
+      if (typeof gtag === 'function') gtag('event', 'mypage_view', { logged_in: !!user });
 
       if (!user) {
         document.getElementById('authGate').style.display = 'block';
@@ -393,6 +394,7 @@
     }
 
     function resumeReading(idx) {
+      if (typeof gtag === 'function') gtag('event', 'reading_resumed');
       const r = window._readings?.[idx];
       if (!r || !r.full_reading) return;
       let snap;
@@ -424,6 +426,7 @@
       if (!el) return;
       const btn = el.previousElementSibling;
       if (el.style.display === 'none' || !el.style.display) {
+        if (typeof gtag === 'function') gtag('event', 'reading_viewed');
         el.style.display = 'block';
         if (btn) btn.textContent = '접기';
       } else {

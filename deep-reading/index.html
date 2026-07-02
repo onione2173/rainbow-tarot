@@ -1012,6 +1012,7 @@
     // ── 1단계: 배열 선택 ──
     function selectSpread(type) {
       currentSpread = SPREADS[type];
+      if (typeof gtag === 'function') gtag('event', 'spread_selected', { spread_name: currentSpread.name });
       goTo('secForm');
     }
 
@@ -1033,6 +1034,7 @@
         concern
       };
 
+      if (typeof gtag === 'function') gtag('event', 'form_submitted', { species: petInfo.species, spread: currentSpread.name });
       document.getElementById('cardsTitle').textContent = `${name}의 카드를 골라주세요`;
       goTo('secCards');
       initCardPool();
@@ -1115,6 +1117,7 @@
 
     // ── 3→3.5단계: 행동 카드 선택으로 ──
     function proceedToReading() {
+      if (typeof gtag === 'function') gtag('event', 'main_cards_selected', { count: drawnCards.length, spread: currentSpread.name });
       goTo('secActionCards');
       initActionPool();
     }
@@ -1150,6 +1153,7 @@
         poolEl.classList.add('pool-selected');
         poolEl.innerHTML = `<div class="pool-card-back" style="background:linear-gradient(145deg,#3d2800,#6a4200,#2a1800)"><span class="pool-sel-num" style="color:#ffd060">${actionCards.length}</span></div>`;
       }
+      if (actionCards.length === 3 && typeof gtag === 'function') gtag('event', 'action_cards_selected');
       updateActionCounter();
     }
 
@@ -1158,7 +1162,11 @@
         `행동 가이드 카드 &nbsp;<strong style="color:#ffd060">${actionCards.length} / 3장</strong> 선택`;
     }
 
-    function skipActionCards() { actionCards = []; startReveal(); }
+    function skipActionCards() {
+      if (typeof gtag === 'function') gtag('event', 'action_cards_skipped');
+      actionCards = [];
+      startReveal();
+    }
 
     // ── 유틸 ──
     function sleep(ms) { return new Promise(r => setTimeout(r, ms)); }
@@ -1373,6 +1381,7 @@ ${speciesCtx}
         freeReadText.textContent = `${firstCard.name}(${firstCard.reversed ? '역방향' : '정방향'})이(가) ${petInfo.name}의 ${firstCard.position} 자리에 놓였어요. 전체 리포트에서 깊은 이야기를 확인해보세요.`;
       }
 
+      if (typeof gtag === 'function') gtag('event', 'free_preview_shown', { spread: currentSpread.name });
       setTimeout(() => showPaywall(), 400);
     }
 
@@ -1438,6 +1447,7 @@ ${speciesCtx}
 
     // ── 5단계: 결제 ──
     async function startPayment() {
+      if (typeof gtag === 'function') gtag('event', 'payment_initiated', { value: 1500, currency: 'KRW' });
       if (DEV_MODE) {
         goTo('secFullReport');
         renderCards('cardsAreaReport', drawnCards, false);
@@ -1565,6 +1575,12 @@ ${speciesCtx}
     let _pollTimer = null;
 
     async function startBackgroundReport(paymentKey) {
+      if (typeof gtag === 'function') gtag('event', 'purchase', {
+        transaction_id: paymentKey || ('dev_' + Date.now()),
+        value: 1500,
+        currency: 'KRW',
+        items: [{ item_id: 'deep_reading', item_name: '심층 타로 리딩', price: 1500, quantity: 1 }]
+      });
       const user = await getUser();
       if (!user || !window._sb) return;
 
@@ -1677,7 +1693,10 @@ ${actionSummary
           document.getElementById('reportContent').style.display = '';
           renderReportText(reportText, text);
           document.getElementById('savedBadge').style.display = '';
-          if (typeof gtag === 'function') gtag('event', 'deep_reading_complete', { spread: currentSpread.name });
+          if (typeof gtag === 'function') {
+            gtag('event', 'deep_reading_complete', { spread: currentSpread.name });
+            gtag('event', 'paid_report_complete', { spread: currentSpread.name });
+          }
         } else if (data.status === '오류') {
           clearInterval(_pollTimer);
           mcStop();

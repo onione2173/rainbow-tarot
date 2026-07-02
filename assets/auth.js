@@ -15,6 +15,11 @@ let _sb = null;
 if (_sbReady && window.supabase) {
   _sb = window.supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
   window._sb = _sb;
+  _sb.auth.onAuthStateChange((event) => {
+    if (typeof gtag !== 'function') return;
+    if (event === 'SIGNED_IN') gtag('event', 'login', { method: 'kakao' });
+    if (event === 'SIGNED_OUT') gtag('event', 'logout');
+  });
 }
 
 async function getUser() {

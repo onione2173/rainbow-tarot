@@ -187,6 +187,7 @@
       }
     }
     async function doKakaoLogin() {
+      if (typeof gtag === 'function') gtag('event', 'login_initiated', { method: 'kakao' });
       document.getElementById('kakaoBtn').textContent = '연결 중...';
       document.getElementById('kakaoBtn').disabled = true;
       await signInWithKakao('/mypage/');
