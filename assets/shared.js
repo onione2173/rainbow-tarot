@@ -436,7 +436,8 @@ function buildShareCardEl(){
         </div>`:''}
         <div style="text-align:center;margin-top:24px;padding-top:14px;
           border-top:1px solid rgba(255,255,255,.07);">
-          <div style="font-size:.62rem;color:rgba(160,130,200,.5);">🌈 무지개 다리 너머 타로</div>
+          <div style="font-size:.68rem;color:rgba(200,160,255,.8);font-weight:600;">🐾 펫타로</div>
+          <div style="font-size:.6rem;color:rgba(180,140,220,.55);margin-top:5px;letter-spacing:.02em;">나도 해보기 → tubular-cupcake-55d47b.netlify.app</div>
         </div>
       </div>
     </div>`;
@@ -466,8 +467,8 @@ async function shareResult(){
     const file=new File([blob],'타로결과.png',{type:'image/png'});
     const shareData={
       title: PAGE_TITLE,
-      text: '무지개 다리 너머 타로 결과를 공유해요 🌈',
-      url: window.location.href,
+      text: `${PAGE_TITLE} 결과를 공유해요 🐾\n나도 해보기 → https://tubular-cupcake-55d47b.netlify.app`,
+      url: 'https://tubular-cupcake-55d47b.netlify.app',
     };
     if(navigator.canShare && navigator.canShare({files:[file]})){
       await navigator.share({...shareData, files:[file]});
