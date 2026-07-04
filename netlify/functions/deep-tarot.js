@@ -1,3 +1,36 @@
+// NicePay 결제조회로 실제 결제 여부/금액을 서버에서 검증 (멱등: 재조회 가능)
+async function verifyPayment(tid) {
+  if (!tid) return { ok: false, reason: 'no_tid' };
+  const clientId = process.env.NICEPAY_CLIENT_KEY;
+  const secretKey = process.env.NICEPAY_SECRET_KEY;
+  if (!clientId || !secretKey) return { ok: false, reason: 'config' };
+
+  const isSandbox = process.env.NICEPAY_SANDBOX === 'true';
+  const apiBase = isSandbox
+    ? 'https://sandbox-api.nicepay.co.kr'
+    : 'https://api.nicepay.co.kr';
+  const auth = Buffer.from(`${clientId}:${secretKey}`).toString('base64');
+  const EXPECTED_AMOUNT = Number(process.env.DEEP_READING_PRICE) || 1500;
+
+  try {
+    const res = await fetch(`${apiBase}/v1/payments/${encodeURIComponent(tid)}`, {
+      method: 'GET',
+      headers: {
+        'Content-Type': 'application/json',
+        Authorization: `Basic ${auth}`,
+      },
+    });
+    const data = await res.json();
+    const codeOk = String(data.resultCode) === '0000';
+    const statusOk = String(data.status || '').toLowerCase() === 'paid';
+    const amountOk = Number(data.amount) === EXPECTED_AMOUNT;
+    if (codeOk && statusOk && amountOk) return { ok: true };
+    return { ok: false, reason: 'unverified' };
+  } catch {
+    return { ok: false, reason: 'error' };
+  }
+}
+
 export default async (req) => {
   if (req.method !== 'POST') {
     return new Response('Method Not Allowed', { status: 405 });
@@ -22,11 +55,24 @@ export default async (req) => {
   }
 
   const isPaid = payload.paid === true;
+
+  // 유료 리포트는 결제 검증 통과 시에만 제공 (paid 플래그만으로 우회 불가)
+  if (isPaid) {
+    const verification = await verifyPayment(payload.tid);
+    if (!verification.ok) {
+      return new Response(JSON.stringify({ error: { message: '결제 확인에 실패했습니다.' } }), {
+        status: 403,
+        headers: { 'Content-Type': 'application/json' },
+      });
+    }
+  }
+
   payload.model = 'claude-sonnet-4-6';
   payload.max_tokens = isPaid ? 2500 : 600;
   payload.stream = isPaid;
   delete payload.paid;
   delete payload.paymentKey;
+  delete payload.tid;
 
   const upstream = await fetch('https://api.anthropic.com/v1/messages', {
     method: 'POST',

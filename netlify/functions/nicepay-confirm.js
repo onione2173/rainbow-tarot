@@ -22,6 +22,13 @@ exports.handler = async (event) => {
     return fail(authResultMsg || '결제 인증 실패');
   }
 
+  // 결제 금액 검증: 클라이언트가 넘긴 amount를 그대로 신뢰하지 않고
+  // 서버가 정한 고정 금액과 일치할 때만 승인 진행 (금액 조작 결제 우회 차단)
+  const EXPECTED_AMOUNT = Number(process.env.DEEP_READING_PRICE) || 1500;
+  if (Number(amount) !== EXPECTED_AMOUNT) {
+    return fail('결제 금액이 올바르지 않습니다.');
+  }
+
   const clientId = process.env.NICEPAY_CLIENT_KEY;
   const secretKey = process.env.NICEPAY_SECRET_KEY;
   if (!clientId || !secretKey) return fail('서버 설정 오류');
@@ -40,11 +47,11 @@ exports.handler = async (event) => {
         'Content-Type': 'application/json',
         Authorization: `Basic ${auth}`,
       },
-      body: JSON.stringify({ amount: Number(amount) }),
+      body: JSON.stringify({ amount: EXPECTED_AMOUNT }),
     });
     const data = await res.json();
 
-    if (data.resultCode === '0000') {
+    if (data.resultCode === '0000' && Number(data.amount) === EXPECTED_AMOUNT) {
       return {
         statusCode: 302,
         headers: {

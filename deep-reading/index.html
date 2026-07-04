@@ -4,6 +4,16 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>심층 콤보 분석 — 펫타로</title>
+  <meta name="description" content="반려동물의 고민을 구체적으로 입력하면 여러 장의 타로 카드로 심층 콤보 리딩을 제공해드려요.">
+  <link rel="canonical" href="https://tubular-cupcake-55d47b.netlify.app/deep-reading/">
+  <meta property="og:type" content="website">
+  <meta property="og:site_name" content="펫타로">
+  <meta property="og:locale" content="ko_KR">
+  <meta property="og:title" content="심층 콤보 분석 — 펫타로">
+  <meta property="og:description" content="반려동물의 고민을 구체적으로 입력하면 여러 장의 타로 카드로 심층 콤보 리딩을 제공해드려요.">
+  <meta property="og:image" content="https://tubular-cupcake-55d47b.netlify.app/assets/og-image.png">
+  <meta property="og:url" content="https://tubular-cupcake-55d47b.netlify.app/deep-reading/">
+  <meta name="twitter:card" content="summary_large_image">
   <link rel="icon" type="image/svg+xml" href="/favicon.svg">
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -1621,6 +1631,7 @@ ${actionSummary
       // 1. 대기 중 pending 레코드 Supabase에 저장 → ID 획득
       const snapshot = JSON.stringify({
         _pending: true, _paidPending: true,
+        tid: paymentKey || null,
         spreadKey: Object.keys(SPREADS).find(k => SPREADS[k].name === currentSpread?.name),
         petInfo, drawnCards, actionCards, freeText: freeReadingText
       });
@@ -1659,6 +1670,7 @@ ${actionSummary
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({
           readingId,
+          tid: paymentKey || null,
           system: systemPrompt,
           messages: [{ role: 'user', content: userPrompt }]
         })
@@ -1886,7 +1898,7 @@ ${actionSummary
 
       // 결제 완료 또는 결제 후 리포트 오류로 재시도 → 바로 전체 리포트
       if (paidOk || state._paidPending) {
-        const tid = urlParams.get('tid') || null;
+        const tid = urlParams.get('tid') || state.tid || null;
         goTo('secFullReport');
         renderCards('cardsAreaReport', drawnCards, false);
         generateFullReport(tid);

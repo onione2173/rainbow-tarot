@@ -1,0 +1,131 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>페이지를 찾을 수 없어요 — 펫타로</title>
+  <meta name="description" content="요청하신 페이지를 찾을 수 없습니다. 펫타로 홈에서 반려동물 타로 서비스를 만나보세요.">
+  <meta name="robots" content="noindex">
+  <link rel="icon" type="image/svg+xml" href="/favicon.svg">
+  <link rel="apple-touch-icon" href="/favicon.svg">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Noto+Serif+KR:wght@300;400;600&family=Noto+Sans+KR:wght@300;400&display=swap" rel="stylesheet">
+
+  <style>
+    *, *::before, *::after { margin:0; padding:0; box-sizing:border-box; }
+
+    body {
+      min-height:100vh;
+      background:radial-gradient(ellipse at 20% 10%,#2a0a4a 0%,#0d0d2b 40%,#0a1428 70%,#001a1a 100%);
+      font-family:'Noto Serif KR',serif;
+      color:#f0e6ff;
+      overflow-x:hidden;
+    }
+
+    .rainbow-bar {
+      position:fixed; top:0; left:0; right:0; height:3px; z-index:300;
+      background:linear-gradient(90deg,#ff6b6b,#ff9f43,#ffd32a,#0be881,#17c0eb,#7d5fff,#ef5777);
+    }
+
+    #stars { position:fixed; inset:0; pointer-events:none; z-index:0; }
+    .star {
+      position:absolute; border-radius:50%; background:white;
+      animation:twinkle var(--d,3s) var(--delay,0s) infinite ease-in-out;
+    }
+    @keyframes twinkle {
+      0%,100%{opacity:.15;transform:scale(1);}
+      50%{opacity:1;transform:scale(1.6);}
+    }
+
+    .site-header {
+      position:sticky; top:3px; z-index:200;
+      background:rgba(10,8,28,.92); backdrop-filter:blur(18px);
+      border-bottom:1px solid rgba(200,160,255,.1);
+      height:56px;
+      display:flex; align-items:center;
+      padding:0 20px;
+    }
+    .header-brand { display:flex; align-items:center; gap:9px; text-decoration:none; }
+    .brand-icon { font-size:1.35rem; }
+    .brand-name {
+      font-size:1.15rem; font-weight:600;
+      background:linear-gradient(135deg,#e8c4ff 0%,#c8e6ff 100%);
+      -webkit-background-clip:text; -webkit-text-fill-color:transparent; background-clip:text;
+    }
+
+    .page {
+      position:relative; z-index:10;
+      min-height:calc(100vh - 56px - 3px);
+      display:flex; align-items:center; justify-content:center;
+      padding:40px 20px;
+    }
+    .notfound-wrap {
+      max-width:480px; text-align:center;
+    }
+    .notfound-icon {
+      font-size:3.4rem; margin-bottom:18px;
+      filter:drop-shadow(0 4px 20px rgba(170,90,255,.35));
+    }
+    .notfound-code {
+      font-size:.85rem; letter-spacing:.2em; color:#8070a0;
+      font-family:'Noto Sans KR',sans-serif; margin-bottom:14px;
+    }
+    .notfound-title {
+      font-size:1.5rem; font-weight:600; color:#f0e6ff;
+      margin-bottom:14px; line-height:1.4;
+    }
+    .notfound-desc {
+      font-size:.88rem; color:#c0aad8; line-height:1.8;
+      font-family:'Noto Sans KR',sans-serif; font-weight:300;
+      margin-bottom:32px;
+    }
+    .btn-home {
+      display:inline-block; padding:14px 36px;
+      background:rgba(170,90,255,.18); border:1px solid rgba(170,90,255,.4);
+      border-radius:26px; color:#d8aaff; text-decoration:none;
+      font-size:.95rem; font-family:'Noto Sans KR',sans-serif; font-weight:600;
+      transition:all .2s;
+    }
+    .btn-home:hover {
+      background:rgba(170,90,255,.3); transform:translateY(-2px);
+      box-shadow:0 12px 30px rgba(0,0,0,.35);
+    }
+  </style>
+</head>
+<body>
+  <div class="rainbow-bar"></div>
+  <div id="stars"></div>
+
+  <header class="site-header">
+    <a href="/" class="header-brand">
+      <span class="brand-icon">🐾</span>
+      <span class="brand-name">펫타로</span>
+    </a>
+  </header>
+
+  <div class="page">
+    <div class="notfound-wrap">
+      <div class="notfound-icon">🌈</div>
+      <p class="notfound-code">404</p>
+      <h1 class="notfound-title">페이지를 찾을 수 없어요</h1>
+      <p class="notfound-desc">
+        찾으시는 페이지가 존재하지 않거나<br>
+        주소가 변경되었을 수 있어요.<br>
+        홈으로 돌아가 반려동물 타로를 만나보세요.
+      </p>
+      <a href="/" class="btn-home">🏠 &nbsp;홈으로 가기</a>
+    </div>
+  </div>
+
+  <script>
+    const $s = document.getElementById('stars');
+    for (let i = 0; i < 120; i++) {
+      const el = document.createElement('div'); el.className = 'star';
+      const sz = Math.random() * 2.5 + .5;
+      el.style.cssText = `width:${sz}px;height:${sz}px;left:${Math.random()*100}%;top:${Math.random()*100}%;--d:${(Math.random()*3+2).toFixed(1)}s;--delay:${(Math.random()*4).toFixed(1)}s;`;
+      $s.appendChild(el);
+    }
+  </script>
+</body>
+</html>
