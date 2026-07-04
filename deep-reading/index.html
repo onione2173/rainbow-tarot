@@ -1542,7 +1542,7 @@ ${speciesCtx}
       const img = document.getElementById('mcImg');
       img.style.opacity = '0';
       setTimeout(() => {
-        img.src = `/assets/images/major-${String(c.num).padStart(2,'0')}-${MC_SLUGS[c.num]}.png`;
+        img.src = `/assets/images/major-${String(c.num).padStart(2,'0')}-${MC_SLUGS[c.num]}.webp`;
         img.style.opacity = '1';
       }, 200);
       document.getElementById('mcNum').textContent = `${c.num < 10 ? '0' : ''}${c.num}`;
@@ -1890,8 +1890,10 @@ ${actionSummary
       if (!currentSpread) { document.documentElement.style.visibility = ''; return; }
 
       petInfo = state.petInfo || {};
-      drawnCards = state.drawnCards || [];
-      actionCards = state.actionCards || [];
+      // 예전 스냅샷은 카드 이미지가 .png 경로로 저장돼 있음 → .webp로 정규화
+      const fixImg = c => c && c.img ? { ...c, img: c.img.replace(/\.png$/, '.webp') } : c;
+      drawnCards = (state.drawnCards || []).map(fixImg);
+      actionCards = (state.actionCards || []).map(fixImg);
       freeReadingText = state.freeText || '';
 
       document.documentElement.style.visibility = '';
