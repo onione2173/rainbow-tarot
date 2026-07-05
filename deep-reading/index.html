@@ -1974,31 +1974,60 @@ ${actionSummary
 
     /* ── 심층 리포트 공유 ── */
 
-    // 리포트 렌더링 결과(#reportText)에서 "속마음" 섹션 앞부분 또는 첫 200자를 발췌
-    function extractReportExcerpt() {
+    // 리포트 렌더링 결과(#reportText)를 "섹션 제목 + 본문" 배열로 분해
+    // (report-section-title 노드를 기준으로 형제 노드들을 그 섹션 본문으로 묶음)
+    function extractReportSections() {
       const el = document.getElementById('reportText');
-      if (!el) return '';
+      if (!el) return [];
       const nodes = Array.from(el.children);
-      const heartIdx = nodes.findIndex(n =>
-        n.classList.contains('report-section-title') && n.textContent.includes('속마음'));
+      const sections = [];
+      let current = null;
+      nodes.forEach(n => {
+        if (n.classList.contains('report-section-title')) {
+          current = { title: n.textContent.trim(), lines: [] };
+          sections.push(current);
+        } else if (n.classList.contains('report-divider')) {
+          /* 구분선 노드는 건너뜀 */
+        } else if (current) {
+          const t = (n.textContent || '').trim();
+          if (t) current.lines.push(t);
+        }
+      });
+      return sections;
+    }
 
-      if (heartIdx !== -1) {
-        let text = '';
-        for (let i = heartIdx + 1; i < nodes.length; i++) {
-          const n = nodes[i];
-          if (n.classList.contains('report-section-title')) break;
-          if (n.classList.contains('report-divider')) continue;
-          const t = n.textContent.trim();
-          if (t) text += (text ? ' ' : '') + t;
-        }
-        if (text) {
-          const sentences = text.match(/[^.!?…]+[.!?…]+|[^.!?…]+$/g) || [text];
-          return sentences.slice(0, 3).join(' ').trim();
-        }
+    function splitSentences(text) {
+      return text.match(/[^.!?…]+[.!?…]+|[^.!?…]+$/g) || (text ? [text] : []);
+    }
+
+    // 섹션 하나를 지정된 문장 수로 발췌 ("속마음" 섹션은 전문 그대로 유지)
+    function sectionBody(section, sentenceCount) {
+      if (section.title.includes('속마음')) return section.lines.join('\n').trim();
+      const fullText = section.lines.join(' ').trim();
+      const sentences = splitSentences(fullText);
+      if (sentences.length <= sentenceCount) return fullText;
+      return sentences.slice(0, sentenceCount).join(' ').trim() + ' …';
+    }
+
+    // 전체 리포트 섹션을 "제목 + 발췌 본문" HTML로 렌더링
+    // 총 글자수가 임계값을 넘으면 (속마음 제외) 섹션 발췌 문장 수를 줄여 과도한 길이를 방지
+    function buildReportSectionsHtml() {
+      const sections = extractReportSections();
+      if (!sections.length) return '';
+
+      const NORMAL_COUNT = 3, FALLBACK_COUNT = 1, LENGTH_LIMIT = 1400;
+      let bodies = sections.map(s => sectionBody(s, NORMAL_COUNT));
+      const totalLen = bodies.reduce((sum, b) => sum + b.length, 0);
+      if (totalLen > LENGTH_LIMIT) {
+        bodies = sections.map(s => sectionBody(s, FALLBACK_COUNT));
       }
 
-      const full = (el.innerText || '').trim();
-      return full.length > 200 ? full.slice(0, 200) + '…' : full;
+      return sections.map((s, i) => `
+        <div style="margin-top:${i === 0 ? '0' : '18px'};">
+          <div style="font-size:.8rem;font-weight:600;color:#c8a8f0;margin-bottom:8px;">${escHtml(s.title)}</div>
+          <div style="height:1px;background:rgba(200,160,255,.15);margin-bottom:10px;"></div>
+          <div style="font-size:.75rem;line-height:1.85;color:#d8c4f0;white-space:pre-line;">${escHtml(bodies[i])}</div>
+        </div>`).join('');
     }
 
     function buildDeepShareCardEl() {
@@ -2009,8 +2038,10 @@ ${actionSummary
           <span style="color:#b090d0;white-space:nowrap;">${escHtml(c.position)}</span>
           <span style="color:#e8d0ff;font-weight:600;text-align:right;">${escHtml(c.name)} <span style="color:#a080c0;font-weight:400;">(${c.reversed ? '역방향' : '정방향'})</span></span>
         </div>`).join('');
-      const excerpt = extractReportExcerpt();
-      const actionLine = actionCards.length > 0 ? actionCards.map(c => escHtml(c.name)).join(', ') : '';
+      const sectionsHtml = buildReportSectionsHtml();
+      const hasActionSection = extractReportSections().some(s => s.title.includes('행동 가이드'));
+      const actionLine = (!hasActionSection && actionCards.length > 0)
+        ? actionCards.map(c => escHtml(c.name)).join(', ') : '';
 
       const sc = document.getElementById('shareCard');
       sc.innerHTML = `
@@ -2031,10 +2062,10 @@ ${actionSummary
               background:rgba(160,80,255,.13);border:1px solid rgba(160,80,255,.28);">
               ${cardsHtml}
             </div>
-            ${excerpt ? `
-            <div style="font-size:.76rem;line-height:1.9;color:#d8c4f0;
-              border-left:2px solid rgba(160,80,255,.4);padding-left:13px;margin-bottom:${actionLine ? '16px' : '0'};">
-              ${escHtml(excerpt).replace(/\n/g,'<br>')}</div>` : ''}
+            ${sectionsHtml ? `
+            <div style="margin-bottom:${actionLine ? '16px' : '0'};">
+              ${sectionsHtml}
+            </div>` : ''}
             ${actionLine ? `
             <div style="padding-top:14px;border-top:1px solid rgba(160,80,255,.18);">
               <div style="font-size:.68rem;color:#a080c0;margin-bottom:6px;">✨ 행동 가이드 카드</div>
