@@ -19,6 +19,7 @@
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Noto+Serif+KR:wght@300;400;600&family=Noto+Sans+KR:wght@300;400;600&display=swap" rel="stylesheet">
   <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/dist/umd/supabase.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/html2canvas@1.4.1/dist/html2canvas.min.js"></script>
   <script async src="https://www.googletagmanager.com/gtag/js?id=G-ZDTC39TEKD"></script>
   <script>window.dataLayer=window.dataLayer||[];function gtag(){dataLayer.push(arguments);}gtag('js',new Date());gtag('config','G-ZDTC39TEKD');</script>
 
@@ -295,6 +296,35 @@
       white-space:pre-wrap;
     }
     .report-divider{height:1px;background:rgba(200,160,255,.1);margin:20px 0;}
+
+    /* 공유 버튼 */
+    .btn-share{
+      display:inline-flex; align-items:center; gap:6px;
+      padding:9px 20px; border-radius:22px;
+      border:1px solid rgba(180,130,255,.28);
+      background:rgba(120,60,200,.12);
+      color:var(--text-sub); font-family:'Noto Serif KR',serif; font-size:.82rem;
+      cursor:pointer; transition:all .2s;
+    }
+    .btn-share:hover{
+      background:rgba(160,90,255,.22); border-color:rgba(180,130,255,.5);
+      color:var(--text-main); transform:translateY(-2px);
+      box-shadow:0 6px 18px rgba(120,60,200,.25);
+    }
+
+    /* 토스트 */
+    #toast{
+      position:fixed; bottom:80px; left:50%; transform:translateX(-50%) translateY(8px);
+      background:rgba(30,12,55,.96); border:1px solid rgba(180,100,255,.4);
+      color:#e0c0ff; padding:10px 22px; border-radius:26px;
+      font-family:'Noto Serif KR',serif; font-size:.82rem;
+      z-index:9999; opacity:0; pointer-events:none; white-space:nowrap;
+      transition:opacity .3s, transform .3s;
+    }
+    #toast.show{ opacity:1; transform:translateX(-50%) translateY(0); }
+
+    /* shareCard (이미지 생성용, 화면 밖 고정) */
+    #shareCard{ position:fixed; left:-9999px; top:0; width:360px; z-index:-1; }
 
     /* Save badge */
     .saved-badge{
@@ -910,7 +940,10 @@
           <div style="text-align:center;margin-top:8px">
             <span class="saved-badge" id="savedBadge" style="display:none">✓ 마이페이지에 저장되었어요</span>
           </div>
-          <div style="margin-top:32px;text-align:center">
+          <div style="margin-top:20px;text-align:center">
+            <button class="btn-share" onclick="shareDeepReport()">📤 &nbsp;공유하기</button>
+          </div>
+          <div style="margin-top:24px;text-align:center">
             <a href="https://link.coupang.com/a/eTOAHcakjQ" target="_blank" referrerpolicy="unsafe-url">
               <img src="https://ads-partners.coupang.com/banners/1000674?trackingCode=AF7834714&subId=&traceId=V0-301-7e6e8eb8ddfa1bfb-I1000674&w=728&h=90" alt="쿠팡 로켓 반려동물" style="max-width:100%;border-radius:8px;">
             </a>
@@ -922,6 +955,8 @@
 
     </div>
   </div>
+
+  <div id="shareCard"></div>
 
   <!-- 카드 공개 오버레이 -->
   <div id="revealOverlay" style="display:none;position:fixed;inset:0;z-index:600;background:radial-gradient(ellipse at 50% 40%,#1e0640 0%,#060010 80%);flex-direction:column;align-items:center;justify-content:center;padding:20px 16px;overflow:hidden;">
@@ -1935,6 +1970,135 @@ ${actionSummary
 
     function escHtml(s) {
       return String(s).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;');
+    }
+
+    /* ── 심층 리포트 공유 ── */
+
+    // 리포트 렌더링 결과(#reportText)에서 "속마음" 섹션 앞부분 또는 첫 200자를 발췌
+    function extractReportExcerpt() {
+      const el = document.getElementById('reportText');
+      if (!el) return '';
+      const nodes = Array.from(el.children);
+      const heartIdx = nodes.findIndex(n =>
+        n.classList.contains('report-section-title') && n.textContent.includes('속마음'));
+
+      if (heartIdx !== -1) {
+        let text = '';
+        for (let i = heartIdx + 1; i < nodes.length; i++) {
+          const n = nodes[i];
+          if (n.classList.contains('report-section-title')) break;
+          if (n.classList.contains('report-divider')) continue;
+          const t = n.textContent.trim();
+          if (t) text += (text ? ' ' : '') + t;
+        }
+        if (text) {
+          const sentences = text.match(/[^.!?…]+[.!?…]+|[^.!?…]+$/g) || [text];
+          return sentences.slice(0, 3).join(' ').trim();
+        }
+      }
+
+      const full = (el.innerText || '').trim();
+      return full.length > 200 ? full.slice(0, 200) + '…' : full;
+    }
+
+    function buildDeepShareCardEl() {
+      const petN = petInfo.name || '반려동물';
+      const spreadName = currentSpread ? currentSpread.name : '심층 리딩';
+      const cardsHtml = drawnCards.map(c => `
+        <div style="display:flex;justify-content:space-between;gap:10px;font-size:.74rem;padding:5px 0;border-bottom:1px solid rgba(160,80,255,.12);">
+          <span style="color:#b090d0;white-space:nowrap;">${escHtml(c.position)}</span>
+          <span style="color:#e8d0ff;font-weight:600;text-align:right;">${escHtml(c.name)} <span style="color:#a080c0;font-weight:400;">(${c.reversed ? '역방향' : '정방향'})</span></span>
+        </div>`).join('');
+      const excerpt = extractReportExcerpt();
+      const actionLine = actionCards.length > 0 ? actionCards.map(c => escHtml(c.name)).join(', ') : '';
+
+      const sc = document.getElementById('shareCard');
+      sc.innerHTML = `
+        <div style="width:360px;padding:32px 26px 28px;
+          background:linear-gradient(150deg,#1a0835 0%,#0c1045 45%,#041520 100%);
+          font-family:'Noto Serif KR',serif;color:#f0e6ff;border-radius:22px;position:relative;overflow:hidden;">
+          <div style="position:absolute;top:0;left:0;right:0;height:3px;
+            background:linear-gradient(90deg,#ff6b6b,#ff9f43,#ffd32a,#0be881,#17c0eb,#7d5fff,#ef5777);"></div>
+          <div style="position:absolute;inset:0;
+            background:radial-gradient(ellipse at 25% 15%,rgba(110,50,210,.18) 0%,transparent 55%);pointer-events:none;"></div>
+          <div style="position:relative;z-index:1;">
+            <div style="text-align:center;margin-bottom:20px;">
+              <div style="font-size:2.2rem;margin-bottom:6px;">🔮</div>
+              <div style="font-size:.72rem;color:#b090d0;letter-spacing:.08em;">심층 콤보 분석 · ${escHtml(spreadName)}</div>
+              <div style="font-size:1.05rem;font-weight:600;color:#e8d0ff;margin-top:6px;">${escHtml(petN)}</div>
+            </div>
+            <div style="margin-bottom:18px;padding:12px 14px;border-radius:14px;
+              background:rgba(160,80,255,.13);border:1px solid rgba(160,80,255,.28);">
+              ${cardsHtml}
+            </div>
+            ${excerpt ? `
+            <div style="font-size:.76rem;line-height:1.9;color:#d8c4f0;
+              border-left:2px solid rgba(160,80,255,.4);padding-left:13px;margin-bottom:${actionLine ? '16px' : '0'};">
+              ${escHtml(excerpt).replace(/\n/g,'<br>')}</div>` : ''}
+            ${actionLine ? `
+            <div style="padding-top:14px;border-top:1px solid rgba(160,80,255,.18);">
+              <div style="font-size:.68rem;color:#a080c0;margin-bottom:6px;">✨ 행동 가이드 카드</div>
+              <div style="font-size:.75rem;color:#e0d0f8;">${actionLine}</div>
+            </div>` : ''}
+            <div style="text-align:center;margin-top:22px;padding-top:14px;
+              border-top:1px solid rgba(255,255,255,.07);">
+              <div style="font-size:.68rem;color:rgba(200,160,255,.8);font-weight:600;">🐾 펫타로</div>
+              <div style="font-size:.6rem;color:rgba(180,140,220,.55);margin-top:5px;letter-spacing:.02em;">나도 해보기 → tubular-cupcake-55d47b.netlify.app</div>
+            </div>
+          </div>
+        </div>`;
+      return sc.firstElementChild;
+    }
+
+    async function renderDeepShareCanvas() {
+      const el = buildDeepShareCardEl();
+      await document.fonts.ready;
+      return html2canvas(el, {
+        backgroundColor: null, scale: 2, useCORS: true, logging: false,
+        width: 360, height: el.scrollHeight,
+      });
+    }
+
+    async function shareDeepReport() {
+      if (typeof gtag === 'function') gtag('event', 'share_click', { mode: 'deep_report' });
+      if (typeof html2canvas === 'undefined') {
+        navigator.clipboard?.writeText(window.location.href)
+          .then(() => showToast('링크가 복사되었어요!')).catch(() => {});
+        return;
+      }
+      showToast('이미지 생성 중…');
+      try {
+        const canvas = await renderDeepShareCanvas();
+        const blob = await new Promise(res => canvas.toBlob(res, 'image/png'));
+        const file = new File([blob], '심층리포트.png', { type: 'image/png' });
+        const shareData = {
+          title: '심층 콤보 분석',
+          text: `『심층 콤보 분석』 결과를 공유해요 🐾\n나도 해보기 → https://tubular-cupcake-55d47b.netlify.app`,
+          url: 'https://tubular-cupcake-55d47b.netlify.app',
+        };
+        if (navigator.canShare && navigator.canShare({ files: [file] })) {
+          await navigator.share({ ...shareData, files: [file] });
+        } else if (navigator.share) {
+          await navigator.share(shareData);
+        } else {
+          await navigator.clipboard.writeText(window.location.href);
+          showToast('링크가 복사되었어요!');
+        }
+      } catch (e) {
+        if (e.name !== 'AbortError') showToast('공유 중 오류가 발생했어요');
+      }
+    }
+
+    function showToast(msg) {
+      let t = document.getElementById('toast');
+      if (!t) {
+        t = document.createElement('div'); t.id = 'toast';
+        document.body.appendChild(t);
+      }
+      t.textContent = msg;
+      t.classList.add('show');
+      clearTimeout(t._timer);
+      t._timer = setTimeout(() => t.classList.remove('show'), 2600);
     }
   </script>
 </body>
