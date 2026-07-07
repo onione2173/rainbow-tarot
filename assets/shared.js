@@ -483,6 +483,73 @@ async function shareResult(){
   }
 }
 
+/* ── 카카오톡 공유 (카카오링크) ── */
+const KAKAO_JS_KEY='24af5a552dd23f08ef587f3765851be7';
+const SITE_URL='https://tubular-cupcake-55d47b.netlify.app';
+const OG_IMAGE=SITE_URL+'/assets/og-image.png';
+
+function initKakao(){
+  if(window.Kakao && !Kakao.isInitialized()){
+    try{ Kakao.init(KAKAO_JS_KEY); }catch(e){}
+  }
+}
+initKakao();
+
+async function uploadShareImageToKakao(canvas){
+  try{
+    const blob=await new Promise(res=>canvas.toBlob(res,'image/png'));
+    if(!blob) return null;
+    const file=new File([blob],'타로결과.png',{type:'image/png'});
+    const dt=new DataTransfer();
+    dt.items.add(file);
+    const res=await Kakao.Share.uploadImage({file:dt.files});
+    return res?.infos?.original?.url||null;
+  }catch(e){
+    return null;
+  }
+}
+
+async function shareKakao(){
+  track('share_click',{mode:currentMode+'_kakao'});
+  initKakao();
+  if(!window.Kakao || !Kakao.isInitialized()){
+    showToast('카카오 공유를 불러올 수 없어 기본 공유로 대신할게요');
+    shareResult();
+    return;
+  }
+
+  let imageUrl=OG_IMAGE;
+  try{
+    if(typeof html2canvas!=='undefined'){
+      const canvas=await renderShareCanvas();
+      const uploaded=await uploadShareImageToKakao(canvas);
+      if(uploaded) imageUrl=uploaded;
+    }
+  }catch(e){}
+
+  const card=drawn[0];
+  const rv=drawnRv[0];
+  const description=card?`${card.en} · ${rv?'역방향':'정방향'} — 나도 카드를 뽑아볼까?`:`${PAGE_TITLE} 결과가 도착했어요`;
+
+  try{
+    Kakao.Share.sendDefault({
+      objectType:'feed',
+      content:{
+        title:`${PAGE_TITLE} 결과가 도착했어요 🐾`,
+        description,
+        imageUrl,
+        link:{ mobileWebUrl:SITE_URL, webUrl:SITE_URL },
+      },
+      buttons:[{
+        title:'나도 해보기',
+        link:{ mobileWebUrl:SITE_URL, webUrl:SITE_URL },
+      }],
+    });
+  }catch(e){
+    showToast('카카오 공유 중 오류가 발생했어요');
+  }
+}
+
 async function saveImage(){
   track('save_image_click',{mode:currentMode});
   if(typeof html2canvas==='undefined'){ showToast('잠시 후 다시 시도해주세요'); return; }

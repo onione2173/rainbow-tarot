@@ -29,6 +29,7 @@
   <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-1748357161143369" crossorigin="anonymous"></script>
   <script type="text/javascript" src="//t1.kakaocdn.net/kas/static/ba.min.js" async></script>
   <script src="https://cdn.jsdelivr.net/npm/html2canvas@1.4.1/dist/html2canvas.min.js"></script>
+  <script src="https://t1.kakaocdn.net/kakao_js_sdk/2.7.4/kakao.min.js" crossorigin="anonymous"></script>
   <link rel="stylesheet" href="/assets/style.css">
   <style>
     .site-header{position:sticky;top:3px;z-index:200;background:rgba(10,8,28,.92);backdrop-filter:blur(18px);border-bottom:1px solid rgba(200,160,255,.1);height:56px;display:flex;align-items:center;justify-content:space-between;padding:0 20px;}
@@ -184,6 +185,7 @@
           <div class="footer-actions">
             <div class="share-btns">
               <button class="btn-share" onclick="shareResult()">📤 &nbsp;공유하기</button>
+              <button class="btn-kakao" onclick="shareKakao()"><svg viewBox="0 0 24 24" fill="#191919"><path d="M12 3C6.477 3 2 6.477 2 10.75c0 2.718 1.637 5.1 4.107 6.516l-1.048 3.856 4.514-2.97c.786.14 1.59.21 2.427.21 5.523 0 10-3.477 10-7.75S17.523 3 12 3z"/></svg>&nbsp;카톡 공유</button>
               <button class="btn-share" onclick="saveImage()">💾 &nbsp;이미지 저장</button>
             </div>
             <button class="btn-small btn-ghost" onclick="onReset()">🌙 &nbsp;다시 질문하기</button>

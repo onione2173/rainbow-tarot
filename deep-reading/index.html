@@ -20,6 +20,7 @@
   <link href="https://fonts.googleapis.com/css2?family=Noto+Serif+KR:wght@300;400;600&family=Noto+Sans+KR:wght@300;400;600&display=swap" rel="stylesheet">
   <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/dist/umd/supabase.min.js"></script>
   <script src="https://cdn.jsdelivr.net/npm/html2canvas@1.4.1/dist/html2canvas.min.js"></script>
+  <script src="https://t1.kakaocdn.net/kakao_js_sdk/2.7.4/kakao.min.js" crossorigin="anonymous"></script>
   <script async src="https://www.googletagmanager.com/gtag/js?id=G-ZDTC39TEKD"></script>
   <script>window.dataLayer=window.dataLayer||[];function gtag(){dataLayer.push(arguments);}gtag('js',new Date());gtag('config','G-ZDTC39TEKD');</script>
 
@@ -311,6 +312,19 @@
       color:var(--text-main); transform:translateY(-2px);
       box-shadow:0 6px 18px rgba(120,60,200,.25);
     }
+    .btn-kakao{
+      display:inline-flex; align-items:center; gap:6px;
+      padding:9px 20px; border-radius:22px;
+      border:1px solid transparent;
+      background:#FEE500; color:#191919;
+      font-family:'Noto Sans KR',sans-serif; font-weight:700; font-size:.82rem;
+      cursor:pointer; transition:all .2s;
+    }
+    .btn-kakao:hover{
+      background:#f5db00; transform:translateY(-2px);
+      box-shadow:0 6px 18px rgba(0,0,0,.15);
+    }
+    .btn-kakao svg{ width:16px; height:16px; flex-shrink:0; }
 
     /* 토스트 */
     #toast{
@@ -942,6 +956,7 @@
           </div>
           <div style="margin-top:20px;text-align:center">
             <button class="btn-share" onclick="shareDeepReport()">📤 &nbsp;공유하기</button>
+            <button class="btn-kakao" onclick="shareDeepKakao()"><svg viewBox="0 0 24 24" fill="#191919"><path d="M12 3C6.477 3 2 6.477 2 10.75c0 2.718 1.637 5.1 4.107 6.516l-1.048 3.856 4.514-2.97c.786.14 1.59.21 2.427.21 5.523 0 10-3.477 10-7.75S17.523 3 12 3z"/></svg>&nbsp;카톡 공유</button>
           </div>
           <div style="margin-top:24px;text-align:center">
             <a href="https://link.coupang.com/a/eTOAHcakjQ" target="_blank" referrerpolicy="unsafe-url">
@@ -973,6 +988,17 @@
   <script>
     // NicePay 연동 전 테스트 모드
     const DEV_MODE = false;
+
+    /* ── 카카오톡 공유 초기화 ── */
+    const KAKAO_JS_KEY = '24af5a552dd23f08ef587f3765851be7';
+    const SITE_URL = 'https://tubular-cupcake-55d47b.netlify.app';
+    const OG_IMAGE = SITE_URL + '/assets/og-image.png';
+    function initKakao() {
+      if (window.Kakao && !Kakao.isInitialized()) {
+        try { Kakao.init(KAKAO_JS_KEY); } catch (e) {}
+      }
+    }
+    initKakao();
 
     const SPREADS = {
       mind: {
@@ -2117,6 +2143,60 @@ ${actionSummary
         }
       } catch (e) {
         if (e.name !== 'AbortError') showToast('공유 중 오류가 발생했어요');
+      }
+    }
+
+    async function uploadDeepShareImageToKakao(canvas) {
+      try {
+        const blob = await new Promise(res => canvas.toBlob(res, 'image/png'));
+        if (!blob) return null;
+        const file = new File([blob], '심층리포트.png', { type: 'image/png' });
+        const dt = new DataTransfer();
+        dt.items.add(file);
+        const res = await Kakao.Share.uploadImage({ file: dt.files });
+        return res?.infos?.original?.url || null;
+      } catch (e) {
+        return null;
+      }
+    }
+
+    async function shareDeepKakao() {
+      if (typeof gtag === 'function') gtag('event', 'share_click', { mode: 'deep_report_kakao' });
+      initKakao();
+      if (!window.Kakao || !Kakao.isInitialized()) {
+        showToast('카카오 공유를 불러올 수 없어 기본 공유로 대신할게요');
+        shareDeepReport();
+        return;
+      }
+
+      let imageUrl = OG_IMAGE;
+      try {
+        if (typeof html2canvas !== 'undefined') {
+          const canvas = await renderDeepShareCanvas();
+          const uploaded = await uploadDeepShareImageToKakao(canvas);
+          if (uploaded) imageUrl = uploaded;
+        }
+      } catch (e) {}
+
+      const petN = petInfo.name || '반려동물';
+      const spreadName = currentSpread ? currentSpread.name : '심층 리딩';
+
+      try {
+        Kakao.Share.sendDefault({
+          objectType: 'feed',
+          content: {
+            title: `${petN}의 심층 콤보 분석이 도착했어요 🐾`,
+            description: `${spreadName} — 나도 심층 리딩을 받아볼까?`,
+            imageUrl,
+            link: { mobileWebUrl: SITE_URL, webUrl: SITE_URL },
+          },
+          buttons: [{
+            title: '나도 해보기',
+            link: { mobileWebUrl: SITE_URL, webUrl: SITE_URL },
+          }],
+        });
+      } catch (e) {
+        showToast('카카오 공유 중 오류가 발생했어요');
       }
     }
 
