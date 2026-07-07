@@ -955,8 +955,8 @@
             <span class="saved-badge" id="savedBadge" style="display:none">✓ 마이페이지에 저장되었어요</span>
           </div>
           <div style="margin-top:20px;text-align:center">
-            <button class="btn-share" onclick="shareDeepReport()">📤 &nbsp;공유하기</button>
             <button class="btn-kakao" onclick="shareDeepKakao()"><svg viewBox="0 0 24 24" fill="#191919"><path d="M12 3C6.477 3 2 6.477 2 10.75c0 2.718 1.637 5.1 4.107 6.516l-1.048 3.856 4.514-2.97c.786.14 1.59.21 2.427.21 5.523 0 10-3.477 10-7.75S17.523 3 12 3z"/></svg>&nbsp;카톡 공유</button>
+            <button class="btn-share" onclick="saveDeepImage()">💾 &nbsp;이미지 저장</button>
           </div>
           <div style="margin-top:24px;text-align:center">
             <a href="https://link.coupang.com/a/eTOAHcakjQ" target="_blank" referrerpolicy="unsafe-url">
@@ -2114,6 +2114,22 @@ ${actionSummary
         backgroundColor: null, scale: 2, useCORS: true, logging: false,
         width: 360, height: el.scrollHeight,
       });
+    }
+
+    async function saveDeepImage() {
+      if (typeof gtag === 'function') gtag('event', 'save_image_click', { mode: 'deep_report' });
+      if (typeof html2canvas === 'undefined') { showToast('잠시 후 다시 시도해주세요'); return; }
+      showToast('이미지 생성 중…');
+      try {
+        const canvas = await renderDeepShareCanvas();
+        const link = document.createElement('a');
+        link.download = `심층리포트_${Date.now()}.png`;
+        link.href = canvas.toDataURL('image/png');
+        link.click();
+        showToast('이미지가 저장되었어요!');
+      } catch (e) {
+        showToast('저장 중 오류가 발생했어요');
+      }
     }
 
     async function shareDeepReport() {
