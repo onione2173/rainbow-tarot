@@ -1,0 +1,261 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>虹の橋のむこう — ペットタロット</title>
+  <meta name="description" content="虹の橋を渡ったペットの魂とタロットでつながってみましょう。最後の挨拶と恋しい気持ちを手紙にしてお届けします。">
+  <link rel="canonical" href="https://tubular-cupcake-55d47b.netlify.app/ja/rainbow-tarot/">
+  <link rel="alternate" hreflang="ko" href="https://tubular-cupcake-55d47b.netlify.app/rainbow-tarot/">
+  <link rel="alternate" hreflang="ja" href="https://tubular-cupcake-55d47b.netlify.app/ja/rainbow-tarot/">
+  <link rel="alternate" hreflang="x-default" href="https://tubular-cupcake-55d47b.netlify.app/rainbow-tarot/">
+  <meta property="og:type" content="website">
+  <meta property="og:site_name" content="ペットタロット">
+  <meta property="og:locale" content="ja_JP">
+  <meta property="og:title" content="虹の橋のむこう — ペットタロット">
+  <meta property="og:description" content="虹の橋を渡ったペットの魂とタロットでつながってみましょう。最後の挨拶と恋しい気持ちを手紙にしてお届けします。">
+  <meta property="og:image" content="https://tubular-cupcake-55d47b.netlify.app/assets/og-image.png">
+  <meta property="og:url" content="https://tubular-cupcake-55d47b.netlify.app/ja/rainbow-tarot/">
+  <meta name="twitter:card" content="summary_large_image">
+  <link rel="icon" type="image/svg+xml" href="/favicon.svg">
+  <link rel="apple-touch-icon" href="/favicon.svg">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Noto+Serif+KR:wght@300;400;600&family=Noto+Sans+KR:wght@300&display=swap" rel="stylesheet">
+  <script async src="https://www.googletagmanager.com/gtag/js?id=G-ZDTC39TEKD"></script>
+  <script>
+    window.dataLayer = window.dataLayer || [];
+    function gtag(){dataLayer.push(arguments);}
+    gtag('js', new Date());
+    gtag('config', 'G-ZDTC39TEKD');
+  </script>
+  <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-1748357161143369" crossorigin="anonymous"></script>
+  <script src="https://cdn.jsdelivr.net/npm/html2canvas@1.4.1/dist/html2canvas.min.js"></script>
+  <link rel="stylesheet" href="/assets/style.css">
+  <style>
+    .site-header{position:sticky;top:3px;z-index:200;background:rgba(10,8,28,.92);backdrop-filter:blur(18px);border-bottom:1px solid rgba(200,160,255,.1);height:56px;display:flex;align-items:center;justify-content:space-between;padding:0 20px;}
+    .header-brand{display:flex;align-items:center;gap:9px;text-decoration:none;}
+    .brand-icon{font-size:1.35rem;}
+    .brand-name{font-size:1.15rem;font-weight:600;background:linear-gradient(135deg,#e8c4ff 0%,#c8e6ff 100%);-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;}
+    .hamburger-btn{background:none;border:none;cursor:pointer;display:flex;flex-direction:column;gap:5px;padding:8px;margin-right:-8px;}
+    .hamburger-btn span{display:block;width:22px;height:2px;background:#c0aad8;border-radius:2px;transition:background .2s;}
+    .hamburger-btn:hover span{background:#e8d0ff;}
+    .menu-overlay{position:fixed;inset:0;z-index:998;background:rgba(0,0,0,.55);opacity:0;pointer-events:none;transition:opacity .3s;}
+    .menu-overlay.show{opacity:1;pointer-events:all;}
+    .menu-drawer{position:fixed;top:0;right:-100%;width:min(300px,82vw);height:100vh;z-index:999;background:linear-gradient(160deg,#130428 0%,#0b1032 100%);border-left:1px solid rgba(200,160,255,.15);overflow-y:auto;transition:right .3s ease;}
+    .menu-drawer.show{right:0;}
+    .menu-top{display:flex;align-items:center;justify-content:space-between;padding:24px 20px 18px;}
+    .menu-label{font-size:1.25rem;font-weight:700;color:#f0e6ff;font-family:'Noto Sans KR',sans-serif;}
+    .menu-close-btn{background:none;border:none;color:#8070a0;font-size:1.1rem;cursor:pointer;padding:6px;line-height:1;}
+    .menu-hr{border:none;border-top:1px solid rgba(200,160,255,.12);margin:0 0 6px;}
+    .menu-item{display:flex;align-items:center;padding:16px 20px;font-size:1rem;color:#f0e6ff;text-decoration:none;cursor:pointer;border:none;background:none;width:100%;text-align:left;font-family:'Noto Serif KR',serif;transition:background .15s;line-height:1.4;}
+    .menu-item:hover{background:rgba(255,255,255,.04);}
+    .menu-item-disabled{color:#8070a0;cursor:default;pointer-events:none;}
+    .chip-soon{margin-left:8px;font-size:.65rem;padding:2px 9px;border-radius:10px;background:rgba(180,100,255,.12);border:1px solid rgba(180,100,255,.28);color:#c0a0ff;font-family:'Noto Sans KR',sans-serif;}
+  </style>
+</head>
+<body>
+  <div class="rainbow-bar"></div>
+  <div id="stars"></div>
+  <div id="petals"></div>
+
+  <header class="site-header">
+    <a href="/ja/" class="header-brand">
+      <span class="brand-icon">🐾</span>
+      <span class="brand-name">ペットタロット</span>
+    </a>
+    <button class="hamburger-btn" id="hamburgerBtn" aria-label="メニューを開く">
+      <span></span><span></span><span></span>
+    </button>
+  </header>
+  <div class="menu-overlay" id="menuOverlay"></div>
+  <nav class="menu-drawer" id="menuDrawer">
+    <div class="menu-top">
+      <span class="menu-label">メニュー</span>
+      <button class="menu-close-btn" id="menuClose">✕</button>
+    </div>
+    <hr class="menu-hr">
+    <a href="/ja/" class="menu-item">ホーム</a>
+    <span class="menu-item menu-item-disabled">プレゼントする <span class="chip-soon">準備中</span></span>
+    <span class="menu-item menu-item-disabled">おすすめする <span class="chip-soon">準備中</span></span>
+    <a href="/ja/contact/" class="menu-item">お問い合わせ</a>
+    <hr class="menu-hr">
+    <a href="/rainbow-tarot/" class="menu-item">🇰🇷 한국어</a>
+  </nav>
+
+  <div class="itl-overlay" id="itlOverlay">
+    <div class="itl-box">
+      <div class="itl-rainbow"></div>
+      <div class="itl-header">
+        <span class="itl-icon">🌙</span>
+        <p class="itl-title">少し休みましょう</p>
+        <p class="itl-sub">次のリーディングの準備の間、深呼吸してくださいね</p>
+      </div>
+      <div class="itl-footer">
+        <button class="itl-close-btn" id="itlCloseBtn" disabled onclick="closeInterstitial()">
+          <span id="itlCd">5</span>秒後に閉じる
+        </button>
+      </div>
+    </div>
+  </div>
+
+  <div class="page">
+    <div class="container">
+      <div class="header reveal">
+        <span class="icon">🌈</span>
+        <h1>虹の橋のむこう</h1>
+        <p class="sub">愛するペットの魂とつながる場所<br>その子たちは虹の橋のむこうから、いつも私たちを見守っています</p>
+      </div>
+
+      <div class="glass">
+        <div class="input-row">
+          <div>
+            <label class="field-label">🐾 ペットの名前</label>
+            <input type="text" id="petName" placeholder="例: ポチ、タマ、ムギ…">
+          </div>
+          <div>
+            <label class="field-label">💌 ペットが呼ぶあなたの呼び方</label>
+            <input type="text" id="ownerTitle" placeholder="例: パパ、ママ、お姉ちゃん、お兄ちゃん…">
+          </div>
+        </div>
+        <label class="field-label">🌸 どんなお話をしたいですか?</label>
+        <textarea class="question" id="question"
+          placeholder="例: 今、幸せ? / 最後に伝えたいことはある? / もっと何かしてあげられたかな?"></textarea>
+        <button class="btn-draw" onclick="onDraw()">🌈 &nbsp;タロットカードを引く</button>
+      </div>
+
+      <div class="spread-section" id="spreadSection">
+        <div class="spread-header">
+          <p class="spread-instruction">✨ 心が惹かれるカードを1枚選んでください</p>
+          <span class="spread-count" id="spreadCount">カードを選んでください</span>
+        </div>
+        <div class="fan-wrap" id="fanWrap"></div>
+      </div>
+
+      <div class="cards-section" id="cardsSection">
+        <p class="spread-hint"><em>✨</em> カードをクリックして開いてみましょう <em>✨</em></p>
+        <div class="cards-grid" id="cardsGrid"></div>
+      </div>
+
+      <div class="loading-section" id="loadingSection">
+        <div class="orb"></div>
+        <p class="loading-text" id="loadingText">魂の声に耳をすませています…<br>
+          <span style="font-size:.8rem;color:var(--text-dim)">少々お待ちください</span></p>
+      </div>
+
+      <div class="reading-section glass" id="readingSection">
+        <div class="reading-header">
+          <span class="ltr-icon">🔮</span>
+          <h3 id="readingTitle"></h3>
+        </div>
+        <div class="chips" id="chipRow"></div>
+        <div class="reading-body" id="readingBody"></div>
+        <div class="letter-trigger" id="letterTrigger">
+          <button class="btn-open-letter" onclick="openLetter()">💌 &nbsp;手紙を開く</button>
+        </div>
+        <div class="letter-section" id="letterSection" style="display:none">
+          <div class="letter-divider"></div>
+          <div class="letter-header">
+            <span class="ltr-icon">💌</span>
+            <h3 id="letterTitle"></h3>
+          </div>
+          <div class="reading-body" id="letterBody"></div>
+        </div>
+        <div class="ad-in-reading" id="adInReading" style="display:none"></div>
+        <div class="reading-footer" id="readingFooter" style="display:none">
+          <div class="footer-actions">
+            <div class="share-btns">
+              <button class="btn-share" onclick="shareResult()">🔗 &nbsp;共有する</button>
+              <button class="btn-share" onclick="saveImage()">💾 &nbsp;画像を保存</button>
+            </div>
+            <button class="btn-small btn-ghost" onclick="onReset()">🌙 &nbsp;もう一度質問する</button>
+          </div>
+        </div>
+      </div>
+
+      <footer class="site-footer">
+        <p>愛するペットを想うすべての方のために作られました</p>
+        <p>🌈 虹の橋の向こうでも、その愛は永遠です 🐾</p>
+        <div class="footer-operator">
+          <p>運営者: BrandWick &nbsp;|&nbsp; お問い合わせ: <a href="mailto:ralra_1@naver.com">ralra_1@naver.com</a></p>
+          <p><a href="/ja/privacy/">プライバシーポリシー</a> &nbsp;|&nbsp; <a href="/ja/terms/">利用規約</a></p>
+        </div>
+      </footer>
+    </div>
+  </div>
+
+  <div id="shareCard"></div>
+
+  <div class="privacy-overlay" id="privacyOverlay" onclick="closePrivacy(event)">
+    <div class="privacy-modal">
+      <h2>🔒 プライバシーポリシー</h2>
+      <h3>運営者情報</h3>
+      <p>運営者: BrandWick &nbsp;|&nbsp; お問い合わせ: ralra_1@naver.com</p>
+      <h3>収集する情報</h3>
+      <p>本サービスは、利用者の個人情報を直接収集・保存することはありません。<br>ただし、以下の第三者サービスが自動的に利用統計を収集します。</p>
+      <h3>Google Analytics 4</h3>
+      <p>サービスの利用状況を把握するためにGoogle Analyticsを使用しています。</p>
+      <h3>Google AdSense</h3>
+      <p>パーソナライズ広告の配信のためにGoogle AdSenseを使用しています。</p>
+      <h3>クッキーの拒否方法</h3>
+      <p>ブラウザの設定でクッキーを無効にすることができます。</p>
+      <button class="privacy-close" onclick="closePrivacy()">閉じる</button>
+    </div>
+  </div>
+
+  <script src="/assets/cards-ja.js"></script>
+  <script>
+    const currentMode = 0;
+    const PAGE_ICON = '🌈';
+    const PAGE_TITLE = '虹の橋のむこう';
+    const PAGE_LOADING = '魂の声に耳をすませています…';
+    const PAGE_LETTER_BTN = '💌 &nbsp;手紙を開く';
+    const PAGE_LETTER_TITLE = petN => `💌 ${petN}からの手紙`;
+    const PAGE_SHARE_LABEL = petN => `💌 ${petN}からの手紙`;
+
+    function onDraw(){
+      const q = document.getElementById('question').value.trim();
+      if(!q){
+        const ta = document.getElementById('question');
+        ta.style.borderColor='rgba(255,100,100,.5)'; ta.focus();
+        setTimeout(()=>ta.style.borderColor='',2000); return;
+      }
+      ['readingSection','loadingSection','cardsSection','spreadSection']
+        .forEach(id=>document.getElementById(id).classList.remove('show'));
+      document.querySelectorAll('.btn-draw').forEach(b=>b.disabled=true);
+      track('draw_start',{mode:currentMode});
+      showSpread();
+    }
+
+    function buildPrompt(){
+      const card=drawn[0], rv=drawnRv[0];
+      const cardInfo=`カード: ${card.name}(${card.en}) — ${rv?'逆位置':'正位置'}\n正位置キーワード: ${card.upKw}\n逆位置キーワード: ${card.rvKw}`;
+      const sep='\n\n---LETTER--- という区切り記号を必ず含めて、2つの部分に正確に分けて書いてください。';
+      const petName=document.getElementById('petName').value.trim()||'ペット';
+      const ownerTitle=document.getElementById('ownerTitle').value.trim()||'飼い主さん';
+      const question=document.getElementById('question').value.trim();
+      return {
+        petName,
+        system:`あなたは虹の橋を渡ったペットの魂と繋がるタロットチャネラーです。
+必ず日本語で、です・ます調で書いてください。
+回答は必ず2つの部分に分けてください。
+
+[パート1: カードの解釈]
+このカードがどんな意味を持つかを簡潔に説明し、飼い主さんの質問と結びつけて温かく解釈します。2〜4文程度。
+
+---LETTER---
+
+[パート2: ペットからの手紙]
+ペットが一人称で飼い主さんに宛てて書く短い手紙。カードの意味だけに基づいて書きます。
+- 種類による身体表現は一切禁止(尻尾・肉球・ニャー・ワンなど特定の動物に限定した表現は不可)
+- 感情と魂の言葉だけを使う(「感じるよ」「覚えているよ」「そばにいるよ」「大好きだよ」など)
+- 逆位置のカードも必ず温かい慰めとして解釈する / 200文字程度`,
+        user:`ペットの名前: ${petName}\n飼い主さんの呼び方: "${ownerTitle}"\n飼い主さんの質問: "${question}"\n\n${cardInfo}${sep}`,
+      };
+    }
+  </script>
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/dist/umd/supabase.min.js"></script>
+  <script src="/assets/auth.js"></script>
+  <script src="/assets/shared-ja.js"></script>
+</body>
+</html>

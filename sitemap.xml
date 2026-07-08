@@ -40,4 +40,28 @@
     <changefreq>yearly</changefreq>
     <priority>0.2</priority>
   </url>
+  <url>
+    <loc>https://tubular-cupcake-55d47b.netlify.app/ja/</loc>
+  </url>
+  <url>
+    <loc>https://tubular-cupcake-55d47b.netlify.app/ja/rainbow-tarot/</loc>
+  </url>
+  <url>
+    <loc>https://tubular-cupcake-55d47b.netlify.app/ja/mood-reading/</loc>
+  </url>
+  <url>
+    <loc>https://tubular-cupcake-55d47b.netlify.app/ja/guardian-tarot/</loc>
+  </url>
+  <url>
+    <loc>https://tubular-cupcake-55d47b.netlify.app/ja/deep-reading/</loc>
+  </url>
+  <url>
+    <loc>https://tubular-cupcake-55d47b.netlify.app/ja/privacy/</loc>
+  </url>
+  <url>
+    <loc>https://tubular-cupcake-55d47b.netlify.app/ja/terms/</loc>
+  </url>
+  <url>
+    <loc>https://tubular-cupcake-55d47b.netlify.app/ja/contact/</loc>
+  </url>
 </urlset>

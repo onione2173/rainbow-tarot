@@ -1,21 +1,21 @@
 <!DOCTYPE html>
-<html lang="ko">
+<html lang="ja">
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>오늘 우리 아이 어때요? — 반려동물 타로</title>
-  <meta name="description" content="지금 함께하는 반려동물의 오늘 기분과 에너지를 타로카드로 읽어봐요. 무료 원카드 타로 리딩.">
-  <link rel="canonical" href="https://tubular-cupcake-55d47b.netlify.app/mood-reading/">
+  <title>きょうの気持ちリーディング — ペットタロット</title>
+  <meta name="description" content="今そばにいるペットの、きょうの気分とエネルギーをタロットカードで読んでみましょう。無料のワンカードタロットリーディング。">
+  <link rel="canonical" href="https://tubular-cupcake-55d47b.netlify.app/ja/mood-reading/">
   <link rel="alternate" hreflang="ko" href="https://tubular-cupcake-55d47b.netlify.app/mood-reading/">
   <link rel="alternate" hreflang="ja" href="https://tubular-cupcake-55d47b.netlify.app/ja/mood-reading/">
   <link rel="alternate" hreflang="x-default" href="https://tubular-cupcake-55d47b.netlify.app/mood-reading/">
   <meta property="og:type" content="website">
-  <meta property="og:site_name" content="펫타로">
-  <meta property="og:locale" content="ko_KR">
-  <meta property="og:title" content="오늘 우리 아이 어때요? — 반려동물 타로">
-  <meta property="og:description" content="지금 함께하는 반려동물의 오늘 기분과 에너지를 타로카드로 읽어봐요. 무료 원카드 타로 리딩.">
+  <meta property="og:site_name" content="ペットタロット">
+  <meta property="og:locale" content="ja_JP">
+  <meta property="og:title" content="きょうの気持ちリーディング — ペットタロット">
+  <meta property="og:description" content="今そばにいるペットの、きょうの気分とエネルギーをタロットカードで読んでみましょう。無料のワンカードタロットリーディング。">
   <meta property="og:image" content="https://tubular-cupcake-55d47b.netlify.app/assets/og-image.png">
-  <meta property="og:url" content="https://tubular-cupcake-55d47b.netlify.app/mood-reading/">
+  <meta property="og:url" content="https://tubular-cupcake-55d47b.netlify.app/ja/mood-reading/">
   <meta name="twitter:card" content="summary_large_image">
   <link rel="icon" type="image/svg+xml" href="/favicon.svg">
   <link rel="apple-touch-icon" href="/favicon.svg">
@@ -30,9 +30,7 @@
     gtag('config', 'G-ZDTC39TEKD');
   </script>
   <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-1748357161143369" crossorigin="anonymous"></script>
-  <script type="text/javascript" src="//t1.kakaocdn.net/kas/static/ba.min.js" async></script>
   <script src="https://cdn.jsdelivr.net/npm/html2canvas@1.4.1/dist/html2canvas.min.js"></script>
-  <script src="https://t1.kakaocdn.net/kakao_js_sdk/2.7.4/kakao.min.js" crossorigin="anonymous"></script>
   <link rel="stylesheet" href="/assets/style.css">
   <style>
     .site-header{position:sticky;top:3px;z-index:200;background:rgba(10,8,28,.92);backdrop-filter:blur(18px);border-bottom:1px solid rgba(200,160,255,.1);height:56px;display:flex;align-items:center;justify-content:space-between;padding:0 20px;}
@@ -62,30 +60,27 @@
   <div id="petals"></div>
 
   <header class="site-header">
-    <a href="/" class="header-brand">
+    <a href="/ja/" class="header-brand">
       <span class="brand-icon">🐾</span>
-      <span class="brand-name">펫타로</span>
+      <span class="brand-name">ペットタロット</span>
     </a>
-    <button class="hamburger-btn" id="hamburgerBtn" aria-label="메뉴 열기">
+    <button class="hamburger-btn" id="hamburgerBtn" aria-label="メニューを開く">
       <span></span><span></span><span></span>
     </button>
   </header>
   <div class="menu-overlay" id="menuOverlay"></div>
   <nav class="menu-drawer" id="menuDrawer">
     <div class="menu-top">
-      <span class="menu-label">메뉴</span>
+      <span class="menu-label">メニュー</span>
       <button class="menu-close-btn" id="menuClose">✕</button>
     </div>
     <hr class="menu-hr">
-    <a href="/" class="menu-item">홈</a>
-    <a href="/ja/mood-reading/" class="menu-item">🇯🇵 日本語</a>
-    <a href="/auth/" class="menu-item" id="miSignup">회원가입</a>
-    <a href="/auth/" class="menu-item" id="miLogin">로그인</a>
-    <a href="/mypage/" class="menu-item" id="miMypage">마이페이지</a>
-    <button class="menu-item" id="miLogout" style="display:none">로그아웃</button>
-    <span class="menu-item menu-item-disabled">선물하기 <span class="chip-soon">준비중</span></span>
-    <span class="menu-item menu-item-disabled">추천하기 <span class="chip-soon">준비중</span></span>
-    <a href="/contact/" class="menu-item">문의하기</a>
+    <a href="/ja/" class="menu-item">ホーム</a>
+    <span class="menu-item menu-item-disabled">プレゼントする <span class="chip-soon">準備中</span></span>
+    <span class="menu-item menu-item-disabled">おすすめする <span class="chip-soon">準備中</span></span>
+    <a href="/ja/contact/" class="menu-item">お問い合わせ</a>
+    <hr class="menu-hr">
+    <a href="/mood-reading/" class="menu-item">🇰🇷 한국어</a>
   </nav>
 
   <div class="itl-overlay" id="itlOverlay">
@@ -93,21 +88,12 @@
       <div class="itl-rainbow"></div>
       <div class="itl-header">
         <span class="itl-icon">🌙</span>
-        <p class="itl-title">잠시 쉬어가요</p>
-        <p class="itl-sub">다음 리딩을 준비하는 동안 숨을 고르세요</p>
-      </div>
-      <div class="itl-ad-wrap">
-        <div>
-          <p class="ad-label">광 고</p>
-          <ins class="kakao_ad_area" style="display:none;"
-            data-ad-unit="DAN-QpeUnoNPzpR5Oflw"
-            data-ad-width="320"
-            data-ad-height="100"></ins>
-        </div>
+        <p class="itl-title">少し休みましょう</p>
+        <p class="itl-sub">次のリーディングの準備の間、深呼吸してくださいね</p>
       </div>
       <div class="itl-footer">
         <button class="itl-close-btn" id="itlCloseBtn" disabled onclick="closeInterstitial()">
-          <span id="itlCd">5</span>초 후 닫기
+          <span id="itlCd">5</span>秒後に閉じる
         </button>
       </div>
     </div>
@@ -117,47 +103,47 @@
     <div class="container">
       <div class="header reveal">
         <span class="icon">🐾</span>
-        <h1>오늘, 우리 아이 어때요?</h1>
-        <p class="sub">타로카드로 지금 이 순간 우리 아이의 기분과 에너지를 읽어봐요<br>소소한 하루 속 아이의 마음을 살짝 들여다봐요</p>
+        <h1>きょうの気持ちリーディング</h1>
+        <p class="sub">タロットカードで、今この瞬間のうちの子の気分とエネルギーを読んでみましょう<br>何気ない毎日の中で、その子の心をそっとのぞいてみましょう</p>
       </div>
 
       <div class="glass">
         <div class="input-row">
           <div>
-            <label class="field-label">🐾 반려동물 이름</label>
-            <input type="text" id="moodPetName" placeholder="예: 콩이, 하루, 뭉치…">
+            <label class="field-label">🐾 ペットの名前</label>
+            <input type="text" id="moodPetName" placeholder="例: マメ、ハル、ムギ…">
           </div>
           <div>
-            <label class="field-label">🏷️ 종류 (선택)</label>
-            <input type="text" id="moodPetType" placeholder="예: 강아지, 고양이, 토끼…">
+            <label class="field-label">🏷️ 種類 (任意)</label>
+            <input type="text" id="moodPetType" placeholder="例: 犬、猫、うさぎ…">
           </div>
         </div>
         <div class="input-row">
           <div>
-            <label class="field-label">💌 반려동물이 나를 부르는 호칭</label>
-            <input type="text" id="moodOwnerTitle" placeholder="예: 아빠, 엄마, 언니, 집사…">
+            <label class="field-label">💌 ペットが呼ぶあなたの呼び方</label>
+            <input type="text" id="moodOwnerTitle" placeholder="例: パパ、ママ、お姉ちゃん…">
           </div>
         </div>
-        <button class="btn-draw" onclick="onDraw()">🐾 &nbsp;오늘의 기분 카드 뽑기</button>
+        <button class="btn-draw" onclick="onDraw()">🐾 &nbsp;きょうの気分カードを引く</button>
       </div>
 
       <div class="spread-section" id="spreadSection">
         <div class="spread-header">
-          <p class="spread-instruction">✨ 마음이 끌리는 카드 한 장을 골라주세요</p>
-          <span class="spread-count" id="spreadCount">카드를 골라주세요</span>
+          <p class="spread-instruction">✨ 心が惹かれるカードを1枚選んでください</p>
+          <span class="spread-count" id="spreadCount">カードを選んでください</span>
         </div>
         <div class="fan-wrap" id="fanWrap"></div>
       </div>
 
       <div class="cards-section" id="cardsSection">
-        <p class="spread-hint"><em>✨</em> 카드를 클릭하여 펼쳐보세요 <em>✨</em></p>
+        <p class="spread-hint"><em>✨</em> カードをクリックして開いてみましょう <em>✨</em></p>
         <div class="cards-grid" id="cardsGrid"></div>
       </div>
 
       <div class="loading-section" id="loadingSection">
         <div class="orb"></div>
-        <p class="loading-text" id="loadingText">타로가 오늘의 기분을 읽고 있어요…<br>
-          <span style="font-size:.8rem;color:var(--text-dim)">잠시만 기다려주세요</span></p>
+        <p class="loading-text" id="loadingText">タロットがきょうの気分を読み取っています…<br>
+          <span style="font-size:.8rem;color:var(--text-dim)">少々お待ちください</span></p>
       </div>
 
       <div class="reading-section glass" id="readingSection">
@@ -168,7 +154,7 @@
         <div class="chips" id="chipRow"></div>
         <div class="reading-body" id="readingBody"></div>
         <div class="letter-trigger" id="letterTrigger">
-          <button class="btn-open-letter" onclick="openLetter()">✨ &nbsp;오늘의 메시지 보기</button>
+          <button class="btn-open-letter" onclick="openLetter()">✨ &nbsp;きょうのメッセージを見る</button>
         </div>
         <div class="letter-section" id="letterSection" style="display:none">
           <div class="letter-divider"></div>
@@ -178,30 +164,24 @@
           </div>
           <div class="reading-body" id="letterBody"></div>
         </div>
-        <div class="ad-in-reading" id="adInReading" style="display:none">
-          <p class="ad-label">광 고</p>
-          <ins class="kakao_ad_area" style="display:none;"
-            data-ad-unit="DAN-3GurUHMfaZ7a9Xcq"
-            data-ad-width="300"
-            data-ad-height="250"></ins>
-        </div>
+        <div class="ad-in-reading" id="adInReading" style="display:none"></div>
         <div class="reading-footer" id="readingFooter" style="display:none">
           <div class="footer-actions">
             <div class="share-btns">
-              <button class="btn-kakao" onclick="shareKakao()"><svg viewBox="0 0 24 24" fill="#191919"><path d="M12 3C6.477 3 2 6.477 2 10.75c0 2.718 1.637 5.1 4.107 6.516l-1.048 3.856 4.514-2.97c.786.14 1.59.21 2.427.21 5.523 0 10-3.477 10-7.75S17.523 3 12 3z"/></svg>&nbsp;카톡 공유</button>
-              <button class="btn-share" onclick="saveImage()">💾 &nbsp;이미지 저장</button>
+              <button class="btn-share" onclick="shareResult()">🔗 &nbsp;共有する</button>
+              <button class="btn-share" onclick="saveImage()">💾 &nbsp;画像を保存</button>
             </div>
-            <button class="btn-small btn-ghost" onclick="onReset()">🌙 &nbsp;다시 질문하기</button>
+            <button class="btn-small btn-ghost" onclick="onReset()">🌙 &nbsp;もう一度質問する</button>
           </div>
         </div>
       </div>
 
       <footer class="site-footer">
-        <p>사랑하는 반려동물을 그리워하는 모든 분들을 위해 만들어졌습니다</p>
-        <p>🌈 무지개 다리 너머에서도 그들의 사랑은 영원합니다 🐾</p>
+        <p>愛するペットを想うすべての方のために作られました</p>
+        <p>🌈 虹の橋の向こうでも、その愛は永遠です 🐾</p>
         <div class="footer-operator">
-          <p>운영자: BrandWick &nbsp;|&nbsp; 문의: <a href="mailto:ralra_1@naver.com">ralra_1@naver.com</a></p>
-          <p><a href="/privacy/">개인정보처리방침</a> &nbsp;|&nbsp; <a href="/terms/">이용약관</a></p>
+          <p>運営者: BrandWick &nbsp;|&nbsp; お問い合わせ: <a href="mailto:ralra_1@naver.com">ralra_1@naver.com</a></p>
+          <p><a href="/ja/privacy/">プライバシーポリシー</a> &nbsp;|&nbsp; <a href="/ja/terms/">利用規約</a></p>
         </div>
       </footer>
     </div>
@@ -211,41 +191,30 @@
 
   <div class="privacy-overlay" id="privacyOverlay" onclick="closePrivacy(event)">
     <div class="privacy-modal">
-      <h2>🔒 개인정보처리방침</h2>
-      <h3>운영자 정보</h3>
-      <p>운영자: BrandWick &nbsp;|&nbsp; 문의: ralra_1@naver.com</p>
-      <h3>수집하는 정보</h3>
-      <p>이 서비스는 이용자의 개인정보를 직접 수집·저장하지 않습니다.</p>
+      <h2>🔒 プライバシーポリシー</h2>
+      <h3>運営者情報</h3>
+      <p>運営者: BrandWick &nbsp;|&nbsp; お問い合わせ: ralra_1@naver.com</p>
+      <h3>収集する情報</h3>
+      <p>本サービスは、利用者の個人情報を直接収集・保存することはありません。</p>
       <h3>Google Analytics 4</h3>
-      <p>서비스 이용 통계 파악을 위해 Google Analytics를 사용합니다.</p>
+      <p>サービスの利用状況を把握するためにGoogle Analyticsを使用しています。</p>
       <h3>Google AdSense</h3>
-      <p>맞춤형 광고 제공을 위해 Google AdSense를 사용합니다.</p>
-      <h3>카카오 애드핏 (Kakao Adfit)</h3>
-      <p>광고 게재를 위해 카카오 애드핏을 사용합니다.</p>
-      <h3>쿠키 거부 방법</h3>
-      <p>브라우저 설정에서 쿠키를 비활성화할 수 있습니다.</p>
-      <button class="privacy-close" onclick="closePrivacy()">닫기</button>
+      <p>パーソナライズ広告の配信のためにGoogle AdSenseを使用しています。</p>
+      <h3>クッキーの拒否方法</h3>
+      <p>ブラウザの設定でクッキーを無効にすることができます。</p>
+      <button class="privacy-close" onclick="closePrivacy()">閉じる</button>
     </div>
   </div>
 
-  <div class="ad-sticky" id="adSticky">
-    <div class="ad-sticky-inner">
-      <ins class="kakao_ad_area" style="display:none;"
-        data-ad-unit="DAN-ejCFNgq7DI1au9h9"
-        data-ad-width="320"
-        data-ad-height="50"></ins>
-    </div>
-  </div>
-
-  <script src="/assets/cards.js"></script>
+  <script src="/assets/cards-ja.js"></script>
   <script>
     const currentMode = 1;
     const PAGE_ICON = '🐾';
-    const PAGE_TITLE = '오늘, 우리 아이 어때요?';
-    const PAGE_LOADING = '타로가 오늘의 기분을 읽고 있어요…';
-    const PAGE_LETTER_BTN = '✨ &nbsp;오늘의 메시지 보기';
-    const PAGE_LETTER_TITLE = _ => '✨ 오늘의 메시지';
-    const PAGE_SHARE_LABEL = _ => '✨ 오늘의 메시지';
+    const PAGE_TITLE = 'きょうの気持ちリーディング';
+    const PAGE_LOADING = 'タロットがきょうの気分を読み取っています…';
+    const PAGE_LETTER_BTN = '✨ &nbsp;きょうのメッセージを見る';
+    const PAGE_LETTER_TITLE = _ => '✨ きょうのメッセージ';
+    const PAGE_SHARE_LABEL = _ => '✨ きょうのメッセージ';
 
     function onDraw(){
       const n = document.getElementById('moodPetName').value.trim();
@@ -263,30 +232,31 @@
 
     function buildPrompt(){
       const card=drawn[0], rv=drawnRv[0];
-      const cardInfo=`카드: ${card.name}(${card.en}) — ${rv?'역방향':'정방향'}\n정방향 키워드: ${card.upKw}\n역방향 키워드: ${card.rvKw}`;
-      const sep='\n\n---LETTER--- 구분자를 포함하여 두 부분으로 정확히 나누어 작성해주세요.';
-      const petName=document.getElementById('moodPetName').value.trim()||'반려동물';
+      const cardInfo=`カード: ${card.name}(${card.en}) — ${rv?'逆位置':'正位置'}\n正位置キーワード: ${card.upKw}\n逆位置キーワード: ${card.rvKw}`;
+      const sep='\n\n---LETTER--- という区切り記号を必ず含めて、2つの部分に正確に分けて書いてください。';
+      const petName=document.getElementById('moodPetName').value.trim()||'ペット';
       const petType=document.getElementById('moodPetType').value.trim();
-      const ownerTitle=document.getElementById('moodOwnerTitle').value.trim()||'보호자';
+      const ownerTitle=document.getElementById('moodOwnerTitle').value.trim()||'飼い主さん';
       return {
         petName,
-        system:`당신은 반려동물의 오늘 기분과 에너지를 타로카드로 읽어주는 채널러입니다.
-카드를 통해 반려동물의 현재 상태를 따뜻하고 생동감 있게 전달해주세요.
-응답은 반드시 두 부분으로 나눕니다.
+        system:`あなたはペットのきょうの気分とエネルギーをタロットカードで読み取るチャネラーです。
+必ず日本語で、です・ます調で書いてください。
+カードを通して、ペットの今の状態を温かく生き生きと伝えてください。
+回答は必ず2つの部分に分けてください。
 
-[1부: 카드 해석]
-이 카드가 오늘 반려동물의 기분/에너지와 어떻게 연결되는지 2~3문장으로 설명합니다.
+[パート1: カードの解釈]
+このカードが、きょうのペットの気分・エネルギーとどうつながっているかを2〜3文で説明します。
 
 ---LETTER---
 
-[2부: 오늘의 메시지]
-반려동물이 "${ownerTitle}"(이)라고 부르며 보호자에게 전하는 짧고 따뜻한 메시지. 이모지 포함. 한두 문장.`,
-        user:`반려동물 이름: ${petName}${petType?'\n반려동물 종류: '+petType:''}\n보호자 호칭: "${ownerTitle}"\n\n${cardInfo}${sep}`,
+[パート2: きょうのメッセージ]
+ペットが「${ownerTitle}」と呼びかけながら飼い主さんに伝える、短く温かいメッセージ。絵文字を含めて、1〜2文。`,
+        user:`ペットの名前: ${petName}${petType?'\nペットの種類: '+petType:''}\n飼い主さんの呼び方: "${ownerTitle}"\n\n${cardInfo}${sep}`,
       };
     }
   </script>
   <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/dist/umd/supabase.min.js"></script>
   <script src="/assets/auth.js"></script>
-  <script src="/assets/shared.js"></script>
+  <script src="/assets/shared-ja.js"></script>
 </body>
 </html>

@@ -1,29 +1,28 @@
 <!DOCTYPE html>
-<html lang="ko">
+<html lang="ja">
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>심층 콤보 분석 — 펫타로</title>
-  <meta name="description" content="반려동물의 고민을 구체적으로 입력하면 여러 장의 타로 카드로 심층 콤보 리딩을 제공해드려요.">
-  <link rel="canonical" href="https://tubular-cupcake-55d47b.netlify.app/deep-reading/">
+  <title>深層コンボリーディング — ペットタロット</title>
+  <meta name="description" content="ペットのお悩みを具体的に入力すると、複数枚のタロットカードで深層コンボリーディングを提供します。">
+  <link rel="canonical" href="https://tubular-cupcake-55d47b.netlify.app/ja/deep-reading/">
   <link rel="alternate" hreflang="ko" href="https://tubular-cupcake-55d47b.netlify.app/deep-reading/">
   <link rel="alternate" hreflang="ja" href="https://tubular-cupcake-55d47b.netlify.app/ja/deep-reading/">
   <link rel="alternate" hreflang="x-default" href="https://tubular-cupcake-55d47b.netlify.app/deep-reading/">
   <meta property="og:type" content="website">
-  <meta property="og:site_name" content="펫타로">
-  <meta property="og:locale" content="ko_KR">
-  <meta property="og:title" content="심층 콤보 분석 — 펫타로">
-  <meta property="og:description" content="반려동물의 고민을 구체적으로 입력하면 여러 장의 타로 카드로 심층 콤보 리딩을 제공해드려요.">
+  <meta property="og:site_name" content="ペットタロット">
+  <meta property="og:locale" content="ja_JP">
+  <meta property="og:title" content="深層コンボリーディング — ペットタロット">
+  <meta property="og:description" content="ペットのお悩みを具体的に入力すると、複数枚のタロットカードで深層コンボリーディングを提供します。">
   <meta property="og:image" content="https://tubular-cupcake-55d47b.netlify.app/assets/og-image.png">
-  <meta property="og:url" content="https://tubular-cupcake-55d47b.netlify.app/deep-reading/">
+  <meta property="og:url" content="https://tubular-cupcake-55d47b.netlify.app/ja/deep-reading/">
   <meta name="twitter:card" content="summary_large_image">
   <link rel="icon" type="image/svg+xml" href="/favicon.svg">
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=Noto+Serif+KR:wght@300;400;600&family=Noto+Sans+KR:wght@300;400;600&display=swap" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=Noto+Serif+JP:wght@300;400;600&family=Noto+Sans+JP:wght@300;400;600&display=swap" rel="stylesheet">
   <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/dist/umd/supabase.min.js"></script>
   <script src="https://cdn.jsdelivr.net/npm/html2canvas@1.4.1/dist/html2canvas.min.js"></script>
-  <script src="https://t1.kakaocdn.net/kakao_js_sdk/2.7.4/kakao.min.js" crossorigin="anonymous"></script>
   <script async src="https://www.googletagmanager.com/gtag/js?id=G-ZDTC39TEKD"></script>
   <script>window.dataLayer=window.dataLayer||[];function gtag(){dataLayer.push(arguments);}gtag('js',new Date());gtag('config','G-ZDTC39TEKD');</script>
 
@@ -36,7 +35,7 @@
     }
     body{
       min-height:100vh; background:var(--bg);
-      font-family:'Noto Serif KR',serif; color:var(--text-main);
+      font-family:'Noto Serif JP',serif; color:var(--text-main);
     }
     .rainbow-bar{position:fixed;top:0;left:0;right:0;height:3px;z-index:300;background:linear-gradient(90deg,#ff6b6b,#ff9f43,#ffd32a,#0be881,#17c0eb,#7d5fff,#ef5777);}
     .site-header{position:sticky;top:3px;z-index:200;background:rgba(10,8,28,.92);backdrop-filter:blur(18px);border-bottom:1px solid rgba(200,160,255,.1);height:56px;display:flex;align-items:center;justify-content:space-between;padding:0 20px;}
@@ -50,14 +49,14 @@
     .menu-drawer{position:fixed;top:0;right:-100%;width:min(300px,82vw);height:100vh;z-index:999;background:linear-gradient(160deg,#130428 0%,#0b1032 100%);border-left:1px solid rgba(200,160,255,.15);overflow-y:auto;transition:right .3s ease;}
     .menu-drawer.show{right:0;}
     .menu-top{display:flex;align-items:center;justify-content:space-between;padding:24px 20px 18px;}
-    .menu-label{font-size:1.25rem;font-weight:700;color:#f0e6ff;font-family:'Noto Sans KR',sans-serif;}
+    .menu-label{font-size:1.25rem;font-weight:700;color:#f0e6ff;font-family:'Noto Sans JP',sans-serif;}
     .menu-close-btn{background:none;border:none;color:#8070a0;font-size:1.1rem;cursor:pointer;padding:6px;line-height:1;}
     .menu-hr{border:none;border-top:1px solid rgba(200,160,255,.12);margin:0 0 6px;}
-    .menu-item{display:flex;align-items:center;padding:16px 20px;font-size:1rem;color:#f0e6ff;text-decoration:none;cursor:pointer;border:none;background:none;width:100%;text-align:left;font-family:'Noto Serif KR',serif;transition:background .15s;line-height:1.4;}
+    .menu-item{display:flex;align-items:center;padding:16px 20px;font-size:1rem;color:#f0e6ff;text-decoration:none;cursor:pointer;border:none;background:none;width:100%;text-align:left;font-family:'Noto Serif JP',serif;transition:background .15s;line-height:1.4;}
     .menu-item:hover{background:rgba(255,255,255,.04);}
     .menu-item-disabled{color:#8070a0;cursor:default;pointer-events:none;}
     .menu-item-disabled:hover{background:none;}
-    .chip-soon{margin-left:8px;font-size:.65rem;padding:2px 9px;border-radius:10px;background:rgba(180,100,255,.12);border:1px solid rgba(180,100,255,.28);color:#c0a0ff;font-family:'Noto Sans KR',sans-serif;}
+    .chip-soon{margin-left:8px;font-size:.65rem;padding:2px 9px;border-radius:10px;background:rgba(180,100,255,.12);border:1px solid rgba(180,100,255,.28);color:#c0a0ff;font-family:'Noto Sans JP',sans-serif;}
 
     /* Page layout */
     .page{position:relative;z-index:10;}
@@ -65,10 +64,10 @@
 
     /* Step header */
     .step-header{margin-bottom:28px;}
-    .back-link{display:inline-flex;align-items:center;gap:6px;color:var(--text-dim);font-size:.82rem;font-family:'Noto Sans KR',sans-serif;background:none;border:none;cursor:pointer;padding:0;margin-bottom:20px;transition:color .2s;}
+    .back-link{display:inline-flex;align-items:center;gap:6px;color:var(--text-dim);font-size:.82rem;font-family:'Noto Sans JP',sans-serif;background:none;border:none;cursor:pointer;padding:0;margin-bottom:20px;transition:color .2s;}
     .back-link:hover{color:var(--text-sub);}
     .step-title{font-size:1.35rem;font-weight:600;color:#e8d0ff;margin-bottom:8px;}
-    .step-desc{font-size:.85rem;color:var(--text-sub);font-family:'Noto Sans KR',sans-serif;font-weight:300;line-height:1.8;}
+    .step-desc{font-size:.85rem;color:var(--text-sub);font-family:'Noto Sans JP',sans-serif;font-weight:300;line-height:1.8;}
 
     /* Progress dots */
     .progress-dots{display:flex;gap:7px;margin-bottom:28px;}
@@ -84,19 +83,19 @@
       background:var(--card-bg);border:1px solid var(--card-border);
       border-radius:18px;cursor:pointer;text-align:left;
       width:100%;transition:all .22s;
-      font-family:'Noto Serif KR',serif;
+      font-family:'Noto Serif JP',serif;
     }
     .spread-btn:hover{border-color:rgba(170,90,255,.4);background:rgba(170,90,255,.06);transform:translateY(-2px);}
     .spread-btn.selected{border-color:rgba(170,90,255,.6);background:rgba(170,90,255,.12);}
     .spread-icon{font-size:2rem;flex-shrink:0;}
     .spread-info{}
     .spread-name{font-size:.95rem;font-weight:600;color:#e8d0ff;margin-bottom:5px;line-height:1.4;}
-    .spread-meta{font-size:.76rem;color:var(--text-dim);font-family:'Noto Sans KR',sans-serif;}
+    .spread-meta{font-size:.76rem;color:var(--text-dim);font-family:'Noto Sans JP',sans-serif;}
     .spread-meta span{display:inline-block;margin-right:8px;padding:2px 8px;border-radius:8px;background:rgba(170,90,255,.1);border:1px solid rgba(170,90,255,.2);color:#c0a0ff;}
 
     /* Form */
     .form-group{margin-bottom:20px;}
-    .form-label{display:block;font-size:.82rem;font-weight:600;color:var(--text-sub);font-family:'Noto Sans KR',sans-serif;margin-bottom:8px;}
+    .form-label{display:block;font-size:.82rem;font-weight:600;color:var(--text-sub);font-family:'Noto Sans JP',sans-serif;margin-bottom:8px;}
     .form-label .req{color:#ff8080;margin-left:3px;}
     .form-row{display:flex;gap:10px;}
     .form-row .form-group{flex:1;}
@@ -104,7 +103,7 @@
       width:100%;padding:13px 15px;
       background:rgba(255,255,255,.05);border:1px solid rgba(200,160,255,.2);
       border-radius:12px;color:var(--text-main);
-      font-family:'Noto Sans KR',sans-serif;font-size:.88rem;
+      font-family:'Noto Sans JP',sans-serif;font-size:.88rem;
       appearance:none;-webkit-appearance:none;transition:border-color .2s;
     }
     .form-input::placeholder,.form-textarea::placeholder{color:var(--text-dim);}
@@ -112,14 +111,14 @@
     .form-select{background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='14' height='14' viewBox='0 0 24 24' fill='none' stroke='%238070a0' stroke-width='2'%3E%3Cpath d='M6 9l6 6 6-6'/%3E%3C/svg%3E");background-repeat:no-repeat;background-position:right 13px center;padding-right:36px;cursor:pointer;}
     .form-select option{background:#1a0838;color:#f0e6ff;}
     .form-textarea{resize:vertical;min-height:120px;line-height:1.7;}
-    .char-count{font-size:.72rem;color:var(--text-dim);font-family:'Noto Sans KR',sans-serif;text-align:right;margin-top:5px;}
+    .char-count{font-size:.72rem;color:var(--text-dim);font-family:'Noto Sans JP',sans-serif;text-align:right;margin-top:5px;}
 
     /* Buttons */
     .btn-primary{
       display:block;width:100%;padding:16px;
       background:rgba(170,90,255,.22);border:1px solid rgba(170,90,255,.45);
       border-radius:14px;color:#e0c0ff;font-size:1rem;font-weight:600;
-      font-family:'Noto Sans KR',sans-serif;cursor:pointer;transition:all .2s;letter-spacing:.02em;
+      font-family:'Noto Sans JP',sans-serif;cursor:pointer;transition:all .2s;letter-spacing:.02em;
     }
     .btn-primary:hover{background:rgba(170,90,255,.34);}
     .btn-primary:disabled{opacity:.4;cursor:not-allowed;}
@@ -127,7 +126,7 @@
       display:block;width:100%;padding:14px;
       background:none;border:1px solid rgba(200,160,255,.2);
       border-radius:14px;color:var(--text-dim);font-size:.88rem;
-      font-family:'Noto Sans KR',sans-serif;cursor:pointer;transition:all .2s;
+      font-family:'Noto Sans JP',sans-serif;cursor:pointer;transition:all .2s;
       margin-top:10px;
     }
     .btn-outline:hover{border-color:rgba(200,160,255,.35);color:var(--text-sub);}
@@ -189,12 +188,12 @@
     .card-face.reversed{background:linear-gradient(160deg,#200a10 0%,#3d1025 50%,#0f1520 100%);}
     .card-name{
       font-size:.6rem;font-weight:600;color:#e8d0ff;
-      font-family:'Noto Sans KR',sans-serif;line-height:1.4;
+      font-family:'Noto Sans JP',sans-serif;line-height:1.4;
     }
-    .card-direction{font-size:.55rem;color:var(--text-dim);margin-top:3px;font-family:'Noto Sans KR',sans-serif;}
+    .card-direction{font-size:.55rem;color:var(--text-dim);margin-top:3px;font-family:'Noto Sans JP',sans-serif;}
     .card-position-label{
       font-size:.68rem;color:var(--text-dim);
-      font-family:'Noto Sans KR',sans-serif;
+      font-family:'Noto Sans JP',sans-serif;
       text-align:center;line-height:1.4;max-width:90px;
     }
 
@@ -206,11 +205,11 @@
     .reading-box-title{
       font-size:.76rem;font-weight:600;color:var(--text-dim);
       letter-spacing:.1em;text-transform:uppercase;
-      font-family:'Noto Sans KR',sans-serif;margin-bottom:14px;
+      font-family:'Noto Sans JP',sans-serif;margin-bottom:14px;
     }
     #freeReadText{
       font-size:.88rem;color:var(--text-sub);line-height:2;
-      font-family:'Noto Sans KR',sans-serif;font-weight:300;
+      font-family:'Noto Sans JP',sans-serif;font-weight:300;
       white-space:pre-wrap;
     }
 
@@ -223,7 +222,7 @@
     .paywall-preview{
       padding:24px 20px 160px;
       font-size:.85rem;color:var(--text-sub);line-height:2;
-      font-family:'Noto Sans KR',sans-serif;font-weight:300;
+      font-family:'Noto Sans JP',sans-serif;font-weight:300;
       filter:blur(4px);user-select:none;pointer-events:none;
     }
     .paywall-overlay{
@@ -238,7 +237,7 @@
       text-align:center;margin-bottom:5px;
     }
     .paywall-sub{
-      font-size:.78rem;color:var(--text-dim);font-family:'Noto Sans KR',sans-serif;
+      font-size:.78rem;color:var(--text-dim);font-family:'Noto Sans JP',sans-serif;
       text-align:center;margin-bottom:20px;line-height:1.7;
     }
     .pay-btn{
@@ -247,7 +246,7 @@
       background:linear-gradient(135deg,#7d5fff,#ef5777);
       border:none;border-radius:14px;
       color:#fff;font-size:1rem;font-weight:700;
-      font-family:'Noto Sans KR',sans-serif;cursor:pointer;
+      font-family:'Noto Sans JP',sans-serif;cursor:pointer;
       transition:opacity .2s,transform .15s;letter-spacing:.02em;
     }
     #payGate .pay-btn { width:100%; }
@@ -278,7 +277,7 @@
       margin:0 auto 16px;
     }
     @keyframes spin{to{transform:rotate(360deg);}}
-    .loading-text{font-size:.85rem;color:var(--text-sub);font-family:'Noto Sans KR',sans-serif;line-height:1.8;}
+    .loading-text{font-size:.85rem;color:var(--text-sub);font-family:'Noto Sans JP',sans-serif;line-height:1.8;}
 
     /* Full report */
     .report-section{margin-bottom:24px;}
@@ -291,23 +290,23 @@
       display:block;font-size:.86rem;font-weight:600;color:#c8a8f0;
       margin-top:2.8rem;margin-bottom:6px;padding-top:1.2rem;
       border-top:1px solid rgba(200,160,255,.08);
-      font-family:'Noto Sans KR',sans-serif;
+      font-family:'Noto Sans JP',sans-serif;
     }
     .report-card-header:first-of-type{ margin-top:0; border-top:none; padding-top:0; }
     .report-text{
       font-size:.86rem;color:#ddd6fe;line-height:2.05;
-      font-family:'Noto Sans KR',sans-serif;font-weight:300;
+      font-family:'Noto Sans JP',sans-serif;font-weight:300;
       white-space:pre-wrap;
     }
     .report-divider{height:1px;background:rgba(200,160,255,.1);margin:20px 0;}
 
-    /* 공유 버튼 */
+    /* Share buttons */
     .btn-share{
       display:inline-flex; align-items:center; gap:6px;
       padding:9px 20px; border-radius:22px;
       border:1px solid rgba(180,130,255,.28);
       background:rgba(120,60,200,.12);
-      color:var(--text-sub); font-family:'Noto Serif KR',serif; font-size:.82rem;
+      color:var(--text-sub); font-family:'Noto Serif JP',serif; font-size:.82rem;
       cursor:pointer; transition:all .2s;
     }
     .btn-share:hover{
@@ -315,32 +314,18 @@
       color:var(--text-main); transform:translateY(-2px);
       box-shadow:0 6px 18px rgba(120,60,200,.25);
     }
-    .btn-kakao{
-      display:inline-flex; align-items:center; gap:6px;
-      padding:9px 20px; border-radius:22px;
-      border:1px solid transparent;
-      background:#FEE500; color:#191919;
-      font-family:'Noto Sans KR',sans-serif; font-weight:700; font-size:.82rem;
-      cursor:pointer; transition:all .2s;
-    }
-    .btn-kakao:hover{
-      background:#f5db00; transform:translateY(-2px);
-      box-shadow:0 6px 18px rgba(0,0,0,.15);
-    }
-    .btn-kakao svg{ width:16px; height:16px; flex-shrink:0; }
-
-    /* 토스트 */
+    /* Toast */
     #toast{
       position:fixed; bottom:80px; left:50%; transform:translateX(-50%) translateY(8px);
       background:rgba(30,12,55,.96); border:1px solid rgba(180,100,255,.4);
       color:#e0c0ff; padding:10px 22px; border-radius:26px;
-      font-family:'Noto Serif KR',serif; font-size:.82rem;
+      font-family:'Noto Serif JP',serif; font-size:.82rem;
       z-index:9999; opacity:0; pointer-events:none; white-space:nowrap;
       transition:opacity .3s, transform .3s;
     }
     #toast.show{ opacity:1; transform:translateX(-50%) translateY(0); }
 
-    /* shareCard (이미지 생성용, 화면 밖 고정) */
+    /* shareCard (off-screen, for image generation) */
     #shareCard{ position:fixed; left:-9999px; top:0; width:360px; z-index:-1; }
 
     /* Save badge */
@@ -348,7 +333,7 @@
       display:inline-flex;align-items:center;gap:6px;
       padding:8px 16px;border-radius:12px;
       background:rgba(100,200,120,.1);border:1px solid rgba(100,200,120,.25);
-      color:#90d8a0;font-size:.78rem;font-family:'Noto Sans KR',sans-serif;
+      color:#90d8a0;font-size:.78rem;font-family:'Noto Sans JP',sans-serif;
     }
 
     /* Auth gate */
@@ -356,19 +341,19 @@
       background:var(--card-bg);border:1px solid var(--card-border);
       border-radius:18px;padding:32px 20px;text-align:center;margin-bottom:20px;
     }
-    .auth-gate-box p{font-size:.88rem;color:var(--text-sub);font-family:'Noto Sans KR',sans-serif;margin-bottom:18px;line-height:1.8;}
+    .auth-gate-box p{font-size:.88rem;color:var(--text-sub);font-family:'Noto Sans JP',sans-serif;margin-bottom:18px;line-height:1.8;}
     .btn-login-inline{
       display:inline-block;padding:11px 28px;
       background:rgba(170,90,255,.18);border:1px solid rgba(170,90,255,.4);
       border-radius:22px;color:#d8aaff;text-decoration:none;
-      font-size:.88rem;font-family:'Noto Sans KR',sans-serif;transition:all .2s;
+      font-size:.88rem;font-family:'Noto Sans JP',sans-serif;transition:all .2s;
     }
     .btn-login-inline:hover{background:rgba(170,90,255,.28);}
 
     /* Card pool (grid selection) */
     .card-pool-header{margin-bottom:12px;}
     .pool-counter{
-      font-size:.85rem;color:var(--text-sub);font-family:'Noto Sans KR',sans-serif;
+      font-size:.85rem;color:var(--text-sub);font-family:'Noto Sans JP',sans-serif;
       margin-bottom:14px;
     }
     .pool-counter strong{color:#d8aaff;}
@@ -397,11 +382,11 @@
       position:absolute;bottom:4px;right:4px;
       font-size:.55rem;background:rgba(200,80,80,.8);
       color:#fff;border-radius:4px;padding:1px 4px;
-      font-family:'Noto Sans KR',sans-serif;
+      font-family:'Noto Sans JP',sans-serif;
     }
     .slot-label{
       font-size:.65rem;color:var(--text-dim);
-      font-family:'Noto Sans KR',sans-serif;
+      font-family:'Noto Sans JP',sans-serif;
       text-align:center;max-width:80px;line-height:1.35;
     }
     .card-pool{
@@ -434,7 +419,7 @@
     }
     .pool-sel-num{
       font-size:.55rem;font-weight:700;color:#ffd060;
-      font-family:'Noto Sans KR',sans-serif;line-height:1;
+      font-family:'Noto Sans JP',sans-serif;line-height:1;
       background:rgba(60,30,0,.6);padding:1px 2px;border-radius:2px;
     }
 
@@ -447,7 +432,7 @@
     }
     .reveal-title{
       font-size:.95rem;color:rgba(232,208,255,.9);
-      font-family:'Noto Sans KR',sans-serif;
+      font-family:'Noto Sans JP',sans-serif;
       margin-bottom:22px;letter-spacing:.06em;text-align:center;
       animation:fadePulse 2.2s ease-in-out infinite;
     }
@@ -484,23 +469,23 @@
     .rcard-front img{width:100%;height:100%;object-fit:cover;display:block;}
     .reveal-pos-label{
       font-size:.58rem;color:var(--text-dim);
-      font-family:'Noto Sans KR',sans-serif;
+      font-family:'Noto Sans JP',sans-serif;
       text-align:center;max-width:82px;line-height:1.4;
     }
     .reveal-card-name{
       font-size:.7rem;color:#e8d0ff;
-      font-family:'Noto Sans KR',sans-serif;text-align:center;font-weight:600;
+      font-family:'Noto Sans JP',sans-serif;text-align:center;font-weight:600;
     }
     .reveal-card-dir{
       font-size:.6rem;color:var(--text-dim);
-      font-family:'Noto Sans KR',sans-serif;text-align:center;
+      font-family:'Noto Sans JP',sans-serif;text-align:center;
     }
     .reveal-proceed-btn{
       padding:13px 38px;
       background:linear-gradient(135deg,#7d5fff,#ef5777);
       border:none;border-radius:14px;
       color:#fff;font-size:1rem;font-weight:700;
-      font-family:'Noto Sans KR',sans-serif;cursor:pointer;
+      font-family:'Noto Sans JP',sans-serif;cursor:pointer;
       transition:opacity .2s,transform .15s;letter-spacing:.02em;
       animation:glowPulse 2s ease-in-out infinite;
     }
@@ -540,13 +525,13 @@
     /* Action card step */
     .action-pool-notice{
       font-size:.84rem;color:var(--text-sub);
-      font-family:'Noto Sans KR',sans-serif;
+      font-family:'Noto Sans JP',sans-serif;
       line-height:1.9;margin-bottom:14px;
     }
     .reveal-section-divider{
       width:100%;text-align:center;
       font-size:.78rem;color:#ffd060;letter-spacing:.08em;
-      font-family:'Noto Sans KR',sans-serif;
+      font-family:'Noto Sans JP',sans-serif;
       margin:18px 0 14px;
     }
     .reveal-card-wrap.action .rcard-back{
@@ -559,7 +544,7 @@
 
     /* DEV notice */
     .dev-notice{
-      font-size:.74rem;color:#f0c878;font-family:'Noto Sans KR',sans-serif;
+      font-size:.74rem;color:#f0c878;font-family:'Noto Sans JP',sans-serif;
       text-align:center;padding:10px 14px;
       background:rgba(255,180,50,.07);border:1px solid rgba(255,180,50,.2);
       border-radius:10px;margin-bottom:14px;line-height:1.6;
@@ -571,11 +556,11 @@
       .form-row{flex-direction:column;gap:0;}
     }
 
-    /* ── 로딩 대기 화면 ── */
+    /* -- Loading screen -- */
     .loading-status-bar{
       background:rgba(255,180,50,.08);border:1px solid rgba(255,180,50,.2);
       border-radius:12px;padding:14px 18px;margin-bottom:28px;
-      font-family:'Noto Sans KR',sans-serif;font-size:.82rem;color:#e8d090;line-height:1.7;
+      font-family:'Noto Sans JP',sans-serif;font-size:.82rem;color:#e8d090;line-height:1.7;
     }
     .loading-status-bar strong{color:#ffd32a;}
     .loading-dots span{animation:dotPulse 1.4s infinite both;}
@@ -589,31 +574,31 @@
     }
     .major-card-label{
       font-size:.7rem;color:#8070a0;letter-spacing:.1em;text-transform:uppercase;
-      font-family:'Noto Sans KR',sans-serif;margin-bottom:18px;
+      font-family:'Noto Sans JP',sans-serif;margin-bottom:18px;
     }
     .major-card-img{
       width:100px;height:163px;object-fit:cover;border-radius:10px;
       box-shadow:0 8px 32px rgba(0,0,0,.5);margin:0 auto 20px;display:block;
       transition:opacity .4s;
     }
-    .major-card-num{font-size:.72rem;color:#8070a0;font-family:'Noto Sans KR',sans-serif;margin-bottom:4px;}
+    .major-card-num{font-size:.72rem;color:#8070a0;font-family:'Noto Sans JP',sans-serif;margin-bottom:4px;}
     .major-card-name{font-size:1.5rem;font-weight:600;color:#e8d0ff;margin-bottom:2px;}
-    .major-card-en{font-size:.8rem;color:#9080b0;font-family:'Noto Sans KR',sans-serif;margin-bottom:14px;}
+    .major-card-en{font-size:.8rem;color:#9080b0;font-family:'Noto Sans JP',sans-serif;margin-bottom:14px;}
     .major-card-kw{
       display:flex;gap:6px;flex-wrap:wrap;justify-content:center;margin-bottom:14px;
     }
     .major-card-kw span{
       background:rgba(200,160,255,.12);border:1px solid rgba(200,160,255,.25);
       border-radius:20px;padding:3px 10px;font-size:.72rem;color:#c8a8f0;
-      font-family:'Noto Sans KR',sans-serif;
+      font-family:'Noto Sans JP',sans-serif;
     }
-    .major-card-desc{font-size:.8rem;color:#b0a0c8;line-height:1.8;font-family:'Noto Sans KR',sans-serif;padding:0 8px;}
+    .major-card-desc{font-size:.8rem;color:#b0a0c8;line-height:1.8;font-family:'Noto Sans JP',sans-serif;padding:0 8px;}
     .major-card-nav{display:flex;align-items:center;justify-content:space-between;margin-top:20px;}
-    .major-card-counter{font-size:.75rem;color:#8070a0;font-family:'Noto Sans KR',sans-serif;}
+    .major-card-counter{font-size:.75rem;color:#8070a0;font-family:'Noto Sans JP',sans-serif;}
     .major-card-btn{
       background:rgba(200,160,255,.12);border:1px solid rgba(200,160,255,.25);
       color:#c8a8f0;border-radius:20px;padding:7px 18px;font-size:.78rem;cursor:pointer;
-      font-family:'Noto Sans KR',sans-serif;transition:background .2s;
+      font-family:'Noto Sans JP',sans-serif;transition:background .2s;
     }
     .major-card-btn:hover{background:rgba(200,160,255,.22);}
     .major-card-progress{
@@ -621,7 +606,6 @@
       border-radius:0 0 0 20px;transition:width 8s linear;
     }
   </style>
-  <script type="text/javascript" src="//t1.kakaocdn.net/kas/static/ba.min.js" async></script>
   <script>
     (function(){
       try {
@@ -641,11 +625,11 @@
   <div class="rainbow-bar"></div>
 
   <header class="site-header">
-    <a href="/" class="header-brand">
+    <a href="/ja/" class="header-brand">
       <span class="brand-icon">🐾</span>
-      <span class="brand-name">펫타로</span>
+      <span class="brand-name">ペットタロット</span>
     </a>
-    <button class="hamburger-btn" id="hamburgerBtn" aria-label="메뉴 열기">
+    <button class="hamburger-btn" id="hamburgerBtn" aria-label="メニューを開く">
       <span></span><span></span><span></span>
     </button>
   </header>
@@ -653,30 +637,25 @@
   <div class="menu-overlay" id="menuOverlay"></div>
   <nav class="menu-drawer" id="menuDrawer">
     <div class="menu-top">
-      <span class="menu-label">메뉴</span>
+      <span class="menu-label">メニュー</span>
       <button class="menu-close-btn" id="menuClose">✕</button>
     </div>
     <hr class="menu-hr">
-    <a href="/" class="menu-item">홈</a>
-    <a href="/ja/deep-reading/" class="menu-item">🇯🇵 日本語</a>
-    <a href="/auth/" class="menu-item" id="miSignup">회원가입</a>
-    <a href="/auth/" class="menu-item" id="miLogin">로그인</a>
-    <a href="/mypage/" class="menu-item" id="miMypage">마이페이지</a>
-    <button class="menu-item" id="miLogout" style="display:none">로그아웃</button>
-    <span class="menu-item menu-item-disabled">선물하기 <span class="chip-soon">준비중</span></span>
-    <span class="menu-item menu-item-disabled">추천하기 <span class="chip-soon">준비중</span></span>
-    <a href="/contact/" class="menu-item">문의하기</a>
+    <a href="/ja/" class="menu-item">ホーム</a>
+    <span class="menu-item menu-item-disabled">プレゼントを贈る <span class="chip-soon">準備中</span></span>
+    <span class="menu-item menu-item-disabled">紹介する <span class="chip-soon">準備中</span></span>
+    <a href="/ja/contact/" class="menu-item">お問い合わせ</a>
   </nav>
 
   <div class="page">
     <div class="wrap">
 
-      <!-- ① 배열 선택 -->
+      <!-- Step 1: spread selection -->
       <section id="secCategory">
         <div class="step-header">
-          <a href="/" class="back-link">
+          <a href="/ja/" class="back-link">
             <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M19 12H5M12 5l-7 7 7 7"/></svg>
-            홈으로
+            ホームへ
           </a>
           <div class="progress-dots">
             <div class="dot active" id="dot1"></div>
@@ -684,50 +663,50 @@
             <div class="dot" id="dot3"></div>
             <div class="dot" id="dot4"></div>
           </div>
-          <h1 class="step-title">어떤 고민이신가요?</h1>
-          <p class="step-desc">고민 유형에 따라 가장 적합한 카드 배열로 분석해드려요.</p>
+          <h1 class="step-title">どんなお悩みですか?</h1>
+          <p class="step-desc">お悩みの内容に合わせて、最適なカード配列で分析します。</p>
         </div>
 
         <div class="spread-list">
           <button class="spread-btn" onclick="selectSpread('mind')">
             <span class="spread-icon">💭</span>
             <div class="spread-info">
-              <div class="spread-name">아이가 무슨 생각 하는지 궁금해요</div>
+              <div class="spread-name">この子が何を考えているのか気になる</div>
               <div class="spread-meta">
-                <span>크로스 스프레드</span>
-                <span>카드 4장</span>
+                <span>クロススプレッド</span>
+                <span>カード4枚</span>
               </div>
             </div>
           </button>
           <button class="spread-btn" onclick="selectSpread('behavior')">
             <span class="spread-icon">🔍</span>
             <div class="spread-info">
-              <div class="spread-name">갑자기 행동이 이상해졌어요</div>
+              <div class="spread-name">急に様子がおかしくなった</div>
               <div class="spread-meta">
-                <span>호스슈 스프레드</span>
-                <span>카드 5장</span>
+                <span>ホースシュースプレッド</span>
+                <span>カード5枚</span>
               </div>
             </div>
           </button>
           <button class="spread-btn" onclick="selectSpread('change')">
             <span class="spread-icon">🌿</span>
             <div class="spread-info">
-              <div class="spread-name">이사·합사 등 변화를 앞두고 있어요</div>
+              <div class="spread-name">引っ越し・多頭飼いなど変化を控えている</div>
               <div class="spread-meta">
-                <span>쓰리카드 스프레드</span>
-                <span>카드 3장</span>
+                <span>スリーカードスプレッド</span>
+                <span>カード3枚</span>
               </div>
             </div>
           </button>
         </div>
       </section>
 
-      <!-- ② 반려동물 정보 입력 -->
+      <!-- Step 2: pet info input -->
       <section id="secForm" style="display:none">
         <div class="step-header">
           <button class="back-link" onclick="goTo('secCategory')">
             <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M19 12H5M12 5l-7 7 7 7"/></svg>
-            이전
+            戻る
           </button>
           <div class="progress-dots">
             <div class="dot done" id="dot1b"></div>
@@ -735,69 +714,69 @@
             <div class="dot" id="dot3b"></div>
             <div class="dot" id="dot4b"></div>
           </div>
-          <h1 class="step-title" id="formTitle">아이 정보를 알려주세요</h1>
-          <p class="step-desc">입력한 정보를 바탕으로 아이에게 맞는 리딩을 드려요.</p>
+          <h1 class="step-title" id="formTitle">この子の情報を教えてください</h1>
+          <p class="step-desc">入力していただいた情報をもとに、この子に合ったリーディングをお届けします。</p>
         </div>
 
         <div class="form-row">
           <div class="form-group">
-            <label class="form-label" for="petName">아이 이름 <span class="req">*</span></label>
-            <input type="text" class="form-input" id="petName" placeholder="예: 초코, 나비" maxlength="10">
+            <label class="form-label" for="petName">この子の名前 <span class="req">*</span></label>
+            <input type="text" class="form-input" id="petName" placeholder="例: モモ、ソラ" maxlength="10">
           </div>
           <div class="form-group">
-            <label class="form-label" for="petSpecies">종류 <span class="req">*</span></label>
+            <label class="form-label" for="petSpecies">種類 <span class="req">*</span></label>
             <select class="form-select" id="petSpecies" onchange="toggleOtherSpecies(this.value)">
-              <option value="">선택</option>
-              <option value="강아지">강아지</option>
-              <option value="고양이">고양이</option>
-              <option value="토끼">토끼</option>
-              <option value="새">새</option>
-              <option value="기타">기타</option>
+              <option value="">選択してください</option>
+              <option value="犬">犬</option>
+              <option value="猫">猫</option>
+              <option value="うさぎ">うさぎ</option>
+              <option value="鳥">鳥</option>
+              <option value="その他">その他</option>
             </select>
           </div>
         </div>
         <div class="form-group" id="otherSpeciesGroup" style="display:none">
-          <label class="form-label" for="otherSpecies">어떤 동물인지 알려주세요</label>
-          <input type="text" class="form-input" id="otherSpecies" placeholder="예: 햄스터, 도마뱀, 거북이…" maxlength="20">
+          <label class="form-label" for="otherSpecies">どんな動物か教えてください</label>
+          <input type="text" class="form-input" id="otherSpecies" placeholder="例: ハムスター、トカゲ、カメ…" maxlength="20">
         </div>
 
         <div class="form-row">
           <div class="form-group">
-            <label class="form-label" for="petAge">나이</label>
-            <input type="text" class="form-input" id="petAge" placeholder="예: 3살, 7개월" maxlength="10">
+            <label class="form-label" for="petAge">年齢</label>
+            <input type="text" class="form-input" id="petAge" placeholder="例: 3歳、7か月" maxlength="10">
           </div>
           <div class="form-group">
-            <label class="form-label" for="petGender">성별</label>
+            <label class="form-label" for="petGender">性別</label>
             <select class="form-select" id="petGender">
-              <option value="">선택 안 함</option>
-              <option value="남아">남아</option>
-              <option value="여아">여아</option>
-              <option value="중성화">중성화</option>
+              <option value="">選択しない</option>
+              <option value="男の子">男の子</option>
+              <option value="女の子">女の子</option>
+              <option value="去勢・避妊済み">去勢・避妊済み</option>
             </select>
           </div>
         </div>
 
         <div class="form-group">
-          <label class="form-label" for="ownerTitle">💌 반려동물이 나를 부르는 호칭</label>
-          <input type="text" class="form-input" id="ownerTitle" placeholder="예: 아빠, 엄마, 언니, 오빠, 집사…" maxlength="10">
+          <label class="form-label" for="ownerTitle">💌 ペットがあなたを呼ぶときの呼び方</label>
+          <input type="text" class="form-input" id="ownerTitle" placeholder="例: パパ、ママ、お姉ちゃん、お兄ちゃん…" maxlength="10">
         </div>
 
         <div class="form-group">
-          <label class="form-label" for="concern">고민 내용 <span class="req">*</span> <span style="font-size:.72rem;color:#b09fd0;font-weight:400;">— 구체적일수록 더 자세한 리딩이 가능해요</span></label>
-          <textarea class="form-textarea" id="concern" placeholder="예시) 이사한 지 2주가 됐는데 그때부터 밥을 잘 안 먹고 자꾸 침대 밑에 숨어요. 원래는 사람을 잘 따르는 아이인데 요즘은 만지려 해도 피하고, 밤에 자다가 우는 경우도 있어요. 단순 스트레스인지, 아니면 어디 아픈 건지 걱정돼서요." maxlength="300" oninput="updateCharCount(this, 'concernCount')"></textarea>
+          <label class="form-label" for="concern">お悩みの内容 <span class="req">*</span> <span style="font-size:.72rem;color:#b09fd0;font-weight:400;">— 具体的なほど、より詳しいリーディングができます</span></label>
+          <textarea class="form-textarea" id="concern" placeholder="例) 引っ越して2週間になりますが、その頃からごはんをあまり食べず、ベッドの下に隠れてばかりいます。もともと人によく懐くタイプなのに、最近は触ろうとしても避けたり、夜寝ているときに鳴くこともあります。ただのストレスなのか、どこか具合が悪いのか心配です。" maxlength="300" oninput="updateCharCount(this, 'concernCount')"></textarea>
           <div class="char-count"><span id="concernCount">0</span>/300</div>
         </div>
 
-        <button class="btn-primary" onclick="submitForm()">카드 뽑기</button>
-        <button class="btn-outline" onclick="goTo('secCategory')">배열 다시 선택</button>
+        <button class="btn-primary" onclick="submitForm()">カードを引く</button>
+        <button class="btn-outline" onclick="goTo('secCategory')">配列を選び直す</button>
       </section>
 
-      <!-- ③ 카드 직접 선택 -->
+      <!-- Step 3: card selection -->
       <section id="secCards" style="display:none">
         <div class="step-header">
           <button class="back-link" onclick="goTo('secForm')">
             <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M19 12H5M12 5l-7 7 7 7"/></svg>
-            이전
+            戻る
           </button>
           <div class="progress-dots">
             <div class="dot done"></div>
@@ -805,44 +784,44 @@
             <div class="dot active"></div>
             <div class="dot"></div>
           </div>
-          <h1 class="step-title" id="cardsTitle">카드를 골라주세요</h1>
-          <p class="step-desc" id="poolCounter">마음이 이끄는 카드를 순서대로 선택해주세요.</p>
+          <h1 class="step-title" id="cardsTitle">カードを選んでください</h1>
+          <p class="step-desc" id="poolCounter">心が惹かれるカードを順番に選んでください。</p>
         </div>
 
-        <!-- 카드 풀 (78장 그리드) -->
+        <!-- Card pool (78-card grid) -->
         <div class="card-pool" id="cardPool"></div>
 
         <button class="btn-primary" id="proceedBtn" style="margin-top:14px" disabled onclick="proceedToReading()">
-          분석 시작하기 ✨
+          分析を始める ✨
         </button>
-        <button class="btn-outline" onclick="resetSelection()">다시 선택</button>
+        <button class="btn-outline" onclick="resetSelection()">選び直す</button>
       </section>
 
-      <!-- ③.5 행동 가이드 카드 선택 -->
+      <!-- Step 3.5: action guide card selection -->
       <section id="secActionCards" style="display:none">
         <div class="step-header">
           <button class="back-link" onclick="goTo('secCards')">
             <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M19 12H5M12 5l-7 7 7 7"/></svg>
-            이전
+            戻る
           </button>
           <div class="progress-dots">
             <div class="dot done"></div><div class="dot done"></div>
             <div class="dot done"></div><div class="dot active"></div>
           </div>
-          <h1 class="step-title">앞으로의 행동 가이드 카드를 골라주세요</h1>
+          <h1 class="step-title">これからのアクションガイドカードを選んでください</h1>
           <p class="action-pool-notice">
-            마음에 끌리는 카드를 <strong style="color:#d8aaff">1~3장</strong> 골라주세요.<br>
-            이 카드들이 앞으로의 행동 방향이 돼요.<br>
-            <span style="font-size:.76rem;color:var(--text-dim)">건너뛰기를 누르면 카드 없이 행동 가이드를 작성해드려요.</span>
+            心が惹かれるカードを <strong style="color:#d8aaff">1〜3枚</strong> 選んでください。<br>
+            このカードたちが、これからの行動の方向性になります。<br>
+            <span style="font-size:.76rem;color:var(--text-dim)">スキップを押すと、カードなしでアクションガイドを作成します。</span>
           </p>
         </div>
         <div class="pool-counter" id="actionCounter"></div>
         <div class="card-pool" id="actionPool"></div>
-        <button class="btn-primary" style="margin-top:14px" onclick="startReveal()">리딩 시작하기 ✨</button>
-        <button class="btn-outline" onclick="skipActionCards()">행동 카드 없이 진행하기</button>
+        <button class="btn-primary" style="margin-top:14px" onclick="startReveal()">リーディングを始める ✨</button>
+        <button class="btn-outline" onclick="skipActionCards()">アクションカードなしで進める</button>
       </section>
 
-      <!-- ④ 무료 리딩 + 페이월 -->
+      <!-- Step 4: free reading + paywall -->
       <section id="secFreeRead" style="display:none">
         <div class="step-header">
           <div class="progress-dots">
@@ -851,72 +830,56 @@
             <div class="dot done"></div>
             <div class="dot active"></div>
           </div>
-          <h1 class="step-title" id="freeReadTitle">리딩 결과</h1>
+          <h1 class="step-title" id="freeReadTitle">リーディング結果</h1>
         </div>
 
-        <!-- 뽑힌 카드 요약 -->
+        <!-- Drawn cards -->
         <div class="reading-box">
-          <div class="reading-box-title">뽑힌 카드</div>
+          <div class="reading-box-title">引いたカード</div>
           <div class="cards-area" id="cardsAreaSmall" style="margin:0;"></div>
         </div>
 
-        <!-- 무료 미리보기 -->
+        <!-- Free preview -->
         <div class="reading-box" id="freeReadBox">
           <div class="loading-box" id="freeLoadBox">
             <div class="loading-spinner"></div>
-            <div class="loading-text">아이의 메시지를 읽고 있어요…<br>잠시만 기다려주세요.</div>
+            <div class="loading-text">この子からのメッセージを読み取っています…<br>少々お待ちください。</div>
           </div>
           <div class="reading-box-title" style="display:none" id="freeReadLabel"></div>
           <div id="freeReadText" style="display:none"></div>
         </div>
 
-        <!-- 광고 -->
-        <div style="margin:20px 0;text-align:center">
-          <ins class="kakao_ad_area" style="display:none;"
-            data-ad-unit="DAN-foqz4jO1cBc5jQyZ"
-            data-ad-width="300"
-            data-ad-height="250"></ins>
-        </div>
-
-        <!-- 페이월 -->
+        <!-- Paywall -->
         <div class="paywall-box" id="paywallBox" style="display:none">
           <div class="paywall-preview" id="paywallPreview"></div>
           <div class="paywall-overlay">
             <div class="paywall-lock">🔒</div>
-            <div class="paywall-msg" id="paywallMsg">전체 리포트 보기</div>
+            <div class="paywall-msg" id="paywallMsg">全文レポートを見る</div>
             <div class="paywall-sub" id="paywallSub"></div>
 
-            <!-- 비로그인 상태 -->
-            <div id="loginGate" style="display:none;width:100%;text-align:center">
-              <p style="color:rgba(240,230,255,.7);margin-bottom:14px" id="loginGateMsg"></p>
-              <button class="pay-btn" onclick="loginAndSave()" style="background:linear-gradient(135deg,#3a1a00,#7a4500);width:auto;">
-                카카오 로그인 후 전체 리포트 받기
-              </button>
-            </div>
-
-            <!-- 로그인 상태 -->
-            <div id="payGate" style="display:none;width:100%">
-              <div class="dev-notice" id="devNotice" style="display:none">⚙️ 결제 연동 준비 중 — 지금은 테스트 모드로 전체 리포트를 확인할 수 있어요.</div>
-              <button class="pay-btn" id="payBtn" onclick="startPayment()">
-                전체 리포트 받기
-                <span class="pay-price">1,500원</span>
+            <!-- Payment: stage 1 (not yet available in Japan) -->
+            <div id="payGate" style="width:100%">
+              <div class="dev-notice" id="devNotice">⚙️ 決済機能は準備中です。もうすぐ公開!</div>
+              <button class="pay-btn" id="payBtn" disabled onclick="startPayment()">
+                全文レポートを受け取る
+                <span class="pay-price">準備中</span>
               </button>
             </div>
           </div>
         </div>
       </section>
 
-      <!-- ⑤ 리포트 생성 대기 -->
+      <!-- Step 5: report generation wait -->
       <section id="secLoading" style="display:none">
         <div class="step-header">
-          <h1 class="step-title">리포트 생성 중</h1>
+          <h1 class="step-title">レポート作成中</h1>
         </div>
         <div class="loading-status-bar">
-          ✨ <strong>정성껏 작성하고 있어요</strong><span class="loading-dots"><span>.</span><span>.</span><span>.</span></span><br>
-          최대 3분까지 소요될 수 있어요. 창을 닫아도 마이페이지에서 나중에 확인할 수 있답니다.
+          ✨ <strong>心を込めて作成しています</strong><span class="loading-dots"><span>.</span><span>.</span><span>.</span></span><br>
+          最大3分ほどかかる場合があります。ウィンドウを閉じても後でまた確認できます。
         </div>
         <div class="major-card-showcase">
-          <div class="major-card-label">막간을 이용한 타로 메이저 카드 소개</div>
+          <div class="major-card-label">お待ちの間にタロットの大アルカナをご紹介</div>
           <img id="mcImg" class="major-card-img" src="" alt="">
           <div id="mcNum" class="major-card-num"></div>
           <div id="mcName" class="major-card-name"></div>
@@ -924,51 +887,45 @@
           <div id="mcKw" class="major-card-kw"></div>
           <div id="mcDesc" class="major-card-desc"></div>
           <div class="major-card-nav">
-            <button class="major-card-btn" onclick="mcPrev()">← 이전</button>
+            <button class="major-card-btn" onclick="mcPrev()">← 前へ</button>
             <span id="mcCounter" class="major-card-counter"></span>
-            <button class="major-card-btn" onclick="mcNext()">다음 →</button>
+            <button class="major-card-btn" onclick="mcNext()">次へ →</button>
           </div>
           <div id="mcProgress" class="major-card-progress" style="width:0%"></div>
         </div>
       </section>
 
-      <!-- ⑥ 전체 리포트 (유료) -->
+      <!-- Step 6: full report (paid) -->
       <section id="secFullReport" style="display:none">
         <div class="step-header">
-          <h1 class="step-title" id="reportTitle">전체 리포트</h1>
+          <h1 class="step-title" id="reportTitle">全文レポート</h1>
         </div>
 
-        <!-- 뽑힌 카드 -->
+        <!-- Drawn cards -->
         <div class="reading-box">
-          <div class="reading-box-title">뽑힌 카드</div>
+          <div class="reading-box-title">引いたカード</div>
           <div class="cards-area" id="cardsAreaReport" style="margin:0;"></div>
         </div>
 
-        <!-- 로딩 -->
+        <!-- Loading -->
         <div class="loading-box" id="reportLoadBox">
           <div class="loading-spinner"></div>
-          <div class="loading-text">심층 리포트를 작성하는 중이에요…<br>조금만 기다려주세요.</div>
+          <div class="loading-text">深層レポートを作成しています…<br>もう少しお待ちください。</div>
         </div>
 
-        <!-- 리포트 본문 -->
+        <!-- Report body -->
         <div id="reportContent" style="display:none">
           <div class="reading-box">
             <div id="reportText" class="report-text"></div>
           </div>
           <div style="text-align:center;margin-top:8px">
-            <span class="saved-badge" id="savedBadge" style="display:none">✓ 마이페이지에 저장되었어요</span>
+            <span class="saved-badge" id="savedBadge" style="display:none">✓ マイページに保存されました</span>
           </div>
           <div style="margin-top:20px;text-align:center">
-            <button class="btn-kakao" onclick="shareDeepKakao()"><svg viewBox="0 0 24 24" fill="#191919"><path d="M12 3C6.477 3 2 6.477 2 10.75c0 2.718 1.637 5.1 4.107 6.516l-1.048 3.856 4.514-2.97c.786.14 1.59.21 2.427.21 5.523 0 10-3.477 10-7.75S17.523 3 12 3z"/></svg>&nbsp;카톡 공유</button>
-            <button class="btn-share" onclick="saveDeepImage()">💾 &nbsp;이미지 저장</button>
+            <button class="btn-share" onclick="shareDeepReport()">🔗 &nbsp;シェア</button>
+            <button class="btn-share" onclick="saveDeepImage()">💾 &nbsp;画像を保存</button>
           </div>
-          <div style="margin-top:24px;text-align:center">
-            <a href="https://link.coupang.com/a/eTOAHcakjQ" target="_blank" referrerpolicy="unsafe-url">
-              <img src="https://ads-partners.coupang.com/banners/1000674?trackingCode=AF7834714&subId=&traceId=V0-301-7e6e8eb8ddfa1bfb-I1000674&w=728&h=90" alt="쿠팡 로켓 반려동물" style="max-width:100%;border-radius:8px;">
-            </a>
-            <p style="font-size:.7rem;color:#6b5a80;margin-top:8px;font-family:'Noto Sans KR',sans-serif;">이 포스팅은 쿠팡 파트너스 활동의 일환으로, 이에 따른 일정액의 수수료를 제공받습니다.</p>
-          </div>
-          <button class="btn-outline" style="margin-top:20px" onclick="window.location.href='/'">홈으로 돌아가기</button>
+          <button class="btn-outline" style="margin-top:20px" onclick="window.location.href='/ja/'">ホームに戻る</button>
         </div>
       </section>
 
@@ -977,51 +934,40 @@
 
   <div id="shareCard"></div>
 
-  <!-- 카드 공개 오버레이 -->
+  <!-- Card reveal overlay -->
   <div id="revealOverlay" style="display:none;position:fixed;inset:0;z-index:600;background:radial-gradient(ellipse at 50% 40%,#1e0640 0%,#060010 80%);flex-direction:column;align-items:center;justify-content:center;padding:20px 16px;overflow:hidden;">
-    <div class="reveal-title" id="revealTitle">카드가 당신에게 말을 걸어요 ✨</div>
+    <div class="reveal-title" id="revealTitle">カードがあなたに語りかけています ✨</div>
     <div class="reveal-cards-row" id="revealCardsRow"></div>
     <button class="reveal-proceed-btn" id="revealProceedBtn" style="display:none" onclick="finishReveal()">
-      리딩 시작하기
+      リーディングを始める
     </button>
   </div>
 
   <script src="/assets/auth.js"></script>
-  <script src="/assets/cards.js"></script>
-  <script id="nicepayScript"></script>
+  <script src="/assets/cards-ja.js"></script>
   <script>
-    // NicePay 연동 전 테스트 모드
+    // Payment is not yet available in the JP version (stage 1)
     const DEV_MODE = false;
-
-    /* ── 카카오톡 공유 초기화 ── */
-    const KAKAO_JS_KEY = '24af5a552dd23f08ef587f3765851be7';
     const SITE_URL = 'https://tubular-cupcake-55d47b.netlify.app';
-    const OG_IMAGE = SITE_URL + '/assets/og-image.png';
-    function initKakao() {
-      if (window.Kakao && !Kakao.isInitialized()) {
-        try { Kakao.init(KAKAO_JS_KEY); } catch (e) {}
-      }
-    }
-    initKakao();
 
     const SPREADS = {
       mind: {
-        name: '크로스 스프레드',
-        fullName: '아이가 무슨 생각 하는지 궁금해요 — 크로스 스프레드',
+        name: 'クロススプレッド',
+        fullName: 'この子が何を考えているのか気になる — クロススプレッド',
         cardCount: 4,
-        positions: ['현재 아이의 마음', '보호자가 미치는 영향', '숨겨진 진짜 원인', '관계 회복을 위한 조언']
+        positions: ['今のこの子の気持ち', '飼い主さんが与えている影響', '隠れた本当の原因', '関係修復へのアドバイス']
       },
       behavior: {
-        name: '호스슈 스프레드',
-        fullName: '갑자기 행동이 이상해졌어요 — 호스슈 스프레드',
+        name: 'ホースシュースプレッド',
+        fullName: '急に様子がおかしくなった — ホースシュースプレッド',
         cardCount: 5,
-        positions: ['과거의 계기', '현재 상황', '숨겨진 영향', '취할 수 있는 행동', '앞으로의 흐름']
+        positions: ['過去のきっかけ', '現在の状況', '隠れた影響', '取れる行動', 'これからの流れ']
       },
       change: {
-        name: '쓰리카드 스프레드',
-        fullName: '이사·합사 등 변화를 앞두고 있어요 — 쓰리카드 스프레드',
+        name: 'スリーカードスプレッド',
+        fullName: '引っ越し・多頭飼いなど変化を控えている — スリーカードスプレッド',
         cardCount: 3,
-        positions: ['과거의 흔적', '지금 아이의 마음', '변화 이후의 흐름']
+        positions: ['過去の名残', '今のこの子の気持ち', '変化後の流れ']
       }
     };
 
@@ -1033,7 +979,7 @@
     let selectedIndices = [];
     let freeReadingText = '';
 
-    // ── 섹션 전환 ──
+    // -- Section switching --
     function goTo(id) {
       ['secCategory','secForm','secCards','secActionCards','secFreeRead','secLoading','secFullReport'].forEach(s => {
         document.getElementById(s).style.display = s === id ? '' : 'none';
@@ -1041,71 +987,71 @@
       window.scrollTo({ top: 0, behavior: 'smooth' });
     }
 
-    // ── 기타 종류 필드 토글 ──
+    // -- Toggle "other species" field --
     function toggleOtherSpecies(val) {
-      document.getElementById('otherSpeciesGroup').style.display = val === '기타' ? '' : 'none';
+      document.getElementById('otherSpeciesGroup').style.display = val === 'その他' ? '' : 'none';
     }
 
-    // ── 동물 종/나이 컨텍스트 생성 ──
+    // -- Build species/age context --
     function buildSpeciesContext() {
       const sp = petInfo.species;
-      const displaySpecies = sp === '기타' ? (petInfo.otherSpecies || '반려동물') : sp;
+      const displaySpecies = sp === 'その他' ? (petInfo.otherSpecies || 'ペット') : sp;
       const ageText = petInfo.age || '';
       const ageNum = parseFloat(ageText.replace(/[^0-9.]/g, ''));
-      const isMonths = ageText.includes('개월') || ageText.includes('month');
+      const isMonths = ageText.includes('か月') || ageText.includes('ヶ月') || ageText.includes('month');
       let notes = [];
 
-      if (sp === '강아지') {
-        if (!isMonths && ageNum >= 10) notes.push('노령견 — 관절 이상, 인지 저하, 분리 불안 등 노화 관련 문제 고려');
-        else if (!isMonths && ageNum <= 1 || isMonths && ageNum <= 12) notes.push('강아지 시기 — 사회화 과정 중, 에너지 과잉, 경계 학습 단계');
-        notes.push('무리 동물로 보호자 감정에 매우 민감하고 유대가 심리의 핵심');
-      } else if (sp === '고양이') {
-        if (!isMonths && ageNum >= 12) notes.push('노령묘 — 신장 기능 저하, 갑상선 문제, 활동 감소 등 고려');
-        else if (!isMonths && ageNum <= 1 || isMonths && ageNum <= 12) notes.push('어린 고양이 — 탐색 욕구 강함, 영역 확립 중');
-        notes.push('독립적이며 스트레스를 숨기는 경향이 강하고 환경 변화에 예민');
-      } else if (sp === '토끼') {
-        notes.push('매우 예민하여 스트레스가 건강에 직접 영향을 줌. 사회적이지만 혼자만의 공간도 필요');
-      } else if (sp === '새') {
-        notes.push('지능이 높고 외로움에 취약. 반복 행동이나 털 뽑기는 스트레스 신호');
-      } else if (sp === '기타') {
-        notes.push(`${displaySpecies} 종 특성을 고려하여 리딩`);
+      if (sp === '犬') {
+        if (!isMonths && ageNum >= 10) notes.push('シニア犬 — 関節の不調、認知機能の低下、分離不安など加齢に伴う問題を考慮');
+        else if (!isMonths && ageNum <= 1 || isMonths && ageNum <= 12) notes.push('子犬期 — 社会化の途中、エネルギー過多、警戒心を学ぶ段階');
+        notes.push('群れで生きる動物なので飼い主さんの感情にとても敏感で、絆が心理の核になる');
+      } else if (sp === '猫') {
+        if (!isMonths && ageNum >= 12) notes.push('シニア猫 — 腎機能の低下、甲状腺の問題、活動量の減少などを考慮');
+        else if (!isMonths && ageNum <= 1 || isMonths && ageNum <= 12) notes.push('子猫 — 探求欲が強く、縄張りを確立している最中');
+        notes.push('独立心が強くストレスを隠しがちで、環境の変化に敏感');
+      } else if (sp === 'うさぎ') {
+        notes.push('とても繊細でストレスが健康に直接影響する。社会的だけど一人の時間も必要');
+      } else if (sp === '鳥') {
+        notes.push('知能が高く、寂しさに弱い。同じ行動の繰り返しや羽をむしる行動はストレスのサイン');
+      } else if (sp === 'その他') {
+        notes.push(`${displaySpecies}という動物の特性を考慮してリーディング`);
       }
 
-      return `[동물 정보] 종: ${displaySpecies}${ageText ? ', 나이: ' + ageText : ''}${petInfo.gender ? ', ' + petInfo.gender : ''}. ${notes.join('. ')}`;
+      return `[動物情報] 種類: ${displaySpecies}${ageText ? '、年齢: ' + ageText : ''}${petInfo.gender ? '、' + petInfo.gender : ''}。${notes.join('。')}`;
     }
 
-    // ── 1단계: 배열 선택 ──
+    // -- Step 1: spread selection --
     function selectSpread(type) {
       currentSpread = SPREADS[type];
       if (typeof gtag === 'function') gtag('event', 'spread_selected', { spread_name: currentSpread.name });
       goTo('secForm');
     }
 
-    // ── 2단계: 폼 제출 ──
+    // -- Step 2: form submit --
     function submitForm() {
       const name = document.getElementById('petName').value.trim();
       const species = document.getElementById('petSpecies').value;
       const concern = document.getElementById('concern').value.trim();
-      if (!name) { alert('아이 이름을 입력해주세요.'); return; }
-      if (!species) { alert('종류를 선택해주세요.'); return; }
-      if (!concern) { alert('고민 내용을 입력해주세요.'); return; }
+      if (!name) { alert('この子の名前を入力してください。'); return; }
+      if (!species) { alert('種類を選択してください。'); return; }
+      if (!concern) { alert('お悩みの内容を入力してください。'); return; }
 
       petInfo = {
         name, species,
         otherSpecies: document.getElementById('otherSpecies').value.trim(),
         age: document.getElementById('petAge').value.trim(),
         gender: document.getElementById('petGender').value,
-        ownerTitle: document.getElementById('ownerTitle').value.trim() || '보호자',
+        ownerTitle: document.getElementById('ownerTitle').value.trim() || '飼い主さん',
         concern
       };
 
       if (typeof gtag === 'function') gtag('event', 'form_submitted', { species: petInfo.species, spread: currentSpread.name });
-      document.getElementById('cardsTitle').textContent = `${name}의 카드를 골라주세요`;
+      document.getElementById('cardsTitle').textContent = `${name}のカードを選んでください`;
       goTo('secCards');
       initCardPool();
     }
 
-    // ── 3단계: 카드 풀 초기화 ──
+    // -- Step 3: init card pool --
     function initCardPool() {
       shuffledPool = [...CARDS].sort(() => Math.random() - .5);
       selectedIndices = [];
@@ -1118,7 +1064,7 @@
     function renderPool() {
       const pool = document.getElementById('cardPool');
       pool.innerHTML = shuffledPool.map((c, i) => `
-        <div class="pool-card" data-i="${i}" onclick="selectCard(${i})" title="카드 선택">
+        <div class="pool-card" data-i="${i}" onclick="selectCard(${i})" title="カードを選択">
           <div class="pool-card-back">✨</div>
         </div>
       `).join('');
@@ -1128,14 +1074,14 @@
       const n = currentSpread.cardCount;
       const done = drawnCards.length;
       document.getElementById('poolCounter').innerHTML =
-        `마음이 이끄는 카드를 순서대로 선택해주세요 &nbsp;<strong style="color:#d8aaff">(${done}/${n})</strong>`;
+        `心が惹かれるカードを順番に選んでください &nbsp;<strong style="color:#d8aaff">(${done}/${n})</strong>`;
     }
 
     function selectCard(i) {
       const n = currentSpread.cardCount;
       const poolEl = document.querySelector(`.pool-card[data-i="${i}"]`);
 
-      // 이미 선택된 카드 → 선택 해제
+      // Already selected -> deselect
       if (selectedIndices.includes(i)) {
         const pos = selectedIndices.indexOf(i);
         selectedIndices.splice(pos, 1);
@@ -1180,20 +1126,20 @@
       document.getElementById('proceedBtn').disabled = true;
     }
 
-    // ── 3→3.5단계: 행동 카드 선택으로 ──
+    // -- Step 3 -> 3.5: move to action card selection --
     function proceedToReading() {
       if (typeof gtag === 'function') gtag('event', 'main_cards_selected', { count: drawnCards.length, spread: currentSpread.name });
       goTo('secActionCards');
       initActionPool();
     }
 
-    // ── 행동 카드 풀 초기화 ──
+    // -- Init action card pool --
     function initActionPool() {
       actionCards = [];
       const pool = document.getElementById('actionPool');
       pool.innerHTML = shuffledPool.map((c, i) => {
         if (selectedIndices.includes(i)) return '';
-        return `<div class="pool-card" data-ai="${i}" onclick="selectActionCard(${i})" title="카드 선택"><div class="pool-card-back">✦</div></div>`;
+        return `<div class="pool-card" data-ai="${i}" onclick="selectActionCard(${i})" title="カードを選択"><div class="pool-card-back">✦</div></div>`;
       }).join('');
       updateActionCounter();
     }
@@ -1224,7 +1170,7 @@
 
     function updateActionCounter() {
       document.getElementById('actionCounter').innerHTML =
-        `행동 가이드 카드 &nbsp;<strong style="color:#ffd060">${actionCards.length} / 3장</strong> 선택`;
+        `アクションガイドカード &nbsp;<strong style="color:#ffd060">${actionCards.length} / 3枚</strong> 選択`;
     }
 
     function skipActionCards() {
@@ -1233,7 +1179,7 @@
       startReveal();
     }
 
-    // ── 유틸 ──
+    // -- Utils --
     function sleep(ms) { return new Promise(r => setTimeout(r, ms)); }
 
     function spawnSparkles(parentEl) {
@@ -1254,7 +1200,7 @@
       }
     }
 
-    // ── 행동카드 선택 → 오버레이: 카드 공개 애니메이션 ──
+    // -- After action card selection -> overlay: card reveal animation --
     function makeRevealCard(card, id, extraClass) {
       const wrap = document.createElement('div');
       wrap.className = 'reveal-card-wrap' + (extraClass ? ' ' + extraClass : '');
@@ -1272,7 +1218,7 @@
         </div>
         ${posLabel}
         <div class="reveal-card-name" id="${id}-name" style="display:none">${escHtml(card.name)}</div>
-        <div class="reveal-card-dir" id="${id}-dir" style="display:none">${card.reversed ? '↓ 역방향' : '↑ 정방향'}</div>
+        <div class="reveal-card-dir" id="${id}-dir" style="display:none">${card.reversed ? '↓ 逆位置' : '↑ 正位置'}</div>
       `;
       return wrap;
     }
@@ -1299,17 +1245,17 @@
       const row = document.getElementById('revealCardsRow');
       row.innerHTML = '';
 
-      // 스프레드 카드
+      // Spread cards
       drawnCards.forEach((card, idx) => {
         row.appendChild(makeRevealCard(card, `rsp-${idx}`, ''));
       });
 
-      // 행동 카드 구분선 + 카드
+      // Action card divider + cards
       if (actionCards.length > 0) {
         const divider = document.createElement('div');
         divider.className = 'reveal-section-divider';
         divider.style.flexBasis = '100%';
-        divider.textContent = '✦ 앞으로의 행동 가이드 카드 ✦';
+        divider.textContent = '✦ これからのアクションガイドカード ✦';
         row.appendChild(divider);
         actionCards.forEach((card, idx) => {
           row.appendChild(makeRevealCard(card, `rac-${idx}`, 'action'));
@@ -1318,14 +1264,14 @@
 
       await sleep(500);
 
-      // 스프레드 카드 순차 플립
+      // Flip spread cards in sequence
       for (let idx = 0; idx < drawnCards.length; idx++) {
         if (idx > 0) await sleep(700);
         await flipRevealCard(`rsp-${idx}`);
         if (idx === drawnCards.length - 1) { await sleep(300); spawnSparkles(document.getElementById(`rsp-${idx}`)); }
       }
 
-      // 행동 카드 순차 플립
+      // Flip action cards in sequence
       if (actionCards.length > 0) {
         await sleep(800);
         for (let idx = 0; idx < actionCards.length; idx++) {
@@ -1345,7 +1291,7 @@
       generateFreeReading();
     }
 
-    // ── 카드 렌더링 ──
+    // -- Card rendering --
     function renderCards(containerId, cards, animate) {
       const area = document.getElementById(containerId);
       area.classList.remove('spread-cross','spread-horseshoe');
@@ -1360,7 +1306,7 @@
               <div class="card-face${c.reversed ? ' reversed' : ''}" style="padding:0;overflow:hidden;">
                 <img src="${c.img}" alt="${escHtml(c.name)}"
                   style="width:100%;height:100%;object-fit:cover;border-radius:10px;${c.reversed ? 'transform:rotate(180deg);' : ''}"
-                  onerror="this.style.display='none';this.parentNode.style.padding='8px 5px';this.parentNode.innerHTML+='<div class=\\'card-name\\'>${escHtml(c.name)}</div><div class=\\'card-direction\\'>${c.reversed ? '↓ 역방향' : '↑ 정방향'}</div>'">
+                  onerror="this.style.display='none';this.parentNode.style.padding='8px 5px';this.parentNode.innerHTML+='<div class=\\'card-name\\'>${escHtml(c.name)}</div><div class=\\'card-direction\\'>${c.reversed ? '↓ 逆位置' : '↑ 正位置'}</div>'">
               </div>
             </div>
           </div>
@@ -1369,48 +1315,45 @@
       `).join('');
     }
 
-    // ── 페이월 텍스트 동적 업데이트 ──
+    // -- Dynamically update paywall text --
     function updatePaywallText() {
       const remaining = drawnCards.length - 1;
-      const actionHint = actionCards.length > 0 ? `행동 가이드 카드 ${actionCards.length}장 해석` : '앞으로의 행동 가이드';
-      const name = petInfo.name || '아이';
+      const actionHint = actionCards.length > 0 ? `アクションガイドカード${actionCards.length}枚の解釈` : 'これからのアクションガイド';
+      const name = petInfo.name || 'この子';
 
       const preview = document.getElementById('paywallPreview');
       if (preview) preview.textContent =
-        `나머지 ${remaining}장의 카드 심층 해석, ${name}의 속마음 편지, 보호자님께 전하는 말, ${actionHint}까지 — 전체 리포트에서 확인해보세요.`;
+        `残り${remaining}枚のカードの深層解釈、${name}からの本音のお手紙、飼い主さんへのメッセージ、${actionHint}まで — 全文レポートで確認できます。`;
 
       const sub = document.getElementById('paywallSub');
       if (sub) sub.innerHTML =
-        `나머지 카드 ${remaining}장 해석 · 속마음 편지 · 보호자님께 · ${actionHint}<br>단 한 번으로 ${name}의 마음을 깊이 들여다봐요`;
-
-      const gateMsg = document.getElementById('loginGateMsg');
-      if (gateMsg) gateMsg.textContent = `나머지 내용을 보려면 로그인이 필요해요`;
+        `残りカード${remaining}枚の解釈・本音のお手紙・飼い主さんへ・${actionHint}<br>たった一度で${name}の心を深くのぞいてみましょう`;
     }
 
-    // ── 4단계: 무료 리딩 (첫 카드 심층 해석) ──
+    // -- Step 4: free reading (first card, deep interpretation) --
     async function generateFreeReading() {
       const freeReadLabel = document.getElementById('freeReadLabel');
       const freeReadText = document.getElementById('freeReadText');
       const freeLoadBox = document.getElementById('freeLoadBox');
 
       const firstCard = drawnCards[0];
-      const cardSummary = drawnCards.map(c => `[${c.position}] ${c.name}(${c.reversed ? '역' : '정'})`).join(', ');
+      const cardSummary = drawnCards.map(c => `[${c.position}] ${c.name}(${c.reversed ? '逆' : '正'})`).join(', ');
       const speciesCtx = buildSpeciesContext();
 
-      freeReadLabel.textContent = `🃏 ${firstCard.position} — 무료 공개`;
+      freeReadLabel.textContent = `🃏 ${firstCard.position} — 無料公開`;
 
-      const systemPrompt = `당신은 반려동물 타로 전문가입니다. 따뜻하고 감성적인 한국어로 작성하세요. 동물의 종과 나이에 따른 특성을 자연스럽게 반영하세요. 반드시 사용자가 입력한 구체적인 정보를 직접 언급하세요. 누구에게나 해당될 수 있는 일반적 표현은 절대 쓰지 마세요.`;
-      const userPrompt = `반려동물: ${petInfo.name} (${petInfo.species}${petInfo.age ? ', ' + petInfo.age : ''}${petInfo.gender ? ', ' + petInfo.gender : ''})
-보호자 호칭: "${petInfo.ownerTitle}"
+      const systemPrompt = `あなたはペットタロットの専門家です。温かく情感豊かな日本語で書いてください。動物の種類や年齢による特性を自然に反映してください。ユーザーが入力した具体的な情報には必ず直接言及してください。誰にでも当てはまるような一般的な表現は絶対に使わないでください。`;
+      const userPrompt = `ペット: ${petInfo.name}（${petInfo.species}${petInfo.age ? '、' + petInfo.age : ''}${petInfo.gender ? '、' + petInfo.gender : ''}）
+飼い主さんの呼び方: 「${petInfo.ownerTitle}」
 ${speciesCtx}
-고민: ${petInfo.concern}
-배열법: ${currentSpread.fullName}
-전체 카드: ${cardSummary}
+お悩み: ${petInfo.concern}
+スプレッド: ${currentSpread.fullName}
+すべてのカード: ${cardSummary}
 
-첫 번째 카드 "[${firstCard.position}] ${firstCard.name}(${firstCard.reversed ? '역방향' : '정방향'})"만 심층 해석해주세요. (4~6줄)
-- 이 포지션의 의미 + 카드 상징이 이 자리에서 갖는 의미
-- ${petInfo.name}의 고민 상황에 직접 연결
-- 감성적이고 구체적으로`;
+1枚目のカード「[${firstCard.position}] ${firstCard.name}（${firstCard.reversed ? '逆位置' : '正位置'}）」だけを深く解釈してください。（4〜6行）
+・このポジションの意味 + カードの象徴がこの位置で持つ意味
+・${petInfo.name}のお悩みの状況に直接つなげる
+・情感豊かに、具体的に`;
 
       try {
         const res = await fetch('/.netlify/functions/deep-tarot', {
@@ -1434,7 +1377,7 @@ ${speciesCtx}
           renderReportText(freeReadText, text);
           applyFreePreviewBlur(freeReadText);
         } else {
-          freeReadText.textContent = `${firstCard.name}(${firstCard.reversed ? '역방향' : '정방향'})이(가) ${petInfo.name}의 ${firstCard.position} 자리에 놓였어요. 전체 리포트에서 깊은 이야기를 확인해보세요.`;
+          freeReadText.textContent = `${firstCard.name}（${firstCard.reversed ? '逆位置' : '正位置'}）が${petInfo.name}の${firstCard.position}に置かれました。全文レポートで詳しいお話を確認してみてください。`;
         }
       } catch (e) {
         console.warn('free reading error', e);
@@ -1442,7 +1385,7 @@ ${speciesCtx}
         freeLoadBox.style.display = 'none';
         freeReadLabel.style.display = '';
         freeReadText.style.display = '';
-        freeReadText.textContent = `${firstCard.name}(${firstCard.reversed ? '역방향' : '정방향'})이(가) ${petInfo.name}의 ${firstCard.position} 자리에 놓였어요. 전체 리포트에서 깊은 이야기를 확인해보세요.`;
+        freeReadText.textContent = `${firstCard.name}（${firstCard.reversed ? '逆位置' : '正位置'}）が${petInfo.name}の${firstCard.position}に置かれました。全文レポートで詳しいお話を確認してみてください。`;
       }
 
       if (typeof gtag === 'function') gtag('event', 'free_preview_shown', { spread: currentSpread.name });
@@ -1452,136 +1395,43 @@ ${speciesCtx}
     async function showPaywall() {
       updatePaywallText();
       document.getElementById('paywallBox').style.display = '';
-      const user = await getUser();
-      if (user) {
-        document.getElementById('payGate').style.display = '';
-        if (DEV_MODE) document.getElementById('devNotice').style.display = '';
-      } else {
-        document.getElementById('loginGate').style.display = '';
-      }
+      // JP stage 1: no login required -- the payment panel is always shown
+      // directly, in "coming soon" state (see #payGate in the HTML).
+      document.getElementById('payGate').style.display = '';
     }
 
-    // ── 로그인 후 상태 보존 ──
-    function loginAndSave() {
-      try {
-        const spreadKey = Object.keys(SPREADS).find(k => SPREADS[k].name === currentSpread.name);
-        localStorage.setItem('petarot_dr', JSON.stringify({
-          _loginPending: true,
-          _returnPath: '/deep-reading/',
-          _savedAt: Date.now(),
-          spreadKey,
-          petInfo,
-          drawnCards: drawnCards.map(({ img, name, en, suit, upKw, rvKw, reversed, position }) =>
-            ({ img, name, en, suit, upKw, rvKw, reversed, position })),
-          actionCards: actionCards.map(({ img, name, en, suit, upKw, rvKw, reversed }) =>
-            ({ img, name, en, suit, upKw, rvKw, reversed })),
-          freeText: freeReadingText
-        }));
-      } catch(e) { console.warn('state save failed', e); }
-
-      if (typeof signInWithKakao === 'function') {
-        signInWithKakao('/auth-callback/');
-      } else {
-        window.location.href = '/auth/';
-      }
-    }
-
-    // ── NicePay 설정 로드 (페이지 진입 시 1회) ──
-    let _nicepayConfig = null;
-    async function loadNicepayConfig() {
-      if (_nicepayConfig) return _nicepayConfig;
-      try {
-        const res = await fetch('/.netlify/functions/payment-config');
-        _nicepayConfig = await res.json();
-        const sdkUrl = _nicepayConfig.sandbox
-          ? 'https://sandbox-pay.nicepay.co.kr/v1/js/'
-          : 'https://pay.nicepay.co.kr/v1/js/';
-        await new Promise((resolve, reject) => {
-          const s = document.getElementById('nicepayScript');
-          s.src = sdkUrl;
-          s.onload = resolve;
-          s.onerror = reject;
-        });
-      } catch (e) {
-        console.warn('nicepay config load failed', e);
-        _nicepayConfig = null;
-      }
-      return _nicepayConfig;
-    }
-
-    // ── 5단계: 결제 ──
+    // -- Payment is not available yet in the JP version (stage 1). --
+    // Guarded at the top so no NicePay SDK code ever runs: the pay button
+    // is also rendered `disabled` in the HTML, so this handler normally
+    // never fires at all.
     async function startPayment() {
-      if (typeof gtag === 'function') gtag('event', 'payment_initiated', { value: 1500, currency: 'KRW' });
-      if (DEV_MODE) {
-        goTo('secFullReport');
-        renderCards('cardsAreaReport', drawnCards, false);
-        generateFullReport(null);
-        return;
-      }
-
-      const payBtn = document.getElementById('payBtn');
-      if (payBtn) { payBtn.disabled = true; payBtn.textContent = '결제창 여는 중…'; }
-
-      const cfg = await loadNicepayConfig();
-      if (!cfg || !cfg.clientId) {
-        alert('결제 설정을 불러오지 못했어요. 잠시 후 다시 시도해주세요.');
-        if (payBtn) { payBtn.disabled = false; payBtn.innerHTML = '전체 리포트 받기 <span class="pay-price">1,500원</span>'; }
-        return;
-      }
-
-      // 결제 후 복귀를 위해 상태 저장 (localStorage: 결제 redirect 후에도 유지)
-      try {
-        const spreadKey = Object.keys(SPREADS).find(k => SPREADS[k].name === currentSpread.name);
-        localStorage.setItem('petarot_dr', JSON.stringify({
-          spreadKey, petInfo,
-          drawnCards: drawnCards.map(({ img, name, en, suit, upKw, rvKw, reversed, position }) =>
-            ({ img, name, en, suit, upKw, rvKw, reversed, position })),
-          actionCards: actionCards.map(({ img, name, en, suit, upKw, rvKw, reversed }) =>
-            ({ img, name, en, suit, upKw, rvKw, reversed })),
-          freeText: freeReadingText,
-          awaitingPayment: true,
-          _savedAt: Date.now()
-        }));
-      } catch(e) { console.warn('state save failed', e); }
-
-      AUTHNICE.requestPay({
-        clientId: cfg.clientId,
-        method: 'card',
-        orderId: 'PETAROT_' + Date.now(),
-        amount: 1500,
-        goodsName: `${petInfo.name || '펫'} 타로 심층 콤보 분석`,
-        returnUrl: window.location.origin + '/.netlify/functions/nicepay-confirm',
-        fnError: function(result) {
-          alert(result.errorMsg || '결제 오류가 발생했습니다. 다시 시도해주세요.');
-          savePendingReading();
-        }
-      });
+      alert('決済機能は準備中です。もうすぐ公開予定です!');
     }
 
-    // ── 메이저 아르카나 슬라이드쇼 ──
+    // -- Major Arcana slideshow --
     const MAJOR_CARDS = [
-      { num:0,  name:'바보',           en:'The Fool',           kw:['새로운 시작','순수함','자유'],          desc:'두려움 없이 첫 발을 내딛는 용기. 아직 모르는 것이 있어도 괜찮아요, 길은 걸으면서 만들어져요.' },
-      { num:1,  name:'마법사',          en:'The Magician',       kw:['가능성','창조','의지'],                desc:'내 안에 이미 모든 도구가 있어요. 집중과 의지로 현실을 원하는 모습으로 빚어낼 수 있어요.' },
-      { num:2,  name:'여사제',          en:'The High Priestess', kw:['직관','신비','내면의 앎'],              desc:'말하지 않아도 이미 알고 있어요. 침묵 속에 담긴 깊은 지혜를 믿어보세요.' },
-      { num:3,  name:'여황제',          en:'The Empress',        kw:['풍요','사랑','따스한 품'],              desc:'대지처럼 넉넉하게 품어주는 사랑. 돌봄과 온기로 주변을 풍요롭게 만드는 힘이에요.' },
-      { num:4,  name:'황제',            en:'The Emperor',        kw:['안정','보호','든든함'],                desc:'흔들리지 않는 기둥처럼 곁을 지켜요. 구조와 질서 안에서 진정한 안정이 찾아와요.' },
-      { num:5,  name:'교황',            en:'The Hierophant',     kw:['인연','영적 연결','전통'],              desc:'오래된 지혜와 따뜻한 가르침. 마음과 마음을 연결하는 보이지 않는 실이에요.' },
-      { num:6,  name:'연인',            en:'The Lovers',         kw:['사랑','유대','선택'],                  desc:'진심으로 연결된 존재들. 선택의 순간에도 마음이 이끄는 곳을 따라가세요.' },
-      { num:7,  name:'전차',            en:'The Chariot',        kw:['전진','의지','승리'],                  desc:'방향을 정했다면 흔들리지 마세요. 내면의 두 힘을 하나로 모아 앞으로 나아가요.' },
-      { num:8,  name:'힘',              en:'Strength',           kw:['용기','부드러운 강함','인내'],           desc:'진정한 힘은 부드러움에서 나와요. 억누르지 않고 사랑으로 다스리는 내면의 용기.' },
-      { num:9,  name:'은둔자',          en:'The Hermit',         kw:['내면 탐색','빛','성찰'],               desc:'혼자만의 시간이 필요할 때가 있어요. 내면의 등불을 들고 깊은 곳을 들여다봐요.' },
-      { num:10, name:'운명의 수레바퀴',  en:'Wheel of Fortune',   kw:['순환','운명','전환점'],                desc:'모든 것은 돌고 돌아요. 지금의 위치가 전부가 아니에요, 바퀴는 계속 움직여요.' },
-      { num:11, name:'정의',            en:'Justice',            kw:['균형','진실','공정'],                  desc:'있는 그대로를 바라보는 눈. 진실과 균형 위에 세워진 결정은 오래 지속돼요.' },
-      { num:12, name:'매달린 사람',      en:'The Hanged Man',     kw:['기다림','수용','새로운 시각'],           desc:'잠깐 멈추고 거꾸로 바라볼 때 새로운 것이 보여요. 내려놓음이 곧 깨달음이에요.' },
-      { num:13, name:'변화',            en:'Death',              kw:['전환','끝과 시작','해방'],              desc:'두려운 이름이지만 사실은 해방이에요. 끝이 있어야 새로운 시작이 찾아와요.' },
-      { num:14, name:'절제',            en:'Temperance',         kw:['균형','치유','조화'],                  desc:'급하지 않게, 천천히, 조화롭게. 서로 다른 것들이 섞여 아름다운 것이 만들어져요.' },
-      { num:15, name:'해방',            en:'The Devil',          kw:['집착','해방','놓아주기'],               desc:'사슬처럼 느껴지지만 사실 스스로 풀 수 있어요. 무엇이 나를 붙잡고 있는지 직면해봐요.' },
-      { num:16, name:'탑',              en:'The Tower',          kw:['급변','해체','새로운 기반'],            desc:'흔들려야 할 것들이 흔들리는 순간. 무너짐 뒤에 더 단단한 것이 세워져요.' },
-      { num:17, name:'별',              en:'The Star',           kw:['희망','치유','영감'],                  desc:'폭풍 뒤에 밤하늘에 뜨는 별처럼. 희망은 언제나 어둠 속에서 더 밝게 빛나요.' },
-      { num:18, name:'달',              en:'The Moon',           kw:['꿈','무의식','직관'],                  desc:'보이는 것이 전부가 아닌 밤. 깊은 무의식의 속삭임에 귀를 기울여보세요.' },
-      { num:19, name:'태양',            en:'The Sun',            kw:['기쁨','활력','행복'],                  desc:'따뜻하게 쏟아지는 빛 속에서 기뻐해요. 숨김없이 빛나도 괜찮은 시간이에요.' },
-      { num:20, name:'심판',            en:'Judgement',          kw:['각성','부활','소명'],                  desc:'내면 깊은 곳에서 울려오는 부름. 과거를 용서하고 진정한 나로 깨어나는 순간이에요.' },
-      { num:21, name:'세계',            en:'The World',          kw:['완성','달성','온전함'],                desc:'한 바퀴를 다 돌아 온전해지는 순간. 완성의 기쁨을 느끼며 새로운 여정을 준비해요.' },
+      { num:0,  name:'愚者',       en:'The Fool',           kw:['新しい始まり','純粋さ','自由'],          desc:'恐れることなく最初の一歩を踏み出す勇気。まだ分からないことがあっても大丈夫、道は歩きながらつくられていきます。' },
+      { num:1,  name:'魔術師',      en:'The Magician',       kw:['可能性','創造','意志'],                desc:'自分の中にすでにすべての道具がそろっています。集中と意志で現実を望む形に変えていくことができます。' },
+      { num:2,  name:'女教皇',      en:'The High Priestess', kw:['直感','神秘','内なる知恵'],              desc:'言葉にしなくても、もう分かっています。沈黙の中に宿る深い知恵を信じてみましょう。' },
+      { num:3,  name:'女帝',       en:'The Empress',        kw:['豊かさ','愛','あたたかな包容'],           desc:'大地のように豊かに包み込む愛。世話とぬくもりで周りを豊かにする力です。' },
+      { num:4,  name:'皇帝',       en:'The Emperor',        kw:['安定','守り','頼もしさ'],               desc:'揺るがない柱のようにそばを守ります。秩序と構造の中に本当の安心が生まれます。' },
+      { num:5,  name:'教皇',       en:'The Hierophant',     kw:['縁','スピリチュアルな繋がり','伝統'],      desc:'古くからの知恵とあたたかな教え。心と心をつなぐ、目に見えない糸です。' },
+      { num:6,  name:'恋人',       en:'The Lovers',         kw:['愛','絆','選択'],                     desc:'心から結ばれた存在たち。選択の瞬間も、心が導く方へ進んでみましょう。' },
+      { num:7,  name:'戦車',       en:'The Chariot',        kw:['前進','意志','勝利'],                  desc:'方向が決まったら迷わずに。内なる二つの力を一つにまとめて前へ進みましょう。' },
+      { num:8,  name:'力',        en:'Strength',           kw:['勇気','やさしい強さ','忍耐'],            desc:'本当の強さはやさしさから生まれます。抑えつけるのではなく、愛で導く内なる勇気。' },
+      { num:9,  name:'隠者',       en:'The Hermit',         kw:['内省','光','気づき'],                  desc:'一人の時間が必要なときもあります。内なる灯りを手に、心の奥をのぞいてみましょう。' },
+      { num:10, name:'運命の輪',    en:'Wheel of Fortune',   kw:['循環','運命','転機'],                  desc:'すべては巡り巡っていきます。今の場所がすべてではありません、車輪は回り続けます。' },
+      { num:11, name:'正義',       en:'Justice',            kw:['バランス','真実','公正'],               desc:'ありのままを見つめる目。真実とバランスの上に立つ決断は長く続きます。' },
+      { num:12, name:'吊るされた男', en:'The Hanged Man',     kw:['待つこと','受容','新しい視点'],          desc:'いったん立ち止まり、逆さまに見つめると新しいものが見えてきます。手放すことが気づきになります。' },
+      { num:13, name:'死神',       en:'Death',              kw:['転換','終わりと始まり','解放'],           desc:'恐ろしい名前だけれど、実は解放です。終わりがあるからこそ新しい始まりが訪れます。' },
+      { num:14, name:'節制',       en:'Temperance',         kw:['バランス','癒やし','調和'],              desc:'急がず、ゆっくり、調和を保って。異なるものが混ざり合って美しいものが生まれます。' },
+      { num:15, name:'悪魔',       en:'The Devil',          kw:['執着','解放','手放すこと'],              desc:'鎖のように感じても、実は自分でほどくことができます。何が自分を縛っているのか向き合ってみましょう。' },
+      { num:16, name:'塔',        en:'The Tower',          kw:['急変','崩壊','新しい土台'],              desc:'揺らぐべきものが揺らぐ瞬間。崩れたあとに、もっと確かなものが築かれます。' },
+      { num:17, name:'星',        en:'The Star',           kw:['希望','癒やし','インスピレーション'],       desc:'嵐のあとの夜空にまたたく星のように。希望はいつも暗闇の中でこそ、より明るく輝きます。' },
+      { num:18, name:'月',        en:'The Moon',           kw:['夢','無意識','直感'],                   desc:'見えるものがすべてではない夜。深い無意識のささやきに耳を傾けてみましょう。' },
+      { num:19, name:'太陽',       en:'The Sun',            kw:['喜び','活力','幸せ'],                  desc:'あたたかく降り注ぐ光の中で喜びましょう。隠さずに輝いても良い時間です。' },
+      { num:20, name:'審判',       en:'Judgement',          kw:['目覚め','再生','使命'],                 desc:'心の奥底から響く呼び声。過去を赦し、本当の自分として目覚める瞬間です。' },
+      { num:21, name:'世界',       en:'The World',          kw:['完成','達成','充足'],                  desc:'一巡りしてすべてが満たされる瞬間。完成の喜びを感じながら、新しい旅の準備をしましょう。' },
     ];
 
     let mcIndex = 0;
@@ -1635,7 +1485,9 @@ ${speciesCtx}
       clearTimeout(mcProgressTimer);
     }
 
-    // ── 백그라운드 리포트 생성 + 폴링 ──
+    // -- Background report generation + polling --
+    // NOTE: unreachable in JP stage 1 (no login, payment guarded), kept for
+    // forward compatibility with a future stage 2.
     let _pollTimer = null;
 
     async function startBackgroundReport(paymentKey) {
@@ -1643,46 +1495,46 @@ ${speciesCtx}
         transaction_id: paymentKey || ('dev_' + Date.now()),
         value: 1500,
         currency: 'KRW',
-        items: [{ item_id: 'deep_reading', item_name: '심층 타로 리딩', price: 1500, quantity: 1 }]
+        items: [{ item_id: 'deep_reading', item_name: 'ペットタロット深層リーディング', price: 1500, quantity: 1 }]
       });
       const user = await getUser();
       if (!user || !window._sb) return;
 
-      const cardSummary = drawnCards.map(c => `[${c.position}] ${c.name}(${c.reversed ? '역방향' : '정방향'})`).join('\n');
+      const cardSummary = drawnCards.map(c => `[${c.position}] ${c.name}(${c.reversed ? '逆位置' : '正位置'})`).join('\n');
       const actionSummary = actionCards.length > 0
-        ? actionCards.map(c => `${c.name}(${c.reversed ? '역방향' : '정방향'})`).join(', ')
+        ? actionCards.map(c => `${c.name}(${c.reversed ? '逆位置' : '正位置'})`).join(', ')
         : null;
       const speciesCtx = buildSpeciesContext();
-      const systemPrompt = `당신은 반려동물 타로 전문가입니다. 따뜻하고 감성적인 한국어로 작성하세요. 반드시 이 아이의 이름, 종, 고민을 직접 언급하세요. 일반적인 표현은 쓰지 마세요.`;
+      const systemPrompt = `あなたはペットタロットの専門家です。温かく情感豊かな日本語で書いてください。必ずこの子の名前、種類、お悩みに直接言及してください。一般的な表現は使わないでください。`;
       const freeCtx = freeReadingText
-        ? `\n무료 미리보기에서 제공된 첫 카드 해석 (이를 참고하여 더 깊이 확장하세요):\n${freeReadingText}\n`
+        ? `\n無料プレビューで提供した最初のカードの解釈（これを参考に、さらに深く広げてください）:\n${freeReadingText}\n`
         : '';
-      const userPrompt = `반려동물: ${petInfo.name} (${petInfo.species}${petInfo.age ? ', ' + petInfo.age : ''}${petInfo.gender ? ', ' + petInfo.gender : ''})
-보호자 호칭: "${petInfo.ownerTitle}"
+      const userPrompt = `ペット: ${petInfo.name}（${petInfo.species}${petInfo.age ? '、' + petInfo.age : ''}${petInfo.gender ? '、' + petInfo.gender : ''}）
+飼い主さんの呼び方: 「${petInfo.ownerTitle}」
 ${speciesCtx}
-고민: ${petInfo.concern}
-배열법: ${currentSpread.fullName}
-뽑힌 카드:
+お悩み: ${petInfo.concern}
+スプレッド: ${currentSpread.fullName}
+引いたカード:
 ${cardSummary}
-${actionSummary ? `\n행동 가이드 카드: ${actionSummary}` : ''}
+${actionSummary ? `\nアクションガイドカード: ${actionSummary}` : ''}
 ${freeCtx}
-아래 네 섹션으로 충분히 풍부하게 리포트를 작성하세요:
+以下の4つのセクションで、十分に読み応えのあるレポートを作成してください:
 
-## 🃏 카드별 포지션 해석
-각 카드를 포지션 의미와 결합하여 깊이 있게 해석. ${petInfo.name}의 상황에 직접 연결. 카드 간 흐름과 연결도 언급. (각 카드 3~4줄)
+## 🃏 カードごとのポジション解釈
+各カードをポジションの意味と組み合わせて深く解釈してください。${petInfo.name}の状況に直接つなげてください。カード同士の流れやつながりにも触れてください。（各カード3〜4行）
 
-## 💌 ${petInfo.name}의 속마음
-${petInfo.name}의 1인칭 시점 내면 독백. 보호자를 "${petInfo.ownerTitle}"(이)라고 부르며 직접 말하는 형식. 감정과 바람을 구체적으로 표현. (6~8줄)
+## 💌 ${petInfo.name}の本音
+${petInfo.name}の一人称視点での心の中の独白。飼い主さんを「${petInfo.ownerTitle}」と呼びながら直接語りかける形式。感情や願いを具体的に表現してください。（6〜8行）
 
-## 🐾 보호자님께
-카드 전체 흐름을 바탕으로 놓치고 있을 수 있는 관점, 위로와 공감. 구체적인 인사이트 포함. (4~5줄)
+## 🐾 飼い主さんへ
+カード全体の流れをもとに、見落としているかもしれない視点、慰めと共感を伝えてください。具体的な気づきを含めてください。（4〜5行）
 
-## ✨ 앞으로의 행동 가이드
+## ✨ これからのアクションガイド
 ${actionSummary
-  ? `행동 가이드 카드(${actionSummary})를 해석하여 실천 방법 제시. 각 항목: **[카드 이름]** — 구체적인 행동과 이유. 1~${actionCards.length}가지.`
-  : `카드를 바탕으로 실천할 수 있는 구체적인 행동 가이드 3가지. 각 항목: **행동** — 이유와 방법.`}`;
+  ? `アクションガイドカード（${actionSummary}）を解釈して実践方法を提示してください。各項目: **【カード名】** — 具体的な行動とその理由。1〜${actionCards.length}個。`
+  : `カードをもとに実践できる具体的なアクションガイドを3つ挙げてください。各項目: **行動** — 理由と方法。`}`;
 
-      // 1. 대기 중 pending 레코드 Supabase에 저장 → ID 획득
+      // 1. Save a pending record to Supabase to get an ID
       const snapshot = JSON.stringify({
         _pending: true, _paidPending: true,
         tid: paymentKey || null,
@@ -1699,7 +1551,7 @@ ${actionSummary
         cards_drawn: drawnCards.map(c => ({ name: c.name, reversed: c.reversed, position: c.position })),
         full_reading: snapshot,
         amount: 1500,
-        status: '생성 중',
+        status: '生成中',
         expires_at: expires
       }).select('id').single();
 
@@ -1708,17 +1560,17 @@ ${actionSummary
         goTo('secFullReport');
         document.getElementById('reportLoadBox').style.display = 'none';
         document.getElementById('reportContent').style.display = '';
-        document.getElementById('reportText').innerHTML = `<p style="color:#f09090">오류가 발생했어요. 마이페이지에서 다시 시도해주세요.</p>`;
+        document.getElementById('reportText').innerHTML = `<p style="color:#f09090">エラーが発生しました。もう一度お試しください。</p>`;
         return;
       }
 
       const readingId = inserted.id;
 
-      // 2. 로딩 화면 표시 + 카드 슬라이드 시작
+      // 2. Show loading screen + start card slideshow
       goTo('secLoading');
       mcStart();
 
-      // 3. 백그라운드 함수 호출 (응답 기다리지 않음)
+      // 3. Call background function (do not wait for response)
       fetch('/.netlify/functions/deep-tarot-background', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
@@ -1730,7 +1582,7 @@ ${actionSummary
         })
       }).catch(() => {});
 
-      // 4. 폴링 시작
+      // 4. Start polling
       _pollTimer = setInterval(() => pollReport(readingId), 5000);
     }
 
@@ -1750,7 +1602,7 @@ ${actionSummary
           let text = data.full_reading;
           try {
             const parsed = JSON.parse(data.full_reading);
-            if (parsed._pending) return; // 아직 스냅샷 상태
+            if (parsed._pending) return; // still a snapshot
           } catch {}
           goTo('secFullReport');
           renderCards('cardsAreaReport', drawnCards, false);
@@ -1763,19 +1615,19 @@ ${actionSummary
             gtag('event', 'deep_reading_complete', { spread: currentSpread.name });
             gtag('event', 'paid_report_complete', { spread: currentSpread.name });
           }
-        } else if (data.status === '오류') {
+        } else if (data.status === 'エラー') {
           clearInterval(_pollTimer);
           mcStop();
           goTo('secFullReport');
           document.getElementById('reportLoadBox').style.display = 'none';
           document.getElementById('reportContent').style.display = '';
-          document.getElementById('reportText').innerHTML = `<p style="color:#f09090">리포트 생성 중 오류가 발생했습니다.</p>
-            <p style="margin-top:12px;font-size:.85rem;color:#c0aad8">결제는 정상 처리됐어요. 마이페이지에서 다시 시도하거나 문의해주세요.</p>`;
+          document.getElementById('reportText').innerHTML = `<p style="color:#f09090">レポート作成中にエラーが発生しました。</p>
+            <p style="margin-top:12px;font-size:.85rem;color:#c0aad8">決済は正常に処理されています。もう一度お試しいただくか、お問い合わせください。</p>`;
         }
       } catch {}
     }
 
-    // ── 전체 리포트 생성 (백그라운드 방식으로 위임) ──
+    // -- Generate full report (delegates to background generation) --
     async function generateFullReport(paymentKey) {
       if (DEV_MODE) {
         goTo('secLoading');
@@ -1788,7 +1640,7 @@ ${actionSummary
           const reportText = document.getElementById('reportText');
           document.getElementById('reportLoadBox').style.display = 'none';
           document.getElementById('reportContent').style.display = '';
-          renderReportText(reportText, `## 🃏 카드별 포지션 해석\n**[DEV] 테스트 리포트입니다.**\n카드 해석 내용이 여기에 표시돼요.\n\n## 💌 ${petInfo.name || '아이'}의 속마음\n보호자님, 저 여기 있어요. 테스트 속마음 내용입니다.\n\n## 🐾 보호자님께\n테스트 위로 메시지입니다.\n\n## ✨ 앞으로의 행동 가이드\n**테스트 행동 1** — 이유와 방법.\n**테스트 행동 2** — 이유와 방법.`);
+          renderReportText(reportText, `## 🃏 カードごとのポジション解釈\n**【DEV】テストレポートです。**\nカードの解釈内容がここに表示されます。\n\n## 💌 ${petInfo.name || 'この子'}の本音\n${petInfo.ownerTitle || '飼い主さん'}、私はここにいるよ。テスト用の本音の内容です。\n\n## 🐾 飼い主さんへ\nテスト用の励ましメッセージです。\n\n## ✨ これからのアクションガイド\n**テスト行動1** — 理由と方法。\n**テスト行動2** — 理由と方法。`);
           document.getElementById('savedBadge').style.display = '';
         }, 8000);
         return;
@@ -1796,7 +1648,7 @@ ${actionSummary
       await startBackgroundReport(paymentKey);
     }
 
-    // 마크다운 섹션 렌더링
+    // Markdown section rendering
     function applyFreePreviewBlur(el) {
       const spans = el.querySelectorAll('.report-text');
       let nonEmpty = 0;
@@ -1823,7 +1675,7 @@ ${actionSummary
       }).join('');
     }
 
-    // Supabase 저장 (결제 완료)
+    // Save to Supabase (payment completed)
     async function saveReading(fullText) {
       const user = await getUser();
       if (!user || !window._sb) return;
@@ -1845,7 +1697,7 @@ ${actionSummary
       }
     }
 
-    // 결제 완료 후 리포트 생성 실패 시 — 마이페이지에서 재시도 가능하게 pending 저장
+    // If report generation fails after payment -- save as pending so it can be retried later
     async function saveErrorReading() {
       const user = await getUser();
       if (!user || !window._sb) return;
@@ -1870,7 +1722,7 @@ ${actionSummary
           cards_drawn: drawnCards.map(c => ({ name: c.name, reversed: c.reversed, position: c.position })),
           full_reading: snapshot,
           amount: 1500,
-          status: '결제 필요',
+          status: '決済待ち',
           expires_at: expires
         });
       } catch(e) {
@@ -1878,7 +1730,7 @@ ${actionSummary
       }
     }
 
-    // Supabase 저장 (결제 미완료 — 3일 보관, full_reading에 상태 스냅샷 저장)
+    // Save to Supabase (payment not completed -- kept for 3 days, status snapshot in full_reading)
     async function savePendingReading() {
       const user = await getUser();
       if (!user || !window._sb) return;
@@ -1902,7 +1754,7 @@ ${actionSummary
           cards_drawn: drawnCards.map(c => ({ name: c.name, reversed: c.reversed, position: c.position })),
           full_reading: snapshot,
           amount: 1500,
-          status: '결제 필요',
+          status: '決済待ち',
           expires_at: expires
         });
       } catch(e) {
@@ -1910,7 +1762,9 @@ ${actionSummary
       }
     }
 
-    // ── 로그인/결제 후 상태 복원 ──
+    // -- Restore state after login/payment redirect --
+    // NOTE: unreachable in JP stage 1 (no login flow, payment guarded),
+    // kept for forward compatibility with a future stage 2.
     document.addEventListener('DOMContentLoaded', async () => {
       const saved = localStorage.getItem('petarot_dr');
       if (!saved) return;
@@ -1923,7 +1777,7 @@ ${actionSummary
       const hasAuthCallback = window.location.hash.includes('access_token') ||
                               urlParams.has('code');
 
-      // 30분 지난 저장 데이터는 무효 처리
+      // Saved data older than 30 minutes is discarded
       if (state._savedAt && Date.now() - state._savedAt > 30 * 60 * 1000) {
         localStorage.removeItem('petarot_dr');
         return;
@@ -1931,7 +1785,7 @@ ${actionSummary
 
       if (!state._loginPending && !state._resumePending && !state._paidPending && !paidOk && !payFail) return;
 
-      // URL 파라미터/해시 제거
+      // Remove URL params/hash
       if (paidOk || payFail || hasAuthCallback) {
         window.history.replaceState({}, '', window.location.pathname);
       }
@@ -1944,7 +1798,7 @@ ${actionSummary
       if (!currentSpread) { document.documentElement.style.visibility = ''; return; }
 
       petInfo = state.petInfo || {};
-      // 예전 스냅샷은 카드 이미지가 .png 경로로 저장돼 있음 → .webp로 정규화
+      // Older snapshots stored card images with a .png path -> normalize to .webp
       const fixImg = c => c && c.img ? { ...c, img: c.img.replace(/\.png$/, '.webp') } : c;
       drawnCards = (state.drawnCards || []).map(fixImg);
       actionCards = (state.actionCards || []).map(fixImg);
@@ -1952,7 +1806,7 @@ ${actionSummary
 
       document.documentElement.style.visibility = '';
 
-      // 결제 완료 또는 결제 후 리포트 오류로 재시도 → 바로 전체 리포트
+      // Payment completed, or retrying after a post-payment report error -> straight to full report
       if (paidOk || state._paidPending) {
         const tid = urlParams.get('tid') || state.tid || null;
         goTo('secFullReport');
@@ -1961,10 +1815,10 @@ ${actionSummary
         return;
       }
 
-      // 결제 실패 → 페이월로 복귀 + 안내 + 미완료 기록 저장
+      // Payment failed -> back to paywall + notice + save incomplete record
       if (payFail) {
-        const msg = urlParams.get('msg') || '결제가 취소되었어요.';
-        alert(msg + ' 다시 시도해주세요.');
+        const msg = urlParams.get('msg') || '決済がキャンセルされました。';
+        alert(msg + ' もう一度お試しください。');
         savePendingReading();
       }
 
@@ -1980,7 +1834,7 @@ ${actionSummary
 
       if (freeReadingText) {
         const firstCard = drawnCards[0];
-        if (firstCard) freeReadLabel.textContent = `🃏 ${firstCard.position} — 무료 공개`;
+        if (firstCard) freeReadLabel.textContent = `🃏 ${firstCard.position} — 無料公開`;
         renderReportText(freeReadText, freeReadingText);
       } else if (drawnCards.length > 0) {
         generateFreeReading();
@@ -1990,10 +1844,9 @@ ${actionSummary
       updatePaywallText();
       document.getElementById('paywallBox').style.display = '';
       document.getElementById('payGate').style.display = '';
-      if (DEV_MODE) document.getElementById('devNotice').style.display = '';
     });
 
-    // ── 유틸 ──
+    // -- Utils --
     function updateCharCount(el, countId) {
       document.getElementById(countId).textContent = el.value.length;
     }
@@ -2002,10 +1855,10 @@ ${actionSummary
       return String(s).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;');
     }
 
-    /* ── 심층 리포트 공유 ── */
+    /* -- Deep report sharing -- */
 
-    // 리포트 렌더링 결과(#reportText)를 "섹션 제목 + 본문" 배열로 분해
-    // (report-section-title 노드를 기준으로 형제 노드들을 그 섹션 본문으로 묶음)
+    // Break the rendered report (#reportText) into a "section title + body" array
+    // (sibling nodes are grouped as the body of the preceding report-section-title node)
     function extractReportSections() {
       const el = document.getElementById('reportText');
       if (!el) return [];
@@ -2017,7 +1870,7 @@ ${actionSummary
           current = { title: n.textContent.trim(), lines: [] };
           sections.push(current);
         } else if (n.classList.contains('report-divider')) {
-          /* 구분선 노드는 건너뜀 */
+          /* skip divider nodes */
         } else if (current) {
           const t = (n.textContent || '').trim();
           if (t) current.lines.push(t);
@@ -2030,17 +1883,17 @@ ${actionSummary
       return text.match(/[^.!?…]+[.!?…]+|[^.!?…]+$/g) || (text ? [text] : []);
     }
 
-    // 섹션 하나를 지정된 문장 수로 발췌 ("속마음" 섹션은 전문 그대로 유지)
+    // Excerpt a section to the given sentence count (the "本音" section is kept in full)
     function sectionBody(section, sentenceCount) {
-      if (section.title.includes('속마음')) return section.lines.join('\n').trim();
+      if (section.title.includes('本音')) return section.lines.join('\n').trim();
       const fullText = section.lines.join(' ').trim();
       const sentences = splitSentences(fullText);
       if (sentences.length <= sentenceCount) return fullText;
       return sentences.slice(0, sentenceCount).join(' ').trim() + ' …';
     }
 
-    // 전체 리포트 섹션을 "제목 + 발췌 본문" HTML로 렌더링
-    // 총 글자수가 임계값을 넘으면 (속마음 제외) 섹션 발췌 문장 수를 줄여 과도한 길이를 방지
+    // Render the full report sections as "title + excerpt" HTML
+    // If the total length exceeds the threshold (excluding 本音), reduce the excerpt sentence count to avoid excessive length
     function buildReportSectionsHtml() {
       const sections = extractReportSections();
       if (!sections.length) return '';
@@ -2061,15 +1914,15 @@ ${actionSummary
     }
 
     function buildDeepShareCardEl() {
-      const petN = petInfo.name || '반려동물';
-      const spreadName = currentSpread ? currentSpread.name : '심층 리딩';
+      const petN = petInfo.name || 'ペット';
+      const spreadName = currentSpread ? currentSpread.name : '深層リーディング';
       const cardsHtml = drawnCards.map(c => `
         <div style="display:flex;justify-content:space-between;gap:10px;font-size:.74rem;padding:5px 0;border-bottom:1px solid rgba(160,80,255,.12);">
           <span style="color:#b090d0;white-space:nowrap;">${escHtml(c.position)}</span>
-          <span style="color:#e8d0ff;font-weight:600;text-align:right;">${escHtml(c.name)} <span style="color:#a080c0;font-weight:400;">(${c.reversed ? '역방향' : '정방향'})</span></span>
+          <span style="color:#e8d0ff;font-weight:600;text-align:right;">${escHtml(c.name)} <span style="color:#a080c0;font-weight:400;">(${c.reversed ? '逆位置' : '正位置'})</span></span>
         </div>`).join('');
       const sectionsHtml = buildReportSectionsHtml();
-      const hasActionSection = extractReportSections().some(s => s.title.includes('행동 가이드'));
+      const hasActionSection = extractReportSections().some(s => s.title.includes('アクションガイド'));
       const actionLine = (!hasActionSection && actionCards.length > 0)
         ? actionCards.map(c => escHtml(c.name)).join(', ') : '';
 
@@ -2077,7 +1930,7 @@ ${actionSummary
       sc.innerHTML = `
         <div style="width:360px;padding:32px 26px 28px;
           background:linear-gradient(150deg,#1a0835 0%,#0c1045 45%,#041520 100%);
-          font-family:'Noto Serif KR',serif;color:#f0e6ff;border-radius:22px;position:relative;overflow:hidden;">
+          font-family:'Noto Serif JP',serif;color:#f0e6ff;border-radius:22px;position:relative;overflow:hidden;">
           <div style="position:absolute;top:0;left:0;right:0;height:3px;
             background:linear-gradient(90deg,#ff6b6b,#ff9f43,#ffd32a,#0be881,#17c0eb,#7d5fff,#ef5777);"></div>
           <div style="position:absolute;inset:0;
@@ -2085,7 +1938,7 @@ ${actionSummary
           <div style="position:relative;z-index:1;">
             <div style="text-align:center;margin-bottom:20px;">
               <div style="font-size:2.2rem;margin-bottom:6px;">🔮</div>
-              <div style="font-size:.72rem;color:#b090d0;letter-spacing:.08em;">심층 콤보 분석 · ${escHtml(spreadName)}</div>
+              <div style="font-size:.72rem;color:#b090d0;letter-spacing:.08em;">深層コンボリーディング · ${escHtml(spreadName)}</div>
               <div style="font-size:1.05rem;font-weight:600;color:#e8d0ff;margin-top:6px;">${escHtml(petN)}</div>
             </div>
             <div style="margin-bottom:18px;padding:12px 14px;border-radius:14px;
@@ -2098,13 +1951,13 @@ ${actionSummary
             </div>` : ''}
             ${actionLine ? `
             <div style="padding-top:14px;border-top:1px solid rgba(160,80,255,.18);">
-              <div style="font-size:.68rem;color:#a080c0;margin-bottom:6px;">✨ 행동 가이드 카드</div>
+              <div style="font-size:.68rem;color:#a080c0;margin-bottom:6px;">✨ アクションガイドカード</div>
               <div style="font-size:.75rem;color:#e0d0f8;">${actionLine}</div>
             </div>` : ''}
             <div style="text-align:center;margin-top:22px;padding-top:14px;
               border-top:1px solid rgba(255,255,255,.07);">
-              <div style="font-size:.68rem;color:rgba(200,160,255,.8);font-weight:600;">🐾 펫타로</div>
-              <div style="font-size:.6rem;color:rgba(180,140,220,.55);margin-top:5px;letter-spacing:.02em;">나도 해보기 → tubular-cupcake-55d47b.netlify.app</div>
+              <div style="font-size:.68rem;color:rgba(200,160,255,.8);font-weight:600;">🐾 ペットタロット</div>
+              <div style="font-size:.6rem;color:rgba(180,140,220,.55);margin-top:5px;letter-spacing:.02em;">わたしもやってみる → tubular-cupcake-55d47b.netlify.app/ja/</div>
             </div>
           </div>
         </div>`;
@@ -2122,17 +1975,17 @@ ${actionSummary
 
     async function saveDeepImage() {
       if (typeof gtag === 'function') gtag('event', 'save_image_click', { mode: 'deep_report' });
-      if (typeof html2canvas === 'undefined') { showToast('잠시 후 다시 시도해주세요'); return; }
-      showToast('이미지 생성 중…');
+      if (typeof html2canvas === 'undefined') { showToast('しばらくしてからもう一度お試しください'); return; }
+      showToast('画像を作成しています…');
       try {
         const canvas = await renderDeepShareCanvas();
         const link = document.createElement('a');
-        link.download = `심층리포트_${Date.now()}.png`;
+        link.download = `深層レポート_${Date.now()}.png`;
         link.href = canvas.toDataURL('image/png');
         link.click();
-        showToast('이미지가 저장되었어요!');
+        showToast('画像を保存しました!');
       } catch (e) {
-        showToast('저장 중 오류가 발생했어요');
+        showToast('保存中にエラーが発生しました');
       }
     }
 
@@ -2140,18 +1993,18 @@ ${actionSummary
       if (typeof gtag === 'function') gtag('event', 'share_click', { mode: 'deep_report' });
       if (typeof html2canvas === 'undefined') {
         navigator.clipboard?.writeText(window.location.href)
-          .then(() => showToast('링크가 복사되었어요!')).catch(() => {});
+          .then(() => showToast('リンクをコピーしました!')).catch(() => {});
         return;
       }
-      showToast('이미지 생성 중…');
+      showToast('画像を作成しています…');
       try {
         const canvas = await renderDeepShareCanvas();
         const blob = await new Promise(res => canvas.toBlob(res, 'image/png'));
-        const file = new File([blob], '심층리포트.png', { type: 'image/png' });
+        const file = new File([blob], '深層レポート.png', { type: 'image/png' });
         const shareData = {
-          title: '심층 콤보 분석',
-          text: `『심층 콤보 분석』 결과를 공유해요 🐾\n나도 해보기 → https://tubular-cupcake-55d47b.netlify.app`,
-          url: 'https://tubular-cupcake-55d47b.netlify.app',
+          title: '深層コンボリーディング',
+          text: `『深層コンボリーディング』の結果をシェアします 🐾\nわたしもやってみる → ${SITE_URL}/ja/`,
+          url: `${SITE_URL}/ja/`,
         };
         if (navigator.canShare && navigator.canShare({ files: [file] })) {
           await navigator.share({ ...shareData, files: [file] });
@@ -2159,64 +2012,10 @@ ${actionSummary
           await navigator.share(shareData);
         } else {
           await navigator.clipboard.writeText(window.location.href);
-          showToast('링크가 복사되었어요!');
+          showToast('リンクをコピーしました!');
         }
       } catch (e) {
-        if (e.name !== 'AbortError') showToast('공유 중 오류가 발생했어요');
-      }
-    }
-
-    async function uploadDeepShareImageToKakao(canvas) {
-      try {
-        const blob = await new Promise(res => canvas.toBlob(res, 'image/png'));
-        if (!blob) return null;
-        const file = new File([blob], '심층리포트.png', { type: 'image/png' });
-        const dt = new DataTransfer();
-        dt.items.add(file);
-        const res = await Kakao.Share.uploadImage({ file: dt.files });
-        return res?.infos?.original?.url || null;
-      } catch (e) {
-        return null;
-      }
-    }
-
-    async function shareDeepKakao() {
-      if (typeof gtag === 'function') gtag('event', 'share_click', { mode: 'deep_report_kakao' });
-      initKakao();
-      if (!window.Kakao || !Kakao.isInitialized()) {
-        showToast('카카오 공유를 불러올 수 없어 기본 공유로 대신할게요');
-        shareDeepReport();
-        return;
-      }
-
-      let imageUrl = OG_IMAGE;
-      try {
-        if (typeof html2canvas !== 'undefined') {
-          const canvas = await renderDeepShareCanvas();
-          const uploaded = await uploadDeepShareImageToKakao(canvas);
-          if (uploaded) imageUrl = uploaded;
-        }
-      } catch (e) {}
-
-      const petN = petInfo.name || '반려동물';
-      const spreadName = currentSpread ? currentSpread.name : '심층 리딩';
-
-      try {
-        Kakao.Share.sendDefault({
-          objectType: 'feed',
-          content: {
-            title: `${petN}의 심층 콤보 분석이 도착했어요 🐾`,
-            description: `${spreadName} — 나도 심층 리딩을 받아볼까?`,
-            imageUrl,
-            link: { mobileWebUrl: SITE_URL, webUrl: SITE_URL },
-          },
-          buttons: [{
-            title: '나도 해보기',
-            link: { mobileWebUrl: SITE_URL, webUrl: SITE_URL },
-          }],
-        });
-      } catch (e) {
-        showToast('카카오 공유 중 오류가 발생했어요');
+        if (e.name !== 'AbortError') showToast('共有中にエラーが発生しました');
       }
     }
 
