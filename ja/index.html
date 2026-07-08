@@ -320,9 +320,12 @@
       <span class="brand-icon">🐾</span>
       <span class="brand-name">ペットタロット</span>
     </a>
-    <button class="hamburger-btn" id="hamburgerBtn" aria-label="メニューを開く">
-      <span></span><span></span><span></span>
-    </button>
+    <div class="header-right">
+      <div class="lang-switch" id="langSwitch"></div>
+      <button class="hamburger-btn" id="hamburgerBtn" aria-label="メニューを開く">
+        <span></span><span></span><span></span>
+      </button>
+    </div>
   </header>
 
   <div class="menu-overlay" id="menuOverlay"></div>
@@ -336,8 +339,6 @@
     <span class="menu-item menu-item-disabled">プレゼントする <span class="chip-soon">準備中</span></span>
     <span class="menu-item menu-item-disabled">おすすめする <span class="chip-soon">準備中</span></span>
     <a href="/ja/contact/" class="menu-item">お問い合わせ</a>
-    <hr class="menu-hr">
-    <a href="/" class="menu-item">🇰🇷 한국어</a>
   </nav>
 
   <nav class="filter-nav">
@@ -406,7 +407,7 @@
         <p>🌈 虹の橋の向こうでも、その愛は永遠です 🐾</p>
         <div class="footer-operator">
           <p>運営者: BrandWick &nbsp;|&nbsp; お問い合わせ: <a href="mailto:ralra_1@naver.com">ralra_1@naver.com</a></p>
-          <p><a href="/ja/privacy/">プライバシーポリシー</a> &nbsp;|&nbsp; <a href="/ja/terms/">利用規約</a></p>
+          <p><a href="/ja/privacy/">プライバシーポリシー</a> &nbsp;|&nbsp; <a href="/ja/terms/">利用規約</a> &nbsp;|&nbsp; <a href="/pricing/">料金</a></p>
           <p><a href="/">🇰🇷 한국어</a></p>
         </div>
       </footer>
@@ -473,5 +474,6 @@
     });
   </script>
   <script src="/assets/auth.js"></script>
+  <script src="/assets/lang-switch.js" defer></script>
 </body>
 </html>

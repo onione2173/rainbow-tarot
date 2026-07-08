@@ -260,9 +260,12 @@
       <span class="brand-icon">🐾</span>
       <span class="brand-name">펫타로</span>
     </a>
-    <button class="hamburger-btn" id="hamburgerBtn" aria-label="메뉴 열기">
-      <span></span><span></span><span></span>
-    </button>
+    <div class="header-right">
+      <div class="lang-switch" id="langSwitch"></div>
+      <button class="hamburger-btn" id="hamburgerBtn" aria-label="메뉴 열기">
+        <span></span><span></span><span></span>
+      </button>
+    </div>
   </header>
 
   <div class="menu-overlay" id="menuOverlay"></div>
@@ -273,7 +276,6 @@
     </div>
     <hr class="menu-hr">
     <a href="/" class="menu-item">홈</a>
-    <a href="/ja/contact/" class="menu-item">🇯🇵 日本語</a>
     <a href="/auth/" class="menu-item" id="miSignup">회원가입</a>
     <a href="/auth/" class="menu-item" id="miLogin">로그인</a>
     <a href="/mypage/" class="menu-item" id="miMypage">마이페이지</a>
@@ -414,6 +416,7 @@
   </div>
 
   <script src="/assets/auth.js"></script>
+  <script src="/assets/lang-switch.js" defer></script>
   <script>
     // Date selects population
     const yearSel = document.getElementById('payYear');

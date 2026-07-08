@@ -260,9 +260,12 @@
       <span class="brand-icon">🐾</span>
       <span class="brand-name">ペットタロット</span>
     </a>
-    <button class="hamburger-btn" id="hamburgerBtn" aria-label="メニューを開く">
-      <span></span><span></span><span></span>
-    </button>
+    <div class="header-right">
+      <div class="lang-switch" id="langSwitch"></div>
+      <button class="hamburger-btn" id="hamburgerBtn" aria-label="メニューを開く">
+        <span></span><span></span><span></span>
+      </button>
+    </div>
   </header>
 
   <div class="menu-overlay" id="menuOverlay"></div>
@@ -409,6 +412,7 @@
   </div>
 
   <script src="/assets/auth.js"></script>
+  <script src="/assets/lang-switch.js" defer></script>
   <script>
     // Date selects population
     const yearSel = document.getElementById('payYear');
