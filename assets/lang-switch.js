@@ -57,6 +57,13 @@
     var btn = mount.querySelector('.lang-switch-btn');
     var menu = mount.querySelector('.lang-switch-menu');
 
+    // 언어를 직접 고르면 저장 → 홈의 브라우저 언어 자동 리다이렉트가 이 선택을 존중
+    menu.querySelectorAll('.lang-switch-item').forEach(function (a, i) {
+      a.addEventListener('click', function () {
+        try { localStorage.setItem('lang_pref', i === 0 ? 'ko' : 'ja'); } catch (e) {}
+      });
+    });
+
     btn.addEventListener('click', function (e) {
       e.stopPropagation();
       var willOpen = !menu.classList.contains('open');
