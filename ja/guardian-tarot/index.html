@@ -14,7 +14,7 @@
   <meta property="og:locale" content="ja_JP">
   <meta property="og:title" content="守護タロット — ペットタロット">
   <meta property="og:description" content="健康、行動、関係など、ペットに関する心配や悩みをタロットに聞いてみましょう。飼い主さんのための温かい気づきをお届けします。">
-  <meta property="og:image" content="https://tubular-cupcake-55d47b.netlify.app/assets/og-image.png">
+  <meta property="og:image" content="https://tubular-cupcake-55d47b.netlify.app/assets/og-image-ja.png">
   <meta property="og:url" content="https://tubular-cupcake-55d47b.netlify.app/ja/guardian-tarot/">
   <meta name="twitter:card" content="summary_large_image">
   <link rel="icon" type="image/svg+xml" href="/favicon.svg">
@@ -52,6 +52,10 @@
     .menu-item:hover{background:rgba(255,255,255,.04);}
     .menu-item-disabled{color:#8070a0;cursor:default;pointer-events:none;}
     .chip-soon{margin-left:8px;font-size:.65rem;padding:2px 9px;border-radius:10px;background:rgba(180,100,255,.12);border:1px solid rgba(180,100,255,.28);color:#c0a0ff;font-family:'Noto Sans KR',sans-serif;}
+    .share-btns{flex-wrap:wrap;justify-content:center;}
+    .btn-share-x{display:inline-flex;align-items:center;gap:6px;padding:9px 20px;border-radius:22px;border:1px solid transparent;background:#000;color:#fff;font-family:'Noto Serif KR',serif;font-size:.82rem;cursor:pointer;transition:all .2s;}
+    .btn-share-x:hover{background:#1a1a1a;transform:translateY(-2px);box-shadow:0 6px 18px rgba(0,0,0,.35);}
+    .btn-share-x svg{width:14px;height:14px;fill:#fff;}
   </style>
 </head>
 <body>
@@ -166,6 +170,7 @@
             <div class="share-btns">
               <button class="btn-share" onclick="shareResult()">🔗 &nbsp;共有する</button>
               <button class="btn-share" onclick="saveImage()">💾 &nbsp;画像を保存</button>
+              <button class="btn-share-x" onclick="shareX()"><svg viewBox="0 0 24 24"><path d="M18.244 2.25h3.308l-7.227 8.26 8.502 11.24H16.17l-5.214-6.817L4.99 21.75H1.68l7.73-8.835L1.254 2.25H8.08l4.713 6.231zm-1.161 17.52h1.833L7.084 4.126H5.117z"/></svg>&nbsp;Xでシェア</button>
             </div>
             <button class="btn-small btn-ghost" onclick="onReset()">🌙 &nbsp;もう一度質問する</button>
           </div>

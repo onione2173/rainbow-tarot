@@ -456,6 +456,14 @@ async function shareResult(){
   }
 }
 
+function shareX(){
+  track('share_click',{mode:currentMode+'_x'});
+  const text=`${PAGE_TITLE}でうちの子の気持ちを読んでもらいました🐾 #ペットタロット`;
+  const url='https://tubular-cupcake-55d47b.netlify.app/ja/';
+  const shareUrl=`https://x.com/intent/post?text=${encodeURIComponent(text)}&url=${encodeURIComponent(url)}`;
+  window.open(shareUrl,'_blank','noopener,noreferrer,width=550,height=420');
+}
+
 async function saveImage(){
   track('save_image_click',{mode:currentMode});
   if(typeof html2canvas==='undefined'){ showToast('しばらくしてからもう一度お試しください'); return; }

@@ -14,7 +14,7 @@
   <meta property="og:locale" content="ja_JP">
   <meta property="og:title" content="深層コンボリーディング — ペットタロット">
   <meta property="og:description" content="ペットのお悩みを具体的に入力すると、複数枚のタロットカードで深層コンボリーディングを提供します。">
-  <meta property="og:image" content="https://tubular-cupcake-55d47b.netlify.app/assets/og-image.png">
+  <meta property="og:image" content="https://tubular-cupcake-55d47b.netlify.app/assets/og-image-ja.png">
   <meta property="og:url" content="https://tubular-cupcake-55d47b.netlify.app/ja/deep-reading/">
   <meta name="twitter:card" content="summary_large_image">
   <link rel="icon" type="image/svg+xml" href="/favicon.svg">
@@ -314,6 +314,19 @@
       color:var(--text-main); transform:translateY(-2px);
       box-shadow:0 6px 18px rgba(120,60,200,.25);
     }
+    .btn-share-x{
+      display:inline-flex; align-items:center; gap:6px;
+      padding:9px 20px; border-radius:22px;
+      border:1px solid transparent;
+      background:#000; color:#fff;
+      font-family:'Noto Serif JP',serif; font-size:.82rem;
+      cursor:pointer; transition:all .2s;
+    }
+    .btn-share-x:hover{
+      background:#1a1a1a; transform:translateY(-2px);
+      box-shadow:0 6px 18px rgba(0,0,0,.35);
+    }
+    .btn-share-x svg{ width:14px; height:14px; fill:#fff; }
     /* Toast */
     #toast{
       position:fixed; bottom:80px; left:50%; transform:translateX(-50%) translateY(8px);
@@ -927,6 +940,7 @@
           <div style="margin-top:20px;text-align:center">
             <button class="btn-share" onclick="shareDeepReport()">🔗 &nbsp;シェア</button>
             <button class="btn-share" onclick="saveDeepImage()">💾 &nbsp;画像を保存</button>
+            <button class="btn-share-x" onclick="shareDeepX()"><svg viewBox="0 0 24 24"><path d="M18.244 2.25h3.308l-7.227 8.26 8.502 11.24H16.17l-5.214-6.817L4.99 21.75H1.68l7.73-8.835L1.254 2.25H8.08l4.713 6.231zm-1.161 17.52h1.833L7.084 4.126H5.117z"/></svg>&nbsp;Xでシェア</button>
           </div>
           <button class="btn-outline" style="margin-top:20px" onclick="window.location.href='/ja/'">ホームに戻る</button>
         </div>
@@ -1991,6 +2005,14 @@ ${actionSummary
       } catch (e) {
         showToast('保存中にエラーが発生しました');
       }
+    }
+
+    function shareDeepX() {
+      if (typeof gtag === 'function') gtag('event', 'share_click', { mode: 'deep_report_x' });
+      const text = `『深層コンボリーディング』でうちの子の本音を読んでもらいました🐾 #ペットタロット`;
+      const url = `${SITE_URL}/ja/`;
+      const shareUrl = `https://x.com/intent/post?text=${encodeURIComponent(text)}&url=${encodeURIComponent(url)}`;
+      window.open(shareUrl, '_blank', 'noopener,noreferrer,width=550,height=420');
     }
 
     async function shareDeepReport() {
