@@ -19,6 +19,11 @@
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Noto+Serif+KR:wght@300;400;600&family=Noto+Sans+KR:wght@300;400&display=swap" rel="stylesheet">
   <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/dist/umd/supabase.min.js"></script>
+  <script>
+    /* ?dev=1 접속 시 이 브라우저에서 GA 수집 영구 차단 (운영자 접속 제외용) */
+    try{if(location.search.indexOf('dev=1')>-1)localStorage.setItem('ga_off','1');
+    if(localStorage.getItem('ga_off'))window['ga-disable-G-ZDTC39TEKD']=true;}catch(e){}
+  </script>
   <script async src="https://www.googletagmanager.com/gtag/js?id=G-ZDTC39TEKD"></script>
   <script>
     window.dataLayer=window.dataLayer||[];

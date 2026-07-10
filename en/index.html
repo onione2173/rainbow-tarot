@@ -1,35 +1,28 @@
 <!DOCTYPE html>
-<html lang="ko">
+<html lang="en">
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <script>
-    // 일본어 브라우저 첫 방문 시 /ja/로 자동 이동 (수동 언어 선택이 있으면 존중)
-    (function(){try{
-      var p=localStorage.getItem('lang_pref');var l=(navigator.language||'').toLowerCase();
-      if(!p||p!=='ko'){ if(p==='ja'||(!p&&l.indexOf('ja')===0)){location.replace('/ja/');} else if(p==='en'||(!p&&l.indexOf('en')===0)){location.replace('/en/');} }
-    }catch(e){}})();
-  </script>
-  <title>펫타로 — 반려동물 타로 서비스</title>
-  <meta name="description" content="펫타로 — 반려동물의 마음을 타로로 읽어봐요. 무지개 다리 너머, 기분 읽기, 고민 타로 무료 서비스.">
-  <link rel="canonical" href="https://tubular-cupcake-55d47b.netlify.app/">
+  <title>PetTarot — Tarot Readings for Your Pet</title>
+  <meta name="description" content="PetTarot — read your pet's heart through tarot. Free readings: Beyond the Rainbow Bridge, Today's Mood Reading, and Guardian Tarot.">
+  <link rel="canonical" href="https://tubular-cupcake-55d47b.netlify.app/en/">
   <link rel="alternate" hreflang="ko" href="https://tubular-cupcake-55d47b.netlify.app/">
   <link rel="alternate" hreflang="ja" href="https://tubular-cupcake-55d47b.netlify.app/ja/">
   <link rel="alternate" hreflang="en" href="https://tubular-cupcake-55d47b.netlify.app/en/">
   <link rel="alternate" hreflang="x-default" href="https://tubular-cupcake-55d47b.netlify.app/">
   <meta property="og:type" content="website">
-  <meta property="og:site_name" content="펫타로">
-  <meta property="og:locale" content="ko_KR">
-  <meta property="og:title" content="펫타로 — 반려동물 타로 서비스">
-  <meta property="og:description" content="펫타로 — 반려동물의 마음을 타로로 읽어봐요. 무지개 다리 너머, 기분 읽기, 고민 타로 무료 서비스.">
-  <meta property="og:image" content="https://tubular-cupcake-55d47b.netlify.app/assets/og-image.png">
-  <meta property="og:url" content="https://tubular-cupcake-55d47b.netlify.app/">
+  <meta property="og:site_name" content="PetTarot">
+  <meta property="og:locale" content="en_US">
+  <meta property="og:title" content="PetTarot — Tarot Readings for Your Pet">
+  <meta property="og:description" content="PetTarot — read your pet's heart through tarot. Free readings: Beyond the Rainbow Bridge, Today's Mood Reading, and Guardian Tarot.">
+  <meta property="og:image" content="https://tubular-cupcake-55d47b.netlify.app/assets/og-image-en.png">
+  <meta property="og:url" content="https://tubular-cupcake-55d47b.netlify.app/en/">
   <meta name="twitter:card" content="summary_large_image">
   <link rel="icon" type="image/svg+xml" href="/favicon.svg">
   <link rel="apple-touch-icon" href="/favicon.svg">
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=Noto+Serif+KR:wght@300;400;600&family=Noto+Sans+KR:wght@300;400&display=swap" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=Noto+Serif:wght@300;400;600&family=Noto+Sans:wght@300;400&display=swap" rel="stylesheet">
 
   <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/dist/umd/supabase.min.js"></script>
   <script>
@@ -45,7 +38,6 @@
     gtag('config', 'G-ZDTC39TEKD');
   </script>
   <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-1748357161143369" crossorigin="anonymous"></script>
-  <script type="text/javascript" src="//t1.kakaocdn.net/kas/static/ba.min.js" async></script>
 
   <style>
     *, *::before, *::after { margin:0; padding:0; box-sizing:border-box; }
@@ -61,7 +53,7 @@
     body {
       min-height:100vh;
       background:radial-gradient(ellipse at 20% 10%,#2a0a4a 0%,#0d0d2b 40%,#0a1428 70%,#001a1a 100%);
-      font-family:'Noto Serif KR',serif;
+      font-family:'Noto Serif',serif;
       color:var(--text-main);
       overflow-x:hidden;
     }
@@ -99,7 +91,7 @@
     }
     .header-tagline {
       font-size:.72rem; color:var(--text-dim);
-      font-family:'Noto Sans KR',sans-serif; font-weight:300;
+      font-family:'Noto Sans',sans-serif; font-weight:300;
     }
 
     /* Filter tab nav */
@@ -118,7 +110,7 @@
     .filter-tab {
       flex-shrink:0; padding:7px 18px; border-radius:22px;
       border:1px solid transparent; cursor:pointer;
-      font-family:'Noto Sans KR',sans-serif; font-size:.82rem;
+      font-family:'Noto Sans',sans-serif; font-size:.82rem;
       transition:all .2s; background:transparent; color:var(--text-dim);
     }
     .filter-tab:hover { color:var(--text-sub); background:rgba(255,255,255,.05); }
@@ -163,7 +155,7 @@
     .banner-badges { display:flex; gap:7px; margin-bottom:11px; flex-wrap:wrap; }
     .badge {
       display:inline-block; padding:4px 13px; border-radius:22px;
-      font-size:.68rem; font-family:'Noto Sans KR',sans-serif;
+      font-size:.68rem; font-family:'Noto Sans',sans-serif;
       letter-spacing:.02em;
     }
     .badge-free {
@@ -184,11 +176,11 @@
     }
     .banner-desc {
       font-size:.82rem; color:rgba(255,255,255,.7);
-      line-height:1.7; font-family:'Noto Sans KR',sans-serif; font-weight:300;
+      line-height:1.7; font-family:'Noto Sans',sans-serif; font-weight:300;
     }
 
     /* Card gradient backgrounds — replace .banner-bg with actual img via style="background-image:url(...)" */
-    /* 1. 무지개 다리 너머: 몽환적 보라+핑크 톤. 추천 이미지: 무지개빛 다리 위 강아지/고양이 실루엣, 별빛 배경 */
+    /* 1. Beyond the Rainbow Bridge: dreamlike purple+pink tones. Suggested image: silhouette of a dog/cat on a rainbow bridge, starry background */
     .bg-rainbow {
       background:
         radial-gradient(circle at 72% 28%, rgba(200,100,255,.55) 0%, transparent 48%),
@@ -196,7 +188,7 @@
         radial-gradient(circle at 50% 50%, rgba(80,40,160,.3) 0%, transparent 70%),
         linear-gradient(140deg, #1a0438 0%, #3d1068 45%, #1a1f55 100%);
     }
-    /* 2. 오늘 우리 아이 어때요?: 따뜻한 햇살 톤. 추천 이미지: 햇빛 받는 강아지/고양이, 밝고 자연스러운 분위기 */
+    /* 2. Today's Mood Reading: warm sunlit tones. Suggested image: dog/cat basking in sunlight, bright and natural mood */
     .bg-mood {
       background:
         radial-gradient(circle at 60% 22%, rgba(80,210,155,.45) 0%, transparent 52%),
@@ -204,7 +196,7 @@
         radial-gradient(circle at 80% 75%, rgba(60,160,100,.3) 0%, transparent 45%),
         linear-gradient(140deg, #092216 0%, #174532 45%, #082535 100%);
     }
-    /* 3. 우리 아이 걱정될 때: 신비로운 파랑-보라 톤. 추천 이미지: 달빛 아래 반려동물, 타로카드와 발바닥 */
+    /* 3. Guardian Tarot: mystical blue-purple tones. Suggested image: pet under moonlight, tarot cards and paw prints */
     .bg-guardian {
       background:
         radial-gradient(circle at 28% 28%, rgba(70,140,255,.5) 0%, transparent 55%),
@@ -212,7 +204,7 @@
         radial-gradient(circle at 50% 88%, rgba(40,80,200,.4) 0%, transparent 40%),
         linear-gradient(140deg, #050c22 0%, #0d1c50 42%, #1e0945 100%);
     }
-    /* 4. 심층 콤보 분석: 신비로운 골드-퍼플. 추천 이미지: 수정구슬 또는 여러 타로카드 스프레드 */
+    /* 4. Deep Combo Reading: mystical gold-purple. Suggested image: crystal ball or a spread of multiple tarot cards */
     .bg-paid {
       background:
         radial-gradient(circle at 50% 22%, rgba(255,210,100,.35) 0%, transparent 50%),
@@ -257,7 +249,7 @@
       display:block; margin:24px auto 0; padding:10px 32px;
       border-radius:22px; border:1px solid rgba(180,100,255,.35);
       background:rgba(120,60,200,.15); color:var(--text-sub);
-      font-family:'Noto Serif KR',serif; font-size:.82rem; cursor:pointer; transition:all .2s;
+      font-family:'Noto Serif',serif; font-size:.82rem; cursor:pointer; transition:all .2s;
     }
     .privacy-close:hover { background:rgba(160,90,255,.25); color:var(--text-main); }
 
@@ -295,7 +287,7 @@
     }
     .menu-label {
       font-size:1.25rem; font-weight:700; color:#f0e6ff;
-      font-family:'Noto Sans KR',sans-serif;
+      font-family:'Noto Sans',sans-serif;
     }
     .menu-close-btn {
       background:none; border:none; color:#8070a0;
@@ -307,7 +299,7 @@
       padding:16px 20px; font-size:1rem; color:#f0e6ff;
       text-decoration:none; cursor:pointer;
       border:none; background:none; width:100%;
-      text-align:left; font-family:'Noto Serif KR',serif;
+      text-align:left; font-family:'Noto Serif',serif;
       transition:background .15s; line-height:1.4;
     }
     .menu-item:hover { background:rgba(255,255,255,.04); }
@@ -317,7 +309,7 @@
       margin-left:8px; font-size:.65rem; padding:2px 9px;
       border-radius:10px; background:rgba(180,100,255,.12);
       border:1px solid rgba(180,100,255,.28); color:#c0a0ff;
-      font-family:'Noto Sans KR',sans-serif;
+      font-family:'Noto Sans',sans-serif;
     }
 
     @media(max-width:480px) {
@@ -330,13 +322,13 @@
   <div id="stars"></div>
 
   <header class="site-header">
-    <a href="/" class="header-brand">
+    <a href="/en/" class="header-brand">
       <span class="brand-icon">🐾</span>
-      <span class="brand-name">펫타로</span>
+      <span class="brand-name">PetTarot</span>
     </a>
     <div class="header-right">
       <div class="lang-switch" id="langSwitch"></div>
-      <button class="hamburger-btn" id="hamburgerBtn" aria-label="메뉴 열기">
+      <button class="hamburger-btn" id="hamburgerBtn" aria-label="Open menu">
         <span></span><span></span><span></span>
       </button>
     </div>
@@ -345,94 +337,84 @@
   <div class="menu-overlay" id="menuOverlay"></div>
   <nav class="menu-drawer" id="menuDrawer">
     <div class="menu-top">
-      <span class="menu-label">메뉴</span>
+      <span class="menu-label">Menu</span>
       <button class="menu-close-btn" id="menuClose">✕</button>
     </div>
     <hr class="menu-hr">
-    <a href="/" class="menu-item">홈</a>
-    <a href="/auth/" class="menu-item" id="miSignup">회원가입</a>
-    <a href="/auth/" class="menu-item" id="miLogin">로그인</a>
-    <a href="/mypage/" class="menu-item" id="miMypage">마이페이지</a>
-    <button class="menu-item" id="miLogout" style="display:none">로그아웃</button>
-    <span class="menu-item menu-item-disabled">선물하기 <span class="chip-soon">준비중</span></span>
-    <span class="menu-item menu-item-disabled">추천하기 <span class="chip-soon">준비중</span></span>
-    <a href="/contact/" class="menu-item">문의하기</a>
+    <a href="/en/" class="menu-item">Home</a>
+    <span class="menu-item menu-item-disabled">Send a Gift <span class="chip-soon">Coming soon</span></span>
+    <span class="menu-item menu-item-disabled">Refer a Friend <span class="chip-soon">Coming soon</span></span>
+    <a href="/en/contact/" class="menu-item">Contact</a>
   </nav>
 
   <nav class="filter-nav">
     <div class="filter-inner">
-      <button class="filter-tab active" data-filter="all">전체</button>
-      <button class="filter-tab" data-filter="simple">간단한 분석</button>
-      <button class="filter-tab" data-filter="deep">심층분석</button>
+      <button class="filter-tab active" data-filter="all">All</button>
+      <button class="filter-tab" data-filter="simple">Quick Reading</button>
+      <button class="filter-tab" data-filter="deep">Deep Analysis</button>
     </div>
   </nav>
 
   <div class="page">
     <div class="content-wrap">
 
-      <a href="/rainbow-tarot/" class="banner-card" data-category="simple">
-        <div class="banner-bg"><img src="/assets/images/1.webp" alt="무지개 다리 너머"></div>
+      <a href="/en/rainbow-tarot/" class="banner-card" data-category="simple">
+        <div class="banner-bg"><img src="/assets/images/1.webp" alt="Beyond the Rainbow Bridge"></div>
         <div class="banner-overlay"></div>
         <div class="banner-content">
           <div class="banner-badges">
-            <span class="badge badge-type">원카드</span>
+            <span class="badge badge-type">One Card</span>
             <span class="badge badge-new">NEW</span>
           </div>
-          <h2 class="banner-title">무지개 다리 너머</h2>
-          <p class="banner-desc">무지개 다리를 건넌 반려동물의 영혼과<br>타로로 연결해보세요</p>
+          <h2 class="banner-title">Beyond the Rainbow Bridge</h2>
+          <p class="banner-desc">Connect through tarot with the soul<br>of the pet who crossed the rainbow bridge</p>
         </div>
       </a>
 
-      <a href="/deep-reading/" class="banner-card" data-category="deep">
-        <div class="banner-bg"><img src="/assets/images/4.webp" alt="심층 콤보 분석" loading="lazy" decoding="async"></div>
+      <a href="/en/deep-reading/" class="banner-card" data-category="deep">
+        <div class="banner-bg"><img src="/assets/images/4.webp" alt="Deep Combo Reading" loading="lazy" decoding="async"></div>
         <div class="banner-overlay"></div>
         <div class="banner-content">
           <div class="banner-badges">
-            <span class="badge badge-type">스프레드</span>
+            <span class="badge badge-type">Spread</span>
             <span class="badge badge-new">NEW</span>
           </div>
-          <h2 class="banner-title">심층 콤보 분석</h2>
-          <p class="banner-desc">반려동물의 고민을 구체적으로 입력하면<br>여러 카드의 심층 콤보 리딩을 제공해드려요</p>
+          <h2 class="banner-title">Deep Combo Reading</h2>
+          <p class="banner-desc">Share what's on your mind about your pet<br>and receive a multi-card deep combo reading</p>
         </div>
       </a>
 
-      <a href="/mood-reading/" class="banner-card" data-category="simple">
-        <div class="banner-bg"><img src="/assets/images/2.webp" alt="오늘 우리 아이 어때요?" loading="lazy" decoding="async"></div>
+      <a href="/en/mood-reading/" class="banner-card" data-category="simple">
+        <div class="banner-bg"><img src="/assets/images/2.webp" alt="Today's Mood Reading" loading="lazy" decoding="async"></div>
         <div class="banner-overlay"></div>
         <div class="banner-content">
           <div class="banner-badges">
-            <span class="badge badge-type">원카드</span>
+            <span class="badge badge-type">One Card</span>
           </div>
-          <h2 class="banner-title">오늘 우리 아이 어때요?</h2>
-          <p class="banner-desc">지금 함께하는 반려동물의 오늘 기분과<br>에너지를 타로로 읽어봐요</p>
+          <h2 class="banner-title">Today's Mood Reading</h2>
+          <p class="banner-desc">Read your pet's mood and energy today<br>through the wisdom of tarot</p>
         </div>
       </a>
 
-      <a href="/guardian-tarot/" class="banner-card" data-category="simple">
-        <div class="banner-bg"><img src="/assets/images/3.webp" alt="우리 아이 걱정될 때" loading="lazy" decoding="async"></div>
+      <a href="/en/guardian-tarot/" class="banner-card" data-category="simple">
+        <div class="banner-bg"><img src="/assets/images/3.webp" alt="Guardian Tarot" loading="lazy" decoding="async"></div>
         <div class="banner-overlay"></div>
         <div class="banner-content">
           <div class="banner-badges">
-            <span class="badge badge-type">원카드</span>
+            <span class="badge badge-type">One Card</span>
           </div>
-          <h2 class="banner-title">우리 아이 걱정될 때</h2>
-          <p class="banner-desc">건강, 행동, 관계… 반려동물 고민을<br>타로에게 물어봐요</p>
+          <h2 class="banner-title">Guardian Tarot</h2>
+          <p class="banner-desc">Health, behavior, relationships…<br>ask tarot what's on your mind about your pet</p>
         </div>
       </a>
-
-      <div style="margin:8px 0 24px;text-align:center">
-        <ins class="kakao_ad_area" style="display:none;"
-          data-ad-unit="DAN-TREIJRN6M4Hi2QNe"
-          data-ad-width="320"
-          data-ad-height="100"></ins>
-      </div>
 
       <footer class="site-footer">
-        <p>사랑하는 반려동물을 그리워하는 모든 분들을 위해 만들어졌습니다</p>
-        <p>🌈 무지개 다리 너머에서도 그들의 사랑은 영원합니다 🐾</p>
+        <p>Made for everyone who loves their pet with all their heart</p>
+        <p>🌈 Even beyond the Rainbow Bridge, that love is forever 🐾</p>
         <div class="footer-operator">
-          <p>운영자: BrandWick &nbsp;|&nbsp; 문의: <a href="mailto:ralra_1@naver.com">ralra_1@naver.com</a></p>
-          <p><a href="/privacy/">개인정보처리방침</a> &nbsp;|&nbsp; <a href="/terms/">이용약관</a> &nbsp;|&nbsp; <a href="/pricing/">이용요금</a></p>
+          <p>Operator: BrandWick &nbsp;|&nbsp; Contact: <a href="mailto:ralra_1@naver.com">ralra_1@naver.com</a></p>
+          <p><a href="/en/privacy/">Privacy Policy</a> &nbsp;|&nbsp; <a href="/en/terms/">Terms of Service</a> &nbsp;|&nbsp; <a href="/pricing/">Pricing</a></p>
+          <p><a href="/">🇰🇷 한국어</a> &nbsp;|&nbsp; <a href="/ja/">🇯🇵 日本語</a></p>
         </div>
       </footer>
     </div>
@@ -440,21 +422,19 @@
 
   <div class="privacy-overlay" id="privacyOverlay" onclick="closePrivacy(event)">
     <div class="privacy-modal">
-      <h2>🔒 개인정보처리방침</h2>
-      <h3>운영자 정보</h3>
-      <p>운영자: BrandWick &nbsp;|&nbsp; 문의: ralra_1@naver.com</p>
-      <h3>수집하는 정보</h3>
-      <p>이 서비스는 이용자의 개인정보를 직접 수집·저장하지 않습니다.<br>
-      단, 아래 제3자 서비스가 자동으로 이용 통계를 수집합니다.</p>
+      <h2>🔒 Privacy Policy</h2>
+      <h3>Operator Information</h3>
+      <p>Operator: BrandWick &nbsp;|&nbsp; Contact: ralra_1@naver.com</p>
+      <h3>Information We Collect</h3>
+      <p>This service does not directly collect or store your personal information.<br>
+      However, the following third-party services automatically collect usage statistics.</p>
       <h3>Google Analytics 4</h3>
-      <p>서비스 이용 통계 파악을 위해 Google Analytics를 사용합니다.</p>
+      <p>We use Google Analytics to understand how the service is used.</p>
       <h3>Google AdSense</h3>
-      <p>맞춤형 광고 제공을 위해 Google AdSense를 사용합니다.</p>
-      <h3>카카오 애드핏 (Kakao Adfit)</h3>
-      <p>광고 게재를 위해 카카오 애드핏을 사용합니다.</p>
-      <h3>쿠키 거부 방법</h3>
-      <p>브라우저 설정에서 쿠키를 비활성화할 수 있습니다.</p>
-      <button class="privacy-close" onclick="closePrivacy()">닫기</button>
+      <p>We use Google AdSense to deliver personalized ads.</p>
+      <h3>How to Opt Out of Cookies</h3>
+      <p>You can disable cookies in your browser settings.</p>
+      <button class="privacy-close" onclick="closePrivacy()">Close</button>
     </div>
   </div>
 
@@ -501,22 +481,5 @@
   </script>
   <script src="/assets/auth.js"></script>
   <script src="/assets/lang-switch.js" defer></script>
-  <script>
-    // 로그인 후 deep-reading 복귀 처리 (Supabase가 홈으로 튕겼을 때 대비)
-    (async () => {
-      const saved = localStorage.getItem('petarot_dr');
-      if (!saved) return;
-      let state;
-      try { state = JSON.parse(saved); } catch { return; }
-      if (!state._loginPending) return;
-      if (state._savedAt && Date.now() - state._savedAt > 30 * 60 * 1000) {
-        localStorage.removeItem('petarot_dr');
-        return;
-      }
-      const user = await getUser();
-      if (!user) return;
-      window.location.replace('/deep-reading/');
-    })();
-  </script>
 </body>
 </html>

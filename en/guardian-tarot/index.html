@@ -1,28 +1,28 @@
 <!DOCTYPE html>
-<html lang="ja">
+<html lang="en">
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>守護タロット — ペットタロット</title>
-  <meta name="description" content="健康、行動、関係など、ペットに関する心配や悩みをタロットに聞いてみましょう。飼い主さんのための温かい気づきをお届けします。">
-  <link rel="canonical" href="https://tubular-cupcake-55d47b.netlify.app/ja/guardian-tarot/">
+  <title>Guardian Tarot — PetTarot</title>
+  <meta name="description" content="Ask tarot about your worries and concerns for your pet — health, behavior, relationships, and more. Receive warm guidance made for pet parents.">
+  <link rel="canonical" href="https://tubular-cupcake-55d47b.netlify.app/en/guardian-tarot/">
   <link rel="alternate" hreflang="ko" href="https://tubular-cupcake-55d47b.netlify.app/guardian-tarot/">
   <link rel="alternate" hreflang="ja" href="https://tubular-cupcake-55d47b.netlify.app/ja/guardian-tarot/">
   <link rel="alternate" hreflang="en" href="https://tubular-cupcake-55d47b.netlify.app/en/guardian-tarot/">
   <link rel="alternate" hreflang="x-default" href="https://tubular-cupcake-55d47b.netlify.app/guardian-tarot/">
   <meta property="og:type" content="website">
-  <meta property="og:site_name" content="ペットタロット">
-  <meta property="og:locale" content="ja_JP">
-  <meta property="og:title" content="守護タロット — ペットタロット">
-  <meta property="og:description" content="健康、行動、関係など、ペットに関する心配や悩みをタロットに聞いてみましょう。飼い主さんのための温かい気づきをお届けします。">
-  <meta property="og:image" content="https://tubular-cupcake-55d47b.netlify.app/assets/og-image-ja.png">
-  <meta property="og:url" content="https://tubular-cupcake-55d47b.netlify.app/ja/guardian-tarot/">
+  <meta property="og:site_name" content="PetTarot">
+  <meta property="og:locale" content="en_US">
+  <meta property="og:title" content="Guardian Tarot — PetTarot">
+  <meta property="og:description" content="Ask tarot about your worries and concerns for your pet — health, behavior, relationships, and more. Receive warm guidance made for pet parents.">
+  <meta property="og:image" content="https://tubular-cupcake-55d47b.netlify.app/assets/og-image-en.png">
+  <meta property="og:url" content="https://tubular-cupcake-55d47b.netlify.app/en/guardian-tarot/">
   <meta name="twitter:card" content="summary_large_image">
   <link rel="icon" type="image/svg+xml" href="/favicon.svg">
   <link rel="apple-touch-icon" href="/favicon.svg">
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=Noto+Serif+KR:wght@300;400;600&family=Noto+Sans+KR:wght@300&display=swap" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=Noto+Serif:wght@300;400;600&family=Noto+Sans:wght@300;400&display=swap" rel="stylesheet">
   <script>
     /* ?dev=1 접속 시 이 브라우저에서 GA 수집 영구 차단 (운영자 접속 제외용) */
     try{if(location.search.indexOf('dev=1')>-1)localStorage.setItem('ga_off','1');
@@ -51,15 +51,15 @@
     .menu-drawer{position:fixed;top:0;right:-100%;width:min(300px,82vw);height:100vh;z-index:999;background:linear-gradient(160deg,#130428 0%,#0b1032 100%);border-left:1px solid rgba(200,160,255,.15);overflow-y:auto;transition:right .3s ease;}
     .menu-drawer.show{right:0;}
     .menu-top{display:flex;align-items:center;justify-content:space-between;padding:24px 20px 18px;}
-    .menu-label{font-size:1.25rem;font-weight:700;color:#f0e6ff;font-family:'Noto Sans KR',sans-serif;}
+    .menu-label{font-size:1.25rem;font-weight:700;color:#f0e6ff;font-family:'Noto Sans',sans-serif;}
     .menu-close-btn{background:none;border:none;color:#8070a0;font-size:1.1rem;cursor:pointer;padding:6px;line-height:1;}
     .menu-hr{border:none;border-top:1px solid rgba(200,160,255,.12);margin:0 0 6px;}
-    .menu-item{display:flex;align-items:center;padding:16px 20px;font-size:1rem;color:#f0e6ff;text-decoration:none;cursor:pointer;border:none;background:none;width:100%;text-align:left;font-family:'Noto Serif KR',serif;transition:background .15s;line-height:1.4;}
+    .menu-item{display:flex;align-items:center;padding:16px 20px;font-size:1rem;color:#f0e6ff;text-decoration:none;cursor:pointer;border:none;background:none;width:100%;text-align:left;font-family:'Noto Serif',serif;transition:background .15s;line-height:1.4;}
     .menu-item:hover{background:rgba(255,255,255,.04);}
     .menu-item-disabled{color:#8070a0;cursor:default;pointer-events:none;}
-    .chip-soon{margin-left:8px;font-size:.65rem;padding:2px 9px;border-radius:10px;background:rgba(180,100,255,.12);border:1px solid rgba(180,100,255,.28);color:#c0a0ff;font-family:'Noto Sans KR',sans-serif;}
+    .chip-soon{margin-left:8px;font-size:.65rem;padding:2px 9px;border-radius:10px;background:rgba(180,100,255,.12);border:1px solid rgba(180,100,255,.28);color:#c0a0ff;font-family:'Noto Sans',sans-serif;}
     .share-btns{flex-wrap:wrap;justify-content:center;}
-    .btn-share-x{display:inline-flex;align-items:center;gap:6px;padding:9px 20px;border-radius:22px;border:1px solid transparent;background:#000;color:#fff;font-family:'Noto Serif KR',serif;font-size:.82rem;cursor:pointer;transition:all .2s;}
+    .btn-share-x{display:inline-flex;align-items:center;gap:6px;padding:9px 20px;border-radius:22px;border:1px solid transparent;background:#000;color:#fff;font-family:'Noto Serif',serif;font-size:.82rem;cursor:pointer;transition:all .2s;}
     .btn-share-x:hover{background:#1a1a1a;transform:translateY(-2px);box-shadow:0 6px 18px rgba(0,0,0,.35);}
     .btn-share-x svg{width:14px;height:14px;fill:#fff;}
   </style>
@@ -70,13 +70,13 @@
   <div id="petals"></div>
 
   <header class="site-header">
-    <a href="/ja/" class="header-brand">
+    <a href="/en/" class="header-brand">
       <span class="brand-icon">🐾</span>
-      <span class="brand-name">ペットタロット</span>
+      <span class="brand-name">PetTarot</span>
     </a>
     <div class="header-right">
       <div class="lang-switch" id="langSwitch"></div>
-      <button class="hamburger-btn" id="hamburgerBtn" aria-label="メニューを開く">
+      <button class="hamburger-btn" id="hamburgerBtn" aria-label="Open menu">
         <span></span><span></span><span></span>
       </button>
     </div>
@@ -84,14 +84,14 @@
   <div class="menu-overlay" id="menuOverlay"></div>
   <nav class="menu-drawer" id="menuDrawer">
     <div class="menu-top">
-      <span class="menu-label">メニュー</span>
+      <span class="menu-label">Menu</span>
       <button class="menu-close-btn" id="menuClose">✕</button>
     </div>
     <hr class="menu-hr">
-    <a href="/ja/" class="menu-item">ホーム</a>
-    <span class="menu-item menu-item-disabled">プレゼントする <span class="chip-soon">準備中</span></span>
-    <span class="menu-item menu-item-disabled">おすすめする <span class="chip-soon">準備中</span></span>
-    <a href="/ja/contact/" class="menu-item">お問い合わせ</a>
+    <a href="/en/" class="menu-item">Home</a>
+    <span class="menu-item menu-item-disabled">Send a Gift <span class="chip-soon">Coming soon</span></span>
+    <span class="menu-item menu-item-disabled">Refer a Friend <span class="chip-soon">Coming soon</span></span>
+    <a href="/en/contact/" class="menu-item">Contact</a>
   </nav>
 
   <div class="itl-overlay" id="itlOverlay">
@@ -99,12 +99,12 @@
       <div class="itl-rainbow"></div>
       <div class="itl-header">
         <span class="itl-icon">🌙</span>
-        <p class="itl-title">少し休みましょう</p>
-        <p class="itl-sub">次のリーディングの準備の間、深呼吸してくださいね</p>
+        <p class="itl-title">Take a moment to rest</p>
+        <p class="itl-sub">While your next reading is prepared, take a deep breath</p>
       </div>
       <div class="itl-footer">
         <button class="itl-close-btn" id="itlCloseBtn" disabled onclick="closeInterstitial()">
-          <span id="itlCd">5</span>秒後に閉じる
+          Closes in <span id="itlCd">5</span>s
         </button>
       </div>
     </div>
@@ -114,42 +114,42 @@
     <div class="container">
       <div class="header reveal">
         <span class="icon">🪞</span>
-        <h1>守護タロット</h1>
-        <p class="sub">ペットのことで心配や悩みがあるとき、タロットに聞いてみましょう<br>タロットが飼い主さんに温かい気づきをお伝えします</p>
+        <h1>Guardian Tarot</h1>
+        <p class="sub">When you're worried or unsure about your pet, ask tarot<br>Tarot will share warm insight made just for you, their pet parent</p>
       </div>
 
       <div class="glass">
-        <label class="field-label">🐾 ペットの名前</label>
-        <input type="text" id="guardianPetName" placeholder="例: マメ、ハル、ムギ…" style="margin-bottom:16px">
-        <label class="field-label">💭 最近の悩み</label>
+        <label class="field-label">🐾 Pet's Name</label>
+        <input type="text" id="guardianPetName" placeholder="e.g. Bella, Max, Luna…" style="margin-bottom:16px">
+        <label class="field-label">💭 Recent Concern</label>
         <div class="concern-chips">
-          <button class="concern-chip active" data-concern="絆・関係">❤️ 絆・関係</button>
-          <button class="concern-chip" data-concern="健康の心配">🏥 健康の心配</button>
-          <button class="concern-chip" data-concern="里親検討">🏠 里親検討</button>
-          <button class="concern-chip" data-concern="行動の悩み">🤔 行動の悩み</button>
-          <button class="concern-chip" data-concern="お別れの準備">🌈 お別れの準備</button>
-          <button class="concern-chip" data-concern="その他">💬 その他</button>
+          <button class="concern-chip active" data-concern="Bond & relationship">❤️ Bond & relationship</button>
+          <button class="concern-chip" data-concern="Health worries">🏥 Health worries</button>
+          <button class="concern-chip" data-concern="Considering rehoming">🏠 Considering rehoming</button>
+          <button class="concern-chip" data-concern="Behavior concerns">🤔 Behavior concerns</button>
+          <button class="concern-chip" data-concern="Preparing to say goodbye">🌈 Preparing to say goodbye</button>
+          <button class="concern-chip" data-concern="Something else">💬 Something else</button>
         </div>
-        <button class="btn-draw" onclick="onDraw()">🪞 &nbsp;守護タロットを引く</button>
+        <button class="btn-draw" onclick="onDraw()">🪞 &nbsp;Draw a Guardian Tarot Card</button>
       </div>
 
       <div class="spread-section" id="spreadSection">
         <div class="spread-header">
-          <p class="spread-instruction">✨ 心が惹かれるカードを1枚選んでください</p>
-          <span class="spread-count" id="spreadCount">カードを選んでください</span>
+          <p class="spread-instruction">✨ Choose the one card that calls to you</p>
+          <span class="spread-count" id="spreadCount">Please choose a card</span>
         </div>
         <div class="fan-wrap" id="fanWrap"></div>
       </div>
 
       <div class="cards-section" id="cardsSection">
-        <p class="spread-hint"><em>✨</em> カードをクリックして開いてみましょう <em>✨</em></p>
+        <p class="spread-hint"><em>✨</em> Click the card to reveal it <em>✨</em></p>
         <div class="cards-grid" id="cardsGrid"></div>
       </div>
 
       <div class="loading-section" id="loadingSection">
         <div class="orb"></div>
-        <p class="loading-text" id="loadingText">タロットが飼い主さんにメッセージを届けています…<br>
-          <span style="font-size:.8rem;color:var(--text-dim)">少々お待ちください</span></p>
+        <p class="loading-text" id="loadingText">The tarot is bringing a message to you, their pet parent…<br>
+          <span style="font-size:.8rem;color:var(--text-dim)">Just a moment, please</span></p>
       </div>
 
       <div class="reading-section glass" id="readingSection">
@@ -160,7 +160,7 @@
         <div class="chips" id="chipRow"></div>
         <div class="reading-body" id="readingBody"></div>
         <div class="letter-trigger" id="letterTrigger">
-          <button class="btn-open-letter" onclick="openLetter()">🪞 &nbsp;自分へのメッセージを見る</button>
+          <button class="btn-open-letter" onclick="openLetter()">🪞 &nbsp;See Your Message</button>
         </div>
         <div class="letter-section" id="letterSection" style="display:none">
           <div class="letter-divider"></div>
@@ -174,21 +174,21 @@
         <div class="reading-footer" id="readingFooter" style="display:none">
           <div class="footer-actions">
             <div class="share-btns">
-              <button class="btn-share" onclick="shareResult()">🔗 &nbsp;共有する</button>
-              <button class="btn-share" onclick="saveImage()">💾 &nbsp;画像を保存</button>
-              <button class="btn-share-x" onclick="shareX()"><svg viewBox="0 0 24 24"><path d="M18.244 2.25h3.308l-7.227 8.26 8.502 11.24H16.17l-5.214-6.817L4.99 21.75H1.68l7.73-8.835L1.254 2.25H8.08l4.713 6.231zm-1.161 17.52h1.833L7.084 4.126H5.117z"/></svg>&nbsp;Xでシェア</button>
+              <button class="btn-share" onclick="shareResult()">🔗 &nbsp;Share</button>
+              <button class="btn-share" onclick="saveImage()">💾 &nbsp;Save Image</button>
+              <button class="btn-share-x" onclick="shareX()"><svg viewBox="0 0 24 24"><path d="M18.244 2.25h3.308l-7.227 8.26 8.502 11.24H16.17l-5.214-6.817L4.99 21.75H1.68l7.73-8.835L1.254 2.25H8.08l4.713 6.231zm-1.161 17.52h1.833L7.084 4.126H5.117z"/></svg>&nbsp;Share on X</button>
             </div>
-            <button class="btn-small btn-ghost" onclick="onReset()">🌙 &nbsp;もう一度質問する</button>
+            <button class="btn-small btn-ghost" onclick="onReset()">🌙 &nbsp;Ask Again</button>
           </div>
         </div>
       </div>
 
       <footer class="site-footer">
-        <p>愛するペットを想うすべての方のために作られました</p>
-        <p>🌈 虹の橋の向こうでも、その愛は永遠です 🐾</p>
+        <p>Made for everyone who loves their pet with all their heart</p>
+        <p>🌈 Even beyond the Rainbow Bridge, that love is forever 🐾</p>
         <div class="footer-operator">
-          <p>運営者: BrandWick &nbsp;|&nbsp; お問い合わせ: <a href="mailto:ralra_1@naver.com">ralra_1@naver.com</a></p>
-          <p><a href="/ja/privacy/">プライバシーポリシー</a> &nbsp;|&nbsp; <a href="/ja/terms/">利用規約</a></p>
+          <p>Operator: BrandWick &nbsp;|&nbsp; Contact: <a href="mailto:ralra_1@naver.com">ralra_1@naver.com</a></p>
+          <p><a href="/en/privacy/">Privacy Policy</a> &nbsp;|&nbsp; <a href="/en/terms/">Terms of Service</a></p>
         </div>
       </footer>
     </div>
@@ -198,32 +198,32 @@
 
   <div class="privacy-overlay" id="privacyOverlay" onclick="closePrivacy(event)">
     <div class="privacy-modal">
-      <h2>🔒 プライバシーポリシー</h2>
-      <h3>運営者情報</h3>
-      <p>運営者: BrandWick &nbsp;|&nbsp; お問い合わせ: ralra_1@naver.com</p>
-      <h3>収集する情報</h3>
-      <p>本サービスは、利用者の個人情報を直接収集・保存することはありません。</p>
+      <h2>🔒 Privacy Policy</h2>
+      <h3>Operator Information</h3>
+      <p>Operator: BrandWick &nbsp;|&nbsp; Contact: ralra_1@naver.com</p>
+      <h3>Information We Collect</h3>
+      <p>This service does not directly collect or store your personal information.</p>
       <h3>Google Analytics 4</h3>
-      <p>サービスの利用状況を把握するためにGoogle Analyticsを使用しています。</p>
+      <p>We use Google Analytics to understand how the service is used.</p>
       <h3>Google AdSense</h3>
-      <p>パーソナライズ広告の配信のためにGoogle AdSenseを使用しています。</p>
-      <h3>クッキーの拒否方法</h3>
-      <p>ブラウザの設定でクッキーを無効にすることができます。</p>
-      <button class="privacy-close" onclick="closePrivacy()">閉じる</button>
+      <p>We use Google AdSense to deliver personalized ads.</p>
+      <h3>How to Opt Out of Cookies</h3>
+      <p>You can disable cookies in your browser settings.</p>
+      <button class="privacy-close" onclick="closePrivacy()">Close</button>
     </div>
   </div>
 
-  <script src="/assets/cards-ja.js"></script>
+  <script src="/assets/cards-en.js"></script>
   <script>
     const currentMode = 2;
     const PAGE_ICON = '🪞';
-    const PAGE_TITLE = '守護タロット';
-    const PAGE_LOADING = 'タロットが飼い主さんにメッセージを届けています…';
-    const PAGE_LETTER_BTN = '🪞 &nbsp;自分へのメッセージを見る';
-    const PAGE_LETTER_TITLE = petN => `🪞 ${petN}のためのアドバイス`;
-    const PAGE_SHARE_LABEL = petN => `🪞 ${petN}のためのアドバイス`;
+    const PAGE_TITLE = 'Guardian Tarot';
+    const PAGE_LOADING = 'The tarot is bringing a message to you, their pet parent…';
+    const PAGE_LETTER_BTN = '🪞 &nbsp;See Your Message';
+    const PAGE_LETTER_TITLE = petN => `🪞 Guidance for ${petN}`;
+    const PAGE_SHARE_LABEL = petN => `🪞 Guidance for ${petN}`;
 
-    let selectedConcern = '絆・関係';
+    let selectedConcern = 'Bond & relationship';
 
     document.querySelectorAll('.concern-chip').forEach(el=>{
       el.addEventListener('click',()=>{
@@ -250,30 +250,30 @@
 
     function buildPrompt(){
       const card=drawn[0], rv=drawnRv[0];
-      const cardInfo=`カード: ${card.name}(${card.en}) — ${rv?'逆位置':'正位置'}\n正位置キーワード: ${card.upKw}\n逆位置キーワード: ${card.rvKw}`;
-      const sep='\n\n---LETTER--- という区切り記号を必ず含めて、2つの部分に正確に分けて書いてください。';
-      const petName=document.getElementById('guardianPetName').value.trim()||'ペット';
+      const cardInfo=`Card: ${card.name} (${card.en}) — ${rv?'Reversed':'Upright'}\nUpright keywords: ${card.upKw}\nReversed keywords: ${card.rvKw}`;
+      const sep='\n\nYou must include the exact separator marker ---LETTER--- to split your reply into precisely two parts.';
+      const petName=document.getElementById('guardianPetName').value.trim()||'your pet';
       return {
         petName,
-        system:`あなたはペットを飼う飼い主さんに、タロットカードで温かい気づきを届けるチャネラーです。
-必ず日本語で、です・ます調で書いてください。
-飼い主さんの悩みをカードを通して、心のこもったメッセージとして解釈してください。
-回答は必ず2つの部分に分けてください。
+        system:`You are a channeler who brings warm insight to pet parents through tarot cards.
+Write warmly in English.
+Interpret the pet parent's concern through the card as a heartfelt, meaningful message.
+Your reply must always be split into exactly two parts.
 
-[パート1: カードの解釈]
-このカードが飼い主さんの悩みとどうつながっているかを2〜3文で説明します。
+[PART 1: Card Interpretation]
+Explain in 2-3 sentences how this card connects to the pet parent's concern.
 
 ---LETTER---
 
-[パート2: 飼い主さんへのメッセージ]
-飼い主さんに贈る、温かく実用的なメッセージ。2〜4文。`,
-        user:`ペットの名前: ${petName}\n飼い主さんの悩み: ${selectedConcern}\n\n${cardInfo}${sep}`,
+[PART 2: A Message for the Pet Parent]
+A warm, practical message for the pet parent. 2-4 sentences.`,
+        user:`Pet's name: ${petName}\nPet parent's concern: ${selectedConcern}\n\n${cardInfo}${sep}`,
       };
     }
   </script>
   <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/dist/umd/supabase.min.js"></script>
   <script src="/assets/auth.js"></script>
-  <script src="/assets/shared-ja.js"></script>
+  <script src="/assets/shared-en.js"></script>
   <script src="/assets/lang-switch.js" defer></script>
 </body>
 </html>

@@ -1,27 +1,27 @@
 <!DOCTYPE html>
-<html lang="ja">
+<html lang="en">
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>深層コンボリーディング — ペットタロット</title>
-  <meta name="description" content="ペットのお悩みを具体的に入力すると、複数枚のタロットカードで深層コンボリーディングを提供します。">
-  <link rel="canonical" href="https://tubular-cupcake-55d47b.netlify.app/ja/deep-reading/">
+  <title>Deep Combo Reading — PetTarot</title>
+  <meta name="description" content="Tell us what's worrying you about your pet, and receive a Deep Combo Reading with multiple tarot cards.">
+  <link rel="canonical" href="https://tubular-cupcake-55d47b.netlify.app/en/deep-reading/">
   <link rel="alternate" hreflang="ko" href="https://tubular-cupcake-55d47b.netlify.app/deep-reading/">
   <link rel="alternate" hreflang="ja" href="https://tubular-cupcake-55d47b.netlify.app/ja/deep-reading/">
   <link rel="alternate" hreflang="en" href="https://tubular-cupcake-55d47b.netlify.app/en/deep-reading/">
   <link rel="alternate" hreflang="x-default" href="https://tubular-cupcake-55d47b.netlify.app/deep-reading/">
   <meta property="og:type" content="website">
-  <meta property="og:site_name" content="ペットタロット">
-  <meta property="og:locale" content="ja_JP">
-  <meta property="og:title" content="深層コンボリーディング — ペットタロット">
-  <meta property="og:description" content="ペットのお悩みを具体的に入力すると、複数枚のタロットカードで深層コンボリーディングを提供します。">
-  <meta property="og:image" content="https://tubular-cupcake-55d47b.netlify.app/assets/og-image-ja.png">
-  <meta property="og:url" content="https://tubular-cupcake-55d47b.netlify.app/ja/deep-reading/">
+  <meta property="og:site_name" content="PetTarot">
+  <meta property="og:locale" content="en_US">
+  <meta property="og:title" content="Deep Combo Reading — PetTarot">
+  <meta property="og:description" content="Tell us what's worrying you about your pet, and receive a Deep Combo Reading with multiple tarot cards.">
+  <meta property="og:image" content="https://tubular-cupcake-55d47b.netlify.app/assets/og-image-en.png">
+  <meta property="og:url" content="https://tubular-cupcake-55d47b.netlify.app/en/deep-reading/">
   <meta name="twitter:card" content="summary_large_image">
   <link rel="icon" type="image/svg+xml" href="/favicon.svg">
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=Noto+Serif+JP:wght@300;400;600&family=Noto+Sans+JP:wght@300;400;600&display=swap" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=Noto+Serif:wght@300;400;600&family=Noto+Sans:wght@300;400;600&display=swap" rel="stylesheet">
   <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/dist/umd/supabase.min.js"></script>
   <script src="https://cdn.jsdelivr.net/npm/html2canvas@1.4.1/dist/html2canvas.min.js"></script>
   <script>
@@ -41,7 +41,7 @@
     }
     body{
       min-height:100vh; background:var(--bg);
-      font-family:'Noto Serif JP',serif; color:var(--text-main);
+      font-family:'Noto Serif',serif; color:var(--text-main);
     }
     .rainbow-bar{position:fixed;top:0;left:0;right:0;height:3px;z-index:300;background:linear-gradient(90deg,#ff6b6b,#ff9f43,#ffd32a,#0be881,#17c0eb,#7d5fff,#ef5777);}
     .site-header{position:sticky;top:3px;z-index:200;background:rgba(10,8,28,.92);backdrop-filter:blur(18px);border-bottom:1px solid rgba(200,160,255,.1);height:56px;display:flex;align-items:center;justify-content:space-between;padding:0 20px;}
@@ -55,14 +55,14 @@
     .menu-drawer{position:fixed;top:0;right:-100%;width:min(300px,82vw);height:100vh;z-index:999;background:linear-gradient(160deg,#130428 0%,#0b1032 100%);border-left:1px solid rgba(200,160,255,.15);overflow-y:auto;transition:right .3s ease;}
     .menu-drawer.show{right:0;}
     .menu-top{display:flex;align-items:center;justify-content:space-between;padding:24px 20px 18px;}
-    .menu-label{font-size:1.25rem;font-weight:700;color:#f0e6ff;font-family:'Noto Sans JP',sans-serif;}
+    .menu-label{font-size:1.25rem;font-weight:700;color:#f0e6ff;font-family:'Noto Sans',sans-serif;}
     .menu-close-btn{background:none;border:none;color:#8070a0;font-size:1.1rem;cursor:pointer;padding:6px;line-height:1;}
     .menu-hr{border:none;border-top:1px solid rgba(200,160,255,.12);margin:0 0 6px;}
-    .menu-item{display:flex;align-items:center;padding:16px 20px;font-size:1rem;color:#f0e6ff;text-decoration:none;cursor:pointer;border:none;background:none;width:100%;text-align:left;font-family:'Noto Serif JP',serif;transition:background .15s;line-height:1.4;}
+    .menu-item{display:flex;align-items:center;padding:16px 20px;font-size:1rem;color:#f0e6ff;text-decoration:none;cursor:pointer;border:none;background:none;width:100%;text-align:left;font-family:'Noto Serif',serif;transition:background .15s;line-height:1.4;}
     .menu-item:hover{background:rgba(255,255,255,.04);}
     .menu-item-disabled{color:#8070a0;cursor:default;pointer-events:none;}
     .menu-item-disabled:hover{background:none;}
-    .chip-soon{margin-left:8px;font-size:.65rem;padding:2px 9px;border-radius:10px;background:rgba(180,100,255,.12);border:1px solid rgba(180,100,255,.28);color:#c0a0ff;font-family:'Noto Sans JP',sans-serif;}
+    .chip-soon{margin-left:8px;font-size:.65rem;padding:2px 9px;border-radius:10px;background:rgba(180,100,255,.12);border:1px solid rgba(180,100,255,.28);color:#c0a0ff;font-family:'Noto Sans',sans-serif;}
 
     /* Page layout */
     .page{position:relative;z-index:10;}
@@ -70,10 +70,10 @@
 
     /* Step header */
     .step-header{margin-bottom:28px;}
-    .back-link{display:inline-flex;align-items:center;gap:6px;color:var(--text-dim);font-size:.82rem;font-family:'Noto Sans JP',sans-serif;background:none;border:none;cursor:pointer;padding:0;margin-bottom:20px;transition:color .2s;}
+    .back-link{display:inline-flex;align-items:center;gap:6px;color:var(--text-dim);font-size:.82rem;font-family:'Noto Sans',sans-serif;background:none;border:none;cursor:pointer;padding:0;margin-bottom:20px;transition:color .2s;}
     .back-link:hover{color:var(--text-sub);}
     .step-title{font-size:1.35rem;font-weight:600;color:#e8d0ff;margin-bottom:8px;}
-    .step-desc{font-size:.85rem;color:var(--text-sub);font-family:'Noto Sans JP',sans-serif;font-weight:300;line-height:1.8;}
+    .step-desc{font-size:.85rem;color:var(--text-sub);font-family:'Noto Sans',sans-serif;font-weight:300;line-height:1.8;}
 
     /* Progress dots */
     .progress-dots{display:flex;gap:7px;margin-bottom:28px;}
@@ -89,19 +89,19 @@
       background:var(--card-bg);border:1px solid var(--card-border);
       border-radius:18px;cursor:pointer;text-align:left;
       width:100%;transition:all .22s;
-      font-family:'Noto Serif JP',serif;
+      font-family:'Noto Serif',serif;
     }
     .spread-btn:hover{border-color:rgba(170,90,255,.4);background:rgba(170,90,255,.06);transform:translateY(-2px);}
     .spread-btn.selected{border-color:rgba(170,90,255,.6);background:rgba(170,90,255,.12);}
     .spread-icon{font-size:2rem;flex-shrink:0;}
     .spread-info{}
     .spread-name{font-size:.95rem;font-weight:600;color:#e8d0ff;margin-bottom:5px;line-height:1.4;}
-    .spread-meta{font-size:.76rem;color:var(--text-dim);font-family:'Noto Sans JP',sans-serif;}
+    .spread-meta{font-size:.76rem;color:var(--text-dim);font-family:'Noto Sans',sans-serif;}
     .spread-meta span{display:inline-block;margin-right:8px;padding:2px 8px;border-radius:8px;background:rgba(170,90,255,.1);border:1px solid rgba(170,90,255,.2);color:#c0a0ff;}
 
     /* Form */
     .form-group{margin-bottom:20px;}
-    .form-label{display:block;font-size:.82rem;font-weight:600;color:var(--text-sub);font-family:'Noto Sans JP',sans-serif;margin-bottom:8px;}
+    .form-label{display:block;font-size:.82rem;font-weight:600;color:var(--text-sub);font-family:'Noto Sans',sans-serif;margin-bottom:8px;}
     .form-label .req{color:#ff8080;margin-left:3px;}
     .form-row{display:flex;gap:10px;}
     .form-row .form-group{flex:1;}
@@ -109,7 +109,7 @@
       width:100%;padding:13px 15px;
       background:rgba(255,255,255,.05);border:1px solid rgba(200,160,255,.2);
       border-radius:12px;color:var(--text-main);
-      font-family:'Noto Sans JP',sans-serif;font-size:.88rem;
+      font-family:'Noto Sans',sans-serif;font-size:.88rem;
       appearance:none;-webkit-appearance:none;transition:border-color .2s;
     }
     .form-input::placeholder,.form-textarea::placeholder{color:var(--text-dim);}
@@ -117,14 +117,14 @@
     .form-select{background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='14' height='14' viewBox='0 0 24 24' fill='none' stroke='%238070a0' stroke-width='2'%3E%3Cpath d='M6 9l6 6 6-6'/%3E%3C/svg%3E");background-repeat:no-repeat;background-position:right 13px center;padding-right:36px;cursor:pointer;}
     .form-select option{background:#1a0838;color:#f0e6ff;}
     .form-textarea{resize:vertical;min-height:120px;line-height:1.7;}
-    .char-count{font-size:.72rem;color:var(--text-dim);font-family:'Noto Sans JP',sans-serif;text-align:right;margin-top:5px;}
+    .char-count{font-size:.72rem;color:var(--text-dim);font-family:'Noto Sans',sans-serif;text-align:right;margin-top:5px;}
 
     /* Buttons */
     .btn-primary{
       display:block;width:100%;padding:16px;
       background:rgba(170,90,255,.22);border:1px solid rgba(170,90,255,.45);
       border-radius:14px;color:#e0c0ff;font-size:1rem;font-weight:600;
-      font-family:'Noto Sans JP',sans-serif;cursor:pointer;transition:all .2s;letter-spacing:.02em;
+      font-family:'Noto Sans',sans-serif;cursor:pointer;transition:all .2s;letter-spacing:.02em;
     }
     .btn-primary:hover{background:rgba(170,90,255,.34);}
     .btn-primary:disabled{opacity:.4;cursor:not-allowed;}
@@ -132,7 +132,7 @@
       display:block;width:100%;padding:14px;
       background:none;border:1px solid rgba(200,160,255,.2);
       border-radius:14px;color:var(--text-dim);font-size:.88rem;
-      font-family:'Noto Sans JP',sans-serif;cursor:pointer;transition:all .2s;
+      font-family:'Noto Sans',sans-serif;cursor:pointer;transition:all .2s;
       margin-top:10px;
     }
     .btn-outline:hover{border-color:rgba(200,160,255,.35);color:var(--text-sub);}
@@ -194,12 +194,12 @@
     .card-face.reversed{background:linear-gradient(160deg,#200a10 0%,#3d1025 50%,#0f1520 100%);}
     .card-name{
       font-size:.6rem;font-weight:600;color:#e8d0ff;
-      font-family:'Noto Sans JP',sans-serif;line-height:1.4;
+      font-family:'Noto Sans',sans-serif;line-height:1.4;
     }
-    .card-direction{font-size:.55rem;color:var(--text-dim);margin-top:3px;font-family:'Noto Sans JP',sans-serif;}
+    .card-direction{font-size:.55rem;color:var(--text-dim);margin-top:3px;font-family:'Noto Sans',sans-serif;}
     .card-position-label{
       font-size:.68rem;color:var(--text-dim);
-      font-family:'Noto Sans JP',sans-serif;
+      font-family:'Noto Sans',sans-serif;
       text-align:center;line-height:1.4;max-width:90px;
     }
 
@@ -211,11 +211,11 @@
     .reading-box-title{
       font-size:.76rem;font-weight:600;color:var(--text-dim);
       letter-spacing:.1em;text-transform:uppercase;
-      font-family:'Noto Sans JP',sans-serif;margin-bottom:14px;
+      font-family:'Noto Sans',sans-serif;margin-bottom:14px;
     }
     #freeReadText{
       font-size:.88rem;color:var(--text-sub);line-height:2;
-      font-family:'Noto Sans JP',sans-serif;font-weight:300;
+      font-family:'Noto Sans',sans-serif;font-weight:300;
       white-space:pre-wrap;
     }
 
@@ -228,7 +228,7 @@
     .paywall-preview{
       padding:24px 20px 160px;
       font-size:.85rem;color:var(--text-sub);line-height:2;
-      font-family:'Noto Sans JP',sans-serif;font-weight:300;
+      font-family:'Noto Sans',sans-serif;font-weight:300;
       filter:blur(4px);user-select:none;pointer-events:none;
     }
     .paywall-overlay{
@@ -243,7 +243,7 @@
       text-align:center;margin-bottom:5px;
     }
     .paywall-sub{
-      font-size:.78rem;color:var(--text-dim);font-family:'Noto Sans JP',sans-serif;
+      font-size:.78rem;color:var(--text-dim);font-family:'Noto Sans',sans-serif;
       text-align:center;margin-bottom:20px;line-height:1.7;
     }
     .pay-btn{
@@ -252,7 +252,7 @@
       background:linear-gradient(135deg,#7d5fff,#ef5777);
       border:none;border-radius:14px;
       color:#fff;font-size:1rem;font-weight:700;
-      font-family:'Noto Sans JP',sans-serif;cursor:pointer;
+      font-family:'Noto Sans',sans-serif;cursor:pointer;
       transition:opacity .2s,transform .15s;letter-spacing:.02em;
     }
     #payGate .pay-btn { width:100%; }
@@ -283,7 +283,7 @@
       margin:0 auto 16px;
     }
     @keyframes spin{to{transform:rotate(360deg);}}
-    .loading-text{font-size:.85rem;color:var(--text-sub);font-family:'Noto Sans JP',sans-serif;line-height:1.8;}
+    .loading-text{font-size:.85rem;color:var(--text-sub);font-family:'Noto Sans',sans-serif;line-height:1.8;}
 
     /* Full report */
     .report-section{margin-bottom:24px;}
@@ -296,12 +296,12 @@
       display:block;font-size:.86rem;font-weight:600;color:#c8a8f0;
       margin-top:2.8rem;margin-bottom:6px;padding-top:1.2rem;
       border-top:1px solid rgba(200,160,255,.08);
-      font-family:'Noto Sans JP',sans-serif;
+      font-family:'Noto Sans',sans-serif;
     }
     .report-card-header:first-of-type{ margin-top:0; border-top:none; padding-top:0; }
     .report-text{
       font-size:.86rem;color:#ddd6fe;line-height:2.05;
-      font-family:'Noto Sans JP',sans-serif;font-weight:300;
+      font-family:'Noto Sans',sans-serif;font-weight:300;
       white-space:pre-wrap;
     }
     .report-divider{height:1px;background:rgba(200,160,255,.1);margin:20px 0;}
@@ -312,7 +312,7 @@
       padding:9px 20px; border-radius:22px;
       border:1px solid rgba(180,130,255,.28);
       background:rgba(120,60,200,.12);
-      color:var(--text-sub); font-family:'Noto Serif JP',serif; font-size:.82rem;
+      color:var(--text-sub); font-family:'Noto Serif',serif; font-size:.82rem;
       cursor:pointer; transition:all .2s;
     }
     .btn-share:hover{
@@ -325,7 +325,7 @@
       padding:9px 20px; border-radius:22px;
       border:1px solid transparent;
       background:#000; color:#fff;
-      font-family:'Noto Serif JP',serif; font-size:.82rem;
+      font-family:'Noto Serif',serif; font-size:.82rem;
       cursor:pointer; transition:all .2s;
     }
     .btn-share-x:hover{
@@ -338,7 +338,7 @@
       position:fixed; bottom:80px; left:50%; transform:translateX(-50%) translateY(8px);
       background:rgba(30,12,55,.96); border:1px solid rgba(180,100,255,.4);
       color:#e0c0ff; padding:10px 22px; border-radius:26px;
-      font-family:'Noto Serif JP',serif; font-size:.82rem;
+      font-family:'Noto Serif',serif; font-size:.82rem;
       z-index:9999; opacity:0; pointer-events:none; white-space:nowrap;
       transition:opacity .3s, transform .3s;
     }
@@ -352,7 +352,7 @@
       display:inline-flex;align-items:center;gap:6px;
       padding:8px 16px;border-radius:12px;
       background:rgba(100,200,120,.1);border:1px solid rgba(100,200,120,.25);
-      color:#90d8a0;font-size:.78rem;font-family:'Noto Sans JP',sans-serif;
+      color:#90d8a0;font-size:.78rem;font-family:'Noto Sans',sans-serif;
     }
 
     /* Auth gate */
@@ -360,19 +360,19 @@
       background:var(--card-bg);border:1px solid var(--card-border);
       border-radius:18px;padding:32px 20px;text-align:center;margin-bottom:20px;
     }
-    .auth-gate-box p{font-size:.88rem;color:var(--text-sub);font-family:'Noto Sans JP',sans-serif;margin-bottom:18px;line-height:1.8;}
+    .auth-gate-box p{font-size:.88rem;color:var(--text-sub);font-family:'Noto Sans',sans-serif;margin-bottom:18px;line-height:1.8;}
     .btn-login-inline{
       display:inline-block;padding:11px 28px;
       background:rgba(170,90,255,.18);border:1px solid rgba(170,90,255,.4);
       border-radius:22px;color:#d8aaff;text-decoration:none;
-      font-size:.88rem;font-family:'Noto Sans JP',sans-serif;transition:all .2s;
+      font-size:.88rem;font-family:'Noto Sans',sans-serif;transition:all .2s;
     }
     .btn-login-inline:hover{background:rgba(170,90,255,.28);}
 
     /* Card pool (grid selection) */
     .card-pool-header{margin-bottom:12px;}
     .pool-counter{
-      font-size:.85rem;color:var(--text-sub);font-family:'Noto Sans JP',sans-serif;
+      font-size:.85rem;color:var(--text-sub);font-family:'Noto Sans',sans-serif;
       margin-bottom:14px;
     }
     .pool-counter strong{color:#d8aaff;}
@@ -401,11 +401,11 @@
       position:absolute;bottom:4px;right:4px;
       font-size:.55rem;background:rgba(200,80,80,.8);
       color:#fff;border-radius:4px;padding:1px 4px;
-      font-family:'Noto Sans JP',sans-serif;
+      font-family:'Noto Sans',sans-serif;
     }
     .slot-label{
       font-size:.65rem;color:var(--text-dim);
-      font-family:'Noto Sans JP',sans-serif;
+      font-family:'Noto Sans',sans-serif;
       text-align:center;max-width:80px;line-height:1.35;
     }
     .card-pool{
@@ -438,7 +438,7 @@
     }
     .pool-sel-num{
       font-size:.55rem;font-weight:700;color:#ffd060;
-      font-family:'Noto Sans JP',sans-serif;line-height:1;
+      font-family:'Noto Sans',sans-serif;line-height:1;
       background:rgba(60,30,0,.6);padding:1px 2px;border-radius:2px;
     }
 
@@ -451,7 +451,7 @@
     }
     .reveal-title{
       font-size:.95rem;color:rgba(232,208,255,.9);
-      font-family:'Noto Sans JP',sans-serif;
+      font-family:'Noto Sans',sans-serif;
       margin-bottom:22px;letter-spacing:.06em;text-align:center;
       animation:fadePulse 2.2s ease-in-out infinite;
     }
@@ -488,23 +488,23 @@
     .rcard-front img{width:100%;height:100%;object-fit:cover;display:block;}
     .reveal-pos-label{
       font-size:.58rem;color:var(--text-dim);
-      font-family:'Noto Sans JP',sans-serif;
+      font-family:'Noto Sans',sans-serif;
       text-align:center;max-width:82px;line-height:1.4;
     }
     .reveal-card-name{
       font-size:.7rem;color:#e8d0ff;
-      font-family:'Noto Sans JP',sans-serif;text-align:center;font-weight:600;
+      font-family:'Noto Sans',sans-serif;text-align:center;font-weight:600;
     }
     .reveal-card-dir{
       font-size:.6rem;color:var(--text-dim);
-      font-family:'Noto Sans JP',sans-serif;text-align:center;
+      font-family:'Noto Sans',sans-serif;text-align:center;
     }
     .reveal-proceed-btn{
       padding:13px 38px;
       background:linear-gradient(135deg,#7d5fff,#ef5777);
       border:none;border-radius:14px;
       color:#fff;font-size:1rem;font-weight:700;
-      font-family:'Noto Sans JP',sans-serif;cursor:pointer;
+      font-family:'Noto Sans',sans-serif;cursor:pointer;
       transition:opacity .2s,transform .15s;letter-spacing:.02em;
       animation:glowPulse 2s ease-in-out infinite;
     }
@@ -544,13 +544,13 @@
     /* Action card step */
     .action-pool-notice{
       font-size:.84rem;color:var(--text-sub);
-      font-family:'Noto Sans JP',sans-serif;
+      font-family:'Noto Sans',sans-serif;
       line-height:1.9;margin-bottom:14px;
     }
     .reveal-section-divider{
       width:100%;text-align:center;
       font-size:.78rem;color:#ffd060;letter-spacing:.08em;
-      font-family:'Noto Sans JP',sans-serif;
+      font-family:'Noto Sans',sans-serif;
       margin:18px 0 14px;
     }
     .reveal-card-wrap.action .rcard-back{
@@ -563,7 +563,7 @@
 
     /* DEV notice */
     .dev-notice{
-      font-size:.74rem;color:#f0c878;font-family:'Noto Sans JP',sans-serif;
+      font-size:.74rem;color:#f0c878;font-family:'Noto Sans',sans-serif;
       text-align:center;padding:10px 14px;
       background:rgba(255,180,50,.07);border:1px solid rgba(255,180,50,.2);
       border-radius:10px;margin-bottom:14px;line-height:1.6;
@@ -579,7 +579,7 @@
     .loading-status-bar{
       background:rgba(255,180,50,.08);border:1px solid rgba(255,180,50,.2);
       border-radius:12px;padding:14px 18px;margin-bottom:28px;
-      font-family:'Noto Sans JP',sans-serif;font-size:.82rem;color:#e8d090;line-height:1.7;
+      font-family:'Noto Sans',sans-serif;font-size:.82rem;color:#e8d090;line-height:1.7;
     }
     .loading-status-bar strong{color:#ffd32a;}
     .loading-dots span{animation:dotPulse 1.4s infinite both;}
@@ -593,31 +593,31 @@
     }
     .major-card-label{
       font-size:.7rem;color:#8070a0;letter-spacing:.1em;text-transform:uppercase;
-      font-family:'Noto Sans JP',sans-serif;margin-bottom:18px;
+      font-family:'Noto Sans',sans-serif;margin-bottom:18px;
     }
     .major-card-img{
       width:100px;height:163px;object-fit:cover;border-radius:10px;
       box-shadow:0 8px 32px rgba(0,0,0,.5);margin:0 auto 20px;display:block;
       transition:opacity .4s;
     }
-    .major-card-num{font-size:.72rem;color:#8070a0;font-family:'Noto Sans JP',sans-serif;margin-bottom:4px;}
+    .major-card-num{font-size:.72rem;color:#8070a0;font-family:'Noto Sans',sans-serif;margin-bottom:4px;}
     .major-card-name{font-size:1.5rem;font-weight:600;color:#e8d0ff;margin-bottom:2px;}
-    .major-card-en{font-size:.8rem;color:#9080b0;font-family:'Noto Sans JP',sans-serif;margin-bottom:14px;}
+    .major-card-en{font-size:.8rem;color:#9080b0;font-family:'Noto Sans',sans-serif;margin-bottom:14px;}
     .major-card-kw{
       display:flex;gap:6px;flex-wrap:wrap;justify-content:center;margin-bottom:14px;
     }
     .major-card-kw span{
       background:rgba(200,160,255,.12);border:1px solid rgba(200,160,255,.25);
       border-radius:20px;padding:3px 10px;font-size:.72rem;color:#c8a8f0;
-      font-family:'Noto Sans JP',sans-serif;
+      font-family:'Noto Sans',sans-serif;
     }
-    .major-card-desc{font-size:.8rem;color:#b0a0c8;line-height:1.8;font-family:'Noto Sans JP',sans-serif;padding:0 8px;}
+    .major-card-desc{font-size:.8rem;color:#b0a0c8;line-height:1.8;font-family:'Noto Sans',sans-serif;padding:0 8px;}
     .major-card-nav{display:flex;align-items:center;justify-content:space-between;margin-top:20px;}
-    .major-card-counter{font-size:.75rem;color:#8070a0;font-family:'Noto Sans JP',sans-serif;}
+    .major-card-counter{font-size:.75rem;color:#8070a0;font-family:'Noto Sans',sans-serif;}
     .major-card-btn{
       background:rgba(200,160,255,.12);border:1px solid rgba(200,160,255,.25);
       color:#c8a8f0;border-radius:20px;padding:7px 18px;font-size:.78rem;cursor:pointer;
-      font-family:'Noto Sans JP',sans-serif;transition:background .2s;
+      font-family:'Noto Sans',sans-serif;transition:background .2s;
     }
     .major-card-btn:hover{background:rgba(200,160,255,.22);}
     .major-card-progress{
@@ -644,13 +644,13 @@
   <div class="rainbow-bar"></div>
 
   <header class="site-header">
-    <a href="/ja/" class="header-brand">
+    <a href="/en/" class="header-brand">
       <span class="brand-icon">🐾</span>
-      <span class="brand-name">ペットタロット</span>
+      <span class="brand-name">PetTarot</span>
     </a>
     <div class="header-right">
       <div class="lang-switch" id="langSwitch"></div>
-      <button class="hamburger-btn" id="hamburgerBtn" aria-label="メニューを開く">
+      <button class="hamburger-btn" id="hamburgerBtn" aria-label="Open menu">
         <span></span><span></span><span></span>
       </button>
     </div>
@@ -659,14 +659,14 @@
   <div class="menu-overlay" id="menuOverlay"></div>
   <nav class="menu-drawer" id="menuDrawer">
     <div class="menu-top">
-      <span class="menu-label">メニュー</span>
+      <span class="menu-label">Menu</span>
       <button class="menu-close-btn" id="menuClose">✕</button>
     </div>
     <hr class="menu-hr">
-    <a href="/ja/" class="menu-item">ホーム</a>
-    <span class="menu-item menu-item-disabled">プレゼントを贈る <span class="chip-soon">準備中</span></span>
-    <span class="menu-item menu-item-disabled">紹介する <span class="chip-soon">準備中</span></span>
-    <a href="/ja/contact/" class="menu-item">お問い合わせ</a>
+    <a href="/en/" class="menu-item">Home</a>
+    <span class="menu-item menu-item-disabled">Send a Gift <span class="chip-soon">Coming soon</span></span>
+    <span class="menu-item menu-item-disabled">Refer a Friend <span class="chip-soon">Coming soon</span></span>
+    <a href="/en/contact/" class="menu-item">Contact</a>
   </nav>
 
   <div class="page">
@@ -675,9 +675,9 @@
       <!-- Step 1: spread selection -->
       <section id="secCategory">
         <div class="step-header">
-          <a href="/ja/" class="back-link">
+          <a href="/en/" class="back-link">
             <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M19 12H5M12 5l-7 7 7 7"/></svg>
-            ホームへ
+            Back to Home
           </a>
           <div class="progress-dots">
             <div class="dot active" id="dot1"></div>
@@ -685,38 +685,38 @@
             <div class="dot" id="dot3"></div>
             <div class="dot" id="dot4"></div>
           </div>
-          <h1 class="step-title">どんなお悩みですか?</h1>
-          <p class="step-desc">お悩みの内容に合わせて、最適なカード配列で分析します。</p>
+          <h1 class="step-title">What's on your pet's mind?</h1>
+          <p class="step-desc">We'll pick the card spread that best fits your concern.</p>
         </div>
 
         <div class="spread-list">
           <button class="spread-btn" onclick="selectSpread('mind')">
             <span class="spread-icon">💭</span>
             <div class="spread-info">
-              <div class="spread-name">この子が何を考えているのか気になる</div>
+              <div class="spread-name">I want to know what my pet is thinking</div>
               <div class="spread-meta">
-                <span>クロススプレッド</span>
-                <span>カード4枚</span>
+                <span>Cross Spread</span>
+                <span>4 Cards</span>
               </div>
             </div>
           </button>
           <button class="spread-btn" onclick="selectSpread('behavior')">
             <span class="spread-icon">🔍</span>
             <div class="spread-info">
-              <div class="spread-name">急に様子がおかしくなった</div>
+              <div class="spread-name">My pet's behavior suddenly changed</div>
               <div class="spread-meta">
-                <span>ホースシュースプレッド</span>
-                <span>カード5枚</span>
+                <span>Horseshoe Spread</span>
+                <span>5 Cards</span>
               </div>
             </div>
           </button>
           <button class="spread-btn" onclick="selectSpread('change')">
             <span class="spread-icon">🌿</span>
             <div class="spread-info">
-              <div class="spread-name">引っ越し・多頭飼いなど変化を控えている</div>
+              <div class="spread-name">Getting ready for a big change (move, new pet, etc.)</div>
               <div class="spread-meta">
-                <span>スリーカードスプレッド</span>
-                <span>カード3枚</span>
+                <span>Three Card Spread</span>
+                <span>3 Cards</span>
               </div>
             </div>
           </button>
@@ -728,7 +728,7 @@
         <div class="step-header">
           <button class="back-link" onclick="goTo('secCategory')">
             <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M19 12H5M12 5l-7 7 7 7"/></svg>
-            戻る
+            Back
           </button>
           <div class="progress-dots">
             <div class="dot done" id="dot1b"></div>
@@ -736,61 +736,61 @@
             <div class="dot" id="dot3b"></div>
             <div class="dot" id="dot4b"></div>
           </div>
-          <h1 class="step-title" id="formTitle">この子の情報を教えてください</h1>
-          <p class="step-desc">入力していただいた情報をもとに、この子に合ったリーディングをお届けします。</p>
+          <h1 class="step-title" id="formTitle">Tell us about your pet</h1>
+          <p class="step-desc">We'll craft a reading tailored to your pet based on what you share.</p>
         </div>
 
         <div class="form-row">
           <div class="form-group">
-            <label class="form-label" for="petName">この子の名前 <span class="req">*</span></label>
-            <input type="text" class="form-input" id="petName" placeholder="例: モモ、ソラ" maxlength="10">
+            <label class="form-label" for="petName">Your pet's name <span class="req">*</span></label>
+            <input type="text" class="form-input" id="petName" placeholder="e.g. Momo, Luna" maxlength="10">
           </div>
           <div class="form-group">
-            <label class="form-label" for="petSpecies">種類 <span class="req">*</span></label>
+            <label class="form-label" for="petSpecies">Species <span class="req">*</span></label>
             <select class="form-select" id="petSpecies" onchange="toggleOtherSpecies(this.value)">
-              <option value="">選択してください</option>
-              <option value="犬">犬</option>
-              <option value="猫">猫</option>
-              <option value="うさぎ">うさぎ</option>
-              <option value="鳥">鳥</option>
-              <option value="その他">その他</option>
+              <option value="">Please select</option>
+              <option value="Dog">Dog</option>
+              <option value="Cat">Cat</option>
+              <option value="Rabbit">Rabbit</option>
+              <option value="Bird">Bird</option>
+              <option value="Other">Other</option>
             </select>
           </div>
         </div>
         <div class="form-group" id="otherSpeciesGroup" style="display:none">
-          <label class="form-label" for="otherSpecies">どんな動物か教えてください</label>
-          <input type="text" class="form-input" id="otherSpecies" placeholder="例: ハムスター、トカゲ、カメ…" maxlength="20">
+          <label class="form-label" for="otherSpecies">Tell us what kind of animal</label>
+          <input type="text" class="form-input" id="otherSpecies" placeholder="e.g. Hamster, Lizard, Turtle…" maxlength="20">
         </div>
 
         <div class="form-row">
           <div class="form-group">
-            <label class="form-label" for="petAge">年齢</label>
-            <input type="text" class="form-input" id="petAge" placeholder="例: 3歳、7か月" maxlength="10">
+            <label class="form-label" for="petAge">Age</label>
+            <input type="text" class="form-input" id="petAge" placeholder="e.g. 3 years, 7 months" maxlength="10">
           </div>
           <div class="form-group">
-            <label class="form-label" for="petGender">性別</label>
+            <label class="form-label" for="petGender">Gender</label>
             <select class="form-select" id="petGender">
-              <option value="">選択しない</option>
-              <option value="男の子">男の子</option>
-              <option value="女の子">女の子</option>
-              <option value="去勢・避妊済み">去勢・避妊済み</option>
+              <option value="">Prefer not to say</option>
+              <option value="Male">Male</option>
+              <option value="Female">Female</option>
+              <option value="Neutered/Spayed">Neutered/Spayed</option>
             </select>
           </div>
         </div>
 
         <div class="form-group">
-          <label class="form-label" for="ownerTitle">💌 ペットがあなたを呼ぶときの呼び方</label>
-          <input type="text" class="form-input" id="ownerTitle" placeholder="例: パパ、ママ、お姉ちゃん、お兄ちゃん…" maxlength="10">
+          <label class="form-label" for="ownerTitle">💌 What does your pet call you?</label>
+          <input type="text" class="form-input" id="ownerTitle" placeholder="e.g. Mom, Dad, Big Sis, Big Bro…" maxlength="10">
         </div>
 
         <div class="form-group">
-          <label class="form-label" for="concern">お悩みの内容 <span class="req">*</span> <span style="font-size:.72rem;color:#b09fd0;font-weight:400;">— 具体的なほど、より詳しいリーディングができます</span></label>
-          <textarea class="form-textarea" id="concern" placeholder="例) 引っ越して2週間になりますが、その頃からごはんをあまり食べず、ベッドの下に隠れてばかりいます。もともと人によく懐くタイプなのに、最近は触ろうとしても避けたり、夜寝ているときに鳴くこともあります。ただのストレスなのか、どこか具合が悪いのか心配です。" maxlength="300" oninput="updateCharCount(this, 'concernCount')"></textarea>
+          <label class="form-label" for="concern">Your concern <span class="req">*</span> <span style="font-size:.72rem;color:#b09fd0;font-weight:400;">— the more specific, the deeper the reading</span></label>
+          <textarea class="form-textarea" id="concern" placeholder="e.g. It's been two weeks since we moved, and since then my pet barely eats and keeps hiding under the bed. They used to be so affectionate, but lately they flinch when I try to pet them, and sometimes cry at night while sleeping. I'm not sure if it's just stress or something's actually wrong." maxlength="300" oninput="updateCharCount(this, 'concernCount')"></textarea>
           <div class="char-count"><span id="concernCount">0</span>/300</div>
         </div>
 
-        <button class="btn-primary" onclick="submitForm()">カードを引く</button>
-        <button class="btn-outline" onclick="goTo('secCategory')">配列を選び直す</button>
+        <button class="btn-primary" onclick="submitForm()">Draw the Cards</button>
+        <button class="btn-outline" onclick="goTo('secCategory')">Choose a different spread</button>
       </section>
 
       <!-- Step 3: card selection -->
@@ -798,7 +798,7 @@
         <div class="step-header">
           <button class="back-link" onclick="goTo('secForm')">
             <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M19 12H5M12 5l-7 7 7 7"/></svg>
-            戻る
+            Back
           </button>
           <div class="progress-dots">
             <div class="dot done"></div>
@@ -806,17 +806,17 @@
             <div class="dot active"></div>
             <div class="dot"></div>
           </div>
-          <h1 class="step-title" id="cardsTitle">カードを選んでください</h1>
-          <p class="step-desc" id="poolCounter">心が惹かれるカードを順番に選んでください。</p>
+          <h1 class="step-title" id="cardsTitle">Choose your cards</h1>
+          <p class="step-desc" id="poolCounter">Choose the cards that call to you, in order.</p>
         </div>
 
         <!-- Card pool (78-card grid) -->
         <div class="card-pool" id="cardPool"></div>
 
         <button class="btn-primary" id="proceedBtn" style="margin-top:14px" disabled onclick="proceedToReading()">
-          分析を始める ✨
+          Begin the Reading ✨
         </button>
-        <button class="btn-outline" onclick="resetSelection()">選び直す</button>
+        <button class="btn-outline" onclick="resetSelection()">Choose again</button>
       </section>
 
       <!-- Step 3.5: action guide card selection -->
@@ -824,23 +824,23 @@
         <div class="step-header">
           <button class="back-link" onclick="goTo('secCards')">
             <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M19 12H5M12 5l-7 7 7 7"/></svg>
-            戻る
+            Back
           </button>
           <div class="progress-dots">
             <div class="dot done"></div><div class="dot done"></div>
             <div class="dot done"></div><div class="dot active"></div>
           </div>
-          <h1 class="step-title">これからのアクションガイドカードを選んでください</h1>
+          <h1 class="step-title">Choose your Action Guide Cards</h1>
           <p class="action-pool-notice">
-            心が惹かれるカードを <strong style="color:#d8aaff">1〜3枚</strong> 選んでください。<br>
-            このカードたちが、これからの行動の方向性になります。<br>
-            <span style="font-size:.76rem;color:var(--text-dim)">スキップを押すと、カードなしでアクションガイドを作成します。</span>
+            Choose <strong style="color:#d8aaff">1 to 3</strong> cards that call to you.<br>
+            These cards will guide your next steps.<br>
+            <span style="font-size:.76rem;color:var(--text-dim)">Skip to create your Action Guide without cards.</span>
           </p>
         </div>
         <div class="pool-counter" id="actionCounter"></div>
         <div class="card-pool" id="actionPool"></div>
-        <button class="btn-primary" style="margin-top:14px" onclick="startReveal()">リーディングを始める ✨</button>
-        <button class="btn-outline" onclick="skipActionCards()">アクションカードなしで進める</button>
+        <button class="btn-primary" style="margin-top:14px" onclick="startReveal()">Start the Reading ✨</button>
+        <button class="btn-outline" onclick="skipActionCards()">Continue without Action Cards</button>
       </section>
 
       <!-- Step 4: free reading + paywall -->
@@ -852,12 +852,12 @@
             <div class="dot done"></div>
             <div class="dot active"></div>
           </div>
-          <h1 class="step-title" id="freeReadTitle">リーディング結果</h1>
+          <h1 class="step-title" id="freeReadTitle">Reading Results</h1>
         </div>
 
         <!-- Drawn cards -->
         <div class="reading-box">
-          <div class="reading-box-title">引いたカード</div>
+          <div class="reading-box-title">Cards Drawn</div>
           <div class="cards-area" id="cardsAreaSmall" style="margin:0;"></div>
         </div>
 
@@ -865,7 +865,7 @@
         <div class="reading-box" id="freeReadBox">
           <div class="loading-box" id="freeLoadBox">
             <div class="loading-spinner"></div>
-            <div class="loading-text">この子からのメッセージを読み取っています…<br>少々お待ちください。</div>
+            <div class="loading-text">Reading your pet's message…<br>Just a moment please.</div>
           </div>
           <div class="reading-box-title" style="display:none" id="freeReadLabel"></div>
           <div id="freeReadText" style="display:none"></div>
@@ -876,15 +876,15 @@
           <div class="paywall-preview" id="paywallPreview"></div>
           <div class="paywall-overlay">
             <div class="paywall-lock">🔒</div>
-            <div class="paywall-msg" id="paywallMsg">全文レポートを見る</div>
+            <div class="paywall-msg" id="paywallMsg">Unlock the Full Report</div>
             <div class="paywall-sub" id="paywallSub"></div>
 
-            <!-- Payment: stage 1 (not yet available in Japan) -->
+            <!-- Payment: not yet available -->
             <div id="payGate" style="width:100%">
-              <div class="dev-notice" id="devNotice">⚙️ 決済機能は準備中です。もうすぐ公開!</div>
+              <div class="dev-notice" id="devNotice">⚙️ Payments are coming soon! Stay tuned.</div>
               <button class="pay-btn" id="payBtn" disabled onclick="startPayment()">
-                全文レポートを受け取る
-                <span class="pay-price">準備中</span>
+                Get the Full Report
+                <span class="pay-price">Coming Soon</span>
               </button>
             </div>
           </div>
@@ -894,14 +894,14 @@
       <!-- Step 5: report generation wait -->
       <section id="secLoading" style="display:none">
         <div class="step-header">
-          <h1 class="step-title">レポート作成中</h1>
+          <h1 class="step-title">Preparing Your Report</h1>
         </div>
         <div class="loading-status-bar">
-          ✨ <strong>心を込めて作成しています</strong><span class="loading-dots"><span>.</span><span>.</span><span>.</span></span><br>
-          最大3分ほどかかる場合があります。ウィンドウを閉じても後でまた確認できます。
+          ✨ <strong>Crafting your reading with care</strong><span class="loading-dots"><span>.</span><span>.</span><span>.</span></span><br>
+          This can take up to 3 minutes. You can close this window and check back later.
         </div>
         <div class="major-card-showcase">
-          <div class="major-card-label">お待ちの間にタロットの大アルカナをご紹介</div>
+          <div class="major-card-label">While you wait, meet the Major Arcana</div>
           <img id="mcImg" class="major-card-img" src="" alt="">
           <div id="mcNum" class="major-card-num"></div>
           <div id="mcName" class="major-card-name"></div>
@@ -909,9 +909,9 @@
           <div id="mcKw" class="major-card-kw"></div>
           <div id="mcDesc" class="major-card-desc"></div>
           <div class="major-card-nav">
-            <button class="major-card-btn" onclick="mcPrev()">← 前へ</button>
+            <button class="major-card-btn" onclick="mcPrev()">← Prev</button>
             <span id="mcCounter" class="major-card-counter"></span>
-            <button class="major-card-btn" onclick="mcNext()">次へ →</button>
+            <button class="major-card-btn" onclick="mcNext()">Next →</button>
           </div>
           <div id="mcProgress" class="major-card-progress" style="width:0%"></div>
         </div>
@@ -920,19 +920,19 @@
       <!-- Step 6: full report (paid) -->
       <section id="secFullReport" style="display:none">
         <div class="step-header">
-          <h1 class="step-title" id="reportTitle">全文レポート</h1>
+          <h1 class="step-title" id="reportTitle">Full Report</h1>
         </div>
 
         <!-- Drawn cards -->
         <div class="reading-box">
-          <div class="reading-box-title">引いたカード</div>
+          <div class="reading-box-title">Cards Drawn</div>
           <div class="cards-area" id="cardsAreaReport" style="margin:0;"></div>
         </div>
 
         <!-- Loading -->
         <div class="loading-box" id="reportLoadBox">
           <div class="loading-spinner"></div>
-          <div class="loading-text">深層レポートを作成しています…<br>もう少しお待ちください。</div>
+          <div class="loading-text">Preparing your In-Depth Reading Report…<br>Just a bit longer.</div>
         </div>
 
         <!-- Report body -->
@@ -941,14 +941,14 @@
             <div id="reportText" class="report-text"></div>
           </div>
           <div style="text-align:center;margin-top:8px">
-            <span class="saved-badge" id="savedBadge" style="display:none">✓ マイページに保存されました</span>
+            <span class="saved-badge" id="savedBadge" style="display:none">✓ Saved to My Page</span>
           </div>
           <div style="margin-top:20px;text-align:center">
-            <button class="btn-share" onclick="shareDeepReport()">🔗 &nbsp;シェア</button>
-            <button class="btn-share" onclick="saveDeepImage()">💾 &nbsp;画像を保存</button>
-            <button class="btn-share-x" onclick="shareDeepX()"><svg viewBox="0 0 24 24"><path d="M18.244 2.25h3.308l-7.227 8.26 8.502 11.24H16.17l-5.214-6.817L4.99 21.75H1.68l7.73-8.835L1.254 2.25H8.08l4.713 6.231zm-1.161 17.52h1.833L7.084 4.126H5.117z"/></svg>&nbsp;Xでシェア</button>
+            <button class="btn-share" onclick="shareDeepReport()">🔗 &nbsp;Share</button>
+            <button class="btn-share" onclick="saveDeepImage()">💾 &nbsp;Save Image</button>
+            <button class="btn-share-x" onclick="shareDeepX()"><svg viewBox="0 0 24 24"><path d="M18.244 2.25h3.308l-7.227 8.26 8.502 11.24H16.17l-5.214-6.817L4.99 21.75H1.68l7.73-8.835L1.254 2.25H8.08l4.713 6.231zm-1.161 17.52h1.833L7.084 4.126H5.117z"/></svg>&nbsp;Share on X</button>
           </div>
-          <button class="btn-outline" style="margin-top:20px" onclick="window.location.href='/ja/'">ホームに戻る</button>
+          <button class="btn-outline" style="margin-top:20px" onclick="window.location.href='/en/'">Back to Home</button>
         </div>
       </section>
 
@@ -959,39 +959,39 @@
 
   <!-- Card reveal overlay -->
   <div id="revealOverlay" style="display:none;position:fixed;inset:0;z-index:600;background:radial-gradient(ellipse at 50% 40%,#1e0640 0%,#060010 80%);flex-direction:column;align-items:center;justify-content:center;padding:20px 16px;overflow:hidden;">
-    <div class="reveal-title" id="revealTitle">カードがあなたに語りかけています ✨</div>
+    <div class="reveal-title" id="revealTitle">The cards are speaking to you ✨</div>
     <div class="reveal-cards-row" id="revealCardsRow"></div>
     <button class="reveal-proceed-btn" id="revealProceedBtn" style="display:none" onclick="finishReveal()">
-      リーディングを始める
+      Begin the Reading
     </button>
   </div>
 
   <script src="/assets/auth.js"></script>
-  <script src="/assets/cards-ja.js"></script>
+  <script src="/assets/cards-en.js"></script>
   <script src="/assets/lang-switch.js" defer></script>
   <script>
-    // Payment is not yet available in the JP version (stage 1)
+    // Payment is not yet available in the EN version (stage 1)
     const DEV_MODE = false;
     const SITE_URL = 'https://tubular-cupcake-55d47b.netlify.app';
 
     const SPREADS = {
       mind: {
-        name: 'クロススプレッド',
-        fullName: 'この子が何を考えているのか気になる — クロススプレッド',
+        name: 'Cross Spread',
+        fullName: "I want to know what my pet is thinking — Cross Spread",
         cardCount: 4,
-        positions: ['今のこの子の気持ち', '飼い主さんが与えている影響', '隠れた本当の原因', '関係修復へのアドバイス']
+        positions: ["Your pet's current feelings", 'The influence you are having', 'The hidden true cause', 'Advice for repairing the bond']
       },
       behavior: {
-        name: 'ホースシュースプレッド',
-        fullName: '急に様子がおかしくなった — ホースシュースプレッド',
+        name: 'Horseshoe Spread',
+        fullName: "My pet's behavior suddenly changed — Horseshoe Spread",
         cardCount: 5,
-        positions: ['過去のきっかけ', '現在の状況', '隠れた影響', '取れる行動', 'これからの流れ']
+        positions: ['Past trigger', 'Current situation', 'Hidden influence', 'Action you can take', "What's ahead"]
       },
       change: {
-        name: 'スリーカードスプレッド',
-        fullName: '引っ越し・多頭飼いなど変化を控えている — スリーカードスプレッド',
+        name: 'Three Card Spread',
+        fullName: 'Getting ready for a big change — Three Card Spread',
         cardCount: 3,
-        positions: ['過去の名残', '今のこの子の気持ち', '変化後の流れ']
+        positions: ['Lingering feelings from before', "How your pet feels right now", 'The flow after the change']
       }
     };
 
@@ -1013,35 +1013,35 @@
 
     // -- Toggle "other species" field --
     function toggleOtherSpecies(val) {
-      document.getElementById('otherSpeciesGroup').style.display = val === 'その他' ? '' : 'none';
+      document.getElementById('otherSpeciesGroup').style.display = val === 'Other' ? '' : 'none';
     }
 
     // -- Build species/age context --
     function buildSpeciesContext() {
       const sp = petInfo.species;
-      const displaySpecies = sp === 'その他' ? (petInfo.otherSpecies || 'ペット') : sp;
+      const displaySpecies = sp === 'Other' ? (petInfo.otherSpecies || 'pet') : sp;
       const ageText = petInfo.age || '';
       const ageNum = parseFloat(ageText.replace(/[^0-9.]/g, ''));
-      const isMonths = ageText.includes('か月') || ageText.includes('ヶ月') || ageText.includes('month');
+      const isMonths = /month/i.test(ageText);
       let notes = [];
 
-      if (sp === '犬') {
-        if (!isMonths && ageNum >= 10) notes.push('シニア犬 — 関節の不調、認知機能の低下、分離不安など加齢に伴う問題を考慮');
-        else if (!isMonths && ageNum <= 1 || isMonths && ageNum <= 12) notes.push('子犬期 — 社会化の途中、エネルギー過多、警戒心を学ぶ段階');
-        notes.push('群れで生きる動物なので飼い主さんの感情にとても敏感で、絆が心理の核になる');
-      } else if (sp === '猫') {
-        if (!isMonths && ageNum >= 12) notes.push('シニア猫 — 腎機能の低下、甲状腺の問題、活動量の減少などを考慮');
-        else if (!isMonths && ageNum <= 1 || isMonths && ageNum <= 12) notes.push('子猫 — 探求欲が強く、縄張りを確立している最中');
-        notes.push('独立心が強くストレスを隠しがちで、環境の変化に敏感');
-      } else if (sp === 'うさぎ') {
-        notes.push('とても繊細でストレスが健康に直接影響する。社会的だけど一人の時間も必要');
-      } else if (sp === '鳥') {
-        notes.push('知能が高く、寂しさに弱い。同じ行動の繰り返しや羽をむしる行動はストレスのサイン');
-      } else if (sp === 'その他') {
-        notes.push(`${displaySpecies}という動物の特性を考慮してリーディング`);
+      if (sp === 'Dog') {
+        if (!isMonths && ageNum >= 10) notes.push('Senior dog — consider joint discomfort, cognitive decline, separation anxiety, and other age-related issues');
+        else if ((!isMonths && ageNum <= 1) || (isMonths && ageNum <= 12)) notes.push('Puppy stage — still socializing, high energy, learning caution');
+        notes.push("As a pack animal, very attuned to the owner's emotions; the bond is central to their psychology");
+      } else if (sp === 'Cat') {
+        if (!isMonths && ageNum >= 12) notes.push('Senior cat — consider declining kidney function, thyroid issues, reduced activity');
+        else if ((!isMonths && ageNum <= 1) || (isMonths && ageNum <= 12)) notes.push('Kitten — highly curious, still establishing territory');
+        notes.push('Independent-minded, tends to hide stress, sensitive to environmental change');
+      } else if (sp === 'Rabbit') {
+        notes.push('Very delicate; stress directly affects health. Social, but also needs alone time');
+      } else if (sp === 'Bird') {
+        notes.push('Highly intelligent, vulnerable to loneliness. Repetitive behavior or feather-plucking can be signs of stress');
+      } else if (sp === 'Other') {
+        notes.push(`Consider the traits of ${displaySpecies} in the reading`);
       }
 
-      return `[動物情報] 種類: ${displaySpecies}${ageText ? '、年齢: ' + ageText : ''}${petInfo.gender ? '、' + petInfo.gender : ''}。${notes.join('。')}`;
+      return `[Animal info] Species: ${displaySpecies}${ageText ? ', Age: ' + ageText : ''}${petInfo.gender ? ', ' + petInfo.gender : ''}. ${notes.join('. ')}`;
     }
 
     // -- Step 1: spread selection --
@@ -1056,21 +1056,20 @@
       const name = document.getElementById('petName').value.trim();
       const species = document.getElementById('petSpecies').value;
       const concern = document.getElementById('concern').value.trim();
-      if (!name) { alert('この子の名前を入力してください。'); return; }
-      if (!species) { alert('種類を選択してください。'); return; }
-      if (!concern) { alert('お悩みの内容を入力してください。'); return; }
+      if (!name) { alert("Please enter your pet's name."); return; }
+      if (!species) { alert('Please select a species.'); return; }
+      if (!concern) { alert('Please describe your concern.'); return; }
 
       petInfo = {
         name, species,
         otherSpecies: document.getElementById('otherSpecies').value.trim(),
         age: document.getElementById('petAge').value.trim(),
         gender: document.getElementById('petGender').value,
-        ownerTitle: document.getElementById('ownerTitle').value.trim() || '飼い主さん',
+        ownerTitle: document.getElementById('ownerTitle').value.trim() || 'pet parent',
         concern
       };
-
       if (typeof gtag === 'function') gtag('event', 'form_submitted', { species: petInfo.species, spread: currentSpread.name });
-      document.getElementById('cardsTitle').textContent = `${name}のカードを選んでください`;
+      document.getElementById('cardsTitle').textContent = `${name}'s Cards — Please Choose`;
       goTo('secCards');
       initCardPool();
     }
@@ -1088,7 +1087,7 @@
     function renderPool() {
       const pool = document.getElementById('cardPool');
       pool.innerHTML = shuffledPool.map((c, i) => `
-        <div class="pool-card" data-i="${i}" onclick="selectCard(${i})" title="カードを選択">
+        <div class="pool-card" data-i="${i}" onclick="selectCard(${i})" title="Select a card">
           <div class="pool-card-back">✨</div>
         </div>
       `).join('');
@@ -1098,7 +1097,7 @@
       const n = currentSpread.cardCount;
       const done = drawnCards.length;
       document.getElementById('poolCounter').innerHTML =
-        `心が惹かれるカードを順番に選んでください &nbsp;<strong style="color:#d8aaff">(${done}/${n})</strong>`;
+        `Choose the cards that call to you, in order &nbsp;<strong style="color:#d8aaff">(${done}/${n})</strong>`;
     }
 
     function selectCard(i) {
@@ -1163,7 +1162,7 @@
       const pool = document.getElementById('actionPool');
       pool.innerHTML = shuffledPool.map((c, i) => {
         if (selectedIndices.includes(i)) return '';
-        return `<div class="pool-card" data-ai="${i}" onclick="selectActionCard(${i})" title="カードを選択"><div class="pool-card-back">✦</div></div>`;
+        return `<div class="pool-card" data-ai="${i}" onclick="selectActionCard(${i})" title="Select a card"><div class="pool-card-back">✦</div></div>`;
       }).join('');
       updateActionCounter();
     }
@@ -1194,7 +1193,7 @@
 
     function updateActionCounter() {
       document.getElementById('actionCounter').innerHTML =
-        `アクションガイドカード &nbsp;<strong style="color:#ffd060">${actionCards.length} / 3枚</strong> 選択`;
+        `Action Guide Cards &nbsp;<strong style="color:#ffd060">${actionCards.length} / 3</strong> selected`;
     }
 
     function skipActionCards() {
@@ -1242,7 +1241,7 @@
         </div>
         ${posLabel}
         <div class="reveal-card-name" id="${id}-name" style="display:none">${escHtml(card.name)}</div>
-        <div class="reveal-card-dir" id="${id}-dir" style="display:none">${card.reversed ? '↓ 逆位置' : '↑ 正位置'}</div>
+        <div class="reveal-card-dir" id="${id}-dir" style="display:none">${card.reversed ? '↓ Reversed' : '↑ Upright'}</div>
       `;
       return wrap;
     }
@@ -1279,7 +1278,7 @@
         const divider = document.createElement('div');
         divider.className = 'reveal-section-divider';
         divider.style.flexBasis = '100%';
-        divider.textContent = '✦ これからのアクションガイドカード ✦';
+        divider.textContent = '✦ Action Guide Cards for What\'s Ahead ✦';
         row.appendChild(divider);
         actionCards.forEach((card, idx) => {
           row.appendChild(makeRevealCard(card, `rac-${idx}`, 'action'));
@@ -1330,7 +1329,7 @@
               <div class="card-face${c.reversed ? ' reversed' : ''}" style="padding:0;overflow:hidden;">
                 <img src="${c.img}" alt="${escHtml(c.name)}"
                   style="width:100%;height:100%;object-fit:cover;border-radius:10px;${c.reversed ? 'transform:rotate(180deg);' : ''}"
-                  onerror="this.style.display='none';this.parentNode.style.padding='8px 5px';this.parentNode.innerHTML+='<div class=\\'card-name\\'>${escHtml(c.name)}</div><div class=\\'card-direction\\'>${c.reversed ? '↓ 逆位置' : '↑ 正位置'}</div>'">
+                  onerror="this.style.display='none';this.parentNode.style.padding='8px 5px';this.parentNode.innerHTML+='<div class=\\'card-name\\'>${escHtml(c.name)}</div><div class=\\'card-direction\\'>${c.reversed ? '↓ Reversed' : '↑ Upright'}</div>'">
               </div>
             </div>
           </div>
@@ -1342,16 +1341,16 @@
     // -- Dynamically update paywall text --
     function updatePaywallText() {
       const remaining = drawnCards.length - 1;
-      const actionHint = actionCards.length > 0 ? `アクションガイドカード${actionCards.length}枚の解釈` : 'これからのアクションガイド';
-      const name = petInfo.name || 'この子';
+      const actionHint = actionCards.length > 0 ? `an interpretation of your ${actionCards.length} Action Guide Card(s)` : 'the Action Guide for what lies ahead';
+      const name = petInfo.name || 'your pet';
 
       const preview = document.getElementById('paywallPreview');
       if (preview) preview.textContent =
-        `残り${remaining}枚のカードの深層解釈、${name}からの本音のお手紙、飼い主さんへのメッセージ、${actionHint}まで — 全文レポートで確認できます。`;
+        `The deep interpretation of the remaining ${remaining} card(s), a Letter from ${name}'s Heart, a message just for you, and ${actionHint} — all waiting in the Full Report.`;
 
       const sub = document.getElementById('paywallSub');
       if (sub) sub.innerHTML =
-        `残りカード${remaining}枚の解釈・本音のお手紙・飼い主さんへ・${actionHint}<br>たった一度で${name}の心を深くのぞいてみましょう`;
+        `Remaining ${remaining} card(s) interpreted · A Letter from the Heart · A message for you · ${actionHint}<br>Look deep into ${name}'s heart, all in one report`;
     }
 
     // -- Step 4: free reading (first card, deep interpretation) --
@@ -1361,23 +1360,23 @@
       const freeLoadBox = document.getElementById('freeLoadBox');
 
       const firstCard = drawnCards[0];
-      const cardSummary = drawnCards.map(c => `[${c.position}] ${c.name}(${c.reversed ? '逆' : '正'})`).join(', ');
+      const cardSummary = drawnCards.map(c => `[${c.position}] ${c.name}(${c.reversed ? 'Reversed' : 'Upright'})`).join(', ');
       const speciesCtx = buildSpeciesContext();
 
-      freeReadLabel.textContent = `🃏 ${firstCard.position} — 無料公開`;
+      freeReadLabel.textContent = `🃏 ${firstCard.position} — Free Preview`;
 
-      const systemPrompt = `あなたはペットタロットの専門家です。温かく情感豊かな日本語で書いてください。動物の種類や年齢による特性を自然に反映してください。ユーザーが入力した具体的な情報には必ず直接言及してください。誰にでも当てはまるような一般的な表現は絶対に使わないでください。`;
-      const userPrompt = `ペット: ${petInfo.name}（${petInfo.species}${petInfo.age ? '、' + petInfo.age : ''}${petInfo.gender ? '、' + petInfo.gender : ''}）
-飼い主さんの呼び方: 「${petInfo.ownerTitle}」
+      const systemPrompt = `You are a pet tarot expert. Write in warm, emotionally rich English. Naturally reflect traits based on the animal's species and age. Always directly reference the specific details the user has provided. Never use generic phrasing that could apply to any pet.`;
+      const userPrompt = `Pet: ${petInfo.name} (${petInfo.species}${petInfo.age ? ', ' + petInfo.age : ''}${petInfo.gender ? ', ' + petInfo.gender : ''})
+What the pet calls their person: "${petInfo.ownerTitle}"
 ${speciesCtx}
-お悩み: ${petInfo.concern}
-スプレッド: ${currentSpread.fullName}
-すべてのカード: ${cardSummary}
+Concern: ${petInfo.concern}
+Spread: ${currentSpread.fullName}
+All cards: ${cardSummary}
 
-1枚目のカード「[${firstCard.position}] ${firstCard.name}（${firstCard.reversed ? '逆位置' : '正位置'}）」だけを深く解釈してください。（4〜6行）
-・このポジションの意味 + カードの象徴がこの位置で持つ意味
-・${petInfo.name}のお悩みの状況に直接つなげる
-・情感豊かに、具体的に`;
+Interpret only the first card, "[${firstCard.position}] ${firstCard.name} (${firstCard.reversed ? 'Reversed' : 'Upright'})," in depth. (4-6 lines)
+- The meaning of this position, plus what the card's symbolism means in it
+- Connect it directly to ${petInfo.name}'s specific situation
+- Be emotionally rich and specific`;
 
       try {
         const res = await fetch('/.netlify/functions/deep-tarot', {
@@ -1401,7 +1400,7 @@ ${speciesCtx}
           renderReportText(freeReadText, text);
           applyFreePreviewBlur(freeReadText);
         } else {
-          freeReadText.textContent = `${firstCard.name}（${firstCard.reversed ? '逆位置' : '正位置'}）が${petInfo.name}の${firstCard.position}に置かれました。全文レポートで詳しいお話を確認してみてください。`;
+          freeReadText.textContent = `${firstCard.name} (${firstCard.reversed ? 'Reversed' : 'Upright'}) was drawn for ${petInfo.name}'s ${firstCard.position}. Check the Full Report for the whole story.`;
         }
       } catch (e) {
         console.warn('free reading error', e);
@@ -1409,7 +1408,7 @@ ${speciesCtx}
         freeLoadBox.style.display = 'none';
         freeReadLabel.style.display = '';
         freeReadText.style.display = '';
-        freeReadText.textContent = `${firstCard.name}（${firstCard.reversed ? '逆位置' : '正位置'}）が${petInfo.name}の${firstCard.position}に置かれました。全文レポートで詳しいお話を確認してみてください。`;
+        freeReadText.textContent = `${firstCard.name} (${firstCard.reversed ? 'Reversed' : 'Upright'}) was drawn for ${petInfo.name}'s ${firstCard.position}. Check the Full Report for the whole story.`;
       }
 
       if (typeof gtag === 'function') gtag('event', 'free_preview_shown', { spread: currentSpread.name });
@@ -1419,43 +1418,43 @@ ${speciesCtx}
     async function showPaywall() {
       updatePaywallText();
       document.getElementById('paywallBox').style.display = '';
-      // JP stage 1: no login required -- the payment panel is always shown
+      // EN stage 1: no login required -- the payment panel is always shown
       // directly, in "coming soon" state (see #payGate in the HTML).
       document.getElementById('payGate').style.display = '';
     }
 
-    // -- Payment is not available yet in the JP version (stage 1). --
-    // Guarded at the top so no NicePay SDK code ever runs: the pay button
+    // -- Payment is not available yet in the EN version (stage 1). --
+    // Guarded at the top so no payment SDK code ever runs: the pay button
     // is also rendered `disabled` in the HTML, so this handler normally
     // never fires at all.
     async function startPayment() {
-      alert('決済機能は準備中です。もうすぐ公開予定です!');
+      alert('Payments are coming soon! Stay tuned.');
     }
 
     // -- Major Arcana slideshow --
     const MAJOR_CARDS = [
-      { num:0,  name:'愚者',       en:'The Fool',           kw:['新しい始まり','純粋さ','自由'],          desc:'恐れることなく最初の一歩を踏み出す勇気。まだ分からないことがあっても大丈夫、道は歩きながらつくられていきます。' },
-      { num:1,  name:'魔術師',      en:'The Magician',       kw:['可能性','創造','意志'],                desc:'自分の中にすでにすべての道具がそろっています。集中と意志で現実を望む形に変えていくことができます。' },
-      { num:2,  name:'女教皇',      en:'The High Priestess', kw:['直感','神秘','内なる知恵'],              desc:'言葉にしなくても、もう分かっています。沈黙の中に宿る深い知恵を信じてみましょう。' },
-      { num:3,  name:'女帝',       en:'The Empress',        kw:['豊かさ','愛','あたたかな包容'],           desc:'大地のように豊かに包み込む愛。世話とぬくもりで周りを豊かにする力です。' },
-      { num:4,  name:'皇帝',       en:'The Emperor',        kw:['安定','守り','頼もしさ'],               desc:'揺るがない柱のようにそばを守ります。秩序と構造の中に本当の安心が生まれます。' },
-      { num:5,  name:'教皇',       en:'The Hierophant',     kw:['縁','スピリチュアルな繋がり','伝統'],      desc:'古くからの知恵とあたたかな教え。心と心をつなぐ、目に見えない糸です。' },
-      { num:6,  name:'恋人',       en:'The Lovers',         kw:['愛','絆','選択'],                     desc:'心から結ばれた存在たち。選択の瞬間も、心が導く方へ進んでみましょう。' },
-      { num:7,  name:'戦車',       en:'The Chariot',        kw:['前進','意志','勝利'],                  desc:'方向が決まったら迷わずに。内なる二つの力を一つにまとめて前へ進みましょう。' },
-      { num:8,  name:'力',        en:'Strength',           kw:['勇気','やさしい強さ','忍耐'],            desc:'本当の強さはやさしさから生まれます。抑えつけるのではなく、愛で導く内なる勇気。' },
-      { num:9,  name:'隠者',       en:'The Hermit',         kw:['内省','光','気づき'],                  desc:'一人の時間が必要なときもあります。内なる灯りを手に、心の奥をのぞいてみましょう。' },
-      { num:10, name:'運命の輪',    en:'Wheel of Fortune',   kw:['循環','運命','転機'],                  desc:'すべては巡り巡っていきます。今の場所がすべてではありません、車輪は回り続けます。' },
-      { num:11, name:'正義',       en:'Justice',            kw:['バランス','真実','公正'],               desc:'ありのままを見つめる目。真実とバランスの上に立つ決断は長く続きます。' },
-      { num:12, name:'吊るされた男', en:'The Hanged Man',     kw:['待つこと','受容','新しい視点'],          desc:'いったん立ち止まり、逆さまに見つめると新しいものが見えてきます。手放すことが気づきになります。' },
-      { num:13, name:'死神',       en:'Death',              kw:['転換','終わりと始まり','解放'],           desc:'恐ろしい名前だけれど、実は解放です。終わりがあるからこそ新しい始まりが訪れます。' },
-      { num:14, name:'節制',       en:'Temperance',         kw:['バランス','癒やし','調和'],              desc:'急がず、ゆっくり、調和を保って。異なるものが混ざり合って美しいものが生まれます。' },
-      { num:15, name:'悪魔',       en:'The Devil',          kw:['執着','解放','手放すこと'],              desc:'鎖のように感じても、実は自分でほどくことができます。何が自分を縛っているのか向き合ってみましょう。' },
-      { num:16, name:'塔',        en:'The Tower',          kw:['急変','崩壊','新しい土台'],              desc:'揺らぐべきものが揺らぐ瞬間。崩れたあとに、もっと確かなものが築かれます。' },
-      { num:17, name:'星',        en:'The Star',           kw:['希望','癒やし','インスピレーション'],       desc:'嵐のあとの夜空にまたたく星のように。希望はいつも暗闇の中でこそ、より明るく輝きます。' },
-      { num:18, name:'月',        en:'The Moon',           kw:['夢','無意識','直感'],                   desc:'見えるものがすべてではない夜。深い無意識のささやきに耳を傾けてみましょう。' },
-      { num:19, name:'太陽',       en:'The Sun',            kw:['喜び','活力','幸せ'],                  desc:'あたたかく降り注ぐ光の中で喜びましょう。隠さずに輝いても良い時間です。' },
-      { num:20, name:'審判',       en:'Judgement',          kw:['目覚め','再生','使命'],                 desc:'心の奥底から響く呼び声。過去を赦し、本当の自分として目覚める瞬間です。' },
-      { num:21, name:'世界',       en:'The World',          kw:['完成','達成','充足'],                  desc:'一巡りしてすべてが満たされる瞬間。完成の喜びを感じながら、新しい旅の準備をしましょう。' },
+      { num:0,  name:'The Fool',           en:'', kw:['New beginnings','Innocence','Freedom'],          desc:'The courage to take the first step without fear. It\'s okay not to have all the answers yet — the path takes shape as you walk it.' },
+      { num:1,  name:'The Magician',       en:'', kw:['Potential','Creation','Willpower'],               desc:'You already have every tool you need within you. With focus and will, you can shape reality into what you wish.' },
+      { num:2,  name:'The High Priestess', en:'', kw:['Intuition','Mystery','Inner wisdom'],             desc:"You already know, even without words. Trust the deep wisdom that lives in silence." },
+      { num:3,  name:'The Empress',        en:'', kw:['Abundance','Love','Warm embrace'],                desc:'A love as rich and enveloping as the earth itself. The power to nurture and enrich everything around you.' },
+      { num:4,  name:'The Emperor',        en:'', kw:['Stability','Protection','Reliability'],           desc:'Standing guard like an unshakable pillar. True security is born from order and structure.' },
+      { num:5,  name:'The Hierophant',     en:'', kw:['Bonds','Spiritual connection','Tradition'],       desc:'Ancient wisdom and warm teaching. An invisible thread that connects heart to heart.' },
+      { num:6,  name:'The Lovers',         en:'', kw:['Love','Bond','Choice'],                           desc:'Beings truly bound together. Even in a moment of choice, follow where your heart leads.' },
+      { num:7,  name:'The Chariot',        en:'', kw:['Forward motion','Willpower','Victory'],           desc:'Once the direction is set, move ahead without hesitation. Bring two inner forces together and push forward.' },
+      { num:8,  name:'Strength',           en:'', kw:['Courage','Gentle strength','Patience'],           desc:'True strength is born of gentleness. Not force, but the inner courage to lead with love.' },
+      { num:9,  name:'The Hermit',         en:'', kw:['Reflection','Light','Awareness'],                 desc:'Sometimes you need time alone. Take up your inner light and look deep within.' },
+      { num:10, name:'Wheel of Fortune',   en:'', kw:['Cycles','Fate','Turning point'],                  desc:'Everything comes full circle. Where you stand now is not the whole story — the wheel keeps turning.' },
+      { num:11, name:'Justice',            en:'', kw:['Balance','Truth','Fairness'],                     desc:'An eye that sees things as they truly are. A decision built on truth and balance will last.' },
+      { num:12, name:'The Hanged Man',     en:'', kw:['Waiting','Acceptance','New perspective'],         desc:'Pause for a moment, and looking at things upside down reveals something new. Letting go becomes insight.' },
+      { num:13, name:'Death',              en:'', kw:['Transformation','Endings and beginnings','Release'], desc:'A frightening name, but truly a release. Because there is an ending, a new beginning can arrive.' },
+      { num:14, name:'Temperance',         en:'', kw:['Balance','Healing','Harmony'],                    desc:"Slow down, and keep your harmony. Beautiful things emerge when different elements blend together." },
+      { num:15, name:'The Devil',          en:'', kw:['Attachment','Liberation','Letting go'],            desc:'It may feel like chains, but you can loosen them yourself. Look closely at what is truly holding you back.' },
+      { num:16, name:'The Tower',          en:'', kw:['Sudden change','Collapse','New foundation'],       desc:'The moment what needed to shake, shakes. After the fall, something more solid gets built.' },
+      { num:17, name:'The Star',           en:'', kw:['Hope','Healing','Inspiration'],                   desc:'Like a star twinkling in the night sky after a storm. Hope always shines brightest in the dark.' },
+      { num:18, name:'The Moon',           en:'', kw:['Dreams','The unconscious','Intuition'],            desc:'A night where what you see is not the whole truth. Listen closely to the whispers of the deep unconscious.' },
+      { num:19, name:'The Sun',            en:'', kw:['Joy','Vitality','Happiness'],                     desc:"Bask in the warm light pouring down. This is a time to shine openly, without hiding." },
+      { num:20, name:'Judgement',          en:'', kw:['Awakening','Rebirth','Calling'],                  desc:'A calling that rises from deep within. A moment to forgive the past and awaken to your true self.' },
+      { num:21, name:'The World',          en:'', kw:['Completion','Achievement','Fulfillment'],          desc:'The moment the circle closes and everything feels complete. Savor this fulfillment while preparing for the next journey.' },
     ];
 
     let mcIndex = 0;
@@ -1510,7 +1509,7 @@ ${speciesCtx}
     }
 
     // -- Background report generation + polling --
-    // NOTE: unreachable in JP stage 1 (no login, payment guarded), kept for
+    // NOTE: unreachable in EN stage 1 (no login, payment guarded), kept for
     // forward compatibility with a future stage 2.
     let _pollTimer = null;
 
@@ -1519,44 +1518,44 @@ ${speciesCtx}
         transaction_id: paymentKey || ('dev_' + Date.now()),
         value: 1500,
         currency: 'KRW',
-        items: [{ item_id: 'deep_reading', item_name: 'ペットタロット深層リーディング', price: 1500, quantity: 1 }]
+        items: [{ item_id: 'deep_reading', item_name: 'PetTarot Deep Reading', price: 1500, quantity: 1 }]
       });
       const user = await getUser();
       if (!user || !window._sb) return;
 
-      const cardSummary = drawnCards.map(c => `[${c.position}] ${c.name}(${c.reversed ? '逆位置' : '正位置'})`).join('\n');
+      const cardSummary = drawnCards.map(c => `[${c.position}] ${c.name}(${c.reversed ? 'Reversed' : 'Upright'})`).join('\n');
       const actionSummary = actionCards.length > 0
-        ? actionCards.map(c => `${c.name}(${c.reversed ? '逆位置' : '正位置'})`).join(', ')
+        ? actionCards.map(c => `${c.name}(${c.reversed ? 'Reversed' : 'Upright'})`).join(', ')
         : null;
       const speciesCtx = buildSpeciesContext();
-      const systemPrompt = `あなたはペットタロットの専門家です。温かく情感豊かな日本語で書いてください。必ずこの子の名前、種類、お悩みに直接言及してください。一般的な表現は使わないでください。`;
+      const systemPrompt = `You are a pet tarot expert. Write in warm, emotionally rich English. Always directly reference this pet's name, species, and concern. Never use generic phrasing.`;
       const freeCtx = freeReadingText
-        ? `\n無料プレビューで提供した最初のカードの解釈（これを参考に、さらに深く広げてください）:\n${freeReadingText}\n`
+        ? `\nHere is the first card's interpretation from the free preview (use it as context and go deeper):\n${freeReadingText}\n`
         : '';
-      const userPrompt = `ペット: ${petInfo.name}（${petInfo.species}${petInfo.age ? '、' + petInfo.age : ''}${petInfo.gender ? '、' + petInfo.gender : ''}）
-飼い主さんの呼び方: 「${petInfo.ownerTitle}」
+      const userPrompt = `Pet: ${petInfo.name} (${petInfo.species}${petInfo.age ? ', ' + petInfo.age : ''}${petInfo.gender ? ', ' + petInfo.gender : ''})
+What the pet calls their person: "${petInfo.ownerTitle}"
 ${speciesCtx}
-お悩み: ${petInfo.concern}
-スプレッド: ${currentSpread.fullName}
-引いたカード:
+Concern: ${petInfo.concern}
+Spread: ${currentSpread.fullName}
+Cards drawn:
 ${cardSummary}
-${actionSummary ? `\nアクションガイドカード: ${actionSummary}` : ''}
+${actionSummary ? `\nAction Guide Cards: ${actionSummary}` : ''}
 ${freeCtx}
-以下の4つのセクションで、十分に読み応えのあるレポートを作成してください:
+Write a substantial, satisfying report in the following four sections:
 
-## 🃏 カードごとのポジション解釈
-各カードをポジションの意味と組み合わせて深く解釈してください。${petInfo.name}の状況に直接つなげてください。カード同士の流れやつながりにも触れてください。（各カード3〜4行）
+## 🃏 Card-by-Card Position Interpretation
+Interpret each card in combination with its position's meaning. Connect it directly to ${petInfo.name}'s situation. Also touch on the flow and connections between the cards. (3-4 lines per card)
 
-## 💌 ${petInfo.name}の本音
-${petInfo.name}の一人称視点での心の中の独白。飼い主さんを「${petInfo.ownerTitle}」と呼びながら直接語りかける形式。感情や願いを具体的に表現してください。（6〜8行）
+## 💌 A Letter from ${petInfo.name}'s Heart
+A first-person inner monologue from ${petInfo.name}, speaking directly and calling their person "${petInfo.ownerTitle}." Express feelings and wishes concretely. (6-8 lines)
 
-## 🐾 飼い主さんへ
-カード全体の流れをもとに、見落としているかもしれない視点、慰めと共感を伝えてください。具体的な気づきを含めてください。（4〜5行）
+## 🐾 A Message for You
+Based on the overall flow of the cards, offer a perspective the pet parent may be missing, along with comfort and empathy. Include a specific insight. (4-5 lines)
 
-## ✨ これからのアクションガイド
+## ✨ Action Guide for What's Ahead
 ${actionSummary
-  ? `アクションガイドカード（${actionSummary}）を解釈して実践方法を提示してください。各項目: **【カード名】** — 具体的な行動とその理由。1〜${actionCards.length}個。`
-  : `カードをもとに実践できる具体的なアクションガイドを3つ挙げてください。各項目: **行動** — 理由と方法。`}`;
+  ? `Interpret the Action Guide Cards (${actionSummary}) and offer practical steps. Each item: **[Card Name]** — a concrete action and the reason for it. 1 to ${actionCards.length} items.`
+  : `List three concrete, actionable steps based on the cards. Each item: **Action** — the reason and how to do it.`}`;
 
       // 1. Save a pending record to Supabase to get an ID
       const snapshot = JSON.stringify({
@@ -1575,7 +1574,7 @@ ${actionSummary
         cards_drawn: drawnCards.map(c => ({ name: c.name, reversed: c.reversed, position: c.position })),
         full_reading: snapshot,
         amount: 1500,
-        status: '生成中',
+        status: 'generating',
         expires_at: expires
       }).select('id').single();
 
@@ -1584,7 +1583,7 @@ ${actionSummary
         goTo('secFullReport');
         document.getElementById('reportLoadBox').style.display = 'none';
         document.getElementById('reportContent').style.display = '';
-        document.getElementById('reportText').innerHTML = `<p style="color:#f09090">エラーが発生しました。もう一度お試しください。</p>`;
+        document.getElementById('reportText').innerHTML = `<p style="color:#f09090">Something went wrong. Please try again.</p>`;
         return;
       }
 
@@ -1639,14 +1638,14 @@ ${actionSummary
             gtag('event', 'deep_reading_complete', { spread: currentSpread.name });
             gtag('event', 'paid_report_complete', { spread: currentSpread.name });
           }
-        } else if (data.status === 'エラー') {
+        } else if (data.status === 'error') {
           clearInterval(_pollTimer);
           mcStop();
           goTo('secFullReport');
           document.getElementById('reportLoadBox').style.display = 'none';
           document.getElementById('reportContent').style.display = '';
-          document.getElementById('reportText').innerHTML = `<p style="color:#f09090">レポート作成中にエラーが発生しました。</p>
-            <p style="margin-top:12px;font-size:.85rem;color:#c0aad8">決済は正常に処理されています。もう一度お試しいただくか、お問い合わせください。</p>`;
+          document.getElementById('reportText').innerHTML = `<p style="color:#f09090">An error occurred while generating your report.</p>
+            <p style="margin-top:12px;font-size:.85rem;color:#c0aad8">Your payment was processed successfully. Please try again, or contact us.</p>`;
         }
       } catch {}
     }
@@ -1664,7 +1663,7 @@ ${actionSummary
           const reportText = document.getElementById('reportText');
           document.getElementById('reportLoadBox').style.display = 'none';
           document.getElementById('reportContent').style.display = '';
-          renderReportText(reportText, `## 🃏 カードごとのポジション解釈\n**【DEV】テストレポートです。**\nカードの解釈内容がここに表示されます。\n\n## 💌 ${petInfo.name || 'この子'}の本音\n${petInfo.ownerTitle || '飼い主さん'}、私はここにいるよ。テスト用の本音の内容です。\n\n## 🐾 飼い主さんへ\nテスト用の励ましメッセージです。\n\n## ✨ これからのアクションガイド\n**テスト行動1** — 理由と方法。\n**テスト行動2** — 理由と方法。`);
+          renderReportText(reportText, `## 🃏 Card-by-Card Position Interpretation\n**[DEV] This is a test report.**\nThe card interpretations will appear here.\n\n## 💌 A Letter from ${petInfo.name || 'your pet'}'s Heart\n${petInfo.ownerTitle || 'pet parent'}, I'm right here. This is test content for the heart letter.\n\n## 🐾 A Message for You\nThis is a test encouragement message.\n\n## ✨ Action Guide for What's Ahead\n**Test action 1** — reason and method.\n**Test action 2** — reason and method.`);
           document.getElementById('savedBadge').style.display = '';
         }, 8000);
         return;
@@ -1746,7 +1745,7 @@ ${actionSummary
           cards_drawn: drawnCards.map(c => ({ name: c.name, reversed: c.reversed, position: c.position })),
           full_reading: snapshot,
           amount: 1500,
-          status: '決済待ち',
+          status: 'pending_payment',
           expires_at: expires
         });
       } catch(e) {
@@ -1778,7 +1777,7 @@ ${actionSummary
           cards_drawn: drawnCards.map(c => ({ name: c.name, reversed: c.reversed, position: c.position })),
           full_reading: snapshot,
           amount: 1500,
-          status: '決済待ち',
+          status: 'pending_payment',
           expires_at: expires
         });
       } catch(e) {
@@ -1787,7 +1786,7 @@ ${actionSummary
     }
 
     // -- Restore state after login/payment redirect --
-    // NOTE: unreachable in JP stage 1 (no login flow, payment guarded),
+    // NOTE: unreachable in EN stage 1 (no login flow, payment guarded),
     // kept for forward compatibility with a future stage 2.
     document.addEventListener('DOMContentLoaded', async () => {
       const saved = localStorage.getItem('petarot_dr');
@@ -1841,8 +1840,8 @@ ${actionSummary
 
       // Payment failed -> back to paywall + notice + save incomplete record
       if (payFail) {
-        const msg = urlParams.get('msg') || '決済がキャンセルされました。';
-        alert(msg + ' もう一度お試しください。');
+        const msg = urlParams.get('msg') || 'The payment was cancelled.';
+        alert(msg + ' Please try again.');
         savePendingReading();
       }
 
@@ -1858,7 +1857,7 @@ ${actionSummary
 
       if (freeReadingText) {
         const firstCard = drawnCards[0];
-        if (firstCard) freeReadLabel.textContent = `🃏 ${firstCard.position} — 無料公開`;
+        if (firstCard) freeReadLabel.textContent = `🃏 ${firstCard.position} — Free Preview`;
         renderReportText(freeReadText, freeReadingText);
       } else if (drawnCards.length > 0) {
         generateFreeReading();
@@ -1907,9 +1906,9 @@ ${actionSummary
       return text.match(/[^.!?…]+[.!?…]+|[^.!?…]+$/g) || (text ? [text] : []);
     }
 
-    // Excerpt a section to the given sentence count (the "本音" section is kept in full)
+    // Excerpt a section to the given sentence count (the "Heart" letter section is kept in full)
     function sectionBody(section, sentenceCount) {
-      if (section.title.includes('本音')) return section.lines.join('\n').trim();
+      if (section.title.includes('Heart')) return section.lines.join('\n').trim();
       const fullText = section.lines.join(' ').trim();
       const sentences = splitSentences(fullText);
       if (sentences.length <= sentenceCount) return fullText;
@@ -1917,7 +1916,7 @@ ${actionSummary
     }
 
     // Render the full report sections as "title + excerpt" HTML
-    // If the total length exceeds the threshold (excluding 本音), reduce the excerpt sentence count to avoid excessive length
+    // If the total length exceeds the threshold (excluding the Heart letter), reduce the excerpt sentence count to avoid excessive length
     function buildReportSectionsHtml() {
       const sections = extractReportSections();
       if (!sections.length) return '';
@@ -1938,15 +1937,15 @@ ${actionSummary
     }
 
     function buildDeepShareCardEl() {
-      const petN = petInfo.name || 'ペット';
-      const spreadName = currentSpread ? currentSpread.name : '深層リーディング';
+      const petN = petInfo.name || 'your pet';
+      const spreadName = currentSpread ? currentSpread.name : 'Deep Reading';
       const cardsHtml = drawnCards.map(c => `
         <div style="display:flex;justify-content:space-between;gap:10px;font-size:.74rem;padding:5px 0;border-bottom:1px solid rgba(160,80,255,.12);">
           <span style="color:#b090d0;white-space:nowrap;">${escHtml(c.position)}</span>
-          <span style="color:#e8d0ff;font-weight:600;text-align:right;">${escHtml(c.name)} <span style="color:#a080c0;font-weight:400;">(${c.reversed ? '逆位置' : '正位置'})</span></span>
+          <span style="color:#e8d0ff;font-weight:600;text-align:right;">${escHtml(c.name)} <span style="color:#a080c0;font-weight:400;">(${c.reversed ? 'Reversed' : 'Upright'})</span></span>
         </div>`).join('');
       const sectionsHtml = buildReportSectionsHtml();
-      const hasActionSection = extractReportSections().some(s => s.title.includes('アクションガイド'));
+      const hasActionSection = extractReportSections().some(s => s.title.includes('Action Guide'));
       const actionLine = (!hasActionSection && actionCards.length > 0)
         ? actionCards.map(c => escHtml(c.name)).join(', ') : '';
 
@@ -1954,7 +1953,7 @@ ${actionSummary
       sc.innerHTML = `
         <div style="width:360px;padding:32px 26px 28px;
           background:linear-gradient(150deg,#1a0835 0%,#0c1045 45%,#041520 100%);
-          font-family:'Noto Serif JP',serif;color:#f0e6ff;border-radius:22px;position:relative;overflow:hidden;">
+          font-family:'Noto Serif',serif;color:#f0e6ff;border-radius:22px;position:relative;overflow:hidden;">
           <div style="position:absolute;top:0;left:0;right:0;height:3px;
             background:linear-gradient(90deg,#ff6b6b,#ff9f43,#ffd32a,#0be881,#17c0eb,#7d5fff,#ef5777);"></div>
           <div style="position:absolute;inset:0;
@@ -1962,7 +1961,7 @@ ${actionSummary
           <div style="position:relative;z-index:1;">
             <div style="text-align:center;margin-bottom:20px;">
               <div style="font-size:2.2rem;margin-bottom:6px;">🔮</div>
-              <div style="font-size:.72rem;color:#b090d0;letter-spacing:.08em;">深層コンボリーディング · ${escHtml(spreadName)}</div>
+              <div style="font-size:.72rem;color:#b090d0;letter-spacing:.08em;">Deep Combo Reading · ${escHtml(spreadName)}</div>
               <div style="font-size:1.05rem;font-weight:600;color:#e8d0ff;margin-top:6px;">${escHtml(petN)}</div>
             </div>
             <div style="margin-bottom:18px;padding:12px 14px;border-radius:14px;
@@ -1975,13 +1974,13 @@ ${actionSummary
             </div>` : ''}
             ${actionLine ? `
             <div style="padding-top:14px;border-top:1px solid rgba(160,80,255,.18);">
-              <div style="font-size:.68rem;color:#a080c0;margin-bottom:6px;">✨ アクションガイドカード</div>
+              <div style="font-size:.68rem;color:#a080c0;margin-bottom:6px;">✨ Action Guide Cards</div>
               <div style="font-size:.75rem;color:#e0d0f8;">${actionLine}</div>
             </div>` : ''}
             <div style="text-align:center;margin-top:22px;padding-top:14px;
               border-top:1px solid rgba(255,255,255,.07);">
-              <div style="font-size:.68rem;color:rgba(200,160,255,.8);font-weight:600;">🐾 ペットタロット</div>
-              <div style="font-size:.6rem;color:rgba(180,140,220,.55);margin-top:5px;letter-spacing:.02em;">わたしもやってみる → tubular-cupcake-55d47b.netlify.app/ja/</div>
+              <div style="font-size:.68rem;color:rgba(200,160,255,.8);font-weight:600;">🐾 PetTarot</div>
+              <div style="font-size:.6rem;color:rgba(180,140,220,.55);margin-top:5px;letter-spacing:.02em;">Try it yourself → tubular-cupcake-55d47b.netlify.app/en/</div>
             </div>
           </div>
         </div>`;
@@ -1999,24 +1998,24 @@ ${actionSummary
 
     async function saveDeepImage() {
       if (typeof gtag === 'function') gtag('event', 'save_image_click', { mode: 'deep_report' });
-      if (typeof html2canvas === 'undefined') { showToast('しばらくしてからもう一度お試しください'); return; }
-      showToast('画像を作成しています…');
+      if (typeof html2canvas === 'undefined') { showToast('Please try again in a moment'); return; }
+      showToast('Creating your image…');
       try {
         const canvas = await renderDeepShareCanvas();
         const link = document.createElement('a');
-        link.download = `深層レポート_${Date.now()}.png`;
+        link.download = `full-report_${Date.now()}.png`;
         link.href = canvas.toDataURL('image/png');
         link.click();
-        showToast('画像を保存しました!');
+        showToast('Image saved!');
       } catch (e) {
-        showToast('保存中にエラーが発生しました');
+        showToast('An error occurred while saving');
       }
     }
 
     function shareDeepX() {
       if (typeof gtag === 'function') gtag('event', 'share_click', { mode: 'deep_report_x' });
-      const text = `『深層コンボリーディング』でうちの子の本音を読んでもらいました🐾 #ペットタロット`;
-      const url = `${SITE_URL}/ja/`;
+      const text = `Deep Combo Reading revealed my pet's true feelings 🐾 #PetTarot`;
+      const url = `${SITE_URL}/en/`;
       const shareUrl = `https://x.com/intent/post?text=${encodeURIComponent(text)}&url=${encodeURIComponent(url)}`;
       window.open(shareUrl, '_blank', 'noopener,noreferrer,width=550,height=420');
     }
@@ -2025,18 +2024,18 @@ ${actionSummary
       if (typeof gtag === 'function') gtag('event', 'share_click', { mode: 'deep_report' });
       if (typeof html2canvas === 'undefined') {
         navigator.clipboard?.writeText(window.location.href)
-          .then(() => showToast('リンクをコピーしました!')).catch(() => {});
+          .then(() => showToast('Link copied!')).catch(() => {});
         return;
       }
-      showToast('画像を作成しています…');
+      showToast('Creating your image…');
       try {
         const canvas = await renderDeepShareCanvas();
         const blob = await new Promise(res => canvas.toBlob(res, 'image/png'));
-        const file = new File([blob], '深層レポート.png', { type: 'image/png' });
+        const file = new File([blob], 'full-report.png', { type: 'image/png' });
         const shareData = {
-          title: '深層コンボリーディング',
-          text: `『深層コンボリーディング』の結果をシェアします 🐾\nわたしもやってみる → ${SITE_URL}/ja/`,
-          url: `${SITE_URL}/ja/`,
+          title: 'Deep Combo Reading',
+          text: `I got my pet's Deep Combo Reading done 🐾\nTry it yourself → ${SITE_URL}/en/`,
+          url: `${SITE_URL}/en/`,
         };
         if (navigator.canShare && navigator.canShare({ files: [file] })) {
           await navigator.share({ ...shareData, files: [file] });
@@ -2044,10 +2043,10 @@ ${actionSummary
           await navigator.share(shareData);
         } else {
           await navigator.clipboard.writeText(window.location.href);
-          showToast('リンクをコピーしました!');
+          showToast('Link copied!');
         }
       } catch (e) {
-        if (e.name !== 'AbortError') showToast('共有中にエラーが発生しました');
+        if (e.name !== 'AbortError') showToast('An error occurred while sharing');
       }
     }
 

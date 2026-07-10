@@ -40,27 +40,33 @@
     injectStyle();
     mount.classList.add('lang-switch');
 
-    var curLang = document.documentElement.getAttribute('lang') === 'ja' ? 'ja' : 'ko';
-    var koLink = document.querySelector('link[rel="alternate"][hreflang="ko"]');
-    var jaLink = document.querySelector('link[rel="alternate"][hreflang="ja"]');
-    var koHref = koLink ? toPath(koLink.getAttribute('href')) : '/';
-    var jaHref = jaLink ? toPath(jaLink.getAttribute('href')) : '/ja/';
-    var label = curLang === 'ja' ? '🌐 日本語' : '🌐 한국어';
+    var LANGS = [
+      { code: 'ko', label: '한국어', fallback: '/' },
+      { code: 'ja', label: '日本語', fallback: '/ja/' },
+      { code: 'en', label: 'English', fallback: '/en/' }
+    ];
+    var htmlLang = document.documentElement.getAttribute('lang');
+    var curLang = (htmlLang === 'ja' || htmlLang === 'en') ? htmlLang : 'ko';
+    var curLabel = LANGS.filter(function (l) { return l.code === curLang; })[0].label;
+
+    var items = LANGS.map(function (l) {
+      var link = document.querySelector('link[rel="alternate"][hreflang="' + l.code + '"]');
+      var href = link ? toPath(link.getAttribute('href')) : l.fallback;
+      return '<a href="' + href + '" data-lang="' + l.code + '" class="lang-switch-item' +
+        (curLang === l.code ? ' active' : '') + '" role="menuitem">' + l.label + '</a>';
+    }).join('');
 
     mount.innerHTML =
-      '<button type="button" class="lang-switch-btn" aria-haspopup="true" aria-expanded="false">' + label + ' <span class="lang-switch-caret">▾</span></button>' +
-      '<div class="lang-switch-menu" role="menu">' +
-        '<a href="' + koHref + '" class="lang-switch-item' + (curLang === 'ko' ? ' active' : '') + '" role="menuitem">한국어</a>' +
-        '<a href="' + jaHref + '" class="lang-switch-item' + (curLang === 'ja' ? ' active' : '') + '" role="menuitem">日本語</a>' +
-      '</div>';
+      '<button type="button" class="lang-switch-btn" aria-haspopup="true" aria-expanded="false">🌐 ' + curLabel + ' <span class="lang-switch-caret">▾</span></button>' +
+      '<div class="lang-switch-menu" role="menu">' + items + '</div>';
 
     var btn = mount.querySelector('.lang-switch-btn');
     var menu = mount.querySelector('.lang-switch-menu');
 
     // 언어를 직접 고르면 저장 → 홈의 브라우저 언어 자동 리다이렉트가 이 선택을 존중
-    menu.querySelectorAll('.lang-switch-item').forEach(function (a, i) {
+    menu.querySelectorAll('.lang-switch-item').forEach(function (a) {
       a.addEventListener('click', function () {
-        try { localStorage.setItem('lang_pref', i === 0 ? 'ko' : 'ja'); } catch (e) {}
+        try { localStorage.setItem('lang_pref', a.getAttribute('data-lang')); } catch (e) {}
       });
     });
 
