@@ -8,6 +8,7 @@
   <link rel="canonical" href="https://tubular-cupcake-55d47b.netlify.app/deep-reading/">
   <link rel="alternate" hreflang="ko" href="https://tubular-cupcake-55d47b.netlify.app/deep-reading/">
   <link rel="alternate" hreflang="ja" href="https://tubular-cupcake-55d47b.netlify.app/ja/deep-reading/">
+  <link rel="alternate" hreflang="en" href="https://tubular-cupcake-55d47b.netlify.app/en/deep-reading/">
   <link rel="alternate" hreflang="x-default" href="https://tubular-cupcake-55d47b.netlify.app/deep-reading/">
   <meta property="og:type" content="website">
   <meta property="og:site_name" content="펫타로">
@@ -24,6 +25,11 @@
   <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/dist/umd/supabase.min.js"></script>
   <script src="https://cdn.jsdelivr.net/npm/html2canvas@1.4.1/dist/html2canvas.min.js"></script>
   <script src="https://t1.kakaocdn.net/kakao_js_sdk/2.7.4/kakao.min.js" crossorigin="anonymous"></script>
+  <script>
+    /* ?dev=1 접속 시 이 브라우저에서 GA 수집 영구 차단 (운영자 접속 제외용) */
+    try{if(location.search.indexOf('dev=1')>-1)localStorage.setItem('ga_off','1');
+    if(localStorage.getItem('ga_off'))window['ga-disable-G-ZDTC39TEKD']=true;}catch(e){}
+  </script>
   <script async src="https://www.googletagmanager.com/gtag/js?id=G-ZDTC39TEKD"></script>
   <script>window.dataLayer=window.dataLayer||[];function gtag(){dataLayer.push(arguments);}gtag('js',new Date());gtag('config','G-ZDTC39TEKD');</script>
 
@@ -1524,18 +1530,63 @@ ${speciesCtx}
 
       const payBtn = document.getElementById('payBtn');
       if (payBtn) { payBtn.disabled = true; payBtn.textContent = '결제창 여는 중…'; }
+      const restoreBtn = () => { if (payBtn) { payBtn.disabled = false; payBtn.innerHTML = '전체 리포트 받기 <span class="pay-price">1,500원</span>'; } };
 
       const cfg = await loadNicepayConfig();
       if (!cfg || !cfg.clientId) {
         alert('결제 설정을 불러오지 못했어요. 잠시 후 다시 시도해주세요.');
-        if (payBtn) { payBtn.disabled = false; payBtn.innerHTML = '전체 리포트 받기 <span class="pay-price">1,500원</span>'; }
+        restoreBtn();
         return;
       }
 
-      // 결제 후 복귀를 위해 상태 저장 (localStorage: 결제 redirect 후에도 유지)
+      // 로그인 세션 확인 (결제 전 로그인 게이트가 있어 세션이 보장되는 지점)
+      const user = await getUser();
+      if (!user || !window._sb) {
+        alert('로그인이 필요해요. 다시 로그인 후 시도해주세요.');
+        restoreBtn();
+        return;
+      }
+
+      // ── 선기록: 결제창을 열기 전에 '결제 대기' 레코드를 먼저 생성 → readingId 확보 ──
+      // 이 시점엔 세션이 보장되므로, 결제 유실(기록 0) 사고의 근본 원인을 차단한다.
+      const spreadKey = Object.keys(SPREADS).find(k => SPREADS[k].name === currentSpread.name);
+      const snapshot = JSON.stringify({
+        _pending: true,
+        tid: null,
+        spreadKey,
+        petInfo,
+        drawnCards,
+        actionCards,
+        freeText: freeReadingText
+      });
+      const expires = new Date(Date.now() + 24 * 60 * 60 * 1000).toISOString();
+      let readingId;
       try {
-        const spreadKey = Object.keys(SPREADS).find(k => SPREADS[k].name === currentSpread.name);
+        const { data: inserted, error: insertErr } = await window._sb.from('reading_history').insert({
+          user_id: user.id,
+          spread_type: currentSpread.name || '',
+          pet_name: petInfo?.name || '',
+          pet_species: petInfo?.species || '',
+          concern: petInfo?.concern || '',
+          cards_drawn: drawnCards.map(c => ({ name: c.name, reversed: c.reversed, position: c.position })),
+          full_reading: snapshot,
+          amount: 1500,
+          status: '결제 대기',
+          expires_at: expires
+        }).select('id').single();
+        if (insertErr || !inserted?.id) throw (insertErr || new Error('no id'));
+        readingId = inserted.id;
+      } catch (e) {
+        console.error('결제 대기 레코드 생성 실패', e);
+        alert('결제를 준비하지 못했어요. 잠시 후 다시 시도해주세요.');
+        restoreBtn();
+        return; // insert 실패 시 결제창을 열지 않음 (돈부터 받는 상황 차단)
+      }
+
+      // 결제 후 복귀를 위해 상태 저장 (readingId 포함 → 같은 브라우저 복귀 시 재사용)
+      try {
         localStorage.setItem('petarot_dr', JSON.stringify({
+          readingId,
           spreadKey, petInfo,
           drawnCards: drawnCards.map(({ img, name, en, suit, upKw, rvKw, reversed, position }) =>
             ({ img, name, en, suit, upKw, rvKw, reversed, position })),
@@ -1547,16 +1598,18 @@ ${speciesCtx}
         }));
       } catch(e) { console.warn('state save failed', e); }
 
+      // orderId에 readingId 인코딩 (UUID 하이픈 제거 — NicePay orderId 안전문자 대응, 서버에서 복원)
+      const orderId = 'PETAROT_' + readingId.replace(/-/g, '') + '_' + Date.now();
       AUTHNICE.requestPay({
         clientId: cfg.clientId,
         method: 'card',
-        orderId: 'PETAROT_' + Date.now(),
+        orderId,
         amount: 1500,
         goodsName: `${petInfo.name || '펫'} 타로 심층 콤보 분석`,
         returnUrl: window.location.origin + '/.netlify/functions/nicepay-confirm',
         fnError: function(result) {
           alert(result.errorMsg || '결제 오류가 발생했습니다. 다시 시도해주세요.');
-          savePendingReading();
+          restoreBtn();
         }
       });
     }
@@ -1641,99 +1694,35 @@ ${speciesCtx}
     // ── 백그라운드 리포트 생성 + 폴링 ──
     let _pollTimer = null;
 
-    async function startBackgroundReport(paymentKey) {
+    // 결제 완료 후: 이미 존재하는 readingId 레코드를 이어받아 리포트 생성을 트리거하고 폴링.
+    // 프롬프트는 서버(deep-tarot-background)가 스냅샷에서 재구성하므로 여기서 만들지 않는다.
+    // 서버(nicepay-confirm)도 트리거하지만, env 미설정/실패 대비로 클라이언트도 트리거한다
+    // (중복은 background 함수가 원자적 상태 클레임으로 차단).
+    async function resumePaidReport(readingId, tid) {
       if (typeof gtag === 'function') gtag('event', 'purchase', {
-        transaction_id: paymentKey || ('dev_' + Date.now()),
+        transaction_id: tid || ('paid_' + Date.now()),
         value: 1500,
         currency: 'KRW',
         items: [{ item_id: 'deep_reading', item_name: '심층 타로 리딩', price: 1500, quantity: 1 }]
       });
-      const user = await getUser();
-      if (!user || !window._sb) return;
 
-      const cardSummary = drawnCards.map(c => `[${c.position}] ${c.name}(${c.reversed ? '역방향' : '정방향'})`).join('\n');
-      const actionSummary = actionCards.length > 0
-        ? actionCards.map(c => `${c.name}(${c.reversed ? '역방향' : '정방향'})`).join(', ')
-        : null;
-      const speciesCtx = buildSpeciesContext();
-      const systemPrompt = `당신은 반려동물 타로 전문가입니다. 따뜻하고 감성적인 한국어로 작성하세요. 반드시 이 아이의 이름, 종, 고민을 직접 언급하세요. 일반적인 표현은 쓰지 마세요.`;
-      const freeCtx = freeReadingText
-        ? `\n무료 미리보기에서 제공된 첫 카드 해석 (이를 참고하여 더 깊이 확장하세요):\n${freeReadingText}\n`
-        : '';
-      const userPrompt = `반려동물: ${petInfo.name} (${petInfo.species}${petInfo.age ? ', ' + petInfo.age : ''}${petInfo.gender ? ', ' + petInfo.gender : ''})
-보호자 호칭: "${petInfo.ownerTitle}"
-${speciesCtx}
-고민: ${petInfo.concern}
-배열법: ${currentSpread.fullName}
-뽑힌 카드:
-${cardSummary}
-${actionSummary ? `\n행동 가이드 카드: ${actionSummary}` : ''}
-${freeCtx}
-아래 네 섹션으로 충분히 풍부하게 리포트를 작성하세요:
-
-## 🃏 카드별 포지션 해석
-각 카드를 포지션 의미와 결합하여 깊이 있게 해석. ${petInfo.name}의 상황에 직접 연결. 카드 간 흐름과 연결도 언급. (각 카드 3~4줄)
-
-## 💌 ${petInfo.name}의 속마음
-${petInfo.name}의 1인칭 시점 내면 독백. 보호자를 "${petInfo.ownerTitle}"(이)라고 부르며 직접 말하는 형식. 감정과 바람을 구체적으로 표현. (6~8줄)
-
-## 🐾 보호자님께
-카드 전체 흐름을 바탕으로 놓치고 있을 수 있는 관점, 위로와 공감. 구체적인 인사이트 포함. (4~5줄)
-
-## ✨ 앞으로의 행동 가이드
-${actionSummary
-  ? `행동 가이드 카드(${actionSummary})를 해석하여 실천 방법 제시. 각 항목: **[카드 이름]** — 구체적인 행동과 이유. 1~${actionCards.length}가지.`
-  : `카드를 바탕으로 실천할 수 있는 구체적인 행동 가이드 3가지. 각 항목: **행동** — 이유와 방법.`}`;
-
-      // 1. 대기 중 pending 레코드 Supabase에 저장 → ID 획득
-      const snapshot = JSON.stringify({
-        _pending: true, _paidPending: true,
-        tid: paymentKey || null,
-        spreadKey: Object.keys(SPREADS).find(k => SPREADS[k].name === currentSpread?.name),
-        petInfo, drawnCards, actionCards, freeText: freeReadingText
-      });
-      const expires = new Date(Date.now() + 7 * 24 * 60 * 60 * 1000).toISOString();
-      const { data: inserted, error: insertErr } = await window._sb.from('reading_history').insert({
-        user_id: user.id,
-        spread_type: currentSpread?.name || '',
-        pet_name: petInfo?.name || '',
-        pet_species: petInfo?.species || '',
-        concern: petInfo?.concern || '',
-        cards_drawn: drawnCards.map(c => ({ name: c.name, reversed: c.reversed, position: c.position })),
-        full_reading: snapshot,
-        amount: 1500,
-        status: '생성 중',
-        expires_at: expires
-      }).select('id').single();
-
-      if (insertErr || !inserted?.id) {
-        console.error('pending insert failed', insertErr);
+      if (!readingId) {
         goTo('secFullReport');
         document.getElementById('reportLoadBox').style.display = 'none';
         document.getElementById('reportContent').style.display = '';
-        document.getElementById('reportText').innerHTML = `<p style="color:#f09090">오류가 발생했어요. 마이페이지에서 다시 시도해주세요.</p>`;
+        document.getElementById('reportText').innerHTML = `<p style="color:#f09090">리포트 정보를 찾지 못했어요.</p>
+          <p style="margin-top:12px;font-size:.85rem;color:#c0aad8">결제는 정상 처리됐어요. 마이페이지에서 확인해주세요.</p>`;
         return;
       }
 
-      const readingId = inserted.id;
-
-      // 2. 로딩 화면 표시 + 카드 슬라이드 시작
-      goTo('secLoading');
-      mcStart();
-
-      // 3. 백그라운드 함수 호출 (응답 기다리지 않음)
       fetch('/.netlify/functions/deep-tarot-background', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({
-          readingId,
-          tid: paymentKey || null,
-          system: systemPrompt,
-          messages: [{ role: 'user', content: userPrompt }]
-        })
+        body: JSON.stringify({ readingId, tid: tid || null })
       }).catch(() => {});
 
-      // 4. 폴링 시작
+      goTo('secLoading');
+      mcStart();
       _pollTimer = setInterval(() => pollReport(readingId), 5000);
     }
 
@@ -1796,7 +1785,7 @@ ${actionSummary
         }, 8000);
         return;
       }
-      await startBackgroundReport(paymentKey);
+      // 실제 결제 흐름은 resumePaidReport(readingId, tid)로 처리됨 (DEV_MODE 외엔 도달하지 않음)
     }
 
     // 마크다운 섹션 렌더링
@@ -1915,24 +1904,42 @@ ${actionSummary
 
     // ── 로그인/결제 후 상태 복원 ──
     document.addEventListener('DOMContentLoaded', async () => {
-      const saved = localStorage.getItem('petarot_dr');
-      if (!saved) return;
-      let state;
-      try { state = JSON.parse(saved); } catch { return; }
-
       const urlParams = new URLSearchParams(window.location.search);
       const paidOk = urlParams.get('paid') === 'true';
       const payFail = urlParams.get('payment') === 'fail';
+
+      const saved = localStorage.getItem('petarot_dr');
+      let state = null;
+      if (saved) { try { state = JSON.parse(saved); } catch {} }
+
+      // 결제 완료 복귀인데 스냅샷(readingId)이 없음 = 다른 브라우저/컨텍스트로 복귀
+      // (카톡 인앱브라우저 → 기본 브라우저 등). 결제는 서버(nicepay-confirm)가 이미
+      // 레코드 확정 + 리포트 생성을 트리거했으므로, 여기선 안내만 하고 마이페이지로 유도.
+      if (paidOk && (!state || !state.readingId)) {
+        window.history.replaceState({}, '', window.location.pathname);
+        localStorage.removeItem('petarot_dr');
+        document.documentElement.style.visibility = '';
+        alert('결제가 확인되었습니다. 리포트는 마이페이지에서 확인해주세요.');
+        window.location.href = '/mypage/';
+        return;
+      }
+
+      if (!saved || !state) { document.documentElement.style.visibility = ''; return; }
+
       const hasAuthCallback = window.location.hash.includes('access_token') ||
                               urlParams.has('code');
 
       // 30분 지난 저장 데이터는 무효 처리
       if (state._savedAt && Date.now() - state._savedAt > 30 * 60 * 1000) {
         localStorage.removeItem('petarot_dr');
+        document.documentElement.style.visibility = '';
         return;
       }
 
-      if (!state._loginPending && !state._resumePending && !state._paidPending && !paidOk && !payFail) return;
+      if (!state._loginPending && !state._resumePending && !state._paidPending && !paidOk && !payFail) {
+        document.documentElement.style.visibility = '';
+        return;
+      }
 
       // URL 파라미터/해시 제거
       if (paidOk || payFail || hasAuthCallback) {
@@ -1955,20 +1962,19 @@ ${actionSummary
 
       document.documentElement.style.visibility = '';
 
-      // 결제 완료 또는 결제 후 리포트 오류로 재시도 → 바로 전체 리포트
-      if (paidOk || state._paidPending) {
+      // 결제 완료(같은 브라우저 복귀) 또는 결제 후 오류 재시도 → 기존 readingId 레코드를 이어받아 생성/폴링
+      if ((paidOk || state._paidPending) && state.readingId) {
         const tid = urlParams.get('tid') || state.tid || null;
-        goTo('secFullReport');
+        goTo('secLoading');
         renderCards('cardsAreaReport', drawnCards, false);
-        generateFullReport(tid);
+        resumePaidReport(state.readingId, tid);
         return;
       }
 
-      // 결제 실패 → 페이월로 복귀 + 안내 + 미완료 기록 저장
+      // 결제 실패 → 페이월로 복귀 + 안내 (레코드는 이미 '결제 대기'로 존재하므로 추가 저장 불필요)
       if (payFail) {
         const msg = urlParams.get('msg') || '결제가 취소되었어요.';
         alert(msg + ' 다시 시도해주세요.');
-        savePendingReading();
       }
 
       goTo('secFreeRead');
