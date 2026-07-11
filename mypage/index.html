@@ -321,7 +321,19 @@
   <script src="/assets/auth.js"></script>
   <script>
     async function initMypage() {
-      const user = await getUser();
+      let user = await getUser();
+      // 카카오 로그인은 기본적으로 /mypage/ 로 복귀(signInWithKakao 기본 redirect).
+      // OAuth 복귀(#access_token 등)인데 세션이 아직 안 서면 최대 5초까지 재확인.
+      if (!user) {
+        const isAuthReturn = window.location.hash.includes('access_token') ||
+                             new URLSearchParams(window.location.search).has('code');
+        if (isAuthReturn) {
+          for (let i = 0; i < 10 && !user; i++) {
+            await new Promise(r => setTimeout(r, 500));
+            user = await getUser();
+          }
+        }
+      }
       if (typeof gtag === 'function') gtag('event', 'mypage_view', { logged_in: !!user });
 
       if (!user) {

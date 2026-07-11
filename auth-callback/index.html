@@ -18,33 +18,97 @@
   <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/dist/umd/supabase.min.js"></script>
   <script src="/assets/auth.js"></script>
   <style>
-    body { display:flex; align-items:center; justify-content:center; min-height:100vh; margin:0; font-family:sans-serif; color:#666; }
+    body { display:flex; align-items:center; justify-content:center; min-height:100vh; margin:0; font-family:sans-serif; color:#666; padding:24px; box-sizing:border-box; }
+    .cb-box { text-align:center; max-width:340px; }
+    .cb-spinner {
+      width:36px; height:36px; margin:0 auto 18px; border-radius:50%;
+      border:3px solid rgba(120,90,200,.2); border-top-color:#7d5fff;
+      animation:cb-spin .8s linear infinite;
+    }
+    @keyframes cb-spin { to { transform:rotate(360deg); } }
+    .cb-msg { font-size:1rem; margin:0 0 6px; }
+    .cb-sub { font-size:.85rem; color:#999; margin:0; }
+    .cb-actions { display:none; flex-direction:column; gap:10px; margin-top:20px; }
+    .cb-actions a {
+      display:block; padding:12px 20px; border-radius:24px; text-decoration:none;
+      font-size:.92rem; font-weight:600;
+    }
+    .cb-retry { background:linear-gradient(135deg,#7d5fff,#c8a8f0); color:#fff; }
+    .cb-home { background:rgba(120,90,200,.1); color:#7d5fff; }
   </style>
 </head>
 <body>
-  <p>로그인 처리 중...</p>
+  <div class="cb-box">
+    <div class="cb-spinner" id="cbSpinner"></div>
+    <p class="cb-msg" id="cbMsg">로그인 처리 중...</p>
+    <p class="cb-sub" id="cbSub">잠시만 기다려주세요</p>
+    <div class="cb-actions" id="cbActions">
+      <a class="cb-retry" href="/auth/">다시 로그인하기</a>
+      <a class="cb-home" href="/">홈으로</a>
+    </div>
+  </div>
   <script>
-    (async () => {
-      // Supabase가 hash의 access_token을 처리할 시간을 줌
-      await new Promise(r => setTimeout(r, 800));
-
-      let user = await getUser();
-      if (!user) {
-        await new Promise(r => setTimeout(r, 1200));
-        user = await getUser();
-      }
-
-      const saved = localStorage.getItem('petarot_dr');
-      let returnPath = '/';
-      if (saved) {
+    (function () {
+      // 로그인 성공 시 복귀할 경로 계산 (만료 30분 로직 유지, 실패해도 상태는 보존)
+      function computeReturnPath() {
+        const saved = localStorage.getItem('petarot_dr');
+        if (!saved) return '/';
         try {
           const state = JSON.parse(saved);
           const expired = state._savedAt && Date.now() - state._savedAt > 30 * 60 * 1000;
-          returnPath = (!expired && state._returnPath) ? state._returnPath : '/';
-        } catch {}
+          return (!expired && state._returnPath) ? state._returnPath : '/';
+        } catch { return '/'; }
       }
 
-      window.location.replace(returnPath);
+      let done = false;
+      let pollId = null, timeoutId = null, sub = null;
+      function cleanup() {
+        if (pollId) clearInterval(pollId);
+        if (timeoutId) clearTimeout(timeoutId);
+        try { if (sub) sub.subscription.unsubscribe(); } catch {}
+      }
+
+      function finish() {
+        if (done) return;
+        done = true;
+        cleanup();
+        window.location.replace(computeReturnPath());
+      }
+
+      function showFailure() {
+        if (done) return;
+        done = true;
+        cleanup();
+        // 상태(petarot_dr)는 지우지 않는다 — 재로그인 시 리딩 복원 가능해야 함
+        document.getElementById('cbSpinner').style.display = 'none';
+        document.getElementById('cbMsg').textContent = '로그인이 완료되지 않았어요';
+        document.getElementById('cbSub').textContent = '네트워크가 느리거나 로그인이 취소된 것 같아요. 진행하던 리딩은 저장되어 있어요.';
+        document.getElementById('cbActions').style.display = 'flex';
+      }
+
+      // Supabase 미설정/미로드 시 안전 폴백
+      const sb = window._sb;
+      if (!sb) { finish(); return; }
+
+      // 1) SIGNED_IN 이벤트 대기 (이벤트 기반 — 타이머 도박 제거)
+      const res = sb.auth.onAuthStateChange((event, session) => {
+        if (event === 'SIGNED_IN' && session) finish();
+      });
+      sub = res.data;
+
+      // 2) 즉시 + 0.5초 간격 폴링 (이벤트를 놓치는 엣지 케이스 대비)
+      async function poll() {
+        if (done) return;
+        try {
+          const { data } = await sb.auth.getSession();
+          if (data && data.session) finish();
+        } catch {}
+      }
+      poll();
+      pollId = setInterval(poll, 500);
+
+      // 3) 최대 10초 대기 후 실패 처리
+      timeoutId = setTimeout(showFailure, 10000);
     })();
   </script>
 </body>

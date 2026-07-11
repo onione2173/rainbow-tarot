@@ -1902,6 +1902,41 @@ ${speciesCtx}
       }
     }
 
+    // 세션 복원 실패 시: 리딩이 사라진 게 아니라 로그인이 필요함을 안내하는 배너
+    // (petarot_dr 상태는 보존 — 로그인하면 이어서 복원됨)
+    function showLoginNeededBanner() {
+      if (document.getElementById('loginNeededBanner')) return;
+      const bar = document.createElement('div');
+      bar.id = 'loginNeededBanner';
+      bar.style.cssText = 'position:fixed;top:0;left:0;right:0;z-index:9999;' +
+        'background:linear-gradient(135deg,#3a1a5a,#5a2a8a);color:#fff;' +
+        'padding:12px 16px;display:flex;align-items:center;justify-content:center;' +
+        'gap:12px;flex-wrap:wrap;font-size:.9rem;box-shadow:0 2px 12px rgba(0,0,0,.3);';
+      const txt = document.createElement('span');
+      txt.textContent = '로그인이 필요해요. 진행하던 리딩은 저장되어 있어요 — 로그인하면 이어집니다.';
+      const btn = document.createElement('button');
+      btn.textContent = '로그인';
+      btn.style.cssText = 'background:#ffd54f;color:#3a1a5a;border:none;border-radius:20px;' +
+        'padding:8px 20px;font-weight:700;cursor:pointer;font-family:inherit;font-size:.88rem;';
+      btn.onclick = function () {
+        // 기존 저장 상태를 보존하되 복귀 경로만 보정 후 재로그인
+        try {
+          const s = localStorage.getItem('petarot_dr');
+          if (s) {
+            const st = JSON.parse(s);
+            st._returnPath = '/deep-reading/';
+            st._savedAt = Date.now();
+            localStorage.setItem('petarot_dr', JSON.stringify(st));
+          }
+        } catch (e) {}
+        if (typeof signInWithKakao === 'function') signInWithKakao('/auth-callback/');
+        else window.location.href = '/auth/';
+      };
+      bar.appendChild(txt);
+      bar.appendChild(btn);
+      document.body.appendChild(bar);
+    }
+
     // ── 로그인/결제 후 상태 복원 ──
     document.addEventListener('DOMContentLoaded', async () => {
       const urlParams = new URLSearchParams(window.location.search);
@@ -1946,8 +1981,16 @@ ${speciesCtx}
         window.history.replaceState({}, '', window.location.pathname);
       }
 
-      const user = await getUser();
-      if (!user) { document.documentElement.style.visibility = ''; return; }
+      // 세션이 느린 환경에서 즉시 null일 수 있으므로 최대 5초까지 재확인 (페이지는 숨김 유지)
+      let user = await getUser();
+      if (!user) {
+        for (let i = 0; i < 10 && !user; i++) {
+          await new Promise(r => setTimeout(r, 500));
+          user = await getUser();
+        }
+      }
+      // 5초 후에도 세션이 없으면: 상태를 지우지 말고 안내 배너 노출 (리딩이 사라진 게 아님)
+      if (!user) { showLoginNeededBanner(); document.documentElement.style.visibility = ''; return; }
 
       localStorage.removeItem('petarot_dr');
       currentSpread = SPREADS[state.spreadKey];
