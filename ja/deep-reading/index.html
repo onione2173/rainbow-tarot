@@ -879,13 +879,11 @@
             <div class="paywall-msg" id="paywallMsg">全文レポートを見る</div>
             <div class="paywall-sub" id="paywallSub"></div>
 
-            <!-- Payment: stage 1 (not yet available in Japan) -->
+            <!-- Payment (PayPal) -->
             <div id="payGate" style="width:100%">
-              <div class="dev-notice" id="devNotice">⚙️ 決済機能は準備中です。もうすぐ公開!</div>
-              <button class="pay-btn" id="payBtn" disabled onclick="startPayment()">
-                全文レポートを受け取る
-                <span class="pay-price">準備中</span>
-              </button>
+              <div id="payPriceDisplay" style="font-size:1.5rem;font-weight:600;color:#fff;margin-bottom:14px">¥400</div>
+              <div id="paypalButtons" style="max-width:340px;margin:0 auto"></div>
+              <div class="pay-error" id="payError" style="display:none;margin-top:10px;color:#f0a0a0;font-size:.85rem"></div>
             </div>
           </div>
         </div>
@@ -970,9 +968,12 @@
   <script src="/assets/cards-ja.js"></script>
   <script src="/assets/lang-switch.js" defer></script>
   <script>
-    // Payment is not yet available in the JP version (stage 1)
     const DEV_MODE = false;
     const SITE_URL = 'https://tubular-cupcake-55d47b.netlify.app';
+
+    // PayPal 결제 설정 (일본판: JPY 400 — 서버 paypal-order PRICES와 동일)
+    const LOCALE = 'ja';
+    const PAY = { value: '400', currency: 'JPY', display: '¥400', amountMinor: 400 };
 
     const SPREADS = {
       mind: {
@@ -1419,17 +1420,143 @@ ${speciesCtx}
     async function showPaywall() {
       updatePaywallText();
       document.getElementById('paywallBox').style.display = '';
-      // JP stage 1: no login required -- the payment panel is always shown
-      // directly, in "coming soon" state (see #payGate in the HTML).
       document.getElementById('payGate').style.display = '';
+      renderPayPal();
     }
 
-    // -- Payment is not available yet in the JP version (stage 1). --
-    // Guarded at the top so no NicePay SDK code ever runs: the pay button
-    // is also rendered `disabled` in the HTML, so this handler normally
-    // never fires at all.
-    async function startPayment() {
-      alert('決済機能は準備中です。もうすぐ公開予定です!');
+    // ── PayPal 결제 ──
+    // client-id/sandbox는 서버(paypal-order {action:'config'})에서 받아 SDK를 동적 로드
+    // → 시크릿/하드코딩 없이 env만으로 sandbox↔live 전환.
+    let _ppConfig = null;
+    async function loadPayPalConfig() {
+      if (_ppConfig) return _ppConfig;
+      try {
+        const res = await fetch('/.netlify/functions/paypal-order', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ action: 'config' })
+        });
+        _ppConfig = await res.json();
+      } catch (e) { _ppConfig = null; }
+      return _ppConfig;
+    }
+
+    function loadPayPalSdk(clientId) {
+      return new Promise((resolve, reject) => {
+        if (window.paypal) return resolve();
+        const s = document.createElement('script');
+        s.src = `https://www.paypal.com/sdk/js?client-id=${encodeURIComponent(clientId)}&currency=${PAY.currency}&intent=capture`;
+        s.onload = resolve;
+        s.onerror = reject;
+        document.head.appendChild(s);
+      });
+    }
+
+    function showPayError(msg) {
+      const el = document.getElementById('payError');
+      if (el) { el.textContent = msg; el.style.display = ''; }
+    }
+
+    let _ppReady = false;
+    async function renderPayPal() {
+      if (_ppReady) return;
+      const disp = document.getElementById('payPriceDisplay');
+      if (disp) disp.textContent = PAY.display;
+      const cfg = await loadPayPalConfig();
+      if (!cfg || !cfg.clientId) { showPayError('決済の準備に失敗しました。時間をおいて再度お試しください。'); return; }
+      try { await loadPayPalSdk(cfg.clientId); } catch { showPayError('決済モジュールの読み込みに失敗しました。'); return; }
+      if (!window.paypal) { showPayError('決済モジュールの読み込みに失敗しました。'); return; }
+      _ppReady = true;
+
+      paypal.Buttons({
+        createOrder: async () => {
+          const errEl = document.getElementById('payError'); if (errEl) errEl.style.display = 'none';
+          if (typeof gtag === 'function') gtag('event', 'payment_initiated', { value: Number(PAY.value), currency: PAY.currency });
+          // 선기록: 결제 대기 레코드 먼저 생성 → readingId 확보
+          const readingId = await preparePendingRecord();
+          if (!readingId) throw new Error('prepare_failed');
+          const res = await fetch('/.netlify/functions/paypal-order', {
+            method: 'POST', headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ action: 'create', readingId, locale: LOCALE })
+          });
+          const data = await res.json();
+          if (!data.orderID) throw new Error('create_failed');
+          return data.orderID;
+        },
+        onApprove: async (data) => {
+          const res = await fetch('/.netlify/functions/paypal-order', {
+            method: 'POST', headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ action: 'capture', orderID: data.orderID })
+          });
+          let result = {};
+          try { result = await res.json(); } catch {}
+          if (!result.ok || !result.readingId) {
+            showPayError('決済の確認に失敗しました。マイページで状態をご確認ください。');
+            return;
+          }
+          // 결제 확정 → 같은 브라우저 재방문 시 폴링 복원되도록 _paidPending 표시
+          try {
+            const saved = JSON.parse(localStorage.getItem('petarot_dr') || '{}');
+            saved._paidPending = true; saved.readingId = result.readingId; saved._savedAt = Date.now();
+            localStorage.setItem('petarot_dr', JSON.stringify(saved));
+          } catch {}
+          resumePaidReport(result.readingId);
+        },
+        onCancel: () => { showPayError('決済がキャンセルされました。もう一度お試しください。'); },
+        onError: () => { showPayError('決済中にエラーが発生しました。もう一度お試しください。'); }
+      }).render('#paypalButtons').catch(() => {});
+    }
+
+    // 결제 전 '결제 대기' 레코드 선기록 → readingId 확보 (한국판 startPayment 구조 이식)
+    // ja/en은 로그인 UI가 없으므로 익명 로그인으로 세션을 확보한다.
+    async function preparePendingRecord() {
+      let user = await getUser();
+      if (!user && window._sb) {
+        try { await window._sb.auth.signInAnonymously(); } catch (e) { console.warn('anon sign-in failed', e); }
+        user = await getUser();
+      }
+      if (!user || !window._sb) { showPayError('セッションを準備できませんでした。ページを再読み込みしてお試しください。'); return null; }
+
+      const spreadKey = Object.keys(SPREADS).find(k => SPREADS[k].name === currentSpread.name);
+      const snapshot = JSON.stringify({
+        _pending: true, tid: null, locale: LOCALE,
+        spreadKey, petInfo, drawnCards, actionCards, freeText: freeReadingText
+      });
+      const expires = new Date(Date.now() + 24 * 60 * 60 * 1000).toISOString();
+      let readingId;
+      try {
+        const { data: inserted, error: insertErr } = await window._sb.from('reading_history').insert({
+          user_id: user.id,
+          spread_type: currentSpread.name || '',
+          pet_name: petInfo?.name || '',
+          pet_species: petInfo?.species || '',
+          concern: petInfo?.concern || '',
+          cards_drawn: drawnCards.map(c => ({ name: c.name, reversed: c.reversed, position: c.position })),
+          full_reading: snapshot,
+          amount: PAY.amountMinor,
+          status: '결제 대기',
+          expires_at: expires
+        }).select('id').single();
+        if (insertErr || !inserted?.id) throw (insertErr || new Error('no id'));
+        readingId = inserted.id;
+      } catch (e) {
+        console.error('pending insert failed', e);
+        showPayError('決済の準備に失敗しました。時間をおいて再度お試しください。');
+        return null;
+      }
+
+      try {
+        localStorage.setItem('petarot_dr', JSON.stringify({
+          readingId, locale: LOCALE, spreadKey, petInfo,
+          drawnCards: drawnCards.map(({ img, name, en, suit, upKw, rvKw, reversed, position }) =>
+            ({ img, name, en, suit, upKw, rvKw, reversed, position })),
+          actionCards: actionCards.map(({ img, name, en, suit, upKw, rvKw, reversed }) =>
+            ({ img, name, en, suit, upKw, rvKw, reversed })),
+          freeText: freeReadingText, awaitingPayment: true, _savedAt: Date.now()
+        }));
+      } catch (e) { console.warn('state save failed', e); }
+
+      return readingId;
     }
 
     // -- Major Arcana slideshow --
@@ -1510,103 +1637,37 @@ ${speciesCtx}
     }
 
     // -- Background report generation + polling --
-    // NOTE: unreachable in JP stage 1 (no login, payment guarded), kept for
-    // forward compatibility with a future stage 2.
     let _pollTimer = null;
 
-    async function startBackgroundReport(paymentKey) {
+    // 결제 완료(capture) 후: 이미 존재하는 readingId 레코드를 이어받아 서버 리포트 생성을
+    // 트리거하고 폴링. 프롬프트는 서버(deep-tarot-background)가 스냅샷에서 재구성한다.
+    // 서버(paypal-order capture)도 트리거하지만 실패 대비로 클라이언트도 트리거
+    // (중복은 background 함수가 원자적 상태 클레임으로 차단).
+    async function resumePaidReport(readingId) {
       if (typeof gtag === 'function') gtag('event', 'purchase', {
-        transaction_id: paymentKey || ('dev_' + Date.now()),
-        value: 1500,
-        currency: 'KRW',
-        items: [{ item_id: 'deep_reading', item_name: 'ペットタロット深層リーディング', price: 1500, quantity: 1 }]
+        transaction_id: 'paypal_' + (readingId || Date.now()),
+        value: Number(PAY.value),
+        currency: PAY.currency,
+        items: [{ item_id: 'deep_reading', item_name: 'PetTarot Deep Reading', price: Number(PAY.value), quantity: 1 }]
       });
-      const user = await getUser();
-      if (!user || !window._sb) return;
 
-      const cardSummary = drawnCards.map(c => `[${c.position}] ${c.name}(${c.reversed ? '逆位置' : '正位置'})`).join('\n');
-      const actionSummary = actionCards.length > 0
-        ? actionCards.map(c => `${c.name}(${c.reversed ? '逆位置' : '正位置'})`).join(', ')
-        : null;
-      const speciesCtx = buildSpeciesContext();
-      const systemPrompt = `あなたはペットタロットの専門家です。温かく情感豊かな日本語で書いてください。必ずこの子の名前、種類、お悩みに直接言及してください。一般的な表現は使わないでください。`;
-      const freeCtx = freeReadingText
-        ? `\n無料プレビューで提供した最初のカードの解釈（これを参考に、さらに深く広げてください）:\n${freeReadingText}\n`
-        : '';
-      const userPrompt = `ペット: ${petInfo.name}（${petInfo.species}${petInfo.age ? '、' + petInfo.age : ''}${petInfo.gender ? '、' + petInfo.gender : ''}）
-飼い主さんの呼び方: 「${petInfo.ownerTitle}」
-${speciesCtx}
-お悩み: ${petInfo.concern}
-スプレッド: ${currentSpread.fullName}
-引いたカード:
-${cardSummary}
-${actionSummary ? `\nアクションガイドカード: ${actionSummary}` : ''}
-${freeCtx}
-以下の4つのセクションで、十分に読み応えのあるレポートを作成してください:
-
-## 🃏 カードごとのポジション解釈
-各カードをポジションの意味と組み合わせて深く解釈してください。${petInfo.name}の状況に直接つなげてください。カード同士の流れやつながりにも触れてください。（各カード3〜4行）
-
-## 💌 ${petInfo.name}の本音
-${petInfo.name}の一人称視点での心の中の独白。飼い主さんを「${petInfo.ownerTitle}」と呼びながら直接語りかける形式。感情や願いを具体的に表現してください。（6〜8行）
-
-## 🐾 飼い主さんへ
-カード全体の流れをもとに、見落としているかもしれない視点、慰めと共感を伝えてください。具体的な気づきを含めてください。（4〜5行）
-
-## ✨ これからのアクションガイド
-${actionSummary
-  ? `アクションガイドカード（${actionSummary}）を解釈して実践方法を提示してください。各項目: **【カード名】** — 具体的な行動とその理由。1〜${actionCards.length}個。`
-  : `カードをもとに実践できる具体的なアクションガイドを3つ挙げてください。各項目: **行動** — 理由と方法。`}`;
-
-      // 1. Save a pending record to Supabase to get an ID
-      const snapshot = JSON.stringify({
-        _pending: true, _paidPending: true,
-        tid: paymentKey || null,
-        spreadKey: Object.keys(SPREADS).find(k => SPREADS[k].name === currentSpread?.name),
-        petInfo, drawnCards, actionCards, freeText: freeReadingText
-      });
-      const expires = new Date(Date.now() + 7 * 24 * 60 * 60 * 1000).toISOString();
-      const { data: inserted, error: insertErr } = await window._sb.from('reading_history').insert({
-        user_id: user.id,
-        spread_type: currentSpread?.name || '',
-        pet_name: petInfo?.name || '',
-        pet_species: petInfo?.species || '',
-        concern: petInfo?.concern || '',
-        cards_drawn: drawnCards.map(c => ({ name: c.name, reversed: c.reversed, position: c.position })),
-        full_reading: snapshot,
-        amount: 1500,
-        status: '生成中',
-        expires_at: expires
-      }).select('id').single();
-
-      if (insertErr || !inserted?.id) {
-        console.error('pending insert failed', insertErr);
+      if (!readingId) {
         goTo('secFullReport');
         document.getElementById('reportLoadBox').style.display = 'none';
         document.getElementById('reportContent').style.display = '';
-        document.getElementById('reportText').innerHTML = `<p style="color:#f09090">エラーが発生しました。もう一度お試しください。</p>`;
+        document.getElementById('reportText').innerHTML = `<p style="color:#f09090">レポート情報が見つかりませんでした。</p>
+          <p style="margin-top:12px;font-size:.85rem;color:#c0aad8">決済は正常に処理されています。マイページでご確認ください。</p>`;
         return;
       }
 
-      const readingId = inserted.id;
-
-      // 2. Show loading screen + start card slideshow
-      goTo('secLoading');
-      mcStart();
-
-      // 3. Call background function (do not wait for response)
       fetch('/.netlify/functions/deep-tarot-background', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({
-          readingId,
-          tid: paymentKey || null,
-          system: systemPrompt,
-          messages: [{ role: 'user', content: userPrompt }]
-        })
+        body: JSON.stringify({ readingId })
       }).catch(() => {});
 
-      // 4. Start polling
+      goTo('secLoading');
+      mcStart();
       _pollTimer = setInterval(() => pollReport(readingId), 5000);
     }
 
@@ -1639,7 +1700,7 @@ ${actionSummary
             gtag('event', 'deep_reading_complete', { spread: currentSpread.name });
             gtag('event', 'paid_report_complete', { spread: currentSpread.name });
           }
-        } else if (data.status === 'エラー') {
+        } else if (data.status === '오류') {
           clearInterval(_pollTimer);
           mcStop();
           goTo('secFullReport');
@@ -1669,7 +1730,7 @@ ${actionSummary
         }, 8000);
         return;
       }
-      await startBackgroundReport(paymentKey);
+      await resumePaidReport(paymentKey);
     }
 
     // Markdown section rendering
@@ -1786,9 +1847,7 @@ ${actionSummary
       }
     }
 
-    // -- Restore state after login/payment redirect --
-    // NOTE: unreachable in JP stage 1 (no login flow, payment guarded),
-    // kept for forward compatibility with a future stage 2.
+    // -- Restore state after payment (same-browser revisit during polling) --
     document.addEventListener('DOMContentLoaded', async () => {
       const saved = localStorage.getItem('petarot_dr');
       if (!saved) return;
@@ -1830,12 +1889,11 @@ ${actionSummary
 
       document.documentElement.style.visibility = '';
 
-      // Payment completed, or retrying after a post-payment report error -> straight to full report
-      if (paidOk || state._paidPending) {
-        const tid = urlParams.get('tid') || state.tid || null;
-        goTo('secFullReport');
+      // 결제 확정 후 폴링 중 이탈 → 같은 브라우저 재방문 시 익명 세션으로 폴링 복원
+      if ((paidOk || state._paidPending) && state.readingId) {
+        goTo('secLoading');
         renderCards('cardsAreaReport', drawnCards, false);
-        generateFullReport(tid);
+        resumePaidReport(state.readingId);
         return;
       }
 
@@ -1868,6 +1926,7 @@ ${actionSummary
       updatePaywallText();
       document.getElementById('paywallBox').style.display = '';
       document.getElementById('payGate').style.display = '';
+      renderPayPal();
     });
 
     // -- Utils --

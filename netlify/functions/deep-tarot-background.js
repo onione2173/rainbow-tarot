@@ -4,15 +4,27 @@
 // nicepay-confirm(결제 승인) 또는 클라이언트(결제 복귀) 어느 쪽이 트리거해도
 // 원자적 상태 클레임으로 단 한 번만 생성된다.
 
-// ── 배열법 메타 (deep-reading/index.html의 SPREADS에서 fullName만 이식) ──
-const SPREADS = {
-  mind:     { fullName: '아이가 무슨 생각 하는지 궁금해요 — 크로스 스프레드' },
-  behavior: { fullName: '갑자기 행동이 이상해졌어요 — 호스슈 스프레드' },
-  change:   { fullName: '이사·합사 등 변화를 앞두고 있어요 — 쓰리카드 스프레드' },
+// ── locale별 배열법 fullName (ko/ja/en deep-reading 페이지의 SPREADS.fullName 이식) ──
+const SPREADS_BY_LOCALE = {
+  ko: {
+    mind:     '아이가 무슨 생각 하는지 궁금해요 — 크로스 스프레드',
+    behavior: '갑자기 행동이 이상해졌어요 — 호스슈 스프레드',
+    change:   '이사·합사 등 변화를 앞두고 있어요 — 쓰리카드 스프레드',
+  },
+  ja: {
+    mind:     'この子が何を考えているのか気になる — クロススプレッド',
+    behavior: '急に様子がおかしくなった — ホースシュースプレッド',
+    change:   '引っ越し・多頭飼いなど変化を控えている — スリーカードスプレッド',
+  },
+  en: {
+    mind:     'I want to know what my pet is thinking — Cross Spread',
+    behavior: "My pet's behavior suddenly changed — Horseshoe Spread",
+    change:   'Getting ready for a big change — Three Card Spread',
+  },
 };
 
-// ── 동물 종/나이 컨텍스트 (deep-reading/index.html의 buildSpeciesContext 이식) ──
-function buildSpeciesContext(petInfo) {
+// ── 동물 종/나이 컨텍스트: locale별 (각 deep-reading 페이지의 buildSpeciesContext 이식) ──
+function speciesContextKo(petInfo) {
   const sp = petInfo.species;
   const displaySpecies = sp === '기타' ? (petInfo.otherSpecies || '반려동물') : sp;
   const ageText = petInfo.age || '';
@@ -39,19 +51,76 @@ function buildSpeciesContext(petInfo) {
   return `[동물 정보] 종: ${displaySpecies}${ageText ? ', 나이: ' + ageText : ''}${petInfo.gender ? ', ' + petInfo.gender : ''}. ${notes.join('. ')}`;
 }
 
-// ── 스냅샷 → 프롬프트 (deep-reading/index.html startBackgroundReport의 문구 그대로 이식) ──
-function buildPrompt(snap) {
+function speciesContextJa(petInfo) {
+  const sp = petInfo.species;
+  const displaySpecies = sp === 'その他' ? (petInfo.otherSpecies || 'ペット') : sp;
+  const ageText = petInfo.age || '';
+  const ageNum = parseFloat(ageText.replace(/[^0-9.]/g, ''));
+  const isMonths = ageText.includes('か月') || ageText.includes('ヶ月') || ageText.includes('month');
+  let notes = [];
+
+  if (sp === '犬') {
+    if (!isMonths && ageNum >= 10) notes.push('シニア犬 — 関節の不調、認知機能の低下、分離不安など加齢に伴う問題を考慮');
+    else if (!isMonths && ageNum <= 1 || isMonths && ageNum <= 12) notes.push('子犬期 — 社会化の途中、エネルギー過多、警戒心を学ぶ段階');
+    notes.push('群れで生きる動物なので飼い主さんの感情にとても敏感で、絆が心理の核になる');
+  } else if (sp === '猫') {
+    if (!isMonths && ageNum >= 12) notes.push('シニア猫 — 腎機能の低下、甲状腺の問題、活動量の減少などを考慮');
+    else if (!isMonths && ageNum <= 1 || isMonths && ageNum <= 12) notes.push('子猫 — 探求欲が強く、縄張りを確立している最中');
+    notes.push('独立心が強くストレスを隠しがちで、環境の変化に敏感');
+  } else if (sp === 'うさぎ') {
+    notes.push('とても繊細でストレスが健康に直接影響する。社会的だけど一人の時間も必要');
+  } else if (sp === '鳥') {
+    notes.push('知能が高く、寂しさに弱い。同じ行動の繰り返しや羽をむしる行動はストレスのサイン');
+  } else if (sp === 'その他') {
+    notes.push(`${displaySpecies}という動物の特性を考慮してリーディング`);
+  }
+
+  return `[動物情報] 種類: ${displaySpecies}${ageText ? '、年齢: ' + ageText : ''}${petInfo.gender ? '、' + petInfo.gender : ''}。${notes.join('。')}`;
+}
+
+function speciesContextEn(petInfo) {
+  const sp = petInfo.species;
+  const displaySpecies = sp === 'Other' ? (petInfo.otherSpecies || 'pet') : sp;
+  const ageText = petInfo.age || '';
+  const ageNum = parseFloat(ageText.replace(/[^0-9.]/g, ''));
+  const isMonths = /month/i.test(ageText);
+  let notes = [];
+
+  if (sp === 'Dog') {
+    if (!isMonths && ageNum >= 10) notes.push('Senior dog — consider joint discomfort, cognitive decline, separation anxiety, and other age-related issues');
+    else if ((!isMonths && ageNum <= 1) || (isMonths && ageNum <= 12)) notes.push('Puppy stage — still socializing, high energy, learning caution');
+    notes.push("As a pack animal, very attuned to the owner's emotions; the bond is central to their psychology");
+  } else if (sp === 'Cat') {
+    if (!isMonths && ageNum >= 12) notes.push('Senior cat — consider declining kidney function, thyroid issues, reduced activity');
+    else if ((!isMonths && ageNum <= 1) || (isMonths && ageNum <= 12)) notes.push('Kitten — highly curious, still establishing territory');
+    notes.push('Independent-minded, tends to hide stress, sensitive to environmental change');
+  } else if (sp === 'Rabbit') {
+    notes.push('Very delicate; stress directly affects health. Social, but also needs alone time');
+  } else if (sp === 'Bird') {
+    notes.push('Highly intelligent, vulnerable to loneliness. Repetitive behavior or feather-plucking can be signs of stress');
+  } else if (sp === 'Other') {
+    notes.push(`Consider the traits of ${displaySpecies} in the reading`);
+  }
+
+  return `[Animal info] Species: ${displaySpecies}${ageText ? ', Age: ' + ageText : ''}${petInfo.gender ? ', ' + petInfo.gender : ''}. ${notes.join('. ')}`;
+}
+
+// ── 스냅샷 → 프롬프트: locale 분기 (각 deep-reading 페이지의 유료 리포트 프롬프트 그대로 이식) ──
+function commonParts(snap, locale) {
   const petInfo = snap.petInfo || {};
   const drawnCards = snap.drawnCards || [];
   const actionCards = snap.actionCards || [];
-  const freeReadingText = snap.freeText || '';
-  const fullName = (SPREADS[snap.spreadKey] && SPREADS[snap.spreadKey].fullName) || '';
+  const fullName = (SPREADS_BY_LOCALE[locale] && SPREADS_BY_LOCALE[locale][snap.spreadKey]) || '';
+  return { petInfo, drawnCards, actionCards, fullName, freeReadingText: snap.freeText || '' };
+}
 
+function buildPromptKo(snap) {
+  const { petInfo, drawnCards, actionCards, fullName, freeReadingText } = commonParts(snap, 'ko');
   const cardSummary = drawnCards.map(c => `[${c.position}] ${c.name}(${c.reversed ? '역방향' : '정방향'})`).join('\n');
   const actionSummary = actionCards.length > 0
     ? actionCards.map(c => `${c.name}(${c.reversed ? '역방향' : '정방향'})`).join(', ')
     : null;
-  const speciesCtx = buildSpeciesContext(petInfo);
+  const speciesCtx = speciesContextKo(petInfo);
   const systemPrompt = `당신은 반려동물 타로 전문가입니다. 따뜻하고 감성적인 한국어로 작성하세요. 반드시 이 아이의 이름, 종, 고민을 직접 언급하세요. 일반적인 표현은 쓰지 마세요.`;
   const freeCtx = freeReadingText
     ? `\n무료 미리보기에서 제공된 첫 카드 해석 (이를 참고하여 더 깊이 확장하세요):\n${freeReadingText}\n`
@@ -82,6 +151,152 @@ ${actionSummary
   : `카드를 바탕으로 실천할 수 있는 구체적인 행동 가이드 3가지. 각 항목: **행동** — 이유와 방법.`}`;
 
   return { system: systemPrompt, messages: [{ role: 'user', content: userPrompt }] };
+}
+
+function buildPromptJa(snap) {
+  const { petInfo, drawnCards, actionCards, fullName, freeReadingText } = commonParts(snap, 'ja');
+  const cardSummary = drawnCards.map(c => `[${c.position}] ${c.name}(${c.reversed ? '逆位置' : '正位置'})`).join('\n');
+  const actionSummary = actionCards.length > 0
+    ? actionCards.map(c => `${c.name}(${c.reversed ? '逆位置' : '正位置'})`).join(', ')
+    : null;
+  const speciesCtx = speciesContextJa(petInfo);
+  const systemPrompt = `あなたはペットタロットの専門家です。温かく情感豊かな日本語で書いてください。必ずこの子の名前、種類、お悩みに直接言及してください。一般的な表現は使わないでください。`;
+  const freeCtx = freeReadingText
+    ? `\n無料プレビューで提供した最初のカードの解釈（これを参考に、さらに深く広げてください）:\n${freeReadingText}\n`
+    : '';
+  const userPrompt = `ペット: ${petInfo.name}（${petInfo.species}${petInfo.age ? '、' + petInfo.age : ''}${petInfo.gender ? '、' + petInfo.gender : ''}）
+飼い主さんの呼び方: 「${petInfo.ownerTitle}」
+${speciesCtx}
+お悩み: ${petInfo.concern}
+スプレッド: ${fullName}
+引いたカード:
+${cardSummary}
+${actionSummary ? `\nアクションガイドカード: ${actionSummary}` : ''}
+${freeCtx}
+以下の4つのセクションで、十分に読み応えのあるレポートを作成してください:
+
+## 🃏 カードごとのポジション解釈
+各カードをポジションの意味と組み合わせて深く解釈してください。${petInfo.name}の状況に直接つなげてください。カード同士の流れやつながりにも触れてください。（各カード3〜4行）
+
+## 💌 ${petInfo.name}の本音
+${petInfo.name}の一人称視点での心の中の独白。飼い主さんを「${petInfo.ownerTitle}」と呼びながら直接語りかける形式。感情や願いを具体的に表現してください。（6〜8行）
+
+## 🐾 飼い主さんへ
+カード全体の流れをもとに、見落としているかもしれない視点、慰めと共感を伝えてください。具体的な気づきを含めてください。（4〜5行）
+
+## ✨ これからのアクションガイド
+${actionSummary
+  ? `アクションガイドカード（${actionSummary}）を解釈して実践方法を提示してください。各項目: **【カード名】** — 具体的な行動とその理由。1〜${actionCards.length}個。`
+  : `カードをもとに実践できる具体的なアクションガイドを3つ挙げてください。各項目: **行動** — 理由と方法。`}`;
+
+  return { system: systemPrompt, messages: [{ role: 'user', content: userPrompt }] };
+}
+
+function buildPromptEn(snap) {
+  const { petInfo, drawnCards, actionCards, fullName, freeReadingText } = commonParts(snap, 'en');
+  const cardSummary = drawnCards.map(c => `[${c.position}] ${c.name}(${c.reversed ? 'Reversed' : 'Upright'})`).join('\n');
+  const actionSummary = actionCards.length > 0
+    ? actionCards.map(c => `${c.name}(${c.reversed ? 'Reversed' : 'Upright'})`).join(', ')
+    : null;
+  const speciesCtx = speciesContextEn(petInfo);
+  const systemPrompt = `You are a pet tarot expert. Write in warm, emotionally rich English. Always directly reference this pet's name, species, and concern. Never use generic phrasing.`;
+  const freeCtx = freeReadingText
+    ? `\nHere is the first card's interpretation from the free preview (use it as context and go deeper):\n${freeReadingText}\n`
+    : '';
+  const userPrompt = `Pet: ${petInfo.name} (${petInfo.species}${petInfo.age ? ', ' + petInfo.age : ''}${petInfo.gender ? ', ' + petInfo.gender : ''})
+What the pet calls their person: "${petInfo.ownerTitle}"
+${speciesCtx}
+Concern: ${petInfo.concern}
+Spread: ${fullName}
+Cards drawn:
+${cardSummary}
+${actionSummary ? `\nAction Guide Cards: ${actionSummary}` : ''}
+${freeCtx}
+Write a substantial, satisfying report in the following four sections:
+
+## 🃏 Card-by-Card Position Interpretation
+Interpret each card in combination with its position's meaning. Connect it directly to ${petInfo.name}'s situation. Also touch on the flow and connections between the cards. (3-4 lines per card)
+
+## 💌 A Letter from ${petInfo.name}'s Heart
+A first-person inner monologue from ${petInfo.name}, speaking directly and calling their person "${petInfo.ownerTitle}." Express feelings and wishes concretely. (6-8 lines)
+
+## 🐾 A Message for You
+Based on the overall flow of the cards, offer a perspective the pet parent may be missing, along with comfort and empathy. Include a specific insight. (4-5 lines)
+
+## ✨ Action Guide for What's Ahead
+${actionSummary
+  ? `Interpret the Action Guide Cards (${actionSummary}) and offer practical steps. Each item: **[Card Name]** — a concrete action and the reason for it. 1 to ${actionCards.length} items.`
+  : `List three concrete, actionable steps based on the cards. Each item: **Action** — the reason and how to do it.`}`;
+
+  return { system: systemPrompt, messages: [{ role: 'user', content: userPrompt }] };
+}
+
+// snap.locale('ko' 기본/'ja'/'en')에 따라 프롬프트 생성
+function buildPrompt(snap) {
+  const locale = snap.locale === 'ja' ? 'ja' : snap.locale === 'en' ? 'en' : 'ko';
+  if (locale === 'ja') return buildPromptJa(snap);
+  if (locale === 'en') return buildPromptEn(snap);
+  return buildPromptKo(snap);
+}
+
+// ── 결제 검증: 프로바이더 분기 ──
+// PayPal 서버 고정가 (paypal-order.js PRICES와 동일 — 위조 결제 차단)
+const PAYPAL_PRICES = {
+  en: { currency_code: 'USD', value: '2.99' },
+  ja: { currency_code: 'JPY', value: '400' },
+};
+
+function paypalBase() {
+  return process.env.PAYPAL_SANDBOX === 'true'
+    ? 'https://api-m.sandbox.paypal.com'
+    : 'https://api-m.paypal.com';
+}
+
+async function paypalToken() {
+  const id = process.env.PAYPAL_CLIENT_ID;
+  const secret = process.env.PAYPAL_CLIENT_SECRET;
+  if (!id || !secret) return null;
+  const auth = Buffer.from(`${id}:${secret}`).toString('base64');
+  try {
+    const res = await fetch(`${paypalBase()}/v1/oauth2/token`, {
+      method: 'POST',
+      headers: {
+        Authorization: `Basic ${auth}`,
+        'Content-Type': 'application/x-www-form-urlencoded',
+      },
+      body: 'grant_type=client_credentials',
+    });
+    const data = await res.json();
+    return data.access_token || null;
+  } catch {
+    return null;
+  }
+}
+
+// PayPal Orders API GET으로 결제 재검증(멱등): COMPLETED + custom_id===readingId + 금액/통화 일치
+async function verifyPaymentPaypal(snap, readingId) {
+  const orderID = snap.orderID;
+  if (!orderID) return { ok: false, reason: 'no_order' };
+  const price = PAYPAL_PRICES[snap.locale];
+  if (!price) return { ok: false, reason: 'bad_locale' };
+  const token = await paypalToken();
+  if (!token) return { ok: false, reason: 'config' };
+  try {
+    const res = await fetch(`${paypalBase()}/v2/checkout/orders/${encodeURIComponent(orderID)}`, {
+      headers: { Authorization: `Bearer ${token}`, 'Content-Type': 'application/json' },
+    });
+    const data = await res.json();
+    if (data.status !== 'COMPLETED') return { ok: false, reason: 'not_completed' };
+    const pu = (data.purchase_units && data.purchase_units[0]) || {};
+    if (pu.custom_id !== readingId) return { ok: false, reason: 'custom_id' };
+    const amt = pu.amount || {};
+    if (amt.currency_code !== price.currency_code || Number(amt.value) !== Number(price.value)) {
+      return { ok: false, reason: 'amount' };
+    }
+    return { ok: true };
+  } catch {
+    return { ok: false, reason: 'error' };
+  }
 }
 
 // NicePay 결제조회로 실제 결제 여부/금액을 서버에서 검증 (멱등: 재조회 가능)
@@ -182,9 +397,16 @@ exports.handler = async (event) => {
     return;
   }
 
-  // 유료 리포트 생성 전 결제 검증: tid 우선순위 = 요청 tid > 스냅샷 tid
-  const effectiveTid = tid || snap.tid || null;
-  const verification = await verifyPayment(effectiveTid);
+  // 유료 리포트 생성 전 결제 검증: 프로바이더 분기
+  //  - paypal: 스냅샷 orderID로 PayPal Orders GET 재검증
+  //  - nicepay(기본): tid 우선순위 = 요청 tid > 스냅샷 tid
+  let verification;
+  if (snap.payProvider === 'paypal') {
+    verification = await verifyPaymentPaypal(snap, readingId);
+  } else {
+    const effectiveTid = tid || snap.tid || null;
+    verification = await verifyPayment(effectiveTid);
+  }
   if (!verification.ok) {
     await updateReading({ status: '오류', expires_at: errExpires() });
     return;

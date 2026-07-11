@@ -879,13 +879,11 @@
             <div class="paywall-msg" id="paywallMsg">Unlock the Full Report</div>
             <div class="paywall-sub" id="paywallSub"></div>
 
-            <!-- Payment: not yet available -->
+            <!-- Payment (PayPal) -->
             <div id="payGate" style="width:100%">
-              <div class="dev-notice" id="devNotice">⚙️ Payments are coming soon! Stay tuned.</div>
-              <button class="pay-btn" id="payBtn" disabled onclick="startPayment()">
-                Get the Full Report
-                <span class="pay-price">Coming Soon</span>
-              </button>
+              <div id="payPriceDisplay" style="font-size:1.5rem;font-weight:600;color:#fff;margin-bottom:14px">$2.99</div>
+              <div id="paypalButtons" style="max-width:340px;margin:0 auto"></div>
+              <div class="pay-error" id="payError" style="display:none;margin-top:10px;color:#f0a0a0;font-size:.85rem"></div>
             </div>
           </div>
         </div>
@@ -970,9 +968,12 @@
   <script src="/assets/cards-en.js"></script>
   <script src="/assets/lang-switch.js" defer></script>
   <script>
-    // Payment is not yet available in the EN version (stage 1)
     const DEV_MODE = false;
     const SITE_URL = 'https://tubular-cupcake-55d47b.netlify.app';
+
+    // PayPal 결제 설정 (영어판: USD 2.99 — 서버 paypal-order PRICES와 동일)
+    const LOCALE = 'en';
+    const PAY = { value: '2.99', currency: 'USD', display: '$2.99', amountMinor: 299 };
 
     const SPREADS = {
       mind: {
@@ -1418,17 +1419,143 @@ Interpret only the first card, "[${firstCard.position}] ${firstCard.name} (${fir
     async function showPaywall() {
       updatePaywallText();
       document.getElementById('paywallBox').style.display = '';
-      // EN stage 1: no login required -- the payment panel is always shown
-      // directly, in "coming soon" state (see #payGate in the HTML).
       document.getElementById('payGate').style.display = '';
+      renderPayPal();
     }
 
-    // -- Payment is not available yet in the EN version (stage 1). --
-    // Guarded at the top so no payment SDK code ever runs: the pay button
-    // is also rendered `disabled` in the HTML, so this handler normally
-    // never fires at all.
-    async function startPayment() {
-      alert('Payments are coming soon! Stay tuned.');
+    // ── PayPal payment ──
+    // client-id/sandbox come from the server (paypal-order {action:'config'})
+    // so the SDK loads dynamically with no secret/hardcoding — env-only sandbox↔live.
+    let _ppConfig = null;
+    async function loadPayPalConfig() {
+      if (_ppConfig) return _ppConfig;
+      try {
+        const res = await fetch('/.netlify/functions/paypal-order', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ action: 'config' })
+        });
+        _ppConfig = await res.json();
+      } catch (e) { _ppConfig = null; }
+      return _ppConfig;
+    }
+
+    function loadPayPalSdk(clientId) {
+      return new Promise((resolve, reject) => {
+        if (window.paypal) return resolve();
+        const s = document.createElement('script');
+        s.src = `https://www.paypal.com/sdk/js?client-id=${encodeURIComponent(clientId)}&currency=${PAY.currency}&intent=capture`;
+        s.onload = resolve;
+        s.onerror = reject;
+        document.head.appendChild(s);
+      });
+    }
+
+    function showPayError(msg) {
+      const el = document.getElementById('payError');
+      if (el) { el.textContent = msg; el.style.display = ''; }
+    }
+
+    let _ppReady = false;
+    async function renderPayPal() {
+      if (_ppReady) return;
+      const disp = document.getElementById('payPriceDisplay');
+      if (disp) disp.textContent = PAY.display;
+      const cfg = await loadPayPalConfig();
+      if (!cfg || !cfg.clientId) { showPayError('Could not load payment. Please try again in a moment.'); return; }
+      try { await loadPayPalSdk(cfg.clientId); } catch { showPayError('Failed to load the payment module.'); return; }
+      if (!window.paypal) { showPayError('Failed to load the payment module.'); return; }
+      _ppReady = true;
+
+      paypal.Buttons({
+        createOrder: async () => {
+          const errEl = document.getElementById('payError'); if (errEl) errEl.style.display = 'none';
+          if (typeof gtag === 'function') gtag('event', 'payment_initiated', { value: Number(PAY.value), currency: PAY.currency });
+          // Pre-record a pending row first to obtain readingId
+          const readingId = await preparePendingRecord();
+          if (!readingId) throw new Error('prepare_failed');
+          const res = await fetch('/.netlify/functions/paypal-order', {
+            method: 'POST', headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ action: 'create', readingId, locale: LOCALE })
+          });
+          const data = await res.json();
+          if (!data.orderID) throw new Error('create_failed');
+          return data.orderID;
+        },
+        onApprove: async (data) => {
+          const res = await fetch('/.netlify/functions/paypal-order', {
+            method: 'POST', headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ action: 'capture', orderID: data.orderID })
+          });
+          let result = {};
+          try { result = await res.json(); } catch {}
+          if (!result.ok || !result.readingId) {
+            showPayError('Could not confirm the payment. Please check your status in My Page.');
+            return;
+          }
+          // Payment confirmed → mark _paidPending so a same-browser revisit resumes polling
+          try {
+            const saved = JSON.parse(localStorage.getItem('petarot_dr') || '{}');
+            saved._paidPending = true; saved.readingId = result.readingId; saved._savedAt = Date.now();
+            localStorage.setItem('petarot_dr', JSON.stringify(saved));
+          } catch {}
+          resumePaidReport(result.readingId);
+        },
+        onCancel: () => { showPayError('The payment was cancelled. Please try again.'); },
+        onError: () => { showPayError('Something went wrong during payment. Please try again.'); }
+      }).render('#paypalButtons').catch(() => {});
+    }
+
+    // Pre-record a '결제 대기' row to obtain readingId (ported from the KR startPayment flow).
+    // EN/JA have no login UI, so we secure a session via anonymous sign-in.
+    async function preparePendingRecord() {
+      let user = await getUser();
+      if (!user && window._sb) {
+        try { await window._sb.auth.signInAnonymously(); } catch (e) { console.warn('anon sign-in failed', e); }
+        user = await getUser();
+      }
+      if (!user || !window._sb) { showPayError('Could not start a session. Please reload the page and try again.'); return null; }
+
+      const spreadKey = Object.keys(SPREADS).find(k => SPREADS[k].name === currentSpread.name);
+      const snapshot = JSON.stringify({
+        _pending: true, tid: null, locale: LOCALE,
+        spreadKey, petInfo, drawnCards, actionCards, freeText: freeReadingText
+      });
+      const expires = new Date(Date.now() + 24 * 60 * 60 * 1000).toISOString();
+      let readingId;
+      try {
+        const { data: inserted, error: insertErr } = await window._sb.from('reading_history').insert({
+          user_id: user.id,
+          spread_type: currentSpread.name || '',
+          pet_name: petInfo?.name || '',
+          pet_species: petInfo?.species || '',
+          concern: petInfo?.concern || '',
+          cards_drawn: drawnCards.map(c => ({ name: c.name, reversed: c.reversed, position: c.position })),
+          full_reading: snapshot,
+          amount: PAY.amountMinor,
+          status: '결제 대기',
+          expires_at: expires
+        }).select('id').single();
+        if (insertErr || !inserted?.id) throw (insertErr || new Error('no id'));
+        readingId = inserted.id;
+      } catch (e) {
+        console.error('pending insert failed', e);
+        showPayError('Could not prepare the payment. Please try again in a moment.');
+        return null;
+      }
+
+      try {
+        localStorage.setItem('petarot_dr', JSON.stringify({
+          readingId, locale: LOCALE, spreadKey, petInfo,
+          drawnCards: drawnCards.map(({ img, name, en, suit, upKw, rvKw, reversed, position }) =>
+            ({ img, name, en, suit, upKw, rvKw, reversed, position })),
+          actionCards: actionCards.map(({ img, name, en, suit, upKw, rvKw, reversed }) =>
+            ({ img, name, en, suit, upKw, rvKw, reversed })),
+          freeText: freeReadingText, awaitingPayment: true, _savedAt: Date.now()
+        }));
+      } catch (e) { console.warn('state save failed', e); }
+
+      return readingId;
     }
 
     // -- Major Arcana slideshow --
@@ -1509,103 +1636,37 @@ Interpret only the first card, "[${firstCard.position}] ${firstCard.name} (${fir
     }
 
     // -- Background report generation + polling --
-    // NOTE: unreachable in EN stage 1 (no login, payment guarded), kept for
-    // forward compatibility with a future stage 2.
     let _pollTimer = null;
 
-    async function startBackgroundReport(paymentKey) {
+    // After payment (capture): take over the existing readingId row, trigger the
+    // server report generation, and poll. The prompt is rebuilt server-side from the
+    // snapshot (deep-tarot-background). The server (paypal-order capture) also triggers,
+    // but the client triggers too as a fallback (background dedupes via atomic claim).
+    async function resumePaidReport(readingId) {
       if (typeof gtag === 'function') gtag('event', 'purchase', {
-        transaction_id: paymentKey || ('dev_' + Date.now()),
-        value: 1500,
-        currency: 'KRW',
-        items: [{ item_id: 'deep_reading', item_name: 'PetTarot Deep Reading', price: 1500, quantity: 1 }]
+        transaction_id: 'paypal_' + (readingId || Date.now()),
+        value: Number(PAY.value),
+        currency: PAY.currency,
+        items: [{ item_id: 'deep_reading', item_name: 'PetTarot Deep Reading', price: Number(PAY.value), quantity: 1 }]
       });
-      const user = await getUser();
-      if (!user || !window._sb) return;
 
-      const cardSummary = drawnCards.map(c => `[${c.position}] ${c.name}(${c.reversed ? 'Reversed' : 'Upright'})`).join('\n');
-      const actionSummary = actionCards.length > 0
-        ? actionCards.map(c => `${c.name}(${c.reversed ? 'Reversed' : 'Upright'})`).join(', ')
-        : null;
-      const speciesCtx = buildSpeciesContext();
-      const systemPrompt = `You are a pet tarot expert. Write in warm, emotionally rich English. Always directly reference this pet's name, species, and concern. Never use generic phrasing.`;
-      const freeCtx = freeReadingText
-        ? `\nHere is the first card's interpretation from the free preview (use it as context and go deeper):\n${freeReadingText}\n`
-        : '';
-      const userPrompt = `Pet: ${petInfo.name} (${petInfo.species}${petInfo.age ? ', ' + petInfo.age : ''}${petInfo.gender ? ', ' + petInfo.gender : ''})
-What the pet calls their person: "${petInfo.ownerTitle}"
-${speciesCtx}
-Concern: ${petInfo.concern}
-Spread: ${currentSpread.fullName}
-Cards drawn:
-${cardSummary}
-${actionSummary ? `\nAction Guide Cards: ${actionSummary}` : ''}
-${freeCtx}
-Write a substantial, satisfying report in the following four sections:
-
-## 🃏 Card-by-Card Position Interpretation
-Interpret each card in combination with its position's meaning. Connect it directly to ${petInfo.name}'s situation. Also touch on the flow and connections between the cards. (3-4 lines per card)
-
-## 💌 A Letter from ${petInfo.name}'s Heart
-A first-person inner monologue from ${petInfo.name}, speaking directly and calling their person "${petInfo.ownerTitle}." Express feelings and wishes concretely. (6-8 lines)
-
-## 🐾 A Message for You
-Based on the overall flow of the cards, offer a perspective the pet parent may be missing, along with comfort and empathy. Include a specific insight. (4-5 lines)
-
-## ✨ Action Guide for What's Ahead
-${actionSummary
-  ? `Interpret the Action Guide Cards (${actionSummary}) and offer practical steps. Each item: **[Card Name]** — a concrete action and the reason for it. 1 to ${actionCards.length} items.`
-  : `List three concrete, actionable steps based on the cards. Each item: **Action** — the reason and how to do it.`}`;
-
-      // 1. Save a pending record to Supabase to get an ID
-      const snapshot = JSON.stringify({
-        _pending: true, _paidPending: true,
-        tid: paymentKey || null,
-        spreadKey: Object.keys(SPREADS).find(k => SPREADS[k].name === currentSpread?.name),
-        petInfo, drawnCards, actionCards, freeText: freeReadingText
-      });
-      const expires = new Date(Date.now() + 7 * 24 * 60 * 60 * 1000).toISOString();
-      const { data: inserted, error: insertErr } = await window._sb.from('reading_history').insert({
-        user_id: user.id,
-        spread_type: currentSpread?.name || '',
-        pet_name: petInfo?.name || '',
-        pet_species: petInfo?.species || '',
-        concern: petInfo?.concern || '',
-        cards_drawn: drawnCards.map(c => ({ name: c.name, reversed: c.reversed, position: c.position })),
-        full_reading: snapshot,
-        amount: 1500,
-        status: 'generating',
-        expires_at: expires
-      }).select('id').single();
-
-      if (insertErr || !inserted?.id) {
-        console.error('pending insert failed', insertErr);
+      if (!readingId) {
         goTo('secFullReport');
         document.getElementById('reportLoadBox').style.display = 'none';
         document.getElementById('reportContent').style.display = '';
-        document.getElementById('reportText').innerHTML = `<p style="color:#f09090">Something went wrong. Please try again.</p>`;
+        document.getElementById('reportText').innerHTML = `<p style="color:#f09090">We couldn't find your report info.</p>
+          <p style="margin-top:12px;font-size:.85rem;color:#c0aad8">Your payment was processed successfully. Please check My Page.</p>`;
         return;
       }
 
-      const readingId = inserted.id;
-
-      // 2. Show loading screen + start card slideshow
-      goTo('secLoading');
-      mcStart();
-
-      // 3. Call background function (do not wait for response)
       fetch('/.netlify/functions/deep-tarot-background', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({
-          readingId,
-          tid: paymentKey || null,
-          system: systemPrompt,
-          messages: [{ role: 'user', content: userPrompt }]
-        })
+        body: JSON.stringify({ readingId })
       }).catch(() => {});
 
-      // 4. Start polling
+      goTo('secLoading');
+      mcStart();
       _pollTimer = setInterval(() => pollReport(readingId), 5000);
     }
 
@@ -1638,7 +1699,7 @@ ${actionSummary
             gtag('event', 'deep_reading_complete', { spread: currentSpread.name });
             gtag('event', 'paid_report_complete', { spread: currentSpread.name });
           }
-        } else if (data.status === 'error') {
+        } else if (data.status === '오류') {
           clearInterval(_pollTimer);
           mcStop();
           goTo('secFullReport');
@@ -1668,7 +1729,7 @@ ${actionSummary
         }, 8000);
         return;
       }
-      await startBackgroundReport(paymentKey);
+      await resumePaidReport(paymentKey);
     }
 
     // Markdown section rendering
@@ -1785,9 +1846,7 @@ ${actionSummary
       }
     }
 
-    // -- Restore state after login/payment redirect --
-    // NOTE: unreachable in EN stage 1 (no login flow, payment guarded),
-    // kept for forward compatibility with a future stage 2.
+    // -- Restore state after payment (same-browser revisit during polling) --
     document.addEventListener('DOMContentLoaded', async () => {
       const saved = localStorage.getItem('petarot_dr');
       if (!saved) return;
@@ -1829,12 +1888,11 @@ ${actionSummary
 
       document.documentElement.style.visibility = '';
 
-      // Payment completed, or retrying after a post-payment report error -> straight to full report
-      if (paidOk || state._paidPending) {
-        const tid = urlParams.get('tid') || state.tid || null;
-        goTo('secFullReport');
+      // Payment confirmed but left during polling -> same-browser revisit resumes via anon session
+      if ((paidOk || state._paidPending) && state.readingId) {
+        goTo('secLoading');
         renderCards('cardsAreaReport', drawnCards, false);
-        generateFullReport(tid);
+        resumePaidReport(state.readingId);
         return;
       }
 
@@ -1867,6 +1925,7 @@ ${actionSummary
       updatePaywallText();
       document.getElementById('paywallBox').style.display = '';
       document.getElementById('payGate').style.display = '';
+      renderPayPal();
     });
 
     // -- Utils --
