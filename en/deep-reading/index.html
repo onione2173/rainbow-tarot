@@ -1490,7 +1490,7 @@ Interpret only the first card, "[${firstCard.position}] ${firstCard.name} (${fir
           let result = {};
           try { result = await res.json(); } catch {}
           if (!result.ok || !result.readingId) {
-            showPayError('Could not confirm the payment. Please check your status in My Page.');
+            showPayError('Could not confirm the payment. Please check your status in My Page. (code: ' + (result.error || res.status) + ')');
             return;
           }
           // Payment confirmed → mark _paidPending so a same-browser revisit resumes polling

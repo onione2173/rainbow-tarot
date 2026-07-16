@@ -183,14 +183,34 @@ exports.handler = async (event) => {
       const data = await res.json();
 
       if (data.status !== 'COMPLETED') {
+        console.error('paypal-order: not_completed — capture 응답:', JSON.stringify(data));
         return json(402, { error: 'not_completed', status: data.status || null });
       }
 
       const pu = (data.purchase_units && data.purchase_units[0]) || {};
-      const readingId = pu.custom_id;
       const cap = pu.payments && pu.payments.captures && pu.payments.captures[0];
       const amount = cap && cap.amount;
-      if (!readingId || !amount) return json(400, { error: 'bad_order' });
+      // capture 응답에서 custom_id는 PU가 아닌 captures[0]에 실려 오는 경우가 있어 양쪽을 본다.
+      let readingId = (cap && cap.custom_id) || pu.custom_id;
+      if (!readingId) {
+        // 최후 수단: 주문 자체를 조회해 custom_id를 복구
+        try {
+          const or = await fetch(
+            `${paypalBase()}/v2/checkout/orders/${encodeURIComponent(orderID)}`,
+            { headers: { Authorization: `Bearer ${token}` } }
+          );
+          const od = await or.json();
+          const opu = (od.purchase_units && od.purchase_units[0]) || {};
+          readingId = opu.custom_id ||
+            (opu.payments && opu.payments.captures && opu.payments.captures[0] && opu.payments.captures[0].custom_id);
+        } catch (e) {
+          console.error('paypal-order: 주문 재조회 실패', e);
+        }
+      }
+      if (!readingId || !amount) {
+        console.error('paypal-order: bad_order — capture 응답:', JSON.stringify(data));
+        return json(400, { error: 'bad_order' });
+      }
 
       // 금액 위조 차단: 캡처된 통화/금액이 서버 고정가 표와 정확히 일치할 때만 확정.
       // (공개 client-id로 임의 소액 주문을 만들어 capture만 호출하는 우회를 막는다)

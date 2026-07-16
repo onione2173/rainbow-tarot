@@ -1491,7 +1491,7 @@ ${speciesCtx}
           let result = {};
           try { result = await res.json(); } catch {}
           if (!result.ok || !result.readingId) {
-            showPayError('決済の確認に失敗しました。マイページで状態をご確認ください。');
+            showPayError('決済の確認に失敗しました。マイページで状態をご確認ください。(code: ' + (result.error || res.status) + ')');
             return;
           }
           // 결제 확정 → 같은 브라우저 재방문 시 폴링 복원되도록 _paidPending 표시
