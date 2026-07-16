@@ -896,7 +896,7 @@
         </div>
         <div class="loading-status-bar">
           ✨ <strong>Crafting your reading with care</strong><span class="loading-dots"><span>.</span><span>.</span><span>.</span></span><br>
-          This can take up to 3 minutes. You can close this window and check back later.
+          This can take up to 3 minutes. You can close this window — come back to this page in the same browser to see your reading.
         </div>
         <div class="major-card-showcase">
           <div class="major-card-label">While you wait, meet the Major Arcana</div>
@@ -939,7 +939,7 @@
             <div id="reportText" class="report-text"></div>
           </div>
           <div style="text-align:center;margin-top:8px">
-            <span class="saved-badge" id="savedBadge" style="display:none">✓ Saved to My Page</span>
+            <span class="saved-badge" id="savedBadge" style="display:none">✓ Reading saved</span>
           </div>
           <div style="margin-top:20px;text-align:center">
             <button class="btn-share" onclick="shareDeepReport()">🔗 &nbsp;Share</button>
@@ -1490,7 +1490,7 @@ Interpret only the first card, "[${firstCard.position}] ${firstCard.name} (${fir
           let result = {};
           try { result = await res.json(); } catch {}
           if (!result.ok || !result.readingId) {
-            showPayError('Could not confirm the payment. Please check your status in My Page. (code: ' + (result.error || res.status) + ')');
+            showPayError('Could not confirm the payment. Please try again — if you were already charged, reach out via Contact. (code: ' + (result.error || res.status) + ')');
             return;
           }
           // Payment confirmed → mark _paidPending so a same-browser revisit resumes polling
@@ -1655,7 +1655,7 @@ Interpret only the first card, "[${firstCard.position}] ${firstCard.name} (${fir
         document.getElementById('reportLoadBox').style.display = 'none';
         document.getElementById('reportContent').style.display = '';
         document.getElementById('reportText').innerHTML = `<p style="color:#f09090">We couldn't find your report info.</p>
-          <p style="margin-top:12px;font-size:.85rem;color:#c0aad8">Your payment was processed successfully. Please check My Page.</p>`;
+          <p style="margin-top:12px;font-size:.85rem;color:#c0aad8">Your payment was processed successfully. Please reopen this page in the browser you paid from, or reach out via Contact.</p>`;
         return;
       }
 
@@ -1859,8 +1859,9 @@ Interpret only the first card, "[${firstCard.position}] ${firstCard.name} (${fir
       const hasAuthCallback = window.location.hash.includes('access_token') ||
                               urlParams.has('code');
 
-      // Saved data older than 30 minutes is discarded
-      if (state._savedAt && Date.now() - state._savedAt > 30 * 60 * 1000) {
+      // Saved data older than 30 minutes is discarded — except paid readings,
+      // which must survive so "come back later" works (server keeps them 7 days)
+      if (!state._paidPending && state._savedAt && Date.now() - state._savedAt > 30 * 60 * 1000) {
         localStorage.removeItem('petarot_dr');
         return;
       }
