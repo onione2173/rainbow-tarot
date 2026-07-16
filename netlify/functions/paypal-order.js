@@ -173,58 +173,57 @@ exports.handler = async (event) => {
     if (!token) return json(500, { error: 'config' });
 
     try {
-      const res = await fetch(
-        `${paypalBase()}/v2/checkout/orders/${encodeURIComponent(orderID)}/capture`,
-        {
-          method: 'POST',
-          headers: { Authorization: `Bearer ${token}`, 'Content-Type': 'application/json' },
-        }
+      // 검증 기준은 캡처 응답이 아니라 주문 원본 금액이다.
+      // 캡처 응답의 금액은 판매자 계정 설정(자동 환전 등)에 따라 다른 통화로 돌아올 수 있어
+      // 서버가 생성한 주문을 GET으로 조회해 고정가 표와 대조한다
+      // (deep-tarot-background의 verifyPaymentPaypal과 동일 기준).
+      const orderRes = await fetch(
+        `${paypalBase()}/v2/checkout/orders/${encodeURIComponent(orderID)}`,
+        { headers: { Authorization: `Bearer ${token}` } }
       );
-      const data = await res.json();
-
-      if (data.status !== 'COMPLETED') {
-        console.error('paypal-order: not_completed — capture 응답:', JSON.stringify(data));
-        return json(402, { error: 'not_completed', status: data.status || null });
-      }
-
-      const pu = (data.purchase_units && data.purchase_units[0]) || {};
-      const cap = pu.payments && pu.payments.captures && pu.payments.captures[0];
-      const amount = cap && cap.amount;
-      // capture 응답에서 custom_id는 PU가 아닌 captures[0]에 실려 오는 경우가 있어 양쪽을 본다.
-      let readingId = (cap && cap.custom_id) || pu.custom_id;
-      if (!readingId) {
-        // 최후 수단: 주문 자체를 조회해 custom_id를 복구
-        try {
-          const or = await fetch(
-            `${paypalBase()}/v2/checkout/orders/${encodeURIComponent(orderID)}`,
-            { headers: { Authorization: `Bearer ${token}` } }
-          );
-          const od = await or.json();
-          const opu = (od.purchase_units && od.purchase_units[0]) || {};
-          readingId = opu.custom_id ||
-            (opu.payments && opu.payments.captures && opu.payments.captures[0] && opu.payments.captures[0].custom_id);
-        } catch (e) {
-          console.error('paypal-order: 주문 재조회 실패', e);
-        }
-      }
+      const order = await orderRes.json();
+      const opu = (order.purchase_units && order.purchase_units[0]) || {};
+      const readingId = opu.custom_id;
+      const amount = opu.amount;
       if (!readingId || !amount) {
-        console.error('paypal-order: bad_order — capture 응답:', JSON.stringify(data));
+        console.error('paypal-order: bad_order — 주문 조회 응답:', JSON.stringify(order));
         return json(400, { error: 'bad_order' });
       }
 
-      // 금액 위조 차단: 캡처된 통화/금액이 서버 고정가 표와 정확히 일치할 때만 확정.
-      // (공개 client-id로 임의 소액 주문을 만들어 capture만 호출하는 우회를 막는다)
+      // 금액 위조 차단: 주문 통화/금액이 서버 고정가 표와 정확히 일치할 때만 확정.
       const locale = Object.keys(PRICES).find(
         (l) => PRICES[l].currency_code === amount.currency_code
       );
       const price = locale && PRICES[locale];
       if (!price || Number(amount.value) !== Number(price.value)) {
-        console.warn('paypal-order: 금액 불일치 capture 거부', JSON.stringify(data));
-        // 실제 캡처 금액을 에러 코드에 실어 화면에서 바로 진단 가능하게 한다
+        console.warn('paypal-order: 금액 불일치 거부', JSON.stringify(order));
         return json(402, { error: `amount_mismatch ${amount.currency_code} ${amount.value}` });
       }
 
-      await confirmAndTrigger(readingId, orderID, cap.id, locale, event);
+      // 이미 캡처된 주문(확정 실패 후 재시도 등)은 이중 캡처 없이 확정만 진행한다.
+      let captureId = null;
+      if (order.status === 'COMPLETED') {
+        const ocap = opu.payments && opu.payments.captures && opu.payments.captures[0];
+        captureId = ocap && ocap.id;
+      } else {
+        const res = await fetch(
+          `${paypalBase()}/v2/checkout/orders/${encodeURIComponent(orderID)}/capture`,
+          {
+            method: 'POST',
+            headers: { Authorization: `Bearer ${token}`, 'Content-Type': 'application/json' },
+          }
+        );
+        const data = await res.json();
+        if (data.status !== 'COMPLETED') {
+          console.error('paypal-order: not_completed — capture 응답:', JSON.stringify(data));
+          return json(402, { error: 'not_completed', status: data.status || null });
+        }
+        const cpu = (data.purchase_units && data.purchase_units[0]) || {};
+        const cap = cpu.payments && cpu.payments.captures && cpu.payments.captures[0];
+        captureId = cap && cap.id;
+      }
+
+      await confirmAndTrigger(readingId, orderID, captureId, locale, event);
       return json(200, { ok: true, readingId });
     } catch (e) {
       console.error('paypal-order: capture 예외', e);
