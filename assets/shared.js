@@ -437,7 +437,7 @@ function buildShareCardEl(){
         <div style="text-align:center;margin-top:24px;padding-top:14px;
           border-top:1px solid rgba(255,255,255,.07);">
           <div style="font-size:.68rem;color:rgba(200,160,255,.8);font-weight:600;">🐾 펫타로</div>
-          <div style="font-size:.6rem;color:rgba(180,140,220,.55);margin-top:5px;letter-spacing:.02em;">나도 해보기 → tubular-cupcake-55d47b.netlify.app</div>
+          <div style="font-size:.6rem;color:rgba(180,140,220,.55);margin-top:5px;letter-spacing:.02em;">나도 해보기 → rainbow-tarot.netlify.app</div>
         </div>
       </div>
     </div>`;
@@ -467,8 +467,8 @@ async function shareResult(){
     const file=new File([blob],'타로결과.png',{type:'image/png'});
     const shareData={
       title: PAGE_TITLE,
-      text: `${PAGE_TITLE} 결과를 공유해요 🐾\n나도 해보기 → https://tubular-cupcake-55d47b.netlify.app`,
-      url: 'https://tubular-cupcake-55d47b.netlify.app',
+      text: `${PAGE_TITLE} 결과를 공유해요 🐾\n나도 해보기 → https://rainbow-tarot.netlify.app`,
+      url: 'https://rainbow-tarot.netlify.app',
     };
     if(navigator.canShare && navigator.canShare({files:[file]})){
       await navigator.share({...shareData, files:[file]});
@@ -485,7 +485,7 @@ async function shareResult(){
 
 /* ── 카카오톡 공유 (카카오링크) ── */
 const KAKAO_JS_KEY='24af5a552dd23f08ef587f3765851be7';
-const SITE_URL='https://tubular-cupcake-55d47b.netlify.app';
+const SITE_URL='https://rainbow-tarot.netlify.app';
 const OG_IMAGE=SITE_URL+'/assets/og-image.png';
 
 function initKakao(){

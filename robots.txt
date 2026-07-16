@@ -3,4 +3,4 @@ Allow: /
 Disallow: /auth-callback/
 Disallow: /mypage/
 
-Sitemap: https://tubular-cupcake-55d47b.netlify.app/sitemap.xml
+Sitemap: https://rainbow-tarot.netlify.app/sitemap.xml

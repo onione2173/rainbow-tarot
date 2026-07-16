@@ -410,7 +410,7 @@ function buildShareCardEl(){
         <div style="text-align:center;margin-top:24px;padding-top:14px;
           border-top:1px solid rgba(255,255,255,.07);">
           <div style="font-size:.68rem;color:rgba(200,160,255,.8);font-weight:600;">🐾 ペットタロット</div>
-          <div style="font-size:.6rem;color:rgba(180,140,220,.55);margin-top:5px;letter-spacing:.02em;">わたしもやってみる → tubular-cupcake-55d47b.netlify.app/ja/</div>
+          <div style="font-size:.6rem;color:rgba(180,140,220,.55);margin-top:5px;letter-spacing:.02em;">わたしもやってみる → rainbow-tarot.netlify.app/ja/</div>
         </div>
       </div>
     </div>`;
@@ -440,8 +440,8 @@ async function shareResult(){
     const file=new File([blob],'タロット結果.png',{type:'image/png'});
     const shareData={
       title: PAGE_TITLE,
-      text: `${PAGE_TITLE}の結果をシェアします 🐾\nわたしもやってみる → https://tubular-cupcake-55d47b.netlify.app/ja/`,
-      url: 'https://tubular-cupcake-55d47b.netlify.app/ja/',
+      text: `${PAGE_TITLE}の結果をシェアします 🐾\nわたしもやってみる → https://rainbow-tarot.netlify.app/ja/`,
+      url: 'https://rainbow-tarot.netlify.app/ja/',
     };
     if(navigator.canShare && navigator.canShare({files:[file]})){
       await navigator.share({...shareData, files:[file]});
@@ -459,7 +459,7 @@ async function shareResult(){
 function shareX(){
   track('share_click',{mode:currentMode+'_x'});
   const text=`${PAGE_TITLE}でうちの子の気持ちを読んでもらいました🐾 #ペットタロット`;
-  const url='https://tubular-cupcake-55d47b.netlify.app/ja/';
+  const url='https://rainbow-tarot.netlify.app/ja/';
   const shareUrl=`https://x.com/intent/post?text=${encodeURIComponent(text)}&url=${encodeURIComponent(url)}`;
   window.open(shareUrl,'_blank','noopener,noreferrer,width=550,height=420');
 }
