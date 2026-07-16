@@ -219,8 +219,9 @@ exports.handler = async (event) => {
       );
       const price = locale && PRICES[locale];
       if (!price || Number(amount.value) !== Number(price.value)) {
-        console.warn('paypal-order: 금액 불일치 capture 거부', amount);
-        return json(402, { error: 'amount_mismatch' });
+        console.warn('paypal-order: 금액 불일치 capture 거부', JSON.stringify(data));
+        // 실제 캡처 금액을 에러 코드에 실어 화면에서 바로 진단 가능하게 한다
+        return json(402, { error: `amount_mismatch ${amount.currency_code} ${amount.value}` });
       }
 
       await confirmAndTrigger(readingId, orderID, cap.id, locale, event);
