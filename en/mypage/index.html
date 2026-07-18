@@ -1,0 +1,516 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>My Page — PetTarot</title>
+  <meta name="description" content="View your PetTarot in-depth reading history on My Page.">
+  <meta name="robots" content="noindex">
+  <link rel="canonical" href="https://rainbow-tarot.netlify.app/en/mypage/">
+  <meta property="og:type" content="website">
+  <meta property="og:site_name" content="PetTarot">
+  <meta property="og:locale" content="en_US">
+  <meta property="og:title" content="My Page — PetTarot">
+  <meta property="og:description" content="View your PetTarot in-depth reading history on My Page.">
+  <meta property="og:image" content="https://rainbow-tarot.netlify.app/assets/og-image-en.png">
+  <meta property="og:url" content="https://rainbow-tarot.netlify.app/en/mypage/">
+  <meta name="twitter:card" content="summary_large_image">
+  <link rel="icon" type="image/svg+xml" href="/favicon.svg">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Noto+Serif:wght@300;400;600&family=Noto+Sans:wght@300;400;600&display=swap" rel="stylesheet">
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/dist/umd/supabase.min.js"></script>
+  <script>
+    /* ?dev=1 접속 시 이 브라우저에서 GA 수집 영구 차단 (운영자 접속 제외용) */
+    try{if(location.search.indexOf('dev=1')>-1)localStorage.setItem('ga_off','1');
+    if(localStorage.getItem('ga_off'))window['ga-disable-G-ZDTC39TEKD']=true;}catch(e){}
+  </script>
+  <script async src="https://www.googletagmanager.com/gtag/js?id=G-ZDTC39TEKD"></script>
+  <script>
+    window.dataLayer=window.dataLayer||[];
+    function gtag(){dataLayer.push(arguments);}
+    gtag('js',new Date()); gtag('config','G-ZDTC39TEKD');
+  </script>
+
+  <style>
+    *,*::before,*::after{margin:0;padding:0;box-sizing:border-box;}
+    :root{
+      --text-main:#f0e6ff; --text-sub:#c0aad8; --text-dim:#8070a0;
+      --card-bg:rgba(255,255,255,.04); --card-border:rgba(200,160,255,.15);
+    }
+    body{
+      min-height:100vh;
+      background:radial-gradient(ellipse at 20% 10%,#2a0a4a 0%,#0d0d2b 40%,#0a1428 70%,#001a1a 100%);
+      font-family:'Noto Serif',serif;
+      color:var(--text-main);
+    }
+    .rainbow-bar{
+      position:fixed;top:0;left:0;right:0;height:3px;z-index:300;
+      background:linear-gradient(90deg,#ff6b6b,#ff9f43,#ffd32a,#0be881,#17c0eb,#7d5fff,#ef5777);
+    }
+    .site-header{
+      position:sticky;top:3px;z-index:200;
+      background:rgba(10,8,28,.92);backdrop-filter:blur(18px);
+      border-bottom:1px solid rgba(200,160,255,.1);
+      height:56px;display:flex;align-items:center;justify-content:space-between;
+      padding:0 20px;
+    }
+    .header-brand{display:flex;align-items:center;gap:9px;text-decoration:none;}
+    .brand-icon{font-size:1.35rem;}
+    .brand-name{
+      font-size:1.15rem;font-weight:600;
+      background:linear-gradient(135deg,#e8c4ff 0%,#c8e6ff 100%);
+      -webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;
+    }
+    .hamburger-btn{
+      background:none;border:none;cursor:pointer;
+      display:flex;flex-direction:column;gap:5px;
+      padding:8px;margin-right:-8px;
+    }
+    .hamburger-btn span{
+      display:block;width:22px;height:2px;
+      background:#c0aad8;border-radius:2px;
+    }
+    .menu-overlay{
+      position:fixed;inset:0;z-index:998;
+      background:rgba(0,0,0,.55);
+      opacity:0;pointer-events:none;transition:opacity .3s;
+    }
+    .menu-overlay.show{opacity:1;pointer-events:all;}
+    .menu-drawer{
+      position:fixed;top:0;right:-100%;
+      width:min(300px,82vw);height:100vh;z-index:999;
+      background:linear-gradient(160deg,#130428 0%,#0b1032 100%);
+      border-left:1px solid rgba(200,160,255,.15);
+      overflow-y:auto;transition:right .3s ease;
+    }
+    .menu-drawer.show{right:0;}
+    .menu-top{display:flex;align-items:center;justify-content:space-between;padding:24px 20px 18px;}
+    .menu-label{font-size:1.25rem;font-weight:700;color:#f0e6ff;font-family:'Noto Sans',sans-serif;}
+    .menu-close-btn{background:none;border:none;color:#8070a0;font-size:1.1rem;cursor:pointer;padding:6px;line-height:1;}
+    .menu-hr{border:none;border-top:1px solid rgba(200,160,255,.12);margin:0 0 6px;}
+    .menu-item{
+      display:flex;align-items:center;
+      padding:16px 20px;font-size:1rem;color:#f0e6ff;
+      text-decoration:none;cursor:pointer;
+      border:none;background:none;width:100%;
+      text-align:left;font-family:'Noto Serif',serif;
+      transition:background .15s;line-height:1.4;
+    }
+    .menu-item:hover{background:rgba(255,255,255,.04);}
+    .menu-item-disabled{color:#8070a0;cursor:default;pointer-events:none;}
+    .menu-item-disabled:hover{background:none;}
+    .chip-soon{
+      margin-left:8px;font-size:.65rem;padding:2px 9px;
+      border-radius:10px;background:rgba(180,100,255,.12);
+      border:1px solid rgba(180,100,255,.28);color:#c0a0ff;
+      font-family:'Noto Sans',sans-serif;
+    }
+
+    .page{position:relative;z-index:10;}
+    .wrap{max-width:680px;margin:0 auto;padding:32px 20px 80px;}
+
+    /* Loading / auth gate */
+    .auth-gate{
+      text-align:center;padding:80px 20px;
+    }
+    .auth-gate p{font-size:.9rem;color:var(--text-sub);margin-bottom:20px;font-family:'Noto Sans',sans-serif;line-height:1.8;}
+    .google-btn{
+      display:inline-flex;align-items:center;gap:10px;
+      padding:12px 28px;background:#fff;border:none;
+      border-radius:24px;color:#333;
+      font-size:.9rem;font-weight:600;font-family:'Noto Sans',sans-serif;
+      cursor:pointer;transition:all .2s;
+    }
+    .google-btn:hover{background:#f0f0f0;}
+    .google-btn:disabled{opacity:.6;cursor:default;}
+    .google-icon{width:20px;height:20px;flex-shrink:0;}
+
+    /* Link banner (anonymous user with readings) */
+    .link-banner{
+      background:rgba(100,180,255,.07);border:1px solid rgba(100,180,255,.22);
+      border-radius:18px;padding:20px;margin-bottom:24px;text-align:center;
+    }
+    .link-banner p{font-size:.84rem;color:#a0d8ff;font-family:'Noto Sans',sans-serif;line-height:1.7;margin-bottom:14px;}
+    .link-error{display:none;font-size:.78rem;color:#f09090;font-family:'Noto Sans',sans-serif;margin-top:10px;line-height:1.6;}
+
+    /* User profile section */
+    .profile-section{
+      display:flex;align-items:center;gap:16px;
+      background:var(--card-bg);border:1px solid var(--card-border);
+      border-radius:18px;padding:22px 20px;margin-bottom:24px;
+    }
+    .profile-avatar{
+      width:52px;height:52px;border-radius:50%;
+      background:linear-gradient(135deg,#7d5fff,#ef5777);
+      display:flex;align-items:center;justify-content:center;
+      font-size:1.4rem;flex-shrink:0;overflow:hidden;
+    }
+    .profile-avatar img{width:100%;height:100%;object-fit:cover;}
+    .profile-name{font-size:1rem;font-weight:600;color:var(--text-main);margin-bottom:3px;}
+    .profile-email{font-size:.78rem;color:var(--text-dim);font-family:'Noto Sans',sans-serif;}
+
+    /* Section card */
+    .section-card{
+      background:var(--card-bg);border:1px solid var(--card-border);
+      border-radius:18px;padding:24px 20px;margin-bottom:16px;
+    }
+    .section-title{
+      font-size:.78rem;font-weight:600;color:var(--text-dim);
+      letter-spacing:.1em;text-transform:uppercase;
+      font-family:'Noto Sans',sans-serif;margin-bottom:16px;
+    }
+
+    /* Reading history */
+    .history-empty{
+      text-align:center;padding:24px 0 8px;
+    }
+    .history-empty-icon{font-size:2.5rem;display:block;margin-bottom:12px;}
+    .history-empty p{
+      font-size:.82rem;color:var(--text-dim);
+      font-family:'Noto Sans',sans-serif;line-height:1.8;
+    }
+    .history-item{
+      border-bottom:1px solid rgba(200,160,255,.1);
+      padding:14px 0;
+    }
+    .history-item:last-child{border-bottom:none;padding-bottom:0;}
+    .history-item-title{font-size:.88rem;color:var(--text-main);margin-bottom:4px;}
+    .history-item-meta{font-size:.74rem;color:var(--text-dim);font-family:'Noto Sans',sans-serif;}
+    .badge-pending{
+      display:inline-block;margin-left:8px;padding:2px 8px;
+      background:rgba(255,160,60,.12);border:1px solid rgba(255,160,60,.35);
+      border-radius:10px;color:#ffb86c;font-size:.68rem;
+      font-family:'Noto Sans',sans-serif;vertical-align:middle;
+    }
+    .history-item-expires{
+      font-size:.7rem;color:var(--text-dim);
+      font-family:'Noto Sans',sans-serif;margin-top:2px;
+    }
+    .btn-resume{
+      display:inline-block;margin-top:10px;padding:7px 16px;
+      background:rgba(255,160,60,.14);border:1px solid rgba(255,160,60,.38);
+      border-radius:12px;color:#ffb86c;font-size:.78rem;
+      font-family:'Noto Sans',sans-serif;cursor:pointer;
+    }
+    .btn-view{
+      display:inline-block;margin-top:10px;padding:7px 16px;
+      background:rgba(170,90,255,.12);border:1px solid rgba(170,90,255,.3);
+      border-radius:12px;color:#d0aaff;font-size:.78rem;
+      font-family:'Noto Sans',sans-serif;cursor:pointer;border:1px solid rgba(170,90,255,.3);
+    }
+    .reading-expand{
+      margin-top:14px;padding:14px;
+      background:rgba(255,255,255,.03);border:1px solid rgba(200,160,255,.1);
+      border-radius:10px;font-size:.82rem;color:var(--text-sub);
+      line-height:1.85;font-family:'Noto Serif',serif;
+      white-space:pre-wrap;display:none;
+    }
+
+    /* Link list */
+    .link-list a,.link-list button{
+      display:flex;align-items:center;justify-content:space-between;
+      padding:14px 0;border-bottom:1px solid rgba(200,160,255,.08);
+      color:var(--text-sub);text-decoration:none;
+      font-size:.88rem;font-family:'Noto Sans',sans-serif;
+      background:none;border-left:none;border-right:none;border-top:none;
+      width:100%;text-align:left;cursor:pointer;
+      transition:color .2s;
+    }
+    .link-list a:last-child,.link-list button:last-child{border-bottom:none;}
+    .link-list a:hover,.link-list button:hover{color:var(--text-main);}
+    .link-arrow{font-size:.75rem;opacity:.5;}
+
+    .logout-btn{
+      display:block;width:100%;padding:14px;margin-top:16px;
+      background:none;border:1px solid rgba(200,160,255,.15);
+      border-radius:14px;color:var(--text-dim);
+      font-size:.85rem;font-family:'Noto Sans',sans-serif;
+      cursor:pointer;transition:all .2s;text-align:center;
+    }
+    .logout-btn:hover{border-color:rgba(200,160,255,.3);color:var(--text-sub);}
+  </style>
+</head>
+<body>
+  <div class="rainbow-bar"></div>
+
+  <header class="site-header">
+    <a href="/en/" class="header-brand">
+      <span class="brand-icon">🐾</span>
+      <span class="brand-name">PetTarot</span>
+    </a>
+    <button class="hamburger-btn" id="hamburgerBtn" aria-label="Open menu">
+      <span></span><span></span><span></span>
+    </button>
+  </header>
+
+  <div class="menu-overlay" id="menuOverlay"></div>
+  <nav class="menu-drawer" id="menuDrawer">
+    <div class="menu-top">
+      <span class="menu-label">Menu</span>
+      <button class="menu-close-btn" id="menuClose">✕</button>
+    </div>
+    <hr class="menu-hr">
+    <a href="/en/" class="menu-item">Home</a>
+    <a href="/en/mypage/" class="menu-item" id="miMypage">My Page</a>
+    <button class="menu-item" id="miLogout" style="display:none">Sign Out</button>
+    <span class="menu-item menu-item-disabled">Send a Gift <span class="chip-soon">Coming soon</span></span>
+    <span class="menu-item menu-item-disabled">Refer a Friend <span class="chip-soon">Coming soon</span></span>
+    <a href="/en/contact/" class="menu-item">Contact</a>
+  </nav>
+
+  <div class="page">
+    <div class="wrap">
+
+      <!-- Auth gate (shown when not signed in) -->
+      <div class="auth-gate" id="authGate" style="display:none">
+        <p>Sign in with Google to keep your readings<br>and view them from any device.</p>
+        <button class="google-btn" id="googleBtn" onclick="doGoogleLogin()">
+          <svg class="google-icon" viewBox="0 0 48 48"><path fill="#EA4335" d="M24 9.5c3.54 0 6.71 1.22 9.21 3.6l6.85-6.85C35.9 2.38 30.47 0 24 0 14.62 0 6.51 5.38 2.56 13.22l7.98 6.19C12.43 13.72 17.74 9.5 24 9.5z"/><path fill="#4285F4" d="M46.98 24.55c0-1.57-.15-3.09-.38-4.55H24v9.02h12.94c-.58 2.96-2.26 5.48-4.78 7.18l7.73 6c4.51-4.18 7.09-10.36 7.09-17.65z"/><path fill="#FBBC05" d="M10.53 28.59c-.48-1.45-.76-2.99-.76-4.59s.27-3.14.76-4.59l-7.98-6.19C.92 16.46 0 20.12 0 24c0 3.88.92 7.54 2.56 10.78l7.97-6.19z"/><path fill="#34A853" d="M24 48c6.48 0 11.93-2.13 15.89-5.81l-7.73-6c-2.15 1.45-4.92 2.3-8.16 2.3-6.26 0-11.57-4.22-13.47-9.91l-7.98 6.19C6.51 42.62 14.62 48 24 48z"/></svg>
+          Sign in with Google
+        </button>
+      </div>
+
+      <!-- Main content -->
+      <div id="mainContent" style="display:none">
+
+        <!-- Anonymous user: link account banner -->
+        <div class="link-banner" id="linkBanner" style="display:none">
+          <p>Your readings are only saved in this browser.<br>Link a Google account to keep them safe and open them anywhere.</p>
+          <button class="google-btn" id="linkBtn" onclick="doGoogleLink()">
+            <svg class="google-icon" viewBox="0 0 48 48"><path fill="#EA4335" d="M24 9.5c3.54 0 6.71 1.22 9.21 3.6l6.85-6.85C35.9 2.38 30.47 0 24 0 14.62 0 6.51 5.38 2.56 13.22l7.98 6.19C12.43 13.72 17.74 9.5 24 9.5z"/><path fill="#4285F4" d="M46.98 24.55c0-1.57-.15-3.09-.38-4.55H24v9.02h12.94c-.58 2.96-2.26 5.48-4.78 7.18l7.73 6c4.51-4.18 7.09-10.36 7.09-17.65z"/><path fill="#FBBC05" d="M10.53 28.59c-.48-1.45-.76-2.99-.76-4.59s.27-3.14.76-4.59l-7.98-6.19C.92 16.46 0 20.12 0 24c0 3.88.92 7.54 2.56 10.78l7.97-6.19z"/><path fill="#34A853" d="M24 48c6.48 0 11.93-2.13 15.89-5.81l-7.73-6c-2.15 1.45-4.92 2.3-8.16 2.3-6.26 0-11.57-4.22-13.47-9.91l-7.98 6.19C6.51 42.62 14.62 48 24 48z"/></svg>
+            Link Google account
+          </button>
+          <p class="link-error" id="linkError"></p>
+        </div>
+
+        <!-- Profile -->
+        <div class="profile-section" id="profileSection" style="display:none">
+          <div class="profile-avatar" id="profileAvatar">🐾</div>
+          <div>
+            <div class="profile-name" id="profileName">Loading…</div>
+            <div class="profile-email" id="profileEmail"></div>
+          </div>
+        </div>
+
+        <!-- Reading history -->
+        <div class="section-card">
+          <div class="section-title">My PetTarot Readings</div>
+          <div id="historyList">
+            <div class="history-empty">
+              <span class="history-empty-icon">🔮</span>
+              <p>No paid readings yet.<br>Your In-Depth Readings will appear here.</p>
+            </div>
+          </div>
+        </div>
+
+        <!-- Links -->
+        <div class="section-card">
+          <div class="section-title">Info</div>
+          <div class="link-list">
+            <a href="/en/terms/">Terms of Service <span class="link-arrow">›</span></a>
+            <a href="/en/privacy/">Privacy Policy <span class="link-arrow">›</span></a>
+            <a href="/en/contact/">Contact <span class="link-arrow">›</span></a>
+          </div>
+        </div>
+
+        <button class="logout-btn" id="logoutBtn" style="display:none" onclick="doSignOut()">Sign Out</button>
+
+      </div>
+    </div>
+  </div>
+
+  <script src="/assets/auth.js"></script>
+  <script>
+    const L = {
+      statusPending: 'Payment needed',
+      statusGenerating: 'Generating',
+      statusError: 'Error',
+      btnResume: 'Complete payment',
+      btnCheck: 'Check if ready',
+      btnRetry: 'Try again',
+      btnView: 'View reading',
+      btnCollapse: 'Collapse',
+      stillGenerating: 'Still generating. Please check again in a moment.',
+      expires: 'Available until',
+      guest: 'Guest',
+      defaultTitle: 'Reading',
+      dateLocale: 'en-US',
+      home: '/en/',
+      deepReading: '/en/deep-reading/',
+      linkErrAlready: 'This Google account is already in use on another profile, so it can\'t be linked here. Your readings stay available in this browser.',
+      linkErrGeneric: 'Could not link the account. Please try again in a moment.'
+    };
+
+    async function initMypage() {
+      const user = await getUser();
+      if (typeof gtag === 'function') gtag('event', 'mypage_view', { logged_in: !!user && !user.is_anonymous });
+
+      if (!user) {
+        document.getElementById('authGate').style.display = 'block';
+        return;
+      }
+
+      document.getElementById('mainContent').style.display = 'block';
+
+      if (user.is_anonymous) {
+        // 익명 세션: 이 브라우저의 리딩은 보이지만, 계정 연결을 권한다
+        document.getElementById('linkBanner').style.display = 'block';
+      } else {
+        const meta = user.user_metadata || {};
+        const name = meta.full_name || meta.name || meta.preferred_username || L.guest;
+        document.getElementById('profileSection').style.display = 'flex';
+        document.getElementById('profileName').textContent = name;
+        document.getElementById('profileEmail').textContent = user.email || '';
+        const avatar = meta.avatar_url || meta.picture || '';
+        if (avatar) document.getElementById('profileAvatar').innerHTML = `<img src="${avatar}" alt="">`;
+        document.getElementById('logoutBtn').style.display = 'block';
+      }
+
+      if (!window._sb) return;
+      const { data: readings } = await window._sb
+        .from('reading_history')
+        .select('*')
+        .eq('user_id', user.id)
+        .order('created_at', { ascending: false })
+        .limit(20);
+
+      if (!readings || readings.length === 0) return;
+      const now = Date.now();
+      const visible = readings.filter(r => {
+        if ((r.status === '결제 필요' || r.status === '결제 대기' || r.status === '결제 완료' || r.status === '생성 중' || r.status === '오류') && r.expires_at) {
+          return new Date(r.expires_at).getTime() > now;
+        }
+        return true;
+      });
+      if (visible.length === 0) return;
+
+      const list = document.getElementById('historyList');
+      list.innerHTML = visible.map((r, i) => {
+        const isPending = r.status === '결제 필요' || r.status === '결제 대기';
+        const isGenerating = r.status === '생성 중' || r.status === '결제 완료';
+        const isError = r.status === '오류';
+        const title = escHtml(r.spread_type || r.reading_type || L.defaultTitle);
+        const petName = r.pet_name ? ` — ${escHtml(r.pet_name)}` : '';
+        const badge = isPending
+          ? `<span class="badge-pending">${L.statusPending}</span>`
+          : isGenerating ? `<span class="badge-pending" style="color:#a0d8ff;border-color:rgba(100,180,255,.35);background:rgba(100,180,255,.08)">${L.statusGenerating}</span>`
+          : isError ? `<span class="badge-pending" style="color:#f09090;border-color:rgba(240,100,100,.35);background:rgba(240,100,100,.08)">${L.statusError}</span>`
+          : '';
+        const expireStr = (isPending || isGenerating || isError) && r.expires_at
+          ? `<div class="history-item-expires">${L.expires}: ${new Date(r.expires_at).toLocaleDateString(L.dateLocale)}</div>`
+          : '';
+        const actionBtn = isPending
+          ? `<button class="btn-resume" onclick="resumeReading(${i})">${L.btnResume}</button>`
+          : isGenerating
+            ? `<button class="btn-resume" onclick="checkGenerating(${i})" style="background:rgba(100,180,255,.12);color:#a0d8ff;border-color:rgba(100,180,255,.3)">${L.btnCheck}</button>`
+          : isError
+            ? `<button class="btn-resume" onclick="resumeReading(${i})" style="background:rgba(200,160,255,.12);color:#c8a8f0;border-color:rgba(200,160,255,.3)">${L.btnRetry}</button>`
+          : r.full_reading
+            ? `<button class="btn-view" onclick="toggleReading(${i})">${L.btnView}</button>`
+            : '';
+        const expandDiv = (!isPending && r.full_reading)
+          ? `<div class="reading-expand" id="expand-${i}">${renderMd(r.full_reading)}</div>`
+          : '';
+        return `
+          <div class="history-item">
+            <div class="history-item-title">${title}${petName}${badge}</div>
+            <div class="history-item-meta">${new Date(r.created_at).toLocaleDateString(L.dateLocale)}</div>
+            ${expireStr}
+            ${actionBtn}
+            ${expandDiv}
+          </div>
+        `;
+      }).join('');
+      window._readings = visible;
+    }
+
+    function escHtml(s) {
+      return String(s).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;');
+    }
+
+    function renderMd(text) {
+      return escHtml(text)
+        .replace(/^## (.+)$/gm, '<strong style="display:block;margin-top:14px;color:#e8c4ff">$1</strong>')
+        .replace(/\*\*(.+?)\*\*/g, '<strong>$1</strong>')
+        .replace(/\n/g, '<br>');
+    }
+
+    // 리딩의 스냅샷 locale에 맞는 deep-reading 페이지로 복귀한다
+    function deepReadingPathFor(snap) {
+      if (snap && (snap.locale === 'en' || snap.locale === 'ja')) return `/${snap.locale}/deep-reading/`;
+      if (snap && snap.locale === 'ko') return '/deep-reading/';
+      return L.deepReading;
+    }
+
+    function resumeReading(idx) {
+      if (typeof gtag === 'function') gtag('event', 'reading_resumed');
+      const r = window._readings?.[idx];
+      if (!r || !r.full_reading) return;
+      let snap;
+      try { snap = JSON.parse(r.full_reading); } catch { return; }
+      if (!snap._pending) return;
+      localStorage.setItem('petarot_dr', JSON.stringify({
+        ...snap,
+        readingId: r.id,
+        _pending: undefined,
+        _resumePending: true,
+        _savedAt: Date.now()
+      }));
+      window.location.href = deepReadingPathFor(snap);
+    }
+
+    async function checkGenerating(idx) {
+      const r = window._readings?.[idx];
+      if (!r?.id) return;
+      const { data } = await window._sb.from('reading_history').select('status,full_reading').eq('id', r.id).single();
+      if (!data) return;
+      if (data.status === 'completed') {
+        window.location.reload();
+      } else {
+        alert(L.stillGenerating);
+      }
+    }
+
+    function toggleReading(idx) {
+      const el = document.getElementById('expand-' + idx);
+      if (!el) return;
+      const btn = el.previousElementSibling;
+      if (el.style.display === 'none' || !el.style.display) {
+        if (typeof gtag === 'function') gtag('event', 'reading_viewed');
+        el.style.display = 'block';
+        if (btn) btn.textContent = L.btnCollapse;
+      } else {
+        el.style.display = 'none';
+        if (btn) btn.textContent = L.btnView;
+      }
+    }
+
+    async function doGoogleLogin() {
+      if (typeof gtag === 'function') gtag('event', 'login_initiated', { method: 'google' });
+      const btn = document.getElementById('googleBtn');
+      btn.disabled = true;
+      const { error } = await signInWithGoogle(window.location.pathname) || {};
+      if (error) btn.disabled = false;
+    }
+
+    async function doGoogleLink() {
+      if (typeof gtag === 'function') gtag('event', 'link_account_initiated', { method: 'google' });
+      const btn = document.getElementById('linkBtn');
+      btn.disabled = true;
+      const { error } = await linkGoogleIdentity(window.location.pathname) || {};
+      if (error) {
+        btn.disabled = false;
+        const el = document.getElementById('linkError');
+        el.textContent = /already/i.test(error.message || '') ? L.linkErrAlready : L.linkErrGeneric;
+        el.style.display = 'block';
+      }
+    }
+
+    // 메뉴의 로그아웃(miLogout)은 auth.js가 signOutUser로 바인딩한다
+    function doSignOut() { signOutUser(); }
+
+    initMypage();
+  </script>
+</body>
+</html>

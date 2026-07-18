@@ -60,6 +60,29 @@
         } catch { return '/'; }
       }
 
+      // 복귀 경로(/en/, /ja/)에 맞춰 안내 문구/버튼을 현지화
+      (function localize() {
+        const rp = computeReturnPath();
+        const T = rp.startsWith('/en/') ? {
+          msg: 'Signing you in...', sub: 'Just a moment', failMsg: 'Sign-in was not completed',
+          failSub: 'The network may be slow or the sign-in was cancelled. Your reading is still saved.',
+          retry: 'Try again', home: 'Home', retryHref: '/en/mypage/', homeHref: '/en/'
+        } : rp.startsWith('/ja/') ? {
+          msg: 'ログイン処理中...', sub: '少々お待ちください', failMsg: 'ログインが完了しませんでした',
+          failSub: 'ネットワークが遅いか、ログインがキャンセルされたようです。リーディングは保存されています。',
+          retry: 'もう一度ログイン', home: 'ホームへ', retryHref: '/ja/mypage/', homeHref: '/ja/'
+        } : null;
+        if (!T) return;
+        document.title = T.msg;
+        document.getElementById('cbMsg').textContent = T.msg;
+        document.getElementById('cbSub').textContent = T.sub;
+        const retryEl = document.querySelector('.cb-retry');
+        const homeEl = document.querySelector('.cb-home');
+        retryEl.textContent = T.retry; retryEl.href = T.retryHref;
+        homeEl.textContent = T.home; homeEl.href = T.homeHref;
+        window._cbFail = { msg: T.failMsg, sub: T.failSub };
+      })();
+
       let done = false;
       let pollId = null, timeoutId = null, sub = null;
       function cleanup() {
@@ -81,8 +104,8 @@
         cleanup();
         // 상태(petarot_dr)는 지우지 않는다 — 재로그인 시 리딩 복원 가능해야 함
         document.getElementById('cbSpinner').style.display = 'none';
-        document.getElementById('cbMsg').textContent = '로그인이 완료되지 않았어요';
-        document.getElementById('cbSub').textContent = '네트워크가 느리거나 로그인이 취소된 것 같아요. 진행하던 리딩은 저장되어 있어요.';
+        document.getElementById('cbMsg').textContent = (window._cbFail && window._cbFail.msg) || '로그인이 완료되지 않았어요';
+        document.getElementById('cbSub').textContent = (window._cbFail && window._cbFail.sub) || '네트워크가 느리거나 로그인이 취소된 것 같아요. 진행하던 리딩은 저장되어 있어요.';
         document.getElementById('cbActions').style.display = 'flex';
       }
 
