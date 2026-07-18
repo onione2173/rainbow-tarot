@@ -253,6 +253,7 @@ function showReading(petName,interpretation,letter){
   document.getElementById('loadingSection').classList.remove('show');
   _pendingLetter=letter;
   _currentPetName=petName;
+  try{if(petName)localStorage.setItem('pt_petName',petName);var _ot=document.getElementById('ownerTitle');if(_ot&&_ot.value.trim())localStorage.setItem('pt_ownerTitle',_ot.value.trim());}catch(e){}
   track('reading_complete', { mode: currentMode, card: drawn[0]?.en || '' });
 
   const rv=drawnRv[0];
@@ -303,6 +304,9 @@ function showReadingFooter(){
   document.getElementById('adInReading').style.display='block';
   initReadingAd();
   document.getElementById('readingFooter').style.display='block';
+  var _un=document.querySelector('.upsell-name');
+  if(_un&&_currentPetName)_un.textContent=_currentPetName;
+  track('upsell_shown',{mode:(typeof currentMode!=='undefined'?currentMode:'')});
 }
 
 function initReadingAd(){

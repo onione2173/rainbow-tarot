@@ -253,6 +253,7 @@ function showReading(petName,interpretation,letter){
   document.getElementById('loadingSection').classList.remove('show');
   _pendingLetter=letter;
   _currentPetName=petName;
+  try{if(petName)localStorage.setItem('pt_petName',petName);var _ot=document.getElementById('ownerTitle');if(_ot&&_ot.value.trim())localStorage.setItem('pt_ownerTitle',_ot.value.trim());}catch(e){}
   track('reading_complete', { mode: currentMode, card: drawn[0]?.en || '' });
 
   const rv=drawnRv[0];
@@ -301,6 +302,9 @@ function openLetter(){
 function showReadingFooter(){
   document.querySelectorAll('.btn-draw').forEach(b=>b.disabled=false);
   document.getElementById('readingFooter').style.display='block';
+  var _un=document.querySelector('.upsell-name');
+  if(_un&&_currentPetName)_un.textContent=_currentPetName+'ちゃん';
+  track('upsell_shown',{mode:(typeof currentMode!=='undefined'?currentMode:'')});
 }
 
 /* 日本語版は広告ネットワーク未接続 — 広告枠は非表示のまま */

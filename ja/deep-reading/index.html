@@ -1992,6 +1992,12 @@ ${speciesCtx}
       renderPayPal();
     });
 
+    document.addEventListener('DOMContentLoaded', () => {
+      try{var _pn=localStorage.getItem('pt_petName'),_po=localStorage.getItem('pt_ownerTitle');
+      var _f=document.getElementById('petName');if(_f&&!_f.value&&_pn)_f.value=_pn;
+      var _g=document.getElementById('ownerTitle');if(_g&&!_g.value&&_po)_g.value=_po;}catch(e){}
+    });
+
     // -- Utils --
     function updateCharCount(el, countId) {
       document.getElementById(countId).textContent = el.value.length;
