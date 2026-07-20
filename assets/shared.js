@@ -253,7 +253,7 @@ function showReading(petName,interpretation,letter){
   document.getElementById('loadingSection').classList.remove('show');
   _pendingLetter=letter;
   _currentPetName=petName;
-  try{if(petName)localStorage.setItem('pt_petName',petName);var _ot=document.getElementById('ownerTitle');if(_ot&&_ot.value.trim())localStorage.setItem('pt_ownerTitle',_ot.value.trim());}catch(e){}
+  try{if(petName&&location.pathname.indexOf('rainbow-tarot')===-1)localStorage.setItem('pt_petName',petName);var _ot=document.getElementById('ownerTitle');if(_ot&&_ot.value.trim())localStorage.setItem('pt_ownerTitle',_ot.value.trim());}catch(e){}
   track('reading_complete', { mode: currentMode, card: drawn[0]?.en || '' });
 
   const rv=drawnRv[0];
