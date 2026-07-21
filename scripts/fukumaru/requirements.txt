@@ -1,0 +1,17 @@
+# Fukumaru (@fukumaru_tarot) autonomous posting pipeline dependencies.
+#
+# google-genai: current official Google GenAI SDK. Used for image generation
+#   via the "gemini-2.5-flash-image" model, which is the same model already
+#   proven working elsewhere in this repo (see scripts/generate-tarot-images.py).
+#   A newer "gemini-3.1-flash-image" ("nano banana 2") exists but is left
+#   unpinned here in favor of the already-validated stable model -- swap the
+#   MODEL_NAME constant in gemini_image.py if you want to upgrade later.
+# pillow: needed to open/pass the reference character image to the Gemini
+#   image-editing call.
+# requests / requests-oauthlib: X (Twitter) API v2 posting requires OAuth1.0a
+#   user-context auth for both v1.1 media/upload and v2 POST /2/tweets;
+#   requests-oauthlib's OAuth1 handles the signing so we don't hand-roll it.
+google-genai>=1.0.0
+pillow>=10.0.0
+requests>=2.31.0
+requests-oauthlib>=1.3.1

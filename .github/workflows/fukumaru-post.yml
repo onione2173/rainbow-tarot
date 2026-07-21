@@ -1,0 +1,57 @@
+name: Fukumaru auto-post
+
+# Runs entirely on GitHub's infrastructure, independent of any chat session
+# or the owner's laptop being on. See scripts/fukumaru/ for the pipeline.
+on:
+  schedule:
+    # Non-round minute to avoid the top-of-hour GitHub Actions cron crowd.
+    - cron: "23 * * * *"
+  workflow_dispatch: {}
+
+permissions:
+  contents: write
+
+concurrency:
+  group: fukumaru-post
+  cancel-in-progress: false
+
+jobs:
+  post:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+        with:
+          # Needed so we can commit back to whatever branch triggered this run.
+          fetch-depth: 0
+
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: "3.11"
+
+      - name: Install dependencies
+        run: pip install -r scripts/fukumaru/requirements.txt
+
+      - name: Run Fukumaru posting pipeline
+        env:
+          GEMINI_API_KEY: ${{ secrets.GEMINI_API_KEY }}
+          X_API_KEY: ${{ secrets.X_API_KEY }}
+          X_API_SECRET: ${{ secrets.X_API_SECRET }}
+          X_ACCESS_TOKEN: ${{ secrets.X_ACCESS_TOKEN }}
+          X_ACCESS_TOKEN_SECRET: ${{ secrets.X_ACCESS_TOKEN_SECRET }}
+        run: python scripts/fukumaru/post_next.py
+
+      - name: Commit and push queue/state updates
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+
+          if [ -z "$(git status --porcelain -- marketing/fukumaru-queue-ja.md marketing/state/fukumaru-schedule.json)" ]; then
+            echo "No changes to commit."
+            exit 0
+          fi
+
+          git add marketing/fukumaru-queue-ja.md marketing/state/fukumaru-schedule.json
+          git commit -m "chore(fukumaru): auto-post update"
+          git push origin "HEAD:${GITHUB_REF_NAME}"
