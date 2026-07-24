@@ -4,15 +4,16 @@ name: Fukumaru laptop watchdog
 # FUKUMARU_HEARTBEAT repo variable every 10 minutes via launchd
 # (scripts/fukumaru/heartbeat.sh). If the heartbeat goes stale, the laptop is
 # down (shut down, crashed, or asleep) and manual posting sessions can't run —
-# so we ping Slack. Sends one alert per outage and one recovery notice, using
-# the FUKUMARU_WATCHDOG_STATE repo variable ("ok" | "down") for dedup.
+# so we ping Slack. Outage state lives in an open issue labeled
+# `fukumaru-watchdog` (GITHUB_TOKEN can't write repo variables): one alert per
+# outage when the issue is opened, one recovery notice when it's closed.
 on:
   schedule:
     - cron: "7,37 * * * *"
   workflow_dispatch: {}
 
 permissions:
-  actions: write
+  issues: write
 
 concurrency:
   group: fukumaru-watchdog
@@ -27,7 +28,6 @@ jobs:
           GH_TOKEN: ${{ github.token }}
           SLACK_WEBHOOK_URL: ${{ secrets.SLACK_WEBHOOK_URL }}
           HEARTBEAT: ${{ vars.FUKUMARU_HEARTBEAT }}
-          STATE: ${{ vars.FUKUMARU_WATCHDOG_STATE }}
         run: |
           set -eu
 
@@ -43,29 +43,31 @@ jobs:
           # false-alarming, still catches a dead laptop within ~1 hour.
           threshold=2100
 
-          echo "heartbeat age: ${age}s (threshold ${threshold}s), state: ${STATE:-unset}"
+          open_issue=$(gh api \
+            "repos/${GITHUB_REPOSITORY}/issues?labels=fukumaru-watchdog&state=open&per_page=1" \
+            --jq '.[0].number // empty')
 
-          set_state() {
-            gh api -X PATCH \
-              "repos/${GITHUB_REPOSITORY}/actions/variables/FUKUMARU_WATCHDOG_STATE" \
-              -f name=FUKUMARU_WATCHDOG_STATE -f value="$1"
-          }
+          echo "heartbeat age: ${age}s (threshold ${threshold}s), open outage issue: ${open_issue:-none}"
 
           notify() {
             curl -fsS -X POST -H 'Content-type: application/json' \
               --data "{\"text\": $(printf '%s' "$1" | python3 -c 'import json,sys; print(json.dumps(sys.stdin.read()))')}" \
-              "$SLACK_WEBHOOK_URL"
+              "$SLACK_WEBHOOK_URL" > /dev/null
           }
 
           last_seen_kst=$(TZ=Asia/Seoul date -d "@${hb}" '+%m/%d %H:%M KST' 2>/dev/null || echo "unknown")
           down_min=$(( age / 60 ))
 
-          if [ "$age" -gt "$threshold" ] && [ "${STATE}" != "down" ]; then
+          if [ "$age" -gt "$threshold" ] && [ -z "$open_issue" ]; then
             notify "🚨 후쿠마루 노트북이 응답하지 않습니다. 마지막 하트비트: ${last_seen_kst} (${down_min}분 전). 노트북이 꺼졌거나 잠들었을 수 있어요 — 수동 게시 세션이 멈춰 있을 가능성이 높습니다."
-            set_state down
-          elif [ "$age" -le "$threshold" ] && [ "${STATE}" = "down" ]; then
+            gh api "repos/${GITHUB_REPOSITORY}/issues" \
+              -f title="🚨 laptop down — last heartbeat ${last_seen_kst}" \
+              -f body="Opened by fukumaru-watchdog. Closes automatically when the heartbeat resumes." \
+              -f "labels[]=fukumaru-watchdog" > /dev/null
+          elif [ "$age" -le "$threshold" ] && [ -n "$open_issue" ]; then
             notify "✅ 후쿠마루 노트북이 다시 살아났습니다. 마지막 하트비트: ${last_seen_kst}."
-            set_state ok
+            gh api -X PATCH "repos/${GITHUB_REPOSITORY}/issues/${open_issue}" \
+              -f state=closed > /dev/null
           else
             echo "No state change; nothing to do."
           fi

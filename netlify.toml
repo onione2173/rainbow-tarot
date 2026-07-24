@@ -1,6 +1,9 @@
 [build]
   command = "node scripts/build.js"
   publish = "."
+  # Skip deploys (and save build credits) when only non-site files changed:
+  # marketing queue/state, journals, CI workflows, the posting scripts, HANDOFF.
+  ignore = "git diff --quiet $CACHED_COMMIT_REF $COMMIT_REF -- . ':(exclude).github' ':(exclude)marketing' ':(exclude)log' ':(exclude)scripts/fukumaru' ':(exclude)HANDOFF.md'"
 
 [functions]
   directory = "netlify/functions"
