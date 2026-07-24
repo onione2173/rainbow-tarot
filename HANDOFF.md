@@ -1,7 +1,7 @@
 # 인수인계 — 후쿠마루(일본 X) 미션
 
 새 세션에서 "HANDOFF.md 읽고 이어서 진행해줘"로 시작하면 됩니다.
-**큰 변화가 생길 때마다 이 파일을 갱신할 것.** (최종 업데이트: 2026-07-24 14:45 KST)
+**큰 변화가 생길 때마다 이 파일을 갱신할 것.** (최종 업데이트: 2026-07-24 23:10 KST)
 
 ## 미션 (변경 이력 있음)
 
@@ -17,10 +17,10 @@
 - **콘텐츠 큐**: `marketing/fukumaru-queue-ja.md` — 22개 중 **1~6번 게시 완료**(7/21~22, 전부 브라우저 수동 게시), 7번부터 대기.
 - **성과**: 팔로워 0, 전 포스트 좋아요·댓글·리포스트 0, 조회수 1~6. (7/22 저녁 기준)
 - **게시 방식 (7/24 결정): 브라우저 수동 게시로 확정.** X API는 무료 티어가 없고 선불 크레딧($5 최소)만 가능한데, 사용자가 "구매 발생 전 비용 부담스럽다"며 크레딧 충전 거절. API 파이프라인(`fukumaru-post.yml`)은 **비활성화**해둠(402로 매 슬롯 실패하며 알림 스팸만 만들어서). 크레딧 충전하게 되면 `gh workflow enable fukumaru-post.yml`로 재가동 — 코드는 그대로 살아 있음.
-- **노트북 데드맨 스위치 (7/24 신규)**: 노트북이 죽으면 수동 게시 세션도 죽으므로 감시 장치 추가.
+- **노트북 데드맨 스위치 (7/24 가동 중, 장애·복구 양방향 테스트 완료)**: 노트북이 죽으면 수동 게시 세션도 죽으므로 감시 장치 추가.
   - 노트북 launchd 에이전트(`~/Library/LaunchAgents/com.rainbow-tarot.fukumaru-heartbeat.plist`)가 10분마다 `scripts/fukumaru/heartbeat.sh` 실행 → GitHub 저장소 변수 `FUKUMARU_HEARTBEAT`에 타임스탬프.
-  - GitHub Actions `.github/workflows/fukumaru-watchdog.yml`(30분마다)가 하트비트 35분 이상 끊기면 **Slack 알림**, 복구 시 복구 알림. 중복 방지는 `FUKUMARU_WATCHDOG_STATE` 변수.
-  - **활성화 조건 2개 남음**: ① 워크플로가 main에 push돼야 스케줄 가동, ② `SLACK_WEBHOOK_URL` 시크릿을 사용자가 직접 등록해야 함(웹훅 URL은 자격증명이라 어시스턴트가 취급 안 함).
+  - GitHub Actions `.github/workflows/fukumaru-watchdog.yml`(30분마다)가 하트비트 35분 이상 끊기면 **Slack 알림**(`SLACK_WEBHOOK_URL` 시크릿, 등록 완료), 복구 시 복구 알림. 장애 상태는 `fukumaru-watchdog` 라벨 이슈로 관리(열림=장애 중, 자동 닫힘=복구; GITHUB_TOKEN이 저장소 변수 쓰기가 안 돼서 이슈 방식 채택). 노트북 잠자기도 "죽음"으로 판정됨 — 알림 잦으면 threshold(2100초) 상향.
+- **Netlify 빌드 절약 규칙 (7/24)**: `netlify.toml`의 `ignore` — `.github/`·`marketing/`·`log/`·`scripts/fukumaru/`·`HANDOFF.md`만 바뀐 push는 빌드 스킵. 사이트 파일이 하나라도 섞이면 정상 빌드.
 
 ## 🚨 지금 막힌 것
 
@@ -29,10 +29,9 @@
 
 ## 바로 다음 할 일
 
-1. **워치독 활성화 마무리**: 사용자가 Slack Incoming Webhook 만들고 본인 터미널에서 `gh secret set SLACK_WEBHOOK_URL --repo onione2173/rainbow-tarot` 실행 + 워치독 커밋을 main에 push.
-2. 매일 게시 슬롯에 맞춰 큐의 다음 `[ ]` 항목(현재 7번부터)을 **브라우저로 수동 게시** + 큐에 `[x]`·시각 기록. (`fukumaru-schedule.json`은 파이프라인 정지 중이라 더 이상 안 갱신됨 — 무시.)
-3. 게시 후 반응 체크, 라이브 검색(`#猫のいる暮らし` 등)으로 방금 올라온 글에 자연스러운 소통(팔로우 목록 뒤지지 말 것 — 죽은 계정 많음).
-4. 일지 작성: `log/team-lead-journal.md` — **7/23 항목이 비어 있음**, 7/23 파이프라인 전멸 사실 기록할 것.
+1. 매일 게시 슬롯에 맞춰 큐의 다음 `[ ]` 항목(현재 7번부터)을 **브라우저로 수동 게시** + 큐에 `[x]`·시각 기록. (`fukumaru-schedule.json`은 파이프라인 정지 중이라 더 이상 안 갱신됨 — 무시.) **7/23·7/24 게시 0건 — 이틀 공백, 오늘 재개 시급.**
+2. 게시 후 반응 체크, 라이브 검색(`#猫のいる暮らし` 등)으로 방금 올라온 글에 자연스러운 소통(팔로우 목록 뒤지지 말 것 — 죽은 계정 많음).
+3. 일지 작성: `log/team-lead-journal.md` — **7/23·7/24 항목이 비어 있음**, 파이프라인 전멸→수동 전환 결정 기록할 것.
 
 ## 대기 중 (막힌 것 아님, 미션 외)
 
