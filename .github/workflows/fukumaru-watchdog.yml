@@ -1,0 +1,71 @@
+name: Fukumaru laptop watchdog
+
+# Dead-man switch for the owner's laptop. The laptop stamps the
+# FUKUMARU_HEARTBEAT repo variable every 10 minutes via launchd
+# (scripts/fukumaru/heartbeat.sh). If the heartbeat goes stale, the laptop is
+# down (shut down, crashed, or asleep) and manual posting sessions can't run —
+# so we ping Slack. Sends one alert per outage and one recovery notice, using
+# the FUKUMARU_WATCHDOG_STATE repo variable ("ok" | "down") for dedup.
+on:
+  schedule:
+    - cron: "7,37 * * * *"
+  workflow_dispatch: {}
+
+permissions:
+  actions: write
+
+concurrency:
+  group: fukumaru-watchdog
+  cancel-in-progress: false
+
+jobs:
+  check:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Check heartbeat age
+        env:
+          GH_TOKEN: ${{ github.token }}
+          SLACK_WEBHOOK_URL: ${{ secrets.SLACK_WEBHOOK_URL }}
+          HEARTBEAT: ${{ vars.FUKUMARU_HEARTBEAT }}
+          STATE: ${{ vars.FUKUMARU_WATCHDOG_STATE }}
+        run: |
+          set -eu
+
+          if [ -z "${SLACK_WEBHOOK_URL}" ]; then
+            echo "SLACK_WEBHOOK_URL secret is not set; nothing to notify. Skipping."
+            exit 0
+          fi
+
+          now=$(date -u +%s)
+          hb=${HEARTBEAT:-0}
+          age=$(( now - hb ))
+          # 10-min beats; 35 min = 3 misses. Tolerates one flaky beat without
+          # false-alarming, still catches a dead laptop within ~1 hour.
+          threshold=2100
+
+          echo "heartbeat age: ${age}s (threshold ${threshold}s), state: ${STATE:-unset}"
+
+          set_state() {
+            gh api -X PATCH \
+              "repos/${GITHUB_REPOSITORY}/actions/variables/FUKUMARU_WATCHDOG_STATE" \
+              -f name=FUKUMARU_WATCHDOG_STATE -f value="$1"
+          }
+
+          notify() {
+            curl -fsS -X POST -H 'Content-type: application/json' \
+              --data "{\"text\": $(printf '%s' "$1" | python3 -c 'import json,sys; print(json.dumps(sys.stdin.read()))')}" \
+              "$SLACK_WEBHOOK_URL"
+          }
+
+          last_seen_kst=$(TZ=Asia/Seoul date -d "@${hb}" '+%m/%d %H:%M KST' 2>/dev/null || echo "unknown")
+          down_min=$(( age / 60 ))
+
+          if [ "$age" -gt "$threshold" ] && [ "${STATE}" != "down" ]; then
+            notify "🚨 후쿠마루 노트북이 응답하지 않습니다. 마지막 하트비트: ${last_seen_kst} (${down_min}분 전). 노트북이 꺼졌거나 잠들었을 수 있어요 — 수동 게시 세션이 멈춰 있을 가능성이 높습니다."
+            set_state down
+          elif [ "$age" -le "$threshold" ] && [ "${STATE}" = "down" ]; then
+            notify "✅ 후쿠마루 노트북이 다시 살아났습니다. 마지막 하트비트: ${last_seen_kst}."
+            set_state ok
+          else
+            echo "No state change; nothing to do."
+          fi
