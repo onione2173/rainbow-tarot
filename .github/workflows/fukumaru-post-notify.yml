@@ -40,12 +40,10 @@ jobs:
 
           text="📮 후쿠마루 큐 #${QUEUE_NUMBER} 게시 완료"
           if [ -n "${POST_URL}" ]; then
-            text="${text}
-${POST_URL}"
+            text="${text}$(printf '\n')${POST_URL}"
           fi
           if [ -n "${NOTE}" ]; then
-            text="${text}
-${NOTE}"
+            text="${text}$(printf '\n')${NOTE}"
           fi
 
           curl -fsS -X POST -H 'Content-type: application/json' \
