@@ -1,0 +1,53 @@
+name: Fukumaru post notification
+
+# Manually triggered right after a queue item is posted to X (posting itself
+# is manual via browser — see HANDOFF.md). Reuses the SLACK_WEBHOOK_URL secret
+# already set up for fukumaru-watchdog.yml so no credential needs to be
+# handled locally in a chat session.
+on:
+  workflow_dispatch:
+    inputs:
+      queue_number:
+        description: "Queue item number (marketing/fukumaru-queue-ja.md)"
+        required: true
+      post_url:
+        description: "Link to the published X post"
+        required: false
+        default: ""
+      note:
+        description: "Optional short note (e.g. reply/engagement summary)"
+        required: false
+        default: ""
+
+permissions: {}
+
+jobs:
+  notify:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Send Slack notification
+        env:
+          SLACK_WEBHOOK_URL: ${{ secrets.SLACK_WEBHOOK_URL }}
+          QUEUE_NUMBER: ${{ inputs.queue_number }}
+          POST_URL: ${{ inputs.post_url }}
+          NOTE: ${{ inputs.note }}
+        run: |
+          set -eu
+          if [ -z "${SLACK_WEBHOOK_URL}" ]; then
+            echo "SLACK_WEBHOOK_URL secret is not set; nothing to notify. Skipping."
+            exit 0
+          fi
+
+          text="📮 후쿠마루 큐 #${QUEUE_NUMBER} 게시 완료"
+          if [ -n "${POST_URL}" ]; then
+            text="${text}
+${POST_URL}"
+          fi
+          if [ -n "${NOTE}" ]; then
+            text="${text}
+${NOTE}"
+          fi
+
+          curl -fsS -X POST -H 'Content-type: application/json' \
+            --data "{\"text\": $(printf '%s' "$text" | python3 -c 'import json,sys; print(json.dumps(sys.stdin.read()))')}" \
+            "$SLACK_WEBHOOK_URL" > /dev/null
