@@ -1,4 +1,4 @@
-// PayPal 결제(영어판 USD 2.99 / 일본판 JPY 400) 서버 오케스트레이션.
+// PayPal 결제(영어판 USD 2.99 / 일본판 JPY 300) 서버 오케스트레이션.
 // 한국판 NicePay 흐름(선기록→서버승인→background 트리거)을 PayPal Orders API v2로 확장한다.
 //
 // action:
@@ -12,7 +12,7 @@
 // locale → 서버 고정가 (JPY는 소수점 불가)
 const PRICES = {
   en: { currency_code: 'USD', value: '2.99' },
-  ja: { currency_code: 'JPY', value: '400' },
+  ja: { currency_code: 'JPY', value: '300' },
 };
 
 function paypalBase() {

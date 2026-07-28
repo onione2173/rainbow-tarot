@@ -904,7 +904,8 @@
 
             <!-- Payment (PayPal) -->
             <div id="payGate" style="width:100%">
-              <div id="payPriceDisplay" style="font-size:1.5rem;font-weight:600;color:#fff;margin-bottom:14px">¥400</div>
+              <div style="display:inline-block;background:#ff6b6b;color:#fff;font-size:.7rem;font-weight:700;padding:3px 10px;border-radius:20px;margin-bottom:8px">オープン記念 50%OFF</div>
+              <div id="payPriceDisplay" style="font-size:1.5rem;font-weight:600;color:#fff;margin-bottom:14px"><span style="text-decoration:line-through;opacity:.5;font-size:.7em;margin-right:8px">¥600</span>¥300</div>
               <div id="paypalButtons" style="max-width:340px;margin:0 auto"></div>
               <div class="pay-error" id="payError" style="display:none;margin-top:10px;color:#f0a0a0;font-size:.85rem"></div>
             </div>
@@ -1003,9 +1004,9 @@
     const DEV_MODE = false;
     const SITE_URL = 'https://rainbow-tarot.netlify.app';
 
-    // PayPal 결제 설정 (일본판: JPY 400 — 서버 paypal-order PRICES와 동일)
+    // PayPal 결제 설정 (일본판: JPY 300 — 서버 paypal-order PRICES와 동일, 오픈 이벤트 50% 할인가)
     const LOCALE = 'ja';
-    const PAY = { value: '400', currency: 'JPY', display: '¥400', amountMinor: 400 };
+    const PAY = { value: '300', currency: 'JPY', display: '¥300', amountMinor: 300 };
 
     const SPREADS = {
       mind: {
