@@ -26,7 +26,7 @@ https://rainbow-tarot.netlify.app/ja/?utm_source=x_jp&utm_medium=social&utm_camp
 ## [ ] 2. 무지개다리(추모) 톤
 「もう一度だけ、あの子と話せたら」
 そう思ったことがある方へ。
-虹の橋のむこうにいる子の気持ちを、タロットでそっと聞いてみませんか。無料です🌈
+虹の橋を渡ったあの子の気持ちを、タロットでそっと聞いてみませんか。無料です🌈
 https://rainbow-tarot.netlify.app/ja/?utm_source=x_jp&utm_medium=social&utm_campaign=first_sale
 #ペットロス #虹の橋
 
@@ -54,6 +54,6 @@ https://rainbow-tarot.netlify.app/ja/?utm_source=x_jp&utm_medium=social&utm_camp
 ## [ ] 6. 만든 이유 스토리 톤
 ペットを見送った友人が「最後に何を思ってたんだろう」と泣いていました。
 その言葉がずっと残っていて、このサービスを作りました。
-虹の橋のむこうの気持ちを読むタロットです🌈
+虹の橋を渡った子の気持ちを読むタロットです🌈
 https://rainbow-tarot.netlify.app/ja/?utm_source=x_jp&utm_medium=social&utm_campaign=first_sale
 #ペットロス

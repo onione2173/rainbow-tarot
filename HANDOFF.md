@@ -82,6 +82,14 @@
 - 계정 2주차(~8/4)쯤 소통량 세션당 5~8건으로 증량 검토.
 - 8월 초: 리딩 CTA 포스트(큐 15번 계열)로 매출 전환 시작 — 8/22 ₩100k 목표 역산. (#15는 7/28 예약 완료.)
 
+## 🔧 제품 변경 로그 (2026-08-12, 아직 미배포·미커밋 push 전)
+
+- **"무지개다리 너머" → "무지개다리 그 후"로 개명 완료.** 동명 펫타로 저자의 책 제목과 겹쳐 오해 소지가 있다는 사용자 판단(저작권 분쟁 예방). ko/ja(虹の橋のあと)/en(After the Rainbow Bridge) 전체 페이지(9개 파일) + 마케팅 미게시 큐 텍스트(`x-queue-ja.md`, `fukumaru-queue-ja.md`) 반영. URL 슬러그(`/rainbow-tarot/`)는 이미 영문이라 안 바꿈 — SEO 영향 없음.
+- **딥리딩에 "같은 유저+같은 펫의 과거 이별 신호 감지" 기능 추가** (`netlify/functions/deep-tarot-background.js`): 같은 user_id+pet_name의 과거 완료된 딥리딩에서 이별/사망 키워드가 감지되면, 새 리포트 프롬프트에 "톤·시제만 자연스럽게 맞추고 절대 인용/출처 언급 금지" 내부 지시를 얹음. rainbow-tarot(무지개다리 그 후) 페이지는 아직 Supabase 기록을 안 남겨서 이 체크 대상 아님.
+- **신규 회원가입 Slack 알림 추가** (`netlify/functions/notify-signup.js` + `assets/auth.js`): 가입 직후 첫 로그인만 감지해 매출 알림과 별개로 Slack에 "🎉 신규 회원가입" 메시지 전송. **Netlify 환경변수에 `SLACK_WEBHOOK_URL` 등록해야 작동**(현재 GitHub Actions 시크릿에만 있고 Netlify엔 없음 — 사용자 액션 필요, 미완료).
+- **로그인 GA 이벤트 provider 오표기 버그 수정**: 기존엔 구글 로그인해도 `method:'kakao'`로 잘못 찍혔음 → 실제 provider로 정확히 기록되게 수정.
+- **대기(미구현, 방향만 합의)**: "무지개다리 그 후" 결과를 "다시 보려면 로그인" 게이트로 걸어서 회원전환 늘리기 — `deep-reading`의 `linkGoogleIdentity` 익명→계정 연결 패턴 재사용 예정, 아직 착수 안 함.
+
 ## 대기 중 (막힌 것 아님, 미션 외)
 
 - 해외 결제 수단 확장: Lemon Squeezy 답변 대기(Paddle은 점술 카테고리 거절). 현재 PayPal(¥400)은 살아 있음.

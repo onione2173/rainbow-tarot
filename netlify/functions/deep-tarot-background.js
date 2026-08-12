@@ -114,14 +114,17 @@ function commonParts(snap, locale) {
   return { petInfo, drawnCards, actionCards, fullName, freeReadingText: snap.freeText || '' };
 }
 
-function buildPromptKo(snap) {
+function buildPromptKo(snap, pastLossDetected) {
   const { petInfo, drawnCards, actionCards, fullName, freeReadingText } = commonParts(snap, 'ko');
   const cardSummary = drawnCards.map(c => `[${c.position}] ${c.name}(${c.reversed ? '역방향' : '정방향'})`).join('\n');
   const actionSummary = actionCards.length > 0
     ? actionCards.map(c => `${c.name}(${c.reversed ? '역방향' : '정방향'})`).join(', ')
     : null;
   const speciesCtx = speciesContextKo(petInfo);
-  const systemPrompt = `당신은 반려동물 타로 전문가입니다. 따뜻하고 감성적인 한국어로 작성하세요. 반드시 이 아이의 이름, 종, 고민을 직접 언급하세요. 일반적인 표현은 쓰지 마세요.`;
+  const lossNote = pastLossDetected
+    ? ` [내부 참고, 리딩에 그대로 인용하거나 "기록에 따르면" 식으로 출처를 밝히지 말 것] ${petInfo.name}은(는) 이미 무지개다리를 건넌 것으로 보입니다. 톤과 시제만 이에 맞게 자연스럽게 조율하세요.`
+    : '';
+  const systemPrompt = `당신은 반려동물 타로 전문가입니다. 따뜻하고 감성적인 한국어로 작성하세요. 반드시 이 아이의 이름, 종, 고민을 직접 언급하세요. 일반적인 표현은 쓰지 마세요.${lossNote}`;
   const freeCtx = freeReadingText
     ? `\n무료 미리보기에서 제공된 첫 카드 해석 (이를 참고하여 더 깊이 확장하세요):\n${freeReadingText}\n`
     : '';
@@ -153,14 +156,17 @@ ${actionSummary
   return { system: systemPrompt, messages: [{ role: 'user', content: userPrompt }] };
 }
 
-function buildPromptJa(snap) {
+function buildPromptJa(snap, pastLossDetected) {
   const { petInfo, drawnCards, actionCards, fullName, freeReadingText } = commonParts(snap, 'ja');
   const cardSummary = drawnCards.map(c => `[${c.position}] ${c.name}(${c.reversed ? '逆位置' : '正位置'})`).join('\n');
   const actionSummary = actionCards.length > 0
     ? actionCards.map(c => `${c.name}(${c.reversed ? '逆位置' : '正位置'})`).join(', ')
     : null;
   const speciesCtx = speciesContextJa(petInfo);
-  const systemPrompt = `あなたはペットタロットの専門家です。温かく情感豊かな日本語で書いてください。必ずこの子の名前、種類、お悩みに直接言及してください。一般的な表現は使わないでください。`;
+  const lossNote = pastLossDetected
+    ? ` [内部参考、レポートにそのまま引用したり「記録によると」のように出典を明かさないこと] ${petInfo.name}はすでに虹の橋を渡ったと見られます。トーンと時制だけをそれに合わせて自然に調整してください。`
+    : '';
+  const systemPrompt = `あなたはペットタロットの専門家です。温かく情感豊かな日本語で書いてください。必ずこの子の名前、種類、お悩みに直接言及してください。一般的な表現は使わないでください。${lossNote}`;
   const freeCtx = freeReadingText
     ? `\n無料プレビューで提供した最初のカードの解釈（これを参考に、さらに深く広げてください）:\n${freeReadingText}\n`
     : '';
@@ -192,14 +198,17 @@ ${actionSummary
   return { system: systemPrompt, messages: [{ role: 'user', content: userPrompt }] };
 }
 
-function buildPromptEn(snap) {
+function buildPromptEn(snap, pastLossDetected) {
   const { petInfo, drawnCards, actionCards, fullName, freeReadingText } = commonParts(snap, 'en');
   const cardSummary = drawnCards.map(c => `[${c.position}] ${c.name}(${c.reversed ? 'Reversed' : 'Upright'})`).join('\n');
   const actionSummary = actionCards.length > 0
     ? actionCards.map(c => `${c.name}(${c.reversed ? 'Reversed' : 'Upright'})`).join(', ')
     : null;
   const speciesCtx = speciesContextEn(petInfo);
-  const systemPrompt = `You are a pet tarot expert. Write in warm, emotionally rich English. Always directly reference this pet's name, species, and concern. Never use generic phrasing.`;
+  const lossNote = pastLossDetected
+    ? ` [Internal note only — do not quote this verbatim or cite "according to past records"] ${petInfo.name} appears to have already crossed the rainbow bridge based on prior readings. Adjust only the tone and tense naturally to reflect this.`
+    : '';
+  const systemPrompt = `You are a pet tarot expert. Write in warm, emotionally rich English. Always directly reference this pet's name, species, and concern. Never use generic phrasing.${lossNote}`;
   const freeCtx = freeReadingText
     ? `\nHere is the first card's interpretation from the free preview (use it as context and go deeper):\n${freeReadingText}\n`
     : '';
@@ -232,11 +241,50 @@ ${actionSummary
 }
 
 // snap.locale('ko' 기본/'ja'/'en')에 따라 프롬프트 생성
-function buildPrompt(snap) {
+function buildPrompt(snap, pastLossDetected) {
   const locale = snap.locale === 'ja' ? 'ja' : snap.locale === 'en' ? 'en' : 'ko';
-  if (locale === 'ja') return buildPromptJa(snap);
-  if (locale === 'en') return buildPromptEn(snap);
-  return buildPromptKo(snap);
+  if (locale === 'ja') return buildPromptJa(snap, pastLossDetected);
+  if (locale === 'en') return buildPromptEn(snap, pastLossDetected);
+  return buildPromptKo(snap, pastLossDetected);
+}
+
+// ── 과거 리딩 기반 펫 상태(사망/이별) 감지 ──
+// 같은 유저·같은 펫 이름의 과거 완료된 딥리딩(concern/최종 리포트 텍스트)에
+// 이별 관련 표현이 있었는지만 체크한다. 있으면 프롬프트에 "내부 참고" 힌트를
+// 얹어 새 리딩의 톤/시제를 자연스럽게 맞추되, 이 사실 자체를 리딩 본문에
+// 그대로 인용하거나 출처를 밝히지 않도록 지시한다.
+const LOSS_KEYWORDS = [
+  // ko
+  '무지개다리', '무지개 다리', '하늘나라', '하늘로 떠', '별이 되', '안락사', '이별했', '떠나보내', '떠나 보내',
+  // ja
+  '虹の橋', '天国', '旅立', '安楽死', 'お別れ', '亡くなっ',
+  // en
+  'rainbow bridge', 'passed away', 'passed on', 'crossed over', 'euthaniz', 'in loving memory',
+];
+
+function textHasLossSignal(text) {
+  if (!text) return false;
+  const lower = String(text).toLowerCase();
+  return LOSS_KEYWORDS.some(kw => lower.includes(kw.toLowerCase()));
+}
+
+async function checkPastPetLoss(supabaseUrl, sbHeaders, userId, petName, excludeId) {
+  if (!userId || !petName) return false;
+  try {
+    const url = `${supabaseUrl}/rest/v1/reading_history`
+      + `?user_id=eq.${encodeURIComponent(userId)}`
+      + `&pet_name=eq.${encodeURIComponent(petName)}`
+      + `&status=eq.completed`
+      + `&id=neq.${encodeURIComponent(excludeId)}`
+      + `&select=concern,full_reading`
+      + `&order=created_at.desc&limit=5`;
+    const res = await fetch(url, { headers: sbHeaders });
+    const rows = await res.json();
+    if (!Array.isArray(rows)) return false;
+    return rows.some(r => textHasLossSignal(r.concern) || textHasLossSignal(r.full_reading));
+  } catch {
+    return false;
+  }
 }
 
 // ── 결제 검증: 프로바이더 분기 ──
@@ -412,8 +460,11 @@ exports.handler = async (event) => {
     return;
   }
 
-  // 결제 검증 통과 → 프롬프트 재구성 후 리포트 생성
-  const { system, messages } = buildPrompt(snap);
+  // 결제 검증 통과 → 같은 유저·같은 펫의 과거 완료 리딩에 이별 신호가 있었는지 체크 후 프롬프트 재구성
+  const pastLossDetected = await checkPastPetLoss(
+    supabaseUrl, sbHeaders, row.user_id, row.pet_name, readingId
+  );
+  const { system, messages } = buildPrompt(snap, pastLossDetected);
 
   try {
     const response = await fetch('https://api.anthropic.com/v1/messages', {
