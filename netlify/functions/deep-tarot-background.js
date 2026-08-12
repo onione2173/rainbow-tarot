@@ -7,19 +7,25 @@
 // ── locale별 배열법 fullName (ko/ja/en deep-reading 페이지의 SPREADS.fullName 이식) ──
 const SPREADS_BY_LOCALE = {
   ko: {
-    mind:     '아이가 무슨 생각 하는지 궁금해요 — 크로스 스프레드',
-    behavior: '갑자기 행동이 이상해졌어요 — 호스슈 스프레드',
-    change:   '이사·합사 등 변화를 앞두고 있어요 — 쓰리카드 스프레드',
+    mind:      '아이가 무슨 생각 하는지 궁금해요 — 크로스 스프레드',
+    behavior:  '갑자기 행동이 이상해졌어요 — 호스슈 스프레드',
+    change:    '이사·합사 등 변화를 앞두고 있어요 — 쓰리카드 스프레드',
+    pastlife:  '전생 이야기를 더 깊이 알고 싶어요 — 전생 연대기 스프레드',
+    chemistry: '우리 케미를 더 깊이 알고 싶어요 — 케미 스프레드',
   },
   ja: {
-    mind:     'この子が何を考えているのか気になる — クロススプレッド',
-    behavior: '急に様子がおかしくなった — ホースシュースプレッド',
-    change:   '引っ越し・多頭飼いなど変化を控えている — スリーカードスプレッド',
+    mind:      'この子が何を考えているのか気になる — クロススプレッド',
+    behavior:  '急に様子がおかしくなった — ホースシュースプレッド',
+    change:    '引っ越し・多頭飼いなど変化を控えている — スリーカードスプレッド',
+    pastlife:  '前世の物語をもっと知りたい — 前世クロニクルスプレッド',
+    chemistry: '私たちの相性をもっと知りたい — 相性スプレッド',
   },
   en: {
-    mind:     'I want to know what my pet is thinking — Cross Spread',
-    behavior: "My pet's behavior suddenly changed — Horseshoe Spread",
-    change:   'Getting ready for a big change — Three Card Spread',
+    mind:      'I want to know what my pet is thinking — Cross Spread',
+    behavior:  "My pet's behavior suddenly changed — Horseshoe Spread",
+    change:    'Getting ready for a big change — Three Card Spread',
+    pastlife:  "I want to know more about my pet's past life — Past Life Chronicle Spread",
+    chemistry: 'I want to know more about our chemistry — Chemistry Spread',
   },
 };
 
@@ -114,7 +120,55 @@ function commonParts(snap, locale) {
   return { petInfo, drawnCards, actionCards, fullName, freeReadingText: snap.freeText || '' };
 }
 
+// ── 전생/케미 스토리형 스프레드: 고민상담형과 다른 프롬프트 구조(행동가이드 없음) ──
+function buildStoryPromptKo(snap) {
+  const { petInfo, drawnCards, fullName, freeReadingText } = commonParts(snap, 'ko');
+  const cardSummary = drawnCards.map(c => `[${c.position}] ${c.name}(${c.reversed ? '역방향' : '정방향'})`).join('\n');
+  const freeCtx = freeReadingText
+    ? `\n무료 미리보기에서 제공된 첫 카드 해석 (이를 참고하여 더 깊이 확장하세요):\n${freeReadingText}\n`
+    : '';
+  const concernLine = petInfo.concern ? `참고 정보: ${petInfo.concern}\n` : '';
+  const petHeader = `반려동물: ${petInfo.name} (${petInfo.species}${petInfo.age ? ', ' + petInfo.age : ''}${petInfo.gender ? ', ' + petInfo.gender : ''})
+보호자 호칭: "${petInfo.ownerTitle}"
+${concernLine}배열법: ${fullName}
+뽑힌 카드:
+${cardSummary}
+${freeCtx}`;
+
+  if (snap.spreadKey === 'pastlife') {
+    const systemPrompt = `당신은 반려동물의 전생을 타로카드로 상상해서 들려주는 채널러입니다. 실제 예언이 아니라 유쾌하고 몰입감 있는 상상 놀이라는 톤을 유지하되, 진지하게 몰입해서 이야기해주세요. 반드시 이 아이의 이름과 종을 직접 언급하세요. 일반적인 표현은 쓰지 마세요.`;
+    const userPrompt = `${petHeader}
+아래 세 섹션으로 충분히 풍부하게 전생 이야기를 작성하세요:
+
+## 🕰️ 카드별 전생 해석
+세 카드를 포지션 순서(가장 오래된 전생 → 지금 성격을 만든 전생 → 이번 생에서 다시 만난 이유)에 따라 하나로 이어지는 연대기처럼 해석. 각 전생의 시대·장소·모습을 구체적으로 상상해서 묘사. ${petInfo.name}의 지금 성격과 자연스럽게 연결. (각 카드 3~4줄)
+
+## 💌 전생이 전하는 메시지
+그 전생들의 자아가 하나로 모여 ${petInfo.name}의 1인칭 시점으로 "${petInfo.ownerTitle}"에게 전하는 메시지. 감정과 애정을 구체적으로 표현. (6~8줄)
+
+## 🐾 지금 이 아이와 다시 만난 이유
+카드 전체 흐름을 바탕으로 ${petInfo.name}와 "${petInfo.ownerTitle}"이(가) 이번 생에서 다시 만난 이유를 따뜻하게 풀어내기. 위로와 감동 포함. (4~5줄)`;
+    return { system: systemPrompt, messages: [{ role: 'user', content: userPrompt }] };
+  }
+
+  // chemistry
+  const systemPrompt = `당신은 보호자와 반려동물 사이의 케미(궁합)를 타로카드로 읽어주는 채널러입니다. 반드시 이 아이의 이름과 종을 직접 언급하세요. 일반적인 표현은 쓰지 마세요.`;
+  const userPrompt = `${petHeader}
+아래 세 섹션으로 충분히 풍부하게 케미 리포트를 작성하세요:
+
+## 💞 카드별 케미 해석
+세 카드를 포지션 의미(내가 느끼는 우리 사이 → 아이가 느끼는 우리 사이 → 앞으로 더 좋아지는 방법)와 결합하여 깊이 있게 해석. 카드 간 흐름도 언급. (각 카드 3~4줄)
+
+## 💌 ${petInfo.name}이 전하는 마음
+${petInfo.name}의 1인칭 시점 내면 독백. 보호자를 "${petInfo.ownerTitle}"(이)라고 부르며 직접 말하는 애정 어린 편지 형식. (6~8줄)
+
+## ✨ 케미 up 실천 팁
+카드를 바탕으로 지금 바로 해볼 수 있는 구체적인 실천 팁 3가지. 각 항목: **팁 제목** — 이유와 방법.`;
+  return { system: systemPrompt, messages: [{ role: 'user', content: userPrompt }] };
+}
+
 function buildPromptKo(snap) {
+  if (snap.spreadKey === 'pastlife' || snap.spreadKey === 'chemistry') return buildStoryPromptKo(snap);
   const { petInfo, drawnCards, actionCards, fullName, freeReadingText } = commonParts(snap, 'ko');
   const cardSummary = drawnCards.map(c => `[${c.position}] ${c.name}(${c.reversed ? '역방향' : '정방향'})`).join('\n');
   const actionSummary = actionCards.length > 0

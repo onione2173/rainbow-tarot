@@ -221,6 +221,23 @@
         linear-gradient(140deg, #0b0420 0%, #1e0845 48%, #0a1438 100%);
     }
 
+    /* 5. 전생 타로: 고풍스러운 앤틱 골드-보라 톤. 추천 이미지: 오래된 초상화 액자 속 반려동물, 모래시계나 촛불 */
+    .bg-pastlife {
+      background:
+        radial-gradient(circle at 70% 25%, rgba(220,170,90,.4) 0%, transparent 50%),
+        radial-gradient(circle at 22% 75%, rgba(140,80,200,.4) 0%, transparent 52%),
+        radial-gradient(circle at 50% 55%, rgba(90,50,140,.35) 0%, transparent 60%),
+        linear-gradient(140deg, #1c1408 0%, #331a4a 48%, #150a2e 100%);
+    }
+    /* 6. 케미 타로: 다정한 핑크-골드 톤. 추천 이미지: 서로 기대어 있는 보호자와 반려동물, 하트 모양 빛무리 */
+    .bg-chemistry {
+      background:
+        radial-gradient(circle at 25% 25%, rgba(255,130,170,.45) 0%, transparent 52%),
+        radial-gradient(circle at 78% 70%, rgba(255,190,110,.35) 0%, transparent 50%),
+        radial-gradient(circle at 50% 90%, rgba(200,80,140,.3) 0%, transparent 45%),
+        linear-gradient(140deg, #2b0a20 0%, #4a1238 45%, #1e0a30 100%);
+    }
+
     .banner-card.hidden { display:none; }
 
     footer.site-footer {
@@ -417,6 +434,32 @@
           </div>
           <h2 class="banner-title">우리 아이 걱정될 때</h2>
           <p class="banner-desc">건강, 행동, 관계… 반려동물 고민을<br>타로에게 물어봐요</p>
+        </div>
+      </a>
+
+      <a href="/past-life-tarot/" class="banner-card" data-category="simple">
+        <div class="banner-bg bg-pastlife" style="aspect-ratio:16/9"></div>
+        <div class="banner-overlay"></div>
+        <div class="banner-content">
+          <div class="banner-badges">
+            <span class="badge badge-type">원카드</span>
+            <span class="badge badge-new">NEW</span>
+          </div>
+          <h2 class="banner-title">전생 타로</h2>
+          <p class="banner-desc">우리 아이는 전생에 어떤 존재였을까요?<br>타로카드로 알아봐요</p>
+        </div>
+      </a>
+
+      <a href="/chemistry-tarot/" class="banner-card" data-category="simple">
+        <div class="banner-bg bg-chemistry" style="aspect-ratio:16/9"></div>
+        <div class="banner-overlay"></div>
+        <div class="banner-content">
+          <div class="banner-badges">
+            <span class="badge badge-type">원카드</span>
+            <span class="badge badge-new">NEW</span>
+          </div>
+          <h2 class="banner-title">케미 타로</h2>
+          <p class="banner-desc">나랑 우리 아이, 케미 어때?<br>타로로 우리만의 궁합을 확인해봐요</p>
         </div>
       </a>
 

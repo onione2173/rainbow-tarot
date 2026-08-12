@@ -24,6 +24,20 @@ function track(eventName, params){
   if(typeof gtag==='function') gtag('event', eventName, params||{});
 }
 
+/* ── 한글 조사 처리 (받침 유무에 따라 자동 선택) ── */
+function hasBatchim(str){
+  if(!str) return false;
+  const ch=str.trim().slice(-1);
+  const code=ch.charCodeAt(0)-0xAC00;
+  if(code<0||code>11171) return false;
+  return (code%28)!==0;
+}
+function josaEunNeun(name){ return hasBatchim(name)?'은':'는'; }
+function josaIGa(name){ return hasBatchim(name)?'이':'가'; }
+function escHtml(s){
+  return String(s).replace(/[&<>"']/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
+}
+
 /* ── state ── */
 let drawn=[], drawnRv=[];
 let shuffledDeck=[], selectedFromSpread=[];
@@ -304,8 +318,13 @@ function showReadingFooter(){
   document.getElementById('adInReading').style.display='block';
   initReadingAd();
   document.getElementById('readingFooter').style.display='block';
-  var _un=document.querySelector('.upsell-name');
-  if(_un&&_currentPetName)_un.textContent=_currentPetName;
+  var _titleEl=document.querySelector('.upsell-title');
+  if(typeof PAGE_UPSELL_TITLE==='function'&&_titleEl){
+    _titleEl.innerHTML=PAGE_UPSELL_TITLE(escHtml(_currentPetName||'아이'));
+  }else{
+    var _un=document.querySelector('.upsell-name');
+    if(_un&&_currentPetName)_un.textContent=_currentPetName;
+  }
   track('upsell_shown',{mode:(typeof currentMode!=='undefined'?currentMode:'')});
 }
 

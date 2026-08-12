@@ -3,20 +3,18 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>무지개 다리 너머 — 반려동물 타로</title>
-  <meta name="description" content="무지개 다리를 건넌 반려동물의 영혼과 타로로 연결해보세요. 마지막 인사와 그리운 마음을 편지로 전해드려요.">
-  <link rel="canonical" href="https://rainbow-tarot.netlify.app/rainbow-tarot/">
-  <link rel="alternate" hreflang="ko" href="https://rainbow-tarot.netlify.app/rainbow-tarot/">
-  <link rel="alternate" hreflang="ja" href="https://rainbow-tarot.netlify.app/ja/rainbow-tarot/">
-  <link rel="alternate" hreflang="en" href="https://rainbow-tarot.netlify.app/en/rainbow-tarot/">
-  <link rel="alternate" hreflang="x-default" href="https://rainbow-tarot.netlify.app/rainbow-tarot/">
+  <title>케미 타로 — 반려동물 타로</title>
+  <meta name="description" content="나랑 우리 아이, 케미 어때? 타로카드로 나와 반려동물의 궁합과 케미를 알아봐요. 무료 원카드 타로 리딩.">
+  <link rel="canonical" href="https://rainbow-tarot.netlify.app/chemistry-tarot/">
+  <link rel="alternate" hreflang="ko" href="https://rainbow-tarot.netlify.app/chemistry-tarot/">
+  <link rel="alternate" hreflang="x-default" href="https://rainbow-tarot.netlify.app/chemistry-tarot/">
   <meta property="og:type" content="website">
   <meta property="og:site_name" content="펫타로">
   <meta property="og:locale" content="ko_KR">
-  <meta property="og:title" content="무지개 다리 너머 — 반려동물 타로">
-  <meta property="og:description" content="무지개 다리를 건넌 반려동물의 영혼과 타로로 연결해보세요. 마지막 인사와 그리운 마음을 편지로 전해드려요.">
+  <meta property="og:title" content="케미 타로 — 반려동물 타로">
+  <meta property="og:description" content="나랑 우리 아이, 케미 어때? 타로카드로 나와 반려동물의 궁합과 케미를 알아봐요. 무료 원카드 타로 리딩.">
   <meta property="og:image" content="https://rainbow-tarot.netlify.app/assets/og-image.png">
-  <meta property="og:url" content="https://rainbow-tarot.netlify.app/rainbow-tarot/">
+  <meta property="og:url" content="https://rainbow-tarot.netlify.app/chemistry-tarot/">
   <meta name="twitter:card" content="summary_large_image">
   <link rel="icon" type="image/svg+xml" href="/favicon.svg">
   <link rel="apple-touch-icon" href="/favicon.svg">
@@ -124,26 +122,29 @@
   <div class="page">
     <div class="container">
       <div class="header reveal">
-        <span class="icon">🌈</span>
-        <h1>무지개 다리 너머</h1>
-        <p class="sub">사랑하는 반려동물의 영혼과 연결되는 공간<br>그들은 무지개 다리 너머에서 언제나 우리를 바라보고 있어요</p>
+        <span class="icon">💞</span>
+        <h1>나랑 우리 아이, 케미 어때?</h1>
+        <p class="sub">타로카드로 나와 반려동물 사이의 케미를 읽어봐요<br>우리만의 특별한 궁합 유형을 확인해보세요</p>
       </div>
 
       <div class="glass">
         <div class="input-row">
           <div>
             <label class="field-label">🐾 반려동물 이름</label>
-            <input type="text" id="petName" placeholder="예: 똘이, 초코, 루시…">
+            <input type="text" id="chemPetName" placeholder="예: 콩이, 하루, 뭉치…">
           </div>
           <div>
-            <label class="field-label">💌 반려동물이 나를 부르는 호칭</label>
-            <input type="text" id="ownerTitle" placeholder="예: 아빠, 엄마, 언니, 오빠, 집사…">
+            <label class="field-label">🏷️ 종류 (선택)</label>
+            <input type="text" id="chemPetType" placeholder="예: 강아지, 고양이, 토끼…">
           </div>
         </div>
-        <label class="field-label">🌸 어떤 이야기를 나누고 싶으신가요?</label>
-        <textarea class="question" id="question"
-          placeholder="예: 너는 지금 행복하니? / 마지막으로 하고 싶은 말이 있어? / 내가 더 잘해줄 수 있었을까?"></textarea>
-        <button class="btn-draw" onclick="onDraw()">🌈 &nbsp;타로 카드 뽑기</button>
+        <div class="input-row">
+          <div>
+            <label class="field-label">💌 반려동물이 나를 부르는 호칭</label>
+            <input type="text" id="chemOwnerTitle" placeholder="예: 아빠, 엄마, 언니, 집사…">
+          </div>
+        </div>
+        <button class="btn-draw" onclick="onDraw()">💞 &nbsp;케미 카드 뽑기</button>
       </div>
 
       <div class="spread-section" id="spreadSection">
@@ -161,7 +162,7 @@
 
       <div class="loading-section" id="loadingSection">
         <div class="orb"></div>
-        <p class="loading-text" id="loadingText">영혼의 목소리를 듣고 있어요…<br>
+        <p class="loading-text" id="loadingText">타로가 우리 둘의 케미를 읽고 있어요…<br>
           <span style="font-size:.8rem;color:var(--text-dim)">잠시만 기다려주세요</span></p>
       </div>
 
@@ -173,12 +174,12 @@
         <div class="chips" id="chipRow"></div>
         <div class="reading-body" id="readingBody"></div>
         <div class="letter-trigger" id="letterTrigger">
-          <button class="btn-open-letter" onclick="openLetter()">💌 &nbsp;편지 열기</button>
+          <button class="btn-open-letter" onclick="openLetter()">💞 &nbsp;우리 아이가 전하는 마음 보기</button>
         </div>
         <div class="letter-section" id="letterSection" style="display:none">
           <div class="letter-divider"></div>
           <div class="letter-header">
-            <span class="ltr-icon">💌</span>
+            <span class="ltr-icon">💞</span>
             <h3 id="letterTitle"></h3>
           </div>
           <div class="reading-body" id="letterBody"></div>
@@ -191,11 +192,11 @@
             data-ad-height="250"></ins>
         </div>
         <div class="reading-footer" id="readingFooter" style="display:none">
-          <a class="upsell-card" href="/deep-reading/" onclick="track('upsell_click',{from:'rainbow'})">
+          <a class="upsell-card" href="/deep-reading/?spread=chemistry" onclick="track('upsell_click',{from:'chemistry'})">
             <span class="upsell-tag">PREMIUM</span>
-            <div class="upsell-title">🔮 혹시, 곁을 지키고 있는 아이가 있나요?</div>
-            <div class="upsell-desc">떠난 친구를 그리워하는 건 보호자님만이 아닐 거예요. 지금 곁에 남은 아이의 마음도 여러 장의 카드로 깊이 들어보세요 — 카드별 해석과 아이가 보내는 편지, 보호자를 위한 안내까지 담아드려요.</div>
-            <span class="upsell-cta">심층 리딩 받기 <span class="upsell-price">오픈 할인가 1,500원</span></span>
+            <div class="upsell-title">💞 아이가 나를 좋아하고 있을까요?</div>
+            <div class="upsell-desc">카드 3장으로 읽는 케미 심층 리포트 — 내가 느끼는 우리 사이, 아이가 느끼는 우리 사이, 케미 up 실천 팁까지 담아드려요.</div>
+            <span class="upsell-cta">케미 리포트 받기 <span class="upsell-price">오픈 할인가 1,500원</span></span>
           </a>
           <div class="footer-actions">
             <div class="share-btns">
@@ -208,8 +209,7 @@
       </div>
 
       <footer class="site-footer">
-        <p>사랑하는 반려동물을 그리워하는 모든 분들을 위해 만들어졌습니다</p>
-        <p>🌈 무지개 다리 너머에서도 그들의 사랑은 영원합니다 🐾</p>
+        <p>🐾 우리 아이와 함께하는 모든 순간이 특별해요</p>
         <div class="footer-operator">
           <p>운영자: BrandWick &nbsp;|&nbsp; 문의: <a href="mailto:ralra_1@naver.com">ralra_1@naver.com</a></p>
           <p><a href="/privacy/">개인정보처리방침</a> &nbsp;|&nbsp; <a href="/terms/">이용약관</a></p>
@@ -226,7 +226,7 @@
       <h3>운영자 정보</h3>
       <p>운영자: BrandWick &nbsp;|&nbsp; 문의: ralra_1@naver.com</p>
       <h3>수집하는 정보</h3>
-      <p>이 서비스는 이용자의 개인정보를 직접 수집·저장하지 않습니다.<br>단, 아래 제3자 서비스가 자동으로 이용 통계를 수집합니다.</p>
+      <p>이 서비스는 이용자의 개인정보를 직접 수집·저장하지 않습니다.</p>
       <h3>Google Analytics 4</h3>
       <p>서비스 이용 통계 파악을 위해 Google Analytics를 사용합니다.</p>
       <h3>Google AdSense</h3>
@@ -250,20 +250,20 @@
 
   <script src="/assets/cards.js"></script>
   <script>
-    const currentMode = 0;
-    const PAGE_ICON = '🌈';
-    const PAGE_TITLE = '무지개 다리 너머';
-    const PAGE_LOADING = '영혼의 목소리를 듣고 있어요…';
-    const PAGE_LETTER_BTN = '💌 &nbsp;편지 열기';
-    const PAGE_LETTER_TITLE = petN => `💌 ${petN}의 편지`;
-    const PAGE_SHARE_LABEL = petN => `💌 ${petN}의 편지`;
+    const currentMode = 4;
+    const PAGE_ICON = '💞';
+    const PAGE_TITLE = '케미 타로';
+    const PAGE_LOADING = '타로가 우리 둘의 케미를 읽고 있어요…';
+    const PAGE_LETTER_BTN = '💞 &nbsp;우리 아이가 전하는 마음 보기';
+    const PAGE_LETTER_TITLE = petN => `💞 ${petN}가 전하는 마음`;
+    const PAGE_SHARE_LABEL = petN => `💞 ${petN}가 전하는 마음`;
 
     function onDraw(){
-      const q = document.getElementById('question').value.trim();
-      if(!q){
-        const ta = document.getElementById('question');
-        ta.style.borderColor='rgba(255,100,100,.5)'; ta.focus();
-        setTimeout(()=>ta.style.borderColor='',2000); return;
+      const n = document.getElementById('chemPetName').value.trim();
+      if(!n){
+        const el = document.getElementById('chemPetName');
+        el.style.borderColor='rgba(255,100,100,.5)'; el.focus();
+        setTimeout(()=>el.style.borderColor='',2000); return;
       }
       ['readingSection','loadingSection','cardsSection','spreadSection']
         .forEach(id=>document.getElementById(id).classList.remove('show'));
@@ -276,27 +276,27 @@
       const card=drawn[0], rv=drawnRv[0];
       const cardInfo=`카드: ${card.name}(${card.en}) — ${rv?'역방향':'정방향'}\n정방향 키워드: ${card.upKw}\n역방향 키워드: ${card.rvKw}`;
       const sep='\n\n---LETTER--- 구분자를 포함하여 두 부분으로 정확히 나누어 작성해주세요.';
-      const petName=document.getElementById('petName').value.trim()||'반려동물';
-      const ownerTitle=document.getElementById('ownerTitle').value.trim()||'보호자';
-      const question=document.getElementById('question').value.trim();
+      const petName=document.getElementById('chemPetName').value.trim()||'반려동물';
+      const petType=document.getElementById('chemPetType').value.trim();
+      const ownerTitle=document.getElementById('chemOwnerTitle').value.trim()||'보호자';
       return {
         petName,
-        system:`당신은 무지개 다리 너머로 떠난 반려동물의 영혼과 연결하는 타로 채널러입니다.
-응답은 반드시 두 부분으로 구분합니다.
+        system:`당신은 보호자와 반려동물 사이의 케미(궁합)를 타로카드로 읽어주는 채널러입니다.
+응답은 반드시 두 부분으로 나눕니다.
 
-[1부: 카드 해석]
-이 카드가 어떤 의미인지 간결하게 설명하고, 보호자의 질문과 연결하여 따뜻하게 해석합니다. 2~4문장.
+[1부: 케미 카드 해석]
+첫 줄에 굵게 강조된 케미 유형 한 줄(예: **케미 유형: 말 안 해도 통하는 텔레파시 케미**)을 짧고 개성있게 지어서 제시합니다.
+이어서 이 카드가 보여주는 보호자와 반려동물 사이 케미의 특징을 2~3문장으로 따뜻하게 설명합니다.
 
 ---LETTER---
 
-[2부: 반려동물의 편지]
-반려동물이 1인칭으로 직접 보호자에게 쓰는 짧은 편지. 카드 의미에 기반해서만 씁니다.
-- 종에 따른 신체 표현 절대 금지 (꼬리·발바닥·냐옹·멍멍 등 특정 동물 한정 표현 불가)
-- 감정과 영혼의 언어만 사용 ("느껴져", "기억해", "곁에 있어", "사랑해")
-- 역방향 카드는 따뜻한 위로로만 해석 / 200자 내외`,
-        user:`반려동물 이름: ${petName}\n보호자 호칭: "${ownerTitle}"\n보호자의 질문: "${question}"\n\n${cardInfo}${sep}`,
+[2부: 반려동물이 전하는 마음]
+반려동물이 "${ownerTitle}"(이)라고 부르며 보호자에게 전하는 애정 어린 짧은 메시지. 이모지 포함. 한두 문장.`,
+        user:`반려동물 이름: ${petName}${petType?'\n반려동물 종류: '+petType:''}\n보호자 호칭: "${ownerTitle}"\n\n${cardInfo}${sep}`,
       };
     }
+
+    const PAGE_UPSELL_TITLE = petN => `💞 ${petN}${josaIGa(petN)} 나를 좋아하고 있을까요?`;
   </script>
   <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/dist/umd/supabase.min.js"></script>
   <script src="/assets/auth.js"></script>

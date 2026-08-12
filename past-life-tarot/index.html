@@ -3,20 +3,18 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>무지개 다리 너머 — 반려동물 타로</title>
-  <meta name="description" content="무지개 다리를 건넌 반려동물의 영혼과 타로로 연결해보세요. 마지막 인사와 그리운 마음을 편지로 전해드려요.">
-  <link rel="canonical" href="https://rainbow-tarot.netlify.app/rainbow-tarot/">
-  <link rel="alternate" hreflang="ko" href="https://rainbow-tarot.netlify.app/rainbow-tarot/">
-  <link rel="alternate" hreflang="ja" href="https://rainbow-tarot.netlify.app/ja/rainbow-tarot/">
-  <link rel="alternate" hreflang="en" href="https://rainbow-tarot.netlify.app/en/rainbow-tarot/">
-  <link rel="alternate" hreflang="x-default" href="https://rainbow-tarot.netlify.app/rainbow-tarot/">
+  <title>전생 타로 — 반려동물 타로</title>
+  <meta name="description" content="우리 아이는 전생에 어떤 존재였을까요? 타로카드로 반려동물의 전생 모습을 알아봐요. 무료 원카드 타로 리딩.">
+  <link rel="canonical" href="https://rainbow-tarot.netlify.app/past-life-tarot/">
+  <link rel="alternate" hreflang="ko" href="https://rainbow-tarot.netlify.app/past-life-tarot/">
+  <link rel="alternate" hreflang="x-default" href="https://rainbow-tarot.netlify.app/past-life-tarot/">
   <meta property="og:type" content="website">
   <meta property="og:site_name" content="펫타로">
   <meta property="og:locale" content="ko_KR">
-  <meta property="og:title" content="무지개 다리 너머 — 반려동물 타로">
-  <meta property="og:description" content="무지개 다리를 건넌 반려동물의 영혼과 타로로 연결해보세요. 마지막 인사와 그리운 마음을 편지로 전해드려요.">
+  <meta property="og:title" content="전생 타로 — 반려동물 타로">
+  <meta property="og:description" content="우리 아이는 전생에 어떤 존재였을까요? 타로카드로 반려동물의 전생 모습을 알아봐요. 무료 원카드 타로 리딩.">
   <meta property="og:image" content="https://rainbow-tarot.netlify.app/assets/og-image.png">
-  <meta property="og:url" content="https://rainbow-tarot.netlify.app/rainbow-tarot/">
+  <meta property="og:url" content="https://rainbow-tarot.netlify.app/past-life-tarot/">
   <meta name="twitter:card" content="summary_large_image">
   <link rel="icon" type="image/svg+xml" href="/favicon.svg">
   <link rel="apple-touch-icon" href="/favicon.svg">
@@ -124,26 +122,33 @@
   <div class="page">
     <div class="container">
       <div class="header reveal">
-        <span class="icon">🌈</span>
-        <h1>무지개 다리 너머</h1>
-        <p class="sub">사랑하는 반려동물의 영혼과 연결되는 공간<br>그들은 무지개 다리 너머에서 언제나 우리를 바라보고 있어요</p>
+        <span class="icon">🕰️</span>
+        <h1>우리 아이, 전생엔 뭐였을까?</h1>
+        <p class="sub">타로카드로 우리 아이의 전생 모습을 들여다봐요<br>의외의 전생 유형이 나올지도 몰라요</p>
       </div>
 
       <div class="glass">
         <div class="input-row">
           <div>
             <label class="field-label">🐾 반려동물 이름</label>
-            <input type="text" id="petName" placeholder="예: 똘이, 초코, 루시…">
+            <input type="text" id="plPetName" placeholder="예: 콩이, 하루, 뭉치…">
           </div>
           <div>
-            <label class="field-label">💌 반려동물이 나를 부르는 호칭</label>
-            <input type="text" id="ownerTitle" placeholder="예: 아빠, 엄마, 언니, 오빠, 집사…">
+            <label class="field-label">🏷️ 종류 (선택)</label>
+            <input type="text" id="plPetType" placeholder="예: 강아지, 고양이, 토끼…">
           </div>
         </div>
-        <label class="field-label">🌸 어떤 이야기를 나누고 싶으신가요?</label>
-        <textarea class="question" id="question"
-          placeholder="예: 너는 지금 행복하니? / 마지막으로 하고 싶은 말이 있어? / 내가 더 잘해줄 수 있었을까?"></textarea>
-        <button class="btn-draw" onclick="onDraw()">🌈 &nbsp;타로 카드 뽑기</button>
+        <label class="field-label">🎭 성격은 어때요? (선택)</label>
+        <div class="concern-chips">
+          <button class="concern-chip active" data-personality="잘 모르겠어요">🤷 잘 모르겠어요</button>
+          <button class="concern-chip" data-personality="장난꾸러기">😼 장난꾸러기</button>
+          <button class="concern-chip" data-personality="도도한 편">👑 도도한 편</button>
+          <button class="concern-chip" data-personality="애교쟁이">🥰 애교쟁이</button>
+          <button class="concern-chip" data-personality="까칠한 편">😤 까칠한 편</button>
+          <button class="concern-chip" data-personality="온순한 편">🕊️ 온순한 편</button>
+        </div>
+        <input type="text" id="plPersonalityCustom" placeholder="✍️ 직접 입력 (선택) — 예: 낮잠을 좋아해요, 물을 무서워해요" style="margin-bottom:16px">
+        <button class="btn-draw" onclick="onDraw()">🕰️ &nbsp;전생 카드 뽑기</button>
       </div>
 
       <div class="spread-section" id="spreadSection">
@@ -161,7 +166,7 @@
 
       <div class="loading-section" id="loadingSection">
         <div class="orb"></div>
-        <p class="loading-text" id="loadingText">영혼의 목소리를 듣고 있어요…<br>
+        <p class="loading-text" id="loadingText">타로가 전생의 기억을 더듬고 있어요…<br>
           <span style="font-size:.8rem;color:var(--text-dim)">잠시만 기다려주세요</span></p>
       </div>
 
@@ -173,12 +178,12 @@
         <div class="chips" id="chipRow"></div>
         <div class="reading-body" id="readingBody"></div>
         <div class="letter-trigger" id="letterTrigger">
-          <button class="btn-open-letter" onclick="openLetter()">💌 &nbsp;편지 열기</button>
+          <button class="btn-open-letter" onclick="openLetter()">🕰️ &nbsp;전생의 메시지 보기</button>
         </div>
         <div class="letter-section" id="letterSection" style="display:none">
           <div class="letter-divider"></div>
           <div class="letter-header">
-            <span class="ltr-icon">💌</span>
+            <span class="ltr-icon">🕰️</span>
             <h3 id="letterTitle"></h3>
           </div>
           <div class="reading-body" id="letterBody"></div>
@@ -191,11 +196,11 @@
             data-ad-height="250"></ins>
         </div>
         <div class="reading-footer" id="readingFooter" style="display:none">
-          <a class="upsell-card" href="/deep-reading/" onclick="track('upsell_click',{from:'rainbow'})">
+          <a class="upsell-card" href="/deep-reading/?spread=pastlife" onclick="track('upsell_click',{from:'pastlife'})">
             <span class="upsell-tag">PREMIUM</span>
-            <div class="upsell-title">🔮 혹시, 곁을 지키고 있는 아이가 있나요?</div>
-            <div class="upsell-desc">떠난 친구를 그리워하는 건 보호자님만이 아닐 거예요. 지금 곁에 남은 아이의 마음도 여러 장의 카드로 깊이 들어보세요 — 카드별 해석과 아이가 보내는 편지, 보호자를 위한 안내까지 담아드려요.</div>
-            <span class="upsell-cta">심층 리딩 받기 <span class="upsell-price">오픈 할인가 1,500원</span></span>
+            <div class="upsell-title">🕰️ 아이는 왜 나와 만나게 되었을까?</div>
+            <div class="upsell-desc">카드 3장으로 읽는 전생 연대기 — 가장 오래된 전생부터 지금 나와 다시 만난 이유까지, 전체 이야기를 담아드려요.</div>
+            <span class="upsell-cta">전생 연대기 받기 <span class="upsell-price">오픈 할인가 1,500원</span></span>
           </a>
           <div class="footer-actions">
             <div class="share-btns">
@@ -208,8 +213,7 @@
       </div>
 
       <footer class="site-footer">
-        <p>사랑하는 반려동물을 그리워하는 모든 분들을 위해 만들어졌습니다</p>
-        <p>🌈 무지개 다리 너머에서도 그들의 사랑은 영원합니다 🐾</p>
+        <p>🐾 우리 아이와 함께하는 모든 순간이 특별해요</p>
         <div class="footer-operator">
           <p>운영자: BrandWick &nbsp;|&nbsp; 문의: <a href="mailto:ralra_1@naver.com">ralra_1@naver.com</a></p>
           <p><a href="/privacy/">개인정보처리방침</a> &nbsp;|&nbsp; <a href="/terms/">이용약관</a></p>
@@ -226,7 +230,7 @@
       <h3>운영자 정보</h3>
       <p>운영자: BrandWick &nbsp;|&nbsp; 문의: ralra_1@naver.com</p>
       <h3>수집하는 정보</h3>
-      <p>이 서비스는 이용자의 개인정보를 직접 수집·저장하지 않습니다.<br>단, 아래 제3자 서비스가 자동으로 이용 통계를 수집합니다.</p>
+      <p>이 서비스는 이용자의 개인정보를 직접 수집·저장하지 않습니다.</p>
       <h3>Google Analytics 4</h3>
       <p>서비스 이용 통계 파악을 위해 Google Analytics를 사용합니다.</p>
       <h3>Google AdSense</h3>
@@ -250,20 +254,31 @@
 
   <script src="/assets/cards.js"></script>
   <script>
-    const currentMode = 0;
-    const PAGE_ICON = '🌈';
-    const PAGE_TITLE = '무지개 다리 너머';
-    const PAGE_LOADING = '영혼의 목소리를 듣고 있어요…';
-    const PAGE_LETTER_BTN = '💌 &nbsp;편지 열기';
-    const PAGE_LETTER_TITLE = petN => `💌 ${petN}의 편지`;
-    const PAGE_SHARE_LABEL = petN => `💌 ${petN}의 편지`;
+    const currentMode = 3;
+    const PAGE_ICON = '🕰️';
+    const PAGE_TITLE = '전생 타로';
+    const PAGE_LOADING = '타로가 전생의 기억을 더듬고 있어요…';
+    const PAGE_LETTER_BTN = '🕰️ &nbsp;전생의 메시지 보기';
+    const PAGE_LETTER_TITLE = petN => `🕰️ ${petN}의 전생 메시지`;
+    const PAGE_SHARE_LABEL = petN => `🕰️ ${petN}의 전생 메시지`;
+
+    let selectedPersonality = '잘 모르겠어요';
+
+    document.querySelectorAll('.concern-chip').forEach(el=>{
+      el.addEventListener('click',()=>{
+        document.querySelectorAll('.concern-chip').forEach(c=>c.classList.remove('active'));
+        el.classList.add('active');
+        selectedPersonality = el.dataset.personality;
+        track('personality_selected',{personality:el.dataset.personality});
+      });
+    });
 
     function onDraw(){
-      const q = document.getElementById('question').value.trim();
-      if(!q){
-        const ta = document.getElementById('question');
-        ta.style.borderColor='rgba(255,100,100,.5)'; ta.focus();
-        setTimeout(()=>ta.style.borderColor='',2000); return;
+      const n = document.getElementById('plPetName').value.trim();
+      if(!n){
+        const el = document.getElementById('plPetName');
+        el.style.borderColor='rgba(255,100,100,.5)'; el.focus();
+        setTimeout(()=>el.style.borderColor='',2000); return;
       }
       ['readingSection','loadingSection','cardsSection','spreadSection']
         .forEach(id=>document.getElementById(id).classList.remove('show'));
@@ -276,27 +291,31 @@
       const card=drawn[0], rv=drawnRv[0];
       const cardInfo=`카드: ${card.name}(${card.en}) — ${rv?'역방향':'정방향'}\n정방향 키워드: ${card.upKw}\n역방향 키워드: ${card.rvKw}`;
       const sep='\n\n---LETTER--- 구분자를 포함하여 두 부분으로 정확히 나누어 작성해주세요.';
-      const petName=document.getElementById('petName').value.trim()||'반려동물';
-      const ownerTitle=document.getElementById('ownerTitle').value.trim()||'보호자';
-      const question=document.getElementById('question').value.trim();
+      const petName=document.getElementById('plPetName').value.trim()||'반려동물';
+      const petType=document.getElementById('plPetType').value.trim();
+      const customPersonality=document.getElementById('plPersonalityCustom').value.trim();
+      const personality=customPersonality
+        ? (selectedPersonality!=='잘 모르겠어요' ? `${selectedPersonality}, ${customPersonality}` : customPersonality)
+        : selectedPersonality;
       return {
         petName,
-        system:`당신은 무지개 다리 너머로 떠난 반려동물의 영혼과 연결하는 타로 채널러입니다.
-응답은 반드시 두 부분으로 구분합니다.
+        system:`당신은 반려동물의 전생을 타로카드로 상상해서 들려주는 채널러입니다.
+실제 예언이 아니라 몰입감 있는 상상 놀이라는 톤을 유지하되, 진지하게 몰입해서 이야기해주세요.
+응답은 반드시 두 부분으로 나눕니다.
 
-[1부: 카드 해석]
-이 카드가 어떤 의미인지 간결하게 설명하고, 보호자의 질문과 연결하여 따뜻하게 해석합니다. 2~4문장.
+[1부: 전생 카드 해석]
+첫 줄에 굵게 강조된 전생 유형 한 줄(예: **전생 유형: 바다를 떠돌던 방랑 선원**)을 짧고 개성있게 지어서 제시합니다.
+이어서 이 카드와 성격 힌트가 암시하는 전생의 모습을 2~3문장으로 생생하게 묘사합니다.
 
 ---LETTER---
 
-[2부: 반려동물의 편지]
-반려동물이 1인칭으로 직접 보호자에게 쓰는 짧은 편지. 카드 의미에 기반해서만 씁니다.
-- 종에 따른 신체 표현 절대 금지 (꼬리·발바닥·냐옹·멍멍 등 특정 동물 한정 표현 불가)
-- 감정과 영혼의 언어만 사용 ("느껴져", "기억해", "곁에 있어", "사랑해")
-- 역방향 카드는 따뜻한 위로로만 해석 / 200자 내외`,
-        user:`반려동물 이름: ${petName}\n보호자 호칭: "${ownerTitle}"\n보호자의 질문: "${question}"\n\n${cardInfo}${sep}`,
+[2부: 전생이 남긴 메시지]
+그 전생의 자아가 지금의 반려동물과 보호자에게 남기는 짧고 따뜻한 한마디. 이모지 포함. 한두 문장.`,
+        user:`반려동물 이름: ${petName}${petType?'\n반려동물 종류: '+petType:''}\n성격: ${personality}\n\n${cardInfo}${sep}`,
       };
     }
+
+    const PAGE_UPSELL_TITLE = petN => `🕰️ ${petN}${josaEunNeun(petN)} 왜 나와 만나게 되었을까?`;
   </script>
   <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/dist/umd/supabase.min.js"></script>
   <script src="/assets/auth.js"></script>
