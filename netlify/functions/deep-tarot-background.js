@@ -125,7 +125,7 @@ function buildStoryPromptKo(snap) {
   const { petInfo, drawnCards, fullName, freeReadingText } = commonParts(snap, 'ko');
   const cardSummary = drawnCards.map(c => `[${c.position}] ${c.name}(${c.reversed ? '역방향' : '정방향'})`).join('\n');
   const freeCtx = freeReadingText
-    ? `\n무료 미리보기에서 제공된 첫 카드 해석 (이를 참고하여 더 깊이 확장하세요):\n${freeReadingText}\n`
+    ? `\n무료 미리보기에서 이미 보여준 카드 1(${drawnCards[0]?.position}) 해석 — 아래 텍스트를 한 글자도 바꾸지 말고, 카드별 해석 섹션의 첫 항목으로 그대로 포함하세요:\n${freeReadingText}\n`
     : '';
   const concernLine = petInfo.concern ? `참고 정보: ${petInfo.concern}\n` : '';
   const petHeader = `반려동물: ${petInfo.name} (${petInfo.species}${petInfo.age ? ', ' + petInfo.age : ''}${petInfo.gender ? ', ' + petInfo.gender : ''})
@@ -134,14 +134,18 @@ ${concernLine}배열법: ${fullName}
 뽑힌 카드:
 ${cardSummary}
 ${freeCtx}`;
+  const noMetaNote = `'미리보기에서 보신 것처럼' 같은 메타 언급은 절대 하지 마세요 — 이 리포트는 그 자체로 완결된 문서입니다.`;
 
   if (snap.spreadKey === 'pastlife') {
+    const cardInstruction = freeReadingText
+      ? `카드 1(${drawnCards[0]?.position})은 위에 제공된 무료 미리보기 텍스트를 한 글자도 바꾸지 말고 그대로 첫 항목으로 포함하세요. 나머지 카드는 포지션 순서(지금 성격을 만든 전생 → 이번 생에서 다시 만난 이유)에 따라 하나로 이어지는 연대기처럼 새로 해석하세요. 각 전생의 시대·장소·모습을 구체적으로 상상해서 묘사. ${petInfo.name}의 지금 성격과 자연스럽게 연결. (나머지 각 카드 3~4줄) ${noMetaNote}`
+      : `세 카드를 포지션 순서(가장 오래된 전생 → 지금 성격을 만든 전생 → 이번 생에서 다시 만난 이유)에 따라 하나로 이어지는 연대기처럼 해석. 각 전생의 시대·장소·모습을 구체적으로 상상해서 묘사. ${petInfo.name}의 지금 성격과 자연스럽게 연결. (각 카드 3~4줄)`;
     const systemPrompt = `당신은 반려동물의 전생을 타로카드로 상상해서 들려주는 채널러입니다. 실제 예언이 아니라 유쾌하고 몰입감 있는 상상 놀이라는 톤을 유지하되, 진지하게 몰입해서 이야기해주세요. 반드시 이 아이의 이름과 종을 직접 언급하세요. 일반적인 표현은 쓰지 마세요.`;
     const userPrompt = `${petHeader}
 아래 세 섹션으로 충분히 풍부하게 전생 이야기를 작성하세요:
 
 ## 🕰️ 카드별 전생 해석
-세 카드를 포지션 순서(가장 오래된 전생 → 지금 성격을 만든 전생 → 이번 생에서 다시 만난 이유)에 따라 하나로 이어지는 연대기처럼 해석. 각 전생의 시대·장소·모습을 구체적으로 상상해서 묘사. ${petInfo.name}의 지금 성격과 자연스럽게 연결. (각 카드 3~4줄)
+${cardInstruction}
 
 ## 💌 전생이 전하는 메시지
 그 전생들의 자아가 하나로 모여 ${petInfo.name}의 1인칭 시점으로 "${petInfo.ownerTitle}"에게 전하는 메시지. 감정과 애정을 구체적으로 표현. (6~8줄)
@@ -152,12 +156,15 @@ ${freeCtx}`;
   }
 
   // chemistry
+  const cardInstruction = freeReadingText
+    ? `카드 1(${drawnCards[0]?.position})은 위에 제공된 무료 미리보기 텍스트를 한 글자도 바꾸지 말고 그대로 첫 항목으로 포함하세요. 나머지 카드는 포지션 의미(아이가 느끼는 우리 사이 → 앞으로 더 좋아지는 방법)와 결합하여 깊이 있게 새로 해석하세요. 카드 간 흐름도 언급. (나머지 각 카드 3~4줄) ${noMetaNote}`
+    : `세 카드를 포지션 의미(내가 느끼는 우리 사이 → 아이가 느끼는 우리 사이 → 앞으로 더 좋아지는 방법)와 결합하여 깊이 있게 해석. 카드 간 흐름도 언급. (각 카드 3~4줄)`;
   const systemPrompt = `당신은 보호자와 반려동물 사이의 케미(궁합)를 타로카드로 읽어주는 채널러입니다. 반드시 이 아이의 이름과 종을 직접 언급하세요. 일반적인 표현은 쓰지 마세요.`;
   const userPrompt = `${petHeader}
 아래 세 섹션으로 충분히 풍부하게 케미 리포트를 작성하세요:
 
 ## 💞 카드별 케미 해석
-세 카드를 포지션 의미(내가 느끼는 우리 사이 → 아이가 느끼는 우리 사이 → 앞으로 더 좋아지는 방법)와 결합하여 깊이 있게 해석. 카드 간 흐름도 언급. (각 카드 3~4줄)
+${cardInstruction}
 
 ## 💌 ${petInfo.name}이 전하는 마음
 ${petInfo.name}의 1인칭 시점 내면 독백. 보호자를 "${petInfo.ownerTitle}"(이)라고 부르며 직접 말하는 애정 어린 편지 형식. (6~8줄)
@@ -177,8 +184,11 @@ function buildPromptKo(snap) {
   const speciesCtx = speciesContextKo(petInfo);
   const systemPrompt = `당신은 반려동물 타로 전문가입니다. 따뜻하고 감성적인 한국어로 작성하세요. 반드시 이 아이의 이름, 종, 고민을 직접 언급하세요. 일반적인 표현은 쓰지 마세요.`;
   const freeCtx = freeReadingText
-    ? `\n무료 미리보기에서 제공된 첫 카드 해석 (이를 참고하여 더 깊이 확장하세요):\n${freeReadingText}\n`
+    ? `\n무료 미리보기에서 이미 보여준 카드 1(${drawnCards[0]?.position}) 해석 — 아래 텍스트를 한 글자도 바꾸지 말고, 카드별 해석 섹션의 첫 항목으로 그대로 포함하세요:\n${freeReadingText}\n`
     : '';
+  const cardInstruction = freeReadingText
+    ? `카드 1(${drawnCards[0]?.position})은 위에 제공된 무료 미리보기 텍스트를 한 글자도 바꾸지 말고 그대로 첫 항목으로 포함하세요. 나머지 카드는 포지션 의미와 결합하여 깊이 있게 새로 해석하세요. ${petInfo.name}의 상황에 직접 연결. 카드 간 흐름과 연결도 언급. (나머지 각 카드 3~4줄) '미리보기에서 보신 것처럼' 같은 메타 언급은 절대 하지 마세요 — 이 리포트는 그 자체로 완결된 문서입니다.`
+    : `각 카드를 포지션 의미와 결합하여 깊이 있게 해석. ${petInfo.name}의 상황에 직접 연결. 카드 간 흐름과 연결도 언급. (각 카드 3~4줄)`;
   const userPrompt = `반려동물: ${petInfo.name} (${petInfo.species}${petInfo.age ? ', ' + petInfo.age : ''}${petInfo.gender ? ', ' + petInfo.gender : ''})
 보호자 호칭: "${petInfo.ownerTitle}"
 ${speciesCtx}
@@ -191,7 +201,7 @@ ${freeCtx}
 아래 네 섹션으로 충분히 풍부하게 리포트를 작성하세요:
 
 ## 🃏 카드별 포지션 해석
-각 카드를 포지션 의미와 결합하여 깊이 있게 해석. ${petInfo.name}의 상황에 직접 연결. 카드 간 흐름과 연결도 언급. (각 카드 3~4줄)
+${cardInstruction}
 
 ## 💌 ${petInfo.name}의 속마음
 ${petInfo.name}의 1인칭 시점 내면 독백. 보호자를 "${petInfo.ownerTitle}"(이)라고 부르며 직접 말하는 형식. 감정과 바람을 구체적으로 표현. (6~8줄)
@@ -211,7 +221,7 @@ function buildStoryPromptJa(snap) {
   const { petInfo, drawnCards, fullName, freeReadingText } = commonParts(snap, 'ja');
   const cardSummary = drawnCards.map(c => `[${c.position}] ${c.name}(${c.reversed ? '逆位置' : '正位置'})`).join('\n');
   const freeCtx = freeReadingText
-    ? `\n無料プレビューで提供した最初のカードの解釈（これを参考に、さらに深く広げてください）:\n${freeReadingText}\n`
+    ? `\n無料プレビューですでに見せたカード1(${drawnCards[0]?.position})の解釈 — 下のテキストは一字も変えずに、カードごとの解釈セクションの最初の項目としてそのまま含めてください:\n${freeReadingText}\n`
     : '';
   const concernLine = petInfo.concern ? `参考情報: ${petInfo.concern}\n` : '';
   const petHeader = `ペット: ${petInfo.name}（${petInfo.species}${petInfo.age ? '、' + petInfo.age : ''}${petInfo.gender ? '、' + petInfo.gender : ''}）
@@ -220,14 +230,18 @@ ${concernLine}スプレッド: ${fullName}
 引いたカード:
 ${cardSummary}
 ${freeCtx}`;
+  const noMetaNote = `「無料プレビューでご覧いただいたように」のようなメタ的な言及は絶対にしないでください — このレポートはそれ自体で完結した文章です。`;
 
   if (snap.spreadKey === 'pastlife') {
+    const cardInstruction = freeReadingText
+      ? `カード1(${drawnCards[0]?.position})は上に提供した無料プレビューのテキストを一字も変えずにそのまま最初の項目として含めてください。残りのカードはポジション順(今の性格を作った前世 → 今また出会った理由)に沿って、ひとつながりの年代記として新しく解釈してください。各前世の時代・場所・姿を具体的に描写してください。${petInfo.name}の今の性格と自然につなげてください。(残りの各カード3〜4行) ${noMetaNote}`
+      : `3枚のカードをポジション順(いちばん古い前世 → 今の性格を作った前世 → 今また出会った理由)に沿って、ひとつながりの年代記として解釈してください。各前世の時代・場所・姿を具体的に描写してください。${petInfo.name}の今の性格と自然につなげてください。(各カード3〜4行)`;
     const systemPrompt = `あなたはペットの前世をタロットカードで想像して伝えるチャネラーです。必ず日本語で、です・ます調で書いてください。実際の予言ではなく、没入感のある物語として、真剣な気持ちで語ってください。必ずこの子の名前と種類に直接言及してください。一般的な表現は使わないでください。`;
     const userPrompt = `${petHeader}
 以下の3つのセクションで、十分に読み応えのある前世の物語を作成してください:
 
 ## 🕰️ カードごとの前世解釈
-3枚のカードをポジション順(いちばん古い前世 → 今の性格を作った前世 → 今また出会った理由)に沿って、ひとつながりの年代記として解釈してください。各前世の時代・場所・姿を具体的に描写してください。${petInfo.name}の今の性格と自然につなげてください。(各カード3〜4行)
+${cardInstruction}
 
 ## 💌 前世からのメッセージ
 その前世たちの魂がひとつになり、${petInfo.name}の一人称視点で「${petInfo.ownerTitle}」に伝えるメッセージ。感情と愛情を具体的に表現してください。(6〜8行)
@@ -237,12 +251,15 @@ ${freeCtx}`;
     return { system: systemPrompt, messages: [{ role: 'user', content: userPrompt }] };
   }
 
+  const cardInstruction = freeReadingText
+    ? `カード1(${drawnCards[0]?.position})は上に提供した無料プレビューのテキストを一字も変えずにそのまま最初の項目として含めてください。残りのカードはポジションの意味(うちの子が感じているふたりの関係 → 相性がもっと良くなる方法)と組み合わせて深く新しく解釈してください。カード同士の流れにも触れてください。(残りの各カード3〜4行) ${noMetaNote}`
+    : `3枚のカードをポジションの意味(私が感じているふたりの関係 → うちの子が感じているふたりの関係 → 相性がもっと良くなる方法)と組み合わせて深く解釈してください。カード同士の流れにも触れてください。(各カード3〜4行)`;
   const systemPrompt = `あなたは飼い主さんとペットの相性をタロットカードで読み解くチャネラーです。必ず日本語で、です・ます調で書いてください。必ずこの子の名前と種類に直接言及してください。一般的な表現は使わないでください。`;
   const userPrompt = `${petHeader}
 以下の3つのセクションで、十分に読み応えのある相性レポートを作成してください:
 
 ## 💞 カードごとの相性解釈
-3枚のカードをポジションの意味(私が感じているふたりの関係 → うちの子が感じているふたりの関係 → 相性がもっと良くなる方法)と組み合わせて深く解釈してください。カード同士の流れにも触れてください。(各カード3〜4行)
+${cardInstruction}
 
 ## 💌 ${petInfo.name}が伝える気持ち
 ${petInfo.name}の一人称視点での心の中の独白。飼い主さんを「${petInfo.ownerTitle}」と呼びながら直接語りかける、愛情のこもった手紙の形式。(6〜8行)
@@ -262,8 +279,11 @@ function buildPromptJa(snap) {
   const speciesCtx = speciesContextJa(petInfo);
   const systemPrompt = `あなたはペットタロットの専門家です。温かく情感豊かな日本語で書いてください。必ずこの子の名前、種類、お悩みに直接言及してください。一般的な表現は使わないでください。`;
   const freeCtx = freeReadingText
-    ? `\n無料プレビューで提供した最初のカードの解釈（これを参考に、さらに深く広げてください）:\n${freeReadingText}\n`
+    ? `\n無料プレビューですでに見せたカード1(${drawnCards[0]?.position})の解釈 — 下のテキストは一字も変えずに、カードごとの解釈セクションの最初の項目としてそのまま含めてください:\n${freeReadingText}\n`
     : '';
+  const cardInstruction = freeReadingText
+    ? `カード1(${drawnCards[0]?.position})は上に提供した無料プレビューのテキストを一字も変えずにそのまま最初の項目として含めてください。残りのカードはポジションの意味と組み合わせて深く新しく解釈してください。${petInfo.name}の状況に直接つなげてください。カード同士の流れやつながりにも触れてください。（残りの各カード3〜4行）「無料プレビューでご覧いただいたように」のようなメタ的な言及は絶対にしないでください — このレポートはそれ自体で完結した文章です。`
+    : `各カードをポジションの意味と組み合わせて深く解釈してください。${petInfo.name}の状況に直接つなげてください。カード同士の流れやつながりにも触れてください。（各カード3〜4行）`;
   const userPrompt = `ペット: ${petInfo.name}（${petInfo.species}${petInfo.age ? '、' + petInfo.age : ''}${petInfo.gender ? '、' + petInfo.gender : ''}）
 飼い主さんの呼び方: 「${petInfo.ownerTitle}」
 ${speciesCtx}
@@ -276,7 +296,7 @@ ${freeCtx}
 以下の4つのセクションで、十分に読み応えのあるレポートを作成してください:
 
 ## 🃏 カードごとのポジション解釈
-各カードをポジションの意味と組み合わせて深く解釈してください。${petInfo.name}の状況に直接つなげてください。カード同士の流れやつながりにも触れてください。（各カード3〜4行）
+${cardInstruction}
 
 ## 💌 ${petInfo.name}の本音
 ${petInfo.name}の一人称視点での心の中の独白。飼い主さんを「${petInfo.ownerTitle}」と呼びながら直接語りかける形式。感情や願いを具体的に表現してください。（6〜8行）
@@ -296,7 +316,7 @@ function buildStoryPromptEn(snap) {
   const { petInfo, drawnCards, fullName, freeReadingText } = commonParts(snap, 'en');
   const cardSummary = drawnCards.map(c => `[${c.position}] ${c.name}(${c.reversed ? 'Reversed' : 'Upright'})`).join('\n');
   const freeCtx = freeReadingText
-    ? `\nHere is the first card's interpretation from the free preview (use it as context and go deeper):\n${freeReadingText}\n`
+    ? `\nCard 1 (${drawnCards[0]?.position}) was already shown in the free preview — reuse the text below word-for-word as the first item in the card-by-card section, do not rewrite or summarize it:\n${freeReadingText}\n`
     : '';
   const concernLine = petInfo.concern ? `Notes: ${petInfo.concern}\n` : '';
   const petHeader = `Pet: ${petInfo.name} (${petInfo.species}${petInfo.age ? ', ' + petInfo.age : ''}${petInfo.gender ? ', ' + petInfo.gender : ''})
@@ -305,14 +325,18 @@ ${concernLine}Spread: ${fullName}
 Cards drawn:
 ${cardSummary}
 ${freeCtx}`;
+  const noMetaNote = `Never write meta-references like "as you saw in the preview" — this report must read as a single, complete, self-contained document.`;
 
   if (snap.spreadKey === 'pastlife') {
+    const cardInstruction = freeReadingText
+      ? `Card 1 (${drawnCards[0]?.position}) — reuse the free-preview text provided above word-for-word as the first item, unchanged. Interpret the remaining cards in position order (the past life that shaped their personality today → why you found each other again) as a newly written, connected chronicle. Describe each past life's era, place, and form vividly. Connect it naturally to ${petInfo.name}'s personality today. (3-4 lines per remaining card) ${noMetaNote}`
+      : `Interpret the three cards in position order (their earliest past life → the past life that shaped their personality today → why you found each other again) as one connected chronicle. Describe each past life's era, place, and form vividly. Connect it naturally to ${petInfo.name}'s personality today. (3-4 lines per card)`;
     const systemPrompt = `You are a channeler who imagines a pet's past life through tarot cards. Write warmly in English. This isn't a real prediction — it's an immersive, imaginative story, but tell it with genuine conviction. Always directly reference this pet's name and species. Never use generic phrasing.`;
     const userPrompt = `${petHeader}
 Write a substantial, satisfying past-life story in the following three sections:
 
 ## 🕰️ Card-by-Card Past Life Interpretation
-Interpret the three cards in position order (their earliest past life → the past life that shaped their personality today → why you found each other again) as one connected chronicle. Describe each past life's era, place, and form vividly. Connect it naturally to ${petInfo.name}'s personality today. (3-4 lines per card)
+${cardInstruction}
 
 ## 💌 A Message From Their Past Life
 Write as if those past-life selves have become one voice, speaking in ${petInfo.name}'s first person to "${petInfo.ownerTitle}." Express feeling and affection concretely. (6-8 lines)
@@ -322,12 +346,15 @@ Based on the overall flow of the cards, warmly explain why ${petInfo.name} and "
     return { system: systemPrompt, messages: [{ role: 'user', content: userPrompt }] };
   }
 
+  const cardInstruction = freeReadingText
+    ? `Card 1 (${drawnCards[0]?.position}) — reuse the free-preview text provided above word-for-word as the first item, unchanged. Interpret the remaining cards in combination with their position meanings (how the pet feels about their bond → how to strengthen the chemistry), newly written. Touch on the flow between the cards. (3-4 lines per remaining card) ${noMetaNote}`
+    : `Interpret the three cards in combination with their position meanings (how the pet parent feels about their bond → how the pet feels about their bond → how to strengthen the chemistry). Touch on the flow between the cards. (3-4 lines per card)`;
   const systemPrompt = `You are a channeler who reads the chemistry between a pet parent and their pet through tarot cards. Write warmly in English. Always directly reference this pet's name and species. Never use generic phrasing.`;
   const userPrompt = `${petHeader}
 Write a substantial, satisfying chemistry report in the following three sections:
 
 ## 💞 Card-by-Card Chemistry Interpretation
-Interpret the three cards in combination with their position meanings (how the pet parent feels about their bond → how the pet feels about their bond → how to strengthen the chemistry). Touch on the flow between the cards. (3-4 lines per card)
+${cardInstruction}
 
 ## 💌 A Message From ${petInfo.name}
 A first-person inner monologue from ${petInfo.name}, speaking directly and calling their person "${petInfo.ownerTitle}," in the form of an affectionate letter. (6-8 lines)
@@ -347,8 +374,11 @@ function buildPromptEn(snap) {
   const speciesCtx = speciesContextEn(petInfo);
   const systemPrompt = `You are a pet tarot expert. Write in warm, emotionally rich English. Always directly reference this pet's name, species, and concern. Never use generic phrasing.`;
   const freeCtx = freeReadingText
-    ? `\nHere is the first card's interpretation from the free preview (use it as context and go deeper):\n${freeReadingText}\n`
+    ? `\nCard 1 (${drawnCards[0]?.position}) was already shown in the free preview — reuse the text below word-for-word as the first item in the card-by-card section, do not rewrite or summarize it:\n${freeReadingText}\n`
     : '';
+  const cardInstruction = freeReadingText
+    ? `Card 1 (${drawnCards[0]?.position}) — reuse the free-preview text provided above word-for-word as the first item, unchanged. Interpret the remaining cards in combination with their position meanings, newly written. Connect it directly to ${petInfo.name}'s situation. Also touch on the flow and connections between the cards. (3-4 lines per remaining card) Never write meta-references like "as you saw in the preview" — this report must read as a single, complete, self-contained document.`
+    : `Interpret each card in combination with its position's meaning. Connect it directly to ${petInfo.name}'s situation. Also touch on the flow and connections between the cards. (3-4 lines per card)`;
   const userPrompt = `Pet: ${petInfo.name} (${petInfo.species}${petInfo.age ? ', ' + petInfo.age : ''}${petInfo.gender ? ', ' + petInfo.gender : ''})
 What the pet calls their person: "${petInfo.ownerTitle}"
 ${speciesCtx}
@@ -361,7 +391,7 @@ ${freeCtx}
 Write a substantial, satisfying report in the following four sections:
 
 ## 🃏 Card-by-Card Position Interpretation
-Interpret each card in combination with its position's meaning. Connect it directly to ${petInfo.name}'s situation. Also touch on the flow and connections between the cards. (3-4 lines per card)
+${cardInstruction}
 
 ## 💌 A Letter from ${petInfo.name}'s Heart
 A first-person inner monologue from ${petInfo.name}, speaking directly and calling their person "${petInfo.ownerTitle}." Express feelings and wishes concretely. (6-8 lines)
