@@ -419,7 +419,7 @@ function buildPrompt(snap) {
 // PayPal 서버 고정가 (paypal-order.js PRICES와 동일 — 위조 결제 차단)
 const PAYPAL_PRICES = {
   en: { currency_code: 'USD', value: '2.99' },
-  ja: { currency_code: 'JPY', value: '400' },
+  ja: { currency_code: 'JPY', value: '300' },
 };
 
 function paypalBase() {

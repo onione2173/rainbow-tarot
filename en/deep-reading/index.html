@@ -924,7 +924,8 @@
 
             <!-- Payment (PayPal) -->
             <div id="payGate" style="width:100%">
-              <div id="payPriceDisplay" style="font-size:1.5rem;font-weight:600;color:#fff;margin-bottom:14px">Launch price $2.99</div>
+              <div style="display:inline-block;background:#ff6b6b;color:#fff;font-size:.7rem;font-weight:700;padding:3px 10px;border-radius:20px;margin-bottom:8px">Opening Event 50%OFF</div>
+              <div id="payPriceDisplay" style="font-size:1.5rem;font-weight:600;color:#fff;margin-bottom:14px"><span style="text-decoration:line-through;opacity:.5;font-size:.7em;margin-right:8px">$5.99</span>$2.99</div>
               <div id="paypalButtons" style="max-width:340px;margin:0 auto"></div>
               <div class="pay-error" id="payError" style="display:none;margin-top:10px;color:#f0a0a0;font-size:.85rem"></div>
             </div>
@@ -1573,8 +1574,6 @@ ${lastBullet}
     let _ppReady = false;
     async function renderPayPal() {
       if (_ppReady) return;
-      const disp = document.getElementById('payPriceDisplay');
-      if (disp) disp.textContent = PAY.display;
       const cfg = await loadPayPalConfig();
       if (!cfg || !cfg.clientId) { showPayError('Could not load payment. Please try again in a moment.'); return; }
       try { await loadPayPalSdk(cfg.clientId); } catch { showPayError('Failed to load the payment module.'); return; }
