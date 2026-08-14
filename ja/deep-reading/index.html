@@ -743,6 +743,26 @@
               </div>
             </div>
           </button>
+          <button class="spread-btn" onclick="selectSpread('pastlife')">
+            <span class="spread-icon">🕰️</span>
+            <div class="spread-info">
+              <div class="spread-name">前世の物語をもっと知りたい</div>
+              <div class="spread-meta">
+                <span>前世クロニクルスプレッド</span>
+                <span>カード3枚</span>
+              </div>
+            </div>
+          </button>
+          <button class="spread-btn" onclick="selectSpread('chemistry')">
+            <span class="spread-icon">💞</span>
+            <div class="spread-info">
+              <div class="spread-name">私たちの相性をもっと知りたい</div>
+              <div class="spread-meta">
+                <span>相性スプレッド</span>
+                <span>カード3枚</span>
+              </div>
+            </div>
+          </button>
         </div>
       </section>
 
@@ -807,7 +827,7 @@
         </div>
 
         <div class="form-group">
-          <label class="form-label" for="concern">お悩みの内容 <span class="req">*</span> <span style="font-size:.72rem;color:#b09fd0;font-weight:400;">— 具体的なほど、より詳しいリーディングができます</span></label>
+          <label class="form-label" for="concern" id="concernLabel">お悩みの内容 <span class="req" id="concernReq">*</span> <span style="font-size:.72rem;color:#b09fd0;font-weight:400;" id="concernHint">— 具体的なほど、より詳しいリーディングができます</span></label>
           <textarea class="form-textarea" id="concern" placeholder="例) 引っ越して2週間になりますが、その頃からごはんをあまり食べず、ベッドの下に隠れてばかりいます。もともと人によく懐くタイプなのに、最近は触ろうとしても避けたり、夜寝ているときに鳴くこともあります。ただのストレスなのか、どこか具合が悪いのか心配です。" maxlength="300" oninput="updateCharCount(this, 'concernCount')"></textarea>
           <div class="char-count"><span id="concernCount">0</span>/300</div>
         </div>
@@ -904,7 +924,7 @@
 
             <!-- Payment (PayPal) -->
             <div id="payGate" style="width:100%">
-              <div id="payPriceDisplay" style="font-size:1.5rem;font-weight:600;color:#fff;margin-bottom:14px">¥400</div>
+              <div id="payPriceDisplay" style="font-size:1.5rem;font-weight:600;color:#fff;margin-bottom:14px">オープン記念価格 ¥400</div>
               <div id="paypalButtons" style="max-width:340px;margin:0 auto"></div>
               <div class="pay-error" id="payError" style="display:none;margin-top:10px;color:#f0a0a0;font-size:.85rem"></div>
             </div>
@@ -1005,7 +1025,7 @@
 
     // PayPal 결제 설정 (일본판: JPY 400 — 서버 paypal-order PRICES와 동일)
     const LOCALE = 'ja';
-    const PAY = { value: '400', currency: 'JPY', display: '¥400', amountMinor: 400 };
+    const PAY = { value: '400', currency: 'JPY', display: 'オープン記念価格 ¥400', amountMinor: 400 };
 
     const SPREADS = {
       mind: {
@@ -1025,10 +1045,25 @@
         fullName: '引っ越し・多頭飼いなど変化を控えている — スリーカードスプレッド',
         cardCount: 3,
         positions: ['過去の名残', '今のこの子の気持ち', '変化後の流れ']
+      },
+      pastlife: {
+        name: '前世クロニクルスプレッド',
+        fullName: '前世の物語をもっと知りたい — 前世クロニクルスプレッド',
+        cardCount: 3,
+        positions: ['いちばん古い前世', '今の性格を作った前世', '今また出会った理由'],
+        storyType: true
+      },
+      chemistry: {
+        name: '相性スプレッド',
+        fullName: '私たちの相性をもっと知りたい — 相性スプレッド',
+        cardCount: 3,
+        positions: ['私が感じているふたりの関係', 'うちの子が感じているふたりの関係', '相性がもっと良くなる方法'],
+        storyType: true
       }
     };
 
     let currentSpread = null;
+    let currentSpreadKey = null;
     let drawnCards = [];
     let actionCards = [];
     let petInfo = {};
@@ -1078,10 +1113,38 @@
     }
 
     // -- Step 1: spread selection --
+    const STORY_PLACEHOLDERS = {
+      pastlife: { label: '性格や特徴 (任意)', hint: '— 教えていただけると、前世の物語に反映します', placeholder: '例) 気位が高くてあまり抱っこさせてくれません。怖がりで知らない人が苦手です。' },
+      chemistry: { label: 'ふたりの関係についてもっと知りたいこと (任意)', hint: '— 気になることがあれば書いてください', placeholder: '例) 最近前より甘えてくれなくなった気がして少し寂しいです。私たちの相性が知りたいです。' }
+    };
+
     function selectSpread(type) {
       currentSpread = SPREADS[type];
+      currentSpreadKey = type;
       if (typeof gtag === 'function') gtag('event', 'spread_selected', { spread_name: currentSpread.name });
+
+      const sp = STORY_PLACEHOLDERS[type];
+      const req = document.getElementById('concernReq');
+      const hint = document.getElementById('concernHint');
+      const label = document.getElementById('concernLabel');
+      const textarea = document.getElementById('concern');
+      if (sp) {
+        req.style.display = 'none';
+        hint.textContent = sp.hint;
+        label.childNodes[0].textContent = sp.label + ' ';
+        textarea.placeholder = sp.placeholder;
+      } else {
+        req.style.display = '';
+        hint.textContent = '— 具体的なほど、より詳しいリーディングができます';
+        label.childNodes[0].textContent = 'お悩みの内容 ';
+        textarea.placeholder = '例) 引っ越して2週間になりますが、その頃からごはんをあまり食べず、ベッドの下に隠れてばかりいます。もともと人によく懐くタイプなのに、最近は触ろうとしても避けたり、夜寝ているときに鳴くこともあります。ただのストレスなのか、どこか具合が悪いのか心配です。';
+      }
+
       goTo('secForm');
+    }
+
+    function isStoryType() {
+      return !!(currentSpread && currentSpread.storyType);
     }
 
     // -- Step 2: form submit --
@@ -1091,7 +1154,7 @@
       const concern = document.getElementById('concern').value.trim();
       if (!name) { alert('この子の名前を入力してください。'); return; }
       if (!species) { alert('種類を選択してください。'); return; }
-      if (!concern) { alert('お悩みの内容を入力してください。'); return; }
+      if (!concern && !isStoryType()) { alert('お悩みの内容を入力してください。'); return; }
 
       petInfo = {
         name, species,
@@ -1186,6 +1249,11 @@
     // -- Step 3 -> 3.5: move to action card selection --
     function proceedToReading() {
       if (typeof gtag === 'function') gtag('event', 'main_cards_selected', { count: drawnCards.length, spread: currentSpread.name });
+      if (isStoryType()) {
+        actionCards = [];
+        startReveal();
+        return;
+      }
       goTo('secActionCards');
       initActionPool();
     }
@@ -1375,16 +1443,27 @@
     // -- Dynamically update paywall text --
     function updatePaywallText() {
       const remaining = drawnCards.length - 1;
-      const actionHint = actionCards.length > 0 ? `アクションガイドカード${actionCards.length}枚の解釈` : 'これからのアクションガイド';
       const name = petInfo.name || 'この子';
-
       const preview = document.getElementById('paywallPreview');
-      if (preview) preview.textContent =
-        `残り${remaining}枚のカードの深層解釈、${name}からの本音のお手紙、飼い主さんへのメッセージ、${actionHint}まで — 全文レポートで確認できます。`;
-
       const sub = document.getElementById('paywallSub');
-      if (sub) sub.innerHTML =
-        `残りカード${remaining}枚の解釈・本音のお手紙・飼い主さんへ・${actionHint}<br>たった一度で${name}の心を深くのぞいてみましょう`;
+
+      if (currentSpreadKey === 'pastlife') {
+        if (preview) preview.textContent =
+          `残り${remaining}枚の前世の物語、${name}からの前世のメッセージ、今また出会った理由まで — 前世クロニクル全文で確認できます。`;
+        if (sub) sub.innerHTML =
+          `残りカード${remaining}枚の解釈・${name}からのメッセージ・再会の理由<br>たった一度で${name}の前世を深くのぞいてみましょう`;
+      } else if (currentSpreadKey === 'chemistry') {
+        if (preview) preview.textContent =
+          `残り${remaining}枚の相性解釈、${name}が伝える気持ち、相性アップの実践ヒントまで — 全文レポートで確認できます。`;
+        if (sub) sub.innerHTML =
+          `残りカード${remaining}枚の解釈・${name}が伝える気持ち・相性アップのヒント<br>たった一度で私たちの相性を深くのぞいてみましょう`;
+      } else {
+        const actionHint = actionCards.length > 0 ? `アクションガイドカード${actionCards.length}枚の解釈` : 'これからのアクションガイド';
+        if (preview) preview.textContent =
+          `残り${remaining}枚のカードの深層解釈、${name}からの本音のお手紙、飼い主さんへのメッセージ、${actionHint}まで — 全文レポートで確認できます。`;
+        if (sub) sub.innerHTML =
+          `残りカード${remaining}枚の解釈・本音のお手紙・飼い主さんへ・${actionHint}<br>たった一度で${name}の心を深くのぞいてみましょう`;
+      }
     }
 
     // -- Step 4: free reading (first card, deep interpretation) --
@@ -1400,16 +1479,19 @@
       freeReadLabel.textContent = `🃏 ${firstCard.position} — 無料公開`;
 
       const systemPrompt = `あなたはペットタロットの専門家です。温かく情感豊かな日本語で書いてください。動物の種類や年齢による特性を自然に反映してください。ユーザーが入力した具体的な情報には必ず直接言及してください。誰にでも当てはまるような一般的な表現は絶対に使わないでください。`;
+      const concernLine = petInfo.concern ? `${isStoryType() ? '参考情報' : 'お悩み'}: ${petInfo.concern}\n` : '';
+      const lastBullet = isStoryType()
+        ? `・${petInfo.name}の物語に直接つなげる`
+        : `・${petInfo.name}のお悩みの状況に直接つなげる`;
       const userPrompt = `ペット: ${petInfo.name}（${petInfo.species}${petInfo.age ? '、' + petInfo.age : ''}${petInfo.gender ? '、' + petInfo.gender : ''}）
 飼い主さんの呼び方: 「${petInfo.ownerTitle}」
 ${speciesCtx}
-お悩み: ${petInfo.concern}
-スプレッド: ${currentSpread.fullName}
+${concernLine}スプレッド: ${currentSpread.fullName}
 すべてのカード: ${cardSummary}
 
 1枚目のカード「[${firstCard.position}] ${firstCard.name}（${firstCard.reversed ? '逆位置' : '正位置'}）」だけを深く解釈してください。（4〜6行）
 ・このポジションの意味 + カードの象徴がこの位置で持つ意味
-・${petInfo.name}のお悩みの状況に直接つなげる
+${lastBullet}
 ・情感豊かに、具体的に`;
 
       try {
@@ -1909,6 +1991,16 @@ ${speciesCtx}
       }
     }
 
+    // -- Free-page upsell hand-off: skip spread selection when arriving via ?spread= --
+    document.addEventListener('DOMContentLoaded', () => {
+      if (localStorage.getItem('petarot_dr')) return;
+      const spreadParam = new URLSearchParams(window.location.search).get('spread');
+      if (spreadParam && SPREADS[spreadParam]) {
+        window.history.replaceState({}, '', window.location.pathname);
+        selectSpread(spreadParam);
+      }
+    });
+
     // -- Restore state after payment (same-browser revisit during polling) --
     document.addEventListener('DOMContentLoaded', async () => {
       const saved = localStorage.getItem('petarot_dr');
@@ -1941,6 +2033,7 @@ ${speciesCtx}
 
       localStorage.removeItem('petarot_dr');
       currentSpread = SPREADS[state.spreadKey];
+      currentSpreadKey = state.spreadKey;
       if (!currentSpread) { document.documentElement.style.visibility = ''; return; }
 
       petInfo = state.petInfo || {};

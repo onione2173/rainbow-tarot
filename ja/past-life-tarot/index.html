@@ -3,20 +3,20 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>守護タロット — ペットタロット</title>
-  <meta name="description" content="健康、行動、関係など、ペットに関する心配や悩みをタロットに聞いてみましょう。飼い主さんのための温かい気づきをお届けします。">
-  <link rel="canonical" href="https://rainbow-tarot.netlify.app/ja/guardian-tarot/">
-  <link rel="alternate" hreflang="ko" href="https://rainbow-tarot.netlify.app/guardian-tarot/">
-  <link rel="alternate" hreflang="ja" href="https://rainbow-tarot.netlify.app/ja/guardian-tarot/">
-  <link rel="alternate" hreflang="en" href="https://rainbow-tarot.netlify.app/en/guardian-tarot/">
-  <link rel="alternate" hreflang="x-default" href="https://rainbow-tarot.netlify.app/guardian-tarot/">
+  <title>前世タロット — ペットタロット</title>
+  <meta name="description" content="うちの子は前世でどんな存在だったのでしょう?タロットカードでペットの前世の姿を調べてみましょう。無料のワンカードタロットリーディング。">
+  <link rel="canonical" href="https://rainbow-tarot.netlify.app/ja/past-life-tarot/">
+  <link rel="alternate" hreflang="ko" href="https://rainbow-tarot.netlify.app/past-life-tarot/">
+  <link rel="alternate" hreflang="ja" href="https://rainbow-tarot.netlify.app/ja/past-life-tarot/">
+  <link rel="alternate" hreflang="en" href="https://rainbow-tarot.netlify.app/en/past-life-tarot/">
+  <link rel="alternate" hreflang="x-default" href="https://rainbow-tarot.netlify.app/past-life-tarot/">
   <meta property="og:type" content="website">
   <meta property="og:site_name" content="ペットタロット">
   <meta property="og:locale" content="ja_JP">
-  <meta property="og:title" content="守護タロット — ペットタロット">
-  <meta property="og:description" content="健康、行動、関係など、ペットに関する心配や悩みをタロットに聞いてみましょう。飼い主さんのための温かい気づきをお届けします。">
+  <meta property="og:title" content="前世タロット — ペットタロット">
+  <meta property="og:description" content="うちの子は前世でどんな存在だったのでしょう?タロットカードでペットの前世の姿を調べてみましょう。無料のワンカードタロットリーディング。">
   <meta property="og:image" content="https://rainbow-tarot.netlify.app/assets/og-image-ja.png">
-  <meta property="og:url" content="https://rainbow-tarot.netlify.app/ja/guardian-tarot/">
+  <meta property="og:url" content="https://rainbow-tarot.netlify.app/ja/past-life-tarot/">
   <meta name="twitter:card" content="summary_large_image">
   <link rel="icon" type="image/svg+xml" href="/favicon.svg">
   <link rel="apple-touch-icon" href="/favicon.svg">
@@ -114,24 +114,33 @@
   <div class="page">
     <div class="container">
       <div class="header reveal">
-        <span class="icon">🪞</span>
-        <h1>守護タロット</h1>
-        <p class="sub">ペットのことで心配や悩みがあるとき、タロットに聞いてみましょう<br>タロットが飼い主さんに温かい気づきをお伝えします</p>
+        <span class="icon">🕰️</span>
+        <h1>うちの子、前世は何だったんだろう?</h1>
+        <p class="sub">タロットカードでうちの子の前世の姿をのぞいてみましょう<br>意外な前世のタイプが出てくるかもしれません</p>
       </div>
 
       <div class="glass">
-        <label class="field-label">🐾 ペットの名前</label>
-        <input type="text" id="guardianPetName" placeholder="例: マメ、ハル、ムギ…" style="margin-bottom:16px">
-        <label class="field-label">💭 最近の悩み</label>
-        <div class="concern-chips">
-          <button class="concern-chip active" data-concern="絆・関係">❤️ 絆・関係</button>
-          <button class="concern-chip" data-concern="健康の心配">🏥 健康の心配</button>
-          <button class="concern-chip" data-concern="里親検討">🏠 里親検討</button>
-          <button class="concern-chip" data-concern="行動の悩み">🤔 行動の悩み</button>
-          <button class="concern-chip" data-concern="お別れの準備">🌈 お別れの準備</button>
-          <button class="concern-chip" data-concern="その他">💬 その他</button>
+        <div class="input-row">
+          <div>
+            <label class="field-label">🐾 ペットの名前</label>
+            <input type="text" id="plPetName" placeholder="例: マメ、ハル、ムギ…">
+          </div>
+          <div>
+            <label class="field-label">🏷️ 種類 (任意)</label>
+            <input type="text" id="plPetType" placeholder="例: 犬、猫、うさぎ…">
+          </div>
         </div>
-        <button class="btn-draw" onclick="onDraw()">🪞 &nbsp;守護タロットを引く</button>
+        <label class="field-label">🎭 性格はどんな感じ? (任意)</label>
+        <div class="concern-chips">
+          <button class="concern-chip active" data-personality="よくわからない">🤷 よくわからない</button>
+          <button class="concern-chip" data-personality="やんちゃ">😼 やんちゃ</button>
+          <button class="concern-chip" data-personality="気位が高い">👑 気位が高い</button>
+          <button class="concern-chip" data-personality="甘えん坊">🥰 甘えん坊</button>
+          <button class="concern-chip" data-personality="気難しい">😤 気難しい</button>
+          <button class="concern-chip" data-personality="おとなしい">🕊️ おとなしい</button>
+        </div>
+        <input type="text" id="plPersonalityCustom" placeholder="✍️ 自由入力 (任意) — 例: 昼寝が好き、水が苦手" style="margin-bottom:16px">
+        <button class="btn-draw" onclick="onDraw()">🕰️ &nbsp;前世カードを引く</button>
       </div>
 
       <div class="spread-section" id="spreadSection">
@@ -149,7 +158,7 @@
 
       <div class="loading-section" id="loadingSection">
         <div class="orb"></div>
-        <p class="loading-text" id="loadingText">タロットが飼い主さんにメッセージを届けています…<br>
+        <p class="loading-text" id="loadingText">タロットが前世の記憶をたどっています…<br>
           <span style="font-size:.8rem;color:var(--text-dim)">少々お待ちください</span></p>
       </div>
 
@@ -161,23 +170,23 @@
         <div class="chips" id="chipRow"></div>
         <div class="reading-body" id="readingBody"></div>
         <div class="letter-trigger" id="letterTrigger">
-          <button class="btn-open-letter" onclick="openLetter()">🪞 &nbsp;自分へのメッセージを見る</button>
+          <button class="btn-open-letter" onclick="openLetter()">🕰️ &nbsp;前世からのメッセージを見る</button>
         </div>
         <div class="letter-section" id="letterSection" style="display:none">
           <div class="letter-divider"></div>
           <div class="letter-header">
-            <span class="ltr-icon">🪞</span>
+            <span class="ltr-icon">🕰️</span>
             <h3 id="letterTitle"></h3>
           </div>
           <div class="reading-body" id="letterBody"></div>
         </div>
         <div class="ad-in-reading" id="adInReading" style="display:none"></div>
         <div class="reading-footer" id="readingFooter" style="display:none">
-          <a class="upsell-card" href="/ja/deep-reading/" onclick="track('upsell_click',{from:'guardian'})">
+          <a class="upsell-card" href="/ja/deep-reading/?spread=pastlife" onclick="track('upsell_click',{from:'pastlife'})">
             <span class="upsell-tag">PREMIUM</span>
-            <div class="upsell-title">🔮 <span class="upsell-name">うちの子</span>の気持ちを、もっと深く</div>
-            <div class="upsell-desc">複数のカードで読み解く本格タロットレポート — カードごとの詳しい解釈、あの子からの手紙、飼い主さんへのアドバイスまでお届けします。</div>
-            <span class="upsell-cta">深層リーディングを受ける <span class="upsell-price">オープン記念価格 ¥400</span></span>
+            <div class="upsell-title">🕰️ うちの子は、なぜ私に出会ったのだろう?</div>
+            <div class="upsell-desc">カード3枚で読み解く前世クロニクル — いちばん古い前世から、今また出会った理由まで、物語をまるごとお届けします。</div>
+            <span class="upsell-cta">前世クロニクルを受け取る <span class="upsell-price">オープン記念価格 ¥400</span></span>
           </a>
           <div class="footer-actions">
             <div class="share-btns">
@@ -191,8 +200,7 @@
       </div>
 
       <footer class="site-footer">
-        <p>愛するペットを想うすべての方のために作られました</p>
-        <p>🌈 虹の橋の向こうでも、その愛は永遠です 🐾</p>
+        <p>🐾 うちの子と過ごすすべての瞬間が特別です</p>
         <div class="footer-operator">
           <p>運営者: BrandWick &nbsp;|&nbsp; お問い合わせ: <a href="mailto:ralra_1@naver.com">ralra_1@naver.com</a></p>
           <p><a href="/ja/privacy/">プライバシーポリシー</a> &nbsp;|&nbsp; <a href="/ja/terms/">利用規約</a></p>
@@ -222,29 +230,30 @@
 
   <script src="/assets/cards-ja.js"></script>
   <script>
-    const currentMode = 2;
-    const PAGE_ICON = '🪞';
-    const PAGE_TITLE = '守護タロット';
-    const PAGE_LOADING = 'タロットが飼い主さんにメッセージを届けています…';
-    const PAGE_LETTER_BTN = '🪞 &nbsp;自分へのメッセージを見る';
-    const PAGE_LETTER_TITLE = petN => `🪞 ${petN}のためのアドバイス`;
-    const PAGE_SHARE_LABEL = petN => `🪞 ${petN}のためのアドバイス`;
+    const currentMode = 3;
+    const PAGE_ICON = '🕰️';
+    const PAGE_TITLE = '前世タロット';
+    const PAGE_LOADING = 'タロットが前世の記憶をたどっています…';
+    const PAGE_LETTER_BTN = '🕰️ &nbsp;前世からのメッセージを見る';
+    const PAGE_LETTER_TITLE = petN => `🕰️ ${petN}の前世からのメッセージ`;
+    const PAGE_SHARE_LABEL = petN => `🕰️ ${petN}の前世からのメッセージ`;
+    const PAGE_UPSELL_TITLE = petN => `🕰️ ${petN}は、なぜ私に出会ったのだろう?`;
 
-    let selectedConcern = '絆・関係';
+    let selectedPersonality = 'よくわからない';
 
     document.querySelectorAll('.concern-chip').forEach(el=>{
       el.addEventListener('click',()=>{
         document.querySelectorAll('.concern-chip').forEach(c=>c.classList.remove('active'));
         el.classList.add('active');
-        selectedConcern = el.dataset.concern;
-        track('concern_selected',{concern:el.dataset.concern});
+        selectedPersonality = el.dataset.personality;
+        track('personality_selected',{personality:el.dataset.personality});
       });
     });
 
     function onDraw(){
-      const n = document.getElementById('guardianPetName').value.trim();
+      const n = document.getElementById('plPetName').value.trim();
       if(!n){
-        const el = document.getElementById('guardianPetName');
+        const el = document.getElementById('plPetName');
         el.style.borderColor='rgba(255,100,100,.5)'; el.focus();
         setTimeout(()=>el.style.borderColor='',2000); return;
       }
@@ -259,22 +268,28 @@
       const card=drawn[0], rv=drawnRv[0];
       const cardInfo=`カード: ${card.name}(${card.en}) — ${rv?'逆位置':'正位置'}\n正位置キーワード: ${card.upKw}\n逆位置キーワード: ${card.rvKw}`;
       const sep='\n\n---LETTER--- という区切り記号を必ず含めて、2つの部分に正確に分けて書いてください。';
-      const petName=document.getElementById('guardianPetName').value.trim()||'ペット';
+      const petName=document.getElementById('plPetName').value.trim()||'ペット';
+      const petType=document.getElementById('plPetType').value.trim();
+      const customPersonality=document.getElementById('plPersonalityCustom').value.trim();
+      const personality=customPersonality
+        ? (selectedPersonality!=='よくわからない' ? `${selectedPersonality}、${customPersonality}` : customPersonality)
+        : selectedPersonality;
       return {
         petName,
-        system:`あなたはペットを飼う飼い主さんに、タロットカードで温かい気づきを届けるチャネラーです。
+        system:`あなたはペットの前世をタロットカードで想像して伝えるチャネラーです。
 必ず日本語で、です・ます調で書いてください。
-飼い主さんの悩みをカードを通して、心のこもったメッセージとして解釈してください。
-回答は必ず2つの部分に分けてください。
+実際の予言ではなく、没入感のある物語として、真剣な気持ちで語ってください。
+応答は必ず2つの部分に分けてください。
 
-[パート1: カードの解釈]
-このカードが飼い主さんの悩みとどうつながっているかを2〜3文で説明します。
+[パート1: 前世カードの解釈]
+最初の行に、太字で強調した前世タイプを一言で(例: **前世タイプ: 海を渡った旅する船乗り**)短く個性的につけてください。
+続けて、このカードと性格のヒントが示す前世の姿を2〜3文で生き生きと描写します。
 
 ---LETTER---
 
-[パート2: 飼い主さんへのメッセージ]
-飼い主さんに贈る、温かく実用的なメッセージ。2〜4文。`,
-        user:`ペットの名前: ${petName}\n飼い主さんの悩み: ${selectedConcern}\n\n${cardInfo}${sep}`,
+[パート2: 前世が残したメッセージ]
+その前世の魂が、今のペットと飼い主さんに残す短く温かいひとこと。絵文字を含めて、1〜2文。`,
+        user:`ペットの名前: ${petName}${petType?'\nペットの種類: '+petType:''}\n性格: ${personality}\n\n${cardInfo}${sep}`,
       };
     }
   </script>

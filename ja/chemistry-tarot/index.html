@@ -3,20 +3,20 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>守護タロット — ペットタロット</title>
-  <meta name="description" content="健康、行動、関係など、ペットに関する心配や悩みをタロットに聞いてみましょう。飼い主さんのための温かい気づきをお届けします。">
-  <link rel="canonical" href="https://rainbow-tarot.netlify.app/ja/guardian-tarot/">
-  <link rel="alternate" hreflang="ko" href="https://rainbow-tarot.netlify.app/guardian-tarot/">
-  <link rel="alternate" hreflang="ja" href="https://rainbow-tarot.netlify.app/ja/guardian-tarot/">
-  <link rel="alternate" hreflang="en" href="https://rainbow-tarot.netlify.app/en/guardian-tarot/">
-  <link rel="alternate" hreflang="x-default" href="https://rainbow-tarot.netlify.app/guardian-tarot/">
+  <title>相性タロット — ペットタロット</title>
+  <meta name="description" content="私とうちの子、相性はどうかな?タロットカードで私とペットの相性を調べてみましょう。無料のワンカードタロットリーディング。">
+  <link rel="canonical" href="https://rainbow-tarot.netlify.app/ja/chemistry-tarot/">
+  <link rel="alternate" hreflang="ko" href="https://rainbow-tarot.netlify.app/chemistry-tarot/">
+  <link rel="alternate" hreflang="ja" href="https://rainbow-tarot.netlify.app/ja/chemistry-tarot/">
+  <link rel="alternate" hreflang="en" href="https://rainbow-tarot.netlify.app/en/chemistry-tarot/">
+  <link rel="alternate" hreflang="x-default" href="https://rainbow-tarot.netlify.app/chemistry-tarot/">
   <meta property="og:type" content="website">
   <meta property="og:site_name" content="ペットタロット">
   <meta property="og:locale" content="ja_JP">
-  <meta property="og:title" content="守護タロット — ペットタロット">
-  <meta property="og:description" content="健康、行動、関係など、ペットに関する心配や悩みをタロットに聞いてみましょう。飼い主さんのための温かい気づきをお届けします。">
+  <meta property="og:title" content="相性タロット — ペットタロット">
+  <meta property="og:description" content="私とうちの子、相性はどうかな?タロットカードで私とペットの相性を調べてみましょう。無料のワンカードタロットリーディング。">
   <meta property="og:image" content="https://rainbow-tarot.netlify.app/assets/og-image-ja.png">
-  <meta property="og:url" content="https://rainbow-tarot.netlify.app/ja/guardian-tarot/">
+  <meta property="og:url" content="https://rainbow-tarot.netlify.app/ja/chemistry-tarot/">
   <meta name="twitter:card" content="summary_large_image">
   <link rel="icon" type="image/svg+xml" href="/favicon.svg">
   <link rel="apple-touch-icon" href="/favicon.svg">
@@ -114,24 +114,29 @@
   <div class="page">
     <div class="container">
       <div class="header reveal">
-        <span class="icon">🪞</span>
-        <h1>守護タロット</h1>
-        <p class="sub">ペットのことで心配や悩みがあるとき、タロットに聞いてみましょう<br>タロットが飼い主さんに温かい気づきをお伝えします</p>
+        <span class="icon">💞</span>
+        <h1>私とうちの子、相性はどうかな?</h1>
+        <p class="sub">タロットカードで私とペットの相性を読んでみましょう<br>ふたりだけの特別な相性タイプを確認してみましょう</p>
       </div>
 
       <div class="glass">
-        <label class="field-label">🐾 ペットの名前</label>
-        <input type="text" id="guardianPetName" placeholder="例: マメ、ハル、ムギ…" style="margin-bottom:16px">
-        <label class="field-label">💭 最近の悩み</label>
-        <div class="concern-chips">
-          <button class="concern-chip active" data-concern="絆・関係">❤️ 絆・関係</button>
-          <button class="concern-chip" data-concern="健康の心配">🏥 健康の心配</button>
-          <button class="concern-chip" data-concern="里親検討">🏠 里親検討</button>
-          <button class="concern-chip" data-concern="行動の悩み">🤔 行動の悩み</button>
-          <button class="concern-chip" data-concern="お別れの準備">🌈 お別れの準備</button>
-          <button class="concern-chip" data-concern="その他">💬 その他</button>
+        <div class="input-row">
+          <div>
+            <label class="field-label">🐾 ペットの名前</label>
+            <input type="text" id="chemPetName" placeholder="例: マメ、ハル、ムギ…">
+          </div>
+          <div>
+            <label class="field-label">🏷️ 種類 (任意)</label>
+            <input type="text" id="chemPetType" placeholder="例: 犬、猫、うさぎ…">
+          </div>
         </div>
-        <button class="btn-draw" onclick="onDraw()">🪞 &nbsp;守護タロットを引く</button>
+        <div class="input-row">
+          <div>
+            <label class="field-label">💌 ペットが呼ぶあなたの呼び方</label>
+            <input type="text" id="chemOwnerTitle" placeholder="例: パパ、ママ、お姉ちゃん…">
+          </div>
+        </div>
+        <button class="btn-draw" onclick="onDraw()">💞 &nbsp;相性カードを引く</button>
       </div>
 
       <div class="spread-section" id="spreadSection">
@@ -149,7 +154,7 @@
 
       <div class="loading-section" id="loadingSection">
         <div class="orb"></div>
-        <p class="loading-text" id="loadingText">タロットが飼い主さんにメッセージを届けています…<br>
+        <p class="loading-text" id="loadingText">タロットが私たちの相性を読み取っています…<br>
           <span style="font-size:.8rem;color:var(--text-dim)">少々お待ちください</span></p>
       </div>
 
@@ -161,23 +166,23 @@
         <div class="chips" id="chipRow"></div>
         <div class="reading-body" id="readingBody"></div>
         <div class="letter-trigger" id="letterTrigger">
-          <button class="btn-open-letter" onclick="openLetter()">🪞 &nbsp;自分へのメッセージを見る</button>
+          <button class="btn-open-letter" onclick="openLetter()">💞 &nbsp;うちの子が伝える気持ちを見る</button>
         </div>
         <div class="letter-section" id="letterSection" style="display:none">
           <div class="letter-divider"></div>
           <div class="letter-header">
-            <span class="ltr-icon">🪞</span>
+            <span class="ltr-icon">💞</span>
             <h3 id="letterTitle"></h3>
           </div>
           <div class="reading-body" id="letterBody"></div>
         </div>
         <div class="ad-in-reading" id="adInReading" style="display:none"></div>
         <div class="reading-footer" id="readingFooter" style="display:none">
-          <a class="upsell-card" href="/ja/deep-reading/" onclick="track('upsell_click',{from:'guardian'})">
+          <a class="upsell-card" href="/ja/deep-reading/?spread=chemistry" onclick="track('upsell_click',{from:'chemistry'})">
             <span class="upsell-tag">PREMIUM</span>
-            <div class="upsell-title">🔮 <span class="upsell-name">うちの子</span>の気持ちを、もっと深く</div>
-            <div class="upsell-desc">複数のカードで読み解く本格タロットレポート — カードごとの詳しい解釈、あの子からの手紙、飼い主さんへのアドバイスまでお届けします。</div>
-            <span class="upsell-cta">深層リーディングを受ける <span class="upsell-price">オープン記念価格 ¥400</span></span>
+            <div class="upsell-title">💞 うちの子は私のことを好きなのかな?</div>
+            <div class="upsell-desc">カード3枚で読み解く相性レポート — 私が感じているふたりの関係、うちの子が感じているふたりの関係、相性アップの実践ヒントまでお届けします。</div>
+            <span class="upsell-cta">相性レポートを受け取る <span class="upsell-price">オープン記念価格 ¥400</span></span>
           </a>
           <div class="footer-actions">
             <div class="share-btns">
@@ -191,8 +196,7 @@
       </div>
 
       <footer class="site-footer">
-        <p>愛するペットを想うすべての方のために作られました</p>
-        <p>🌈 虹の橋の向こうでも、その愛は永遠です 🐾</p>
+        <p>🐾 うちの子と過ごすすべての瞬間が特別です</p>
         <div class="footer-operator">
           <p>運営者: BrandWick &nbsp;|&nbsp; お問い合わせ: <a href="mailto:ralra_1@naver.com">ralra_1@naver.com</a></p>
           <p><a href="/ja/privacy/">プライバシーポリシー</a> &nbsp;|&nbsp; <a href="/ja/terms/">利用規約</a></p>
@@ -222,29 +226,19 @@
 
   <script src="/assets/cards-ja.js"></script>
   <script>
-    const currentMode = 2;
-    const PAGE_ICON = '🪞';
-    const PAGE_TITLE = '守護タロット';
-    const PAGE_LOADING = 'タロットが飼い主さんにメッセージを届けています…';
-    const PAGE_LETTER_BTN = '🪞 &nbsp;自分へのメッセージを見る';
-    const PAGE_LETTER_TITLE = petN => `🪞 ${petN}のためのアドバイス`;
-    const PAGE_SHARE_LABEL = petN => `🪞 ${petN}のためのアドバイス`;
-
-    let selectedConcern = '絆・関係';
-
-    document.querySelectorAll('.concern-chip').forEach(el=>{
-      el.addEventListener('click',()=>{
-        document.querySelectorAll('.concern-chip').forEach(c=>c.classList.remove('active'));
-        el.classList.add('active');
-        selectedConcern = el.dataset.concern;
-        track('concern_selected',{concern:el.dataset.concern});
-      });
-    });
+    const currentMode = 4;
+    const PAGE_ICON = '💞';
+    const PAGE_TITLE = '相性タロット';
+    const PAGE_LOADING = 'タロットが私たちの相性を読み取っています…';
+    const PAGE_LETTER_BTN = '💞 &nbsp;うちの子が伝える気持ちを見る';
+    const PAGE_LETTER_TITLE = petN => `💞 ${petN}が伝える気持ち`;
+    const PAGE_SHARE_LABEL = petN => `💞 ${petN}が伝える気持ち`;
+    const PAGE_UPSELL_TITLE = petN => `💞 ${petN}は私のことを好きなのかな?`;
 
     function onDraw(){
-      const n = document.getElementById('guardianPetName').value.trim();
+      const n = document.getElementById('chemPetName').value.trim();
       if(!n){
-        const el = document.getElementById('guardianPetName');
+        const el = document.getElementById('chemPetName');
         el.style.borderColor='rgba(255,100,100,.5)'; el.focus();
         setTimeout(()=>el.style.borderColor='',2000); return;
       }
@@ -259,22 +253,24 @@
       const card=drawn[0], rv=drawnRv[0];
       const cardInfo=`カード: ${card.name}(${card.en}) — ${rv?'逆位置':'正位置'}\n正位置キーワード: ${card.upKw}\n逆位置キーワード: ${card.rvKw}`;
       const sep='\n\n---LETTER--- という区切り記号を必ず含めて、2つの部分に正確に分けて書いてください。';
-      const petName=document.getElementById('guardianPetName').value.trim()||'ペット';
+      const petName=document.getElementById('chemPetName').value.trim()||'ペット';
+      const petType=document.getElementById('chemPetType').value.trim();
+      const ownerTitle=document.getElementById('chemOwnerTitle').value.trim()||'飼い主さん';
       return {
         petName,
-        system:`あなたはペットを飼う飼い主さんに、タロットカードで温かい気づきを届けるチャネラーです。
+        system:`あなたは飼い主さんとペットの相性をタロットカードで読み解くチャネラーです。
 必ず日本語で、です・ます調で書いてください。
-飼い主さんの悩みをカードを通して、心のこもったメッセージとして解釈してください。
-回答は必ず2つの部分に分けてください。
+応答は必ず2つの部分に分けてください。
 
-[パート1: カードの解釈]
-このカードが飼い主さんの悩みとどうつながっているかを2〜3文で説明します。
+[パート1: 相性カードの解釈]
+最初の行に、太字で強調した相性タイプを一言で(例: **相性タイプ: 言葉がなくても通じ合うテレパシー相性**)短く個性的につけてください。
+続けて、このカードが示す飼い主さんとペットの相性の特徴を2〜3文で温かく説明します。
 
 ---LETTER---
 
-[パート2: 飼い主さんへのメッセージ]
-飼い主さんに贈る、温かく実用的なメッセージ。2〜4文。`,
-        user:`ペットの名前: ${petName}\n飼い主さんの悩み: ${selectedConcern}\n\n${cardInfo}${sep}`,
+[パート2: ペットが伝える気持ち]
+ペットが「${ownerTitle}」と呼びかけながら飼い主さんに伝える、愛情のこもった短いメッセージ。絵文字を含めて、1〜2文。`,
+        user:`ペットの名前: ${petName}${petType?'\nペットの種類: '+petType:''}\n飼い主さんの呼び方: "${ownerTitle}"\n\n${cardInfo}${sep}`,
       };
     }
   </script>

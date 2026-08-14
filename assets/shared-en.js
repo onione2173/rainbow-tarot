@@ -299,11 +299,20 @@ function openLetter(){
   typeText(body, _pendingLetter, 20, showReadingFooter);
 }
 
+function escHtml(s){
+  return String(s).replace(/[&<>"']/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
+}
+
 function showReadingFooter(){
   document.querySelectorAll('.btn-draw').forEach(b=>b.disabled=false);
   document.getElementById('readingFooter').style.display='block';
-  var _un=document.querySelector('.upsell-name');
-  if(_un&&_currentPetName)_un.textContent=_currentPetName;
+  var _titleEl=document.querySelector('.upsell-title');
+  if(typeof PAGE_UPSELL_TITLE==='function'&&_titleEl){
+    _titleEl.innerHTML=PAGE_UPSELL_TITLE(escHtml(_currentPetName||'your pet'));
+  }else{
+    var _un=document.querySelector('.upsell-name');
+    if(_un&&_currentPetName)_un.textContent=_currentPetName;
+  }
   track('upsell_shown',{mode:(typeof currentMode!=='undefined'?currentMode:'')});
 }
 

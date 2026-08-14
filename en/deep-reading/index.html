@@ -743,6 +743,26 @@
               </div>
             </div>
           </button>
+          <button class="spread-btn" onclick="selectSpread('pastlife')">
+            <span class="spread-icon">🕰️</span>
+            <div class="spread-info">
+              <div class="spread-name">I want to know more about my pet's past life</div>
+              <div class="spread-meta">
+                <span>Past Life Chronicle Spread</span>
+                <span>3 Cards</span>
+              </div>
+            </div>
+          </button>
+          <button class="spread-btn" onclick="selectSpread('chemistry')">
+            <span class="spread-icon">💞</span>
+            <div class="spread-info">
+              <div class="spread-name">I want to know more about our chemistry</div>
+              <div class="spread-meta">
+                <span>Chemistry Spread</span>
+                <span>3 Cards</span>
+              </div>
+            </div>
+          </button>
         </div>
       </section>
 
@@ -807,7 +827,7 @@
         </div>
 
         <div class="form-group">
-          <label class="form-label" for="concern">Your concern <span class="req">*</span> <span style="font-size:.72rem;color:#b09fd0;font-weight:400;">— the more specific, the deeper the reading</span></label>
+          <label class="form-label" for="concern" id="concernLabel">Your concern <span class="req" id="concernReq">*</span> <span style="font-size:.72rem;color:#b09fd0;font-weight:400;" id="concernHint">— the more specific, the deeper the reading</span></label>
           <textarea class="form-textarea" id="concern" placeholder="e.g. It's been two weeks since we moved, and since then my pet barely eats and keeps hiding under the bed. They used to be so affectionate, but lately they flinch when I try to pet them, and sometimes cry at night while sleeping. I'm not sure if it's just stress or something's actually wrong." maxlength="300" oninput="updateCharCount(this, 'concernCount')"></textarea>
           <div class="char-count"><span id="concernCount">0</span>/300</div>
         </div>
@@ -904,7 +924,7 @@
 
             <!-- Payment (PayPal) -->
             <div id="payGate" style="width:100%">
-              <div id="payPriceDisplay" style="font-size:1.5rem;font-weight:600;color:#fff;margin-bottom:14px">$2.99</div>
+              <div id="payPriceDisplay" style="font-size:1.5rem;font-weight:600;color:#fff;margin-bottom:14px">Launch price $2.99</div>
               <div id="paypalButtons" style="max-width:340px;margin:0 auto"></div>
               <div class="pay-error" id="payError" style="display:none;margin-top:10px;color:#f0a0a0;font-size:.85rem"></div>
             </div>
@@ -1005,7 +1025,7 @@
 
     // PayPal 결제 설정 (영어판: USD 2.99 — 서버 paypal-order PRICES와 동일)
     const LOCALE = 'en';
-    const PAY = { value: '2.99', currency: 'USD', display: '$2.99', amountMinor: 299 };
+    const PAY = { value: '2.99', currency: 'USD', display: 'Launch price $2.99', amountMinor: 299 };
 
     const SPREADS = {
       mind: {
@@ -1025,10 +1045,25 @@
         fullName: 'Getting ready for a big change — Three Card Spread',
         cardCount: 3,
         positions: ['Lingering feelings from before', "How your pet feels right now", 'The flow after the change']
+      },
+      pastlife: {
+        name: 'Past Life Chronicle Spread',
+        fullName: "I want to know more about my pet's past life — Past Life Chronicle Spread",
+        cardCount: 3,
+        positions: ['Their earliest past life', 'The past life that shaped who they are today', 'Why you found each other again'],
+        storyType: true
+      },
+      chemistry: {
+        name: 'Chemistry Spread',
+        fullName: 'I want to know more about our chemistry — Chemistry Spread',
+        cardCount: 3,
+        positions: ['How you feel about your bond', 'How your pet feels about your bond', 'How to strengthen the chemistry'],
+        storyType: true
       }
     };
 
     let currentSpread = null;
+    let currentSpreadKey = null;
     let drawnCards = [];
     let actionCards = [];
     let petInfo = {};
@@ -1078,10 +1113,38 @@
     }
 
     // -- Step 1: spread selection --
+    const STORY_PLACEHOLDERS = {
+      pastlife: { label: 'Personality or traits (optional)', hint: "— tell us and we'll weave it into the past-life story", placeholder: 'e.g. Pretty aloof, not big on being held. Timid around strangers.' },
+      chemistry: { label: 'Anything else about your bond (optional)', hint: '— share what you\'re curious about', placeholder: "e.g. They seem less affectionate than before and it makes me a little sad. I'd love to know our chemistry." }
+    };
+
     function selectSpread(type) {
       currentSpread = SPREADS[type];
+      currentSpreadKey = type;
       if (typeof gtag === 'function') gtag('event', 'spread_selected', { spread_name: currentSpread.name });
+
+      const sp = STORY_PLACEHOLDERS[type];
+      const req = document.getElementById('concernReq');
+      const hint = document.getElementById('concernHint');
+      const label = document.getElementById('concernLabel');
+      const textarea = document.getElementById('concern');
+      if (sp) {
+        req.style.display = 'none';
+        hint.textContent = sp.hint;
+        label.childNodes[0].textContent = sp.label + ' ';
+        textarea.placeholder = sp.placeholder;
+      } else {
+        req.style.display = '';
+        hint.textContent = '— the more specific, the deeper the reading';
+        label.childNodes[0].textContent = 'Your concern ';
+        textarea.placeholder = "e.g. It's been two weeks since we moved, and since then my pet barely eats and keeps hiding under the bed. They used to be so affectionate, but lately they flinch when I try to pet them, and sometimes cry at night while sleeping. I'm not sure if it's just stress or something's actually wrong.";
+      }
+
       goTo('secForm');
+    }
+
+    function isStoryType() {
+      return !!(currentSpread && currentSpread.storyType);
     }
 
     // -- Step 2: form submit --
@@ -1091,7 +1154,7 @@
       const concern = document.getElementById('concern').value.trim();
       if (!name) { alert("Please enter your pet's name."); return; }
       if (!species) { alert('Please select a species.'); return; }
-      if (!concern) { alert('Please describe your concern.'); return; }
+      if (!concern && !isStoryType()) { alert('Please describe your concern.'); return; }
 
       petInfo = {
         name, species,
@@ -1185,6 +1248,11 @@
     // -- Step 3 -> 3.5: move to action card selection --
     function proceedToReading() {
       if (typeof gtag === 'function') gtag('event', 'main_cards_selected', { count: drawnCards.length, spread: currentSpread.name });
+      if (isStoryType()) {
+        actionCards = [];
+        startReveal();
+        return;
+      }
       goTo('secActionCards');
       initActionPool();
     }
@@ -1374,16 +1442,27 @@
     // -- Dynamically update paywall text --
     function updatePaywallText() {
       const remaining = drawnCards.length - 1;
-      const actionHint = actionCards.length > 0 ? `an interpretation of your ${actionCards.length} Action Guide Card(s)` : 'the Action Guide for what lies ahead';
       const name = petInfo.name || 'your pet';
-
       const preview = document.getElementById('paywallPreview');
-      if (preview) preview.textContent =
-        `The deep interpretation of the remaining ${remaining} card(s), a Letter from ${name}'s Heart, a message just for you, and ${actionHint} — all waiting in the Full Report.`;
-
       const sub = document.getElementById('paywallSub');
-      if (sub) sub.innerHTML =
-        `Remaining ${remaining} card(s) interpreted · A Letter from the Heart · A message for you · ${actionHint}<br>Look deep into ${name}'s heart, all in one report`;
+
+      if (currentSpreadKey === 'pastlife') {
+        if (preview) preview.textContent =
+          `The remaining ${remaining} card(s) of the past-life story, a message from ${name}'s past life, and why you found each other again — all waiting in the full Past Life Chronicle.`;
+        if (sub) sub.innerHTML =
+          `Remaining ${remaining} card(s) interpreted · A message from their past life · Why you met again<br>Look deep into ${name}'s past life, all in one report`;
+      } else if (currentSpreadKey === 'chemistry') {
+        if (preview) preview.textContent =
+          `The remaining ${remaining} card(s) of chemistry interpretation, a message from ${name}, and tips to strengthen the chemistry — all waiting in the Full Report.`;
+        if (sub) sub.innerHTML =
+          `Remaining ${remaining} card(s) interpreted · A message from ${name} · Chemistry-boosting tips<br>Look deep into your chemistry, all in one report`;
+      } else {
+        const actionHint = actionCards.length > 0 ? `an interpretation of your ${actionCards.length} Action Guide Card(s)` : 'the Action Guide for what lies ahead';
+        if (preview) preview.textContent =
+          `The deep interpretation of the remaining ${remaining} card(s), a Letter from ${name}'s Heart, a message just for you, and ${actionHint} — all waiting in the Full Report.`;
+        if (sub) sub.innerHTML =
+          `Remaining ${remaining} card(s) interpreted · A Letter from the Heart · A message for you · ${actionHint}<br>Look deep into ${name}'s heart, all in one report`;
+      }
     }
 
     // -- Step 4: free reading (first card, deep interpretation) --
@@ -1399,16 +1478,19 @@
       freeReadLabel.textContent = `🃏 ${firstCard.position} — Free Preview`;
 
       const systemPrompt = `You are a pet tarot expert. Write in warm, emotionally rich English. Naturally reflect traits based on the animal's species and age. Always directly reference the specific details the user has provided. Never use generic phrasing that could apply to any pet.`;
+      const concernLine = petInfo.concern ? `${isStoryType() ? 'Notes' : 'Concern'}: ${petInfo.concern}\n` : '';
+      const lastBullet = isStoryType()
+        ? `- Connect it directly to ${petInfo.name}'s story`
+        : `- Connect it directly to ${petInfo.name}'s specific situation`;
       const userPrompt = `Pet: ${petInfo.name} (${petInfo.species}${petInfo.age ? ', ' + petInfo.age : ''}${petInfo.gender ? ', ' + petInfo.gender : ''})
 What the pet calls their person: "${petInfo.ownerTitle}"
 ${speciesCtx}
-Concern: ${petInfo.concern}
-Spread: ${currentSpread.fullName}
+${concernLine}Spread: ${currentSpread.fullName}
 All cards: ${cardSummary}
 
 Interpret only the first card, "[${firstCard.position}] ${firstCard.name} (${firstCard.reversed ? 'Reversed' : 'Upright'})," in depth. (4-6 lines)
 - The meaning of this position, plus what the card's symbolism means in it
-- Connect it directly to ${petInfo.name}'s specific situation
+${lastBullet}
 - Be emotionally rich and specific`;
 
       try {
@@ -1908,6 +1990,16 @@ Interpret only the first card, "[${firstCard.position}] ${firstCard.name} (${fir
       }
     }
 
+    // -- Free-page upsell hand-off: skip spread selection when arriving via ?spread= --
+    document.addEventListener('DOMContentLoaded', () => {
+      if (localStorage.getItem('petarot_dr')) return;
+      const spreadParam = new URLSearchParams(window.location.search).get('spread');
+      if (spreadParam && SPREADS[spreadParam]) {
+        window.history.replaceState({}, '', window.location.pathname);
+        selectSpread(spreadParam);
+      }
+    });
+
     // -- Restore state after payment (same-browser revisit during polling) --
     document.addEventListener('DOMContentLoaded', async () => {
       const saved = localStorage.getItem('petarot_dr');
@@ -1940,6 +2032,7 @@ Interpret only the first card, "[${firstCard.position}] ${firstCard.name} (${fir
 
       localStorage.removeItem('petarot_dr');
       currentSpread = SPREADS[state.spreadKey];
+      currentSpreadKey = state.spreadKey;
       if (!currentSpread) { document.documentElement.style.visibility = ''; return; }
 
       petInfo = state.petInfo || {};

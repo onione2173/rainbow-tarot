@@ -207,7 +207,53 @@ ${actionSummary
   return { system: systemPrompt, messages: [{ role: 'user', content: userPrompt }] };
 }
 
+function buildStoryPromptJa(snap) {
+  const { petInfo, drawnCards, fullName, freeReadingText } = commonParts(snap, 'ja');
+  const cardSummary = drawnCards.map(c => `[${c.position}] ${c.name}(${c.reversed ? '逆位置' : '正位置'})`).join('\n');
+  const freeCtx = freeReadingText
+    ? `\n無料プレビューで提供した最初のカードの解釈（これを参考に、さらに深く広げてください）:\n${freeReadingText}\n`
+    : '';
+  const concernLine = petInfo.concern ? `参考情報: ${petInfo.concern}\n` : '';
+  const petHeader = `ペット: ${petInfo.name}（${petInfo.species}${petInfo.age ? '、' + petInfo.age : ''}${petInfo.gender ? '、' + petInfo.gender : ''}）
+飼い主さんの呼び方: 「${petInfo.ownerTitle}」
+${concernLine}スプレッド: ${fullName}
+引いたカード:
+${cardSummary}
+${freeCtx}`;
+
+  if (snap.spreadKey === 'pastlife') {
+    const systemPrompt = `あなたはペットの前世をタロットカードで想像して伝えるチャネラーです。必ず日本語で、です・ます調で書いてください。実際の予言ではなく、没入感のある物語として、真剣な気持ちで語ってください。必ずこの子の名前と種類に直接言及してください。一般的な表現は使わないでください。`;
+    const userPrompt = `${petHeader}
+以下の3つのセクションで、十分に読み応えのある前世の物語を作成してください:
+
+## 🕰️ カードごとの前世解釈
+3枚のカードをポジション順(いちばん古い前世 → 今の性格を作った前世 → 今また出会った理由)に沿って、ひとつながりの年代記として解釈してください。各前世の時代・場所・姿を具体的に描写してください。${petInfo.name}の今の性格と自然につなげてください。(各カード3〜4行)
+
+## 💌 前世からのメッセージ
+その前世たちの魂がひとつになり、${petInfo.name}の一人称視点で「${petInfo.ownerTitle}」に伝えるメッセージ。感情と愛情を具体的に表現してください。(6〜8行)
+
+## 🐾 今この子と再び出会った理由
+カード全体の流れをもとに、${petInfo.name}と「${petInfo.ownerTitle}」が今生でまた出会った理由を温かく語ってください。慰めと感動を含めてください。(4〜5行)`;
+    return { system: systemPrompt, messages: [{ role: 'user', content: userPrompt }] };
+  }
+
+  const systemPrompt = `あなたは飼い主さんとペットの相性をタロットカードで読み解くチャネラーです。必ず日本語で、です・ます調で書いてください。必ずこの子の名前と種類に直接言及してください。一般的な表現は使わないでください。`;
+  const userPrompt = `${petHeader}
+以下の3つのセクションで、十分に読み応えのある相性レポートを作成してください:
+
+## 💞 カードごとの相性解釈
+3枚のカードをポジションの意味(私が感じているふたりの関係 → うちの子が感じているふたりの関係 → 相性がもっと良くなる方法)と組み合わせて深く解釈してください。カード同士の流れにも触れてください。(各カード3〜4行)
+
+## 💌 ${petInfo.name}が伝える気持ち
+${petInfo.name}の一人称視点での心の中の独白。飼い主さんを「${petInfo.ownerTitle}」と呼びながら直接語りかける、愛情のこもった手紙の形式。(6〜8行)
+
+## ✨ 相性アップの実践ヒント
+カードをもとに、今すぐ試せる具体的な実践ヒントを3つ挙げてください。各項目: **ヒントのタイトル** — 理由と方法。`;
+  return { system: systemPrompt, messages: [{ role: 'user', content: userPrompt }] };
+}
+
 function buildPromptJa(snap) {
+  if (snap.spreadKey === 'pastlife' || snap.spreadKey === 'chemistry') return buildStoryPromptJa(snap);
   const { petInfo, drawnCards, actionCards, fullName, freeReadingText } = commonParts(snap, 'ja');
   const cardSummary = drawnCards.map(c => `[${c.position}] ${c.name}(${c.reversed ? '逆位置' : '正位置'})`).join('\n');
   const actionSummary = actionCards.length > 0
@@ -246,7 +292,53 @@ ${actionSummary
   return { system: systemPrompt, messages: [{ role: 'user', content: userPrompt }] };
 }
 
+function buildStoryPromptEn(snap) {
+  const { petInfo, drawnCards, fullName, freeReadingText } = commonParts(snap, 'en');
+  const cardSummary = drawnCards.map(c => `[${c.position}] ${c.name}(${c.reversed ? 'Reversed' : 'Upright'})`).join('\n');
+  const freeCtx = freeReadingText
+    ? `\nHere is the first card's interpretation from the free preview (use it as context and go deeper):\n${freeReadingText}\n`
+    : '';
+  const concernLine = petInfo.concern ? `Notes: ${petInfo.concern}\n` : '';
+  const petHeader = `Pet: ${petInfo.name} (${petInfo.species}${petInfo.age ? ', ' + petInfo.age : ''}${petInfo.gender ? ', ' + petInfo.gender : ''})
+What the pet calls their person: "${petInfo.ownerTitle}"
+${concernLine}Spread: ${fullName}
+Cards drawn:
+${cardSummary}
+${freeCtx}`;
+
+  if (snap.spreadKey === 'pastlife') {
+    const systemPrompt = `You are a channeler who imagines a pet's past life through tarot cards. Write warmly in English. This isn't a real prediction — it's an immersive, imaginative story, but tell it with genuine conviction. Always directly reference this pet's name and species. Never use generic phrasing.`;
+    const userPrompt = `${petHeader}
+Write a substantial, satisfying past-life story in the following three sections:
+
+## 🕰️ Card-by-Card Past Life Interpretation
+Interpret the three cards in position order (their earliest past life → the past life that shaped their personality today → why you found each other again) as one connected chronicle. Describe each past life's era, place, and form vividly. Connect it naturally to ${petInfo.name}'s personality today. (3-4 lines per card)
+
+## 💌 A Message From Their Past Life
+Write as if those past-life selves have become one voice, speaking in ${petInfo.name}'s first person to "${petInfo.ownerTitle}." Express feeling and affection concretely. (6-8 lines)
+
+## 🐾 Why You Found Each Other Again
+Based on the overall flow of the cards, warmly explain why ${petInfo.name} and "${petInfo.ownerTitle}" found each other again in this life. Include comfort and warmth. (4-5 lines)`;
+    return { system: systemPrompt, messages: [{ role: 'user', content: userPrompt }] };
+  }
+
+  const systemPrompt = `You are a channeler who reads the chemistry between a pet parent and their pet through tarot cards. Write warmly in English. Always directly reference this pet's name and species. Never use generic phrasing.`;
+  const userPrompt = `${petHeader}
+Write a substantial, satisfying chemistry report in the following three sections:
+
+## 💞 Card-by-Card Chemistry Interpretation
+Interpret the three cards in combination with their position meanings (how the pet parent feels about their bond → how the pet feels about their bond → how to strengthen the chemistry). Touch on the flow between the cards. (3-4 lines per card)
+
+## 💌 A Message From ${petInfo.name}
+A first-person inner monologue from ${petInfo.name}, speaking directly and calling their person "${petInfo.ownerTitle}," in the form of an affectionate letter. (6-8 lines)
+
+## ✨ Tips to Strengthen the Chemistry
+List three concrete, actionable tips based on the cards. Each item: **Tip title** — the reason and how to do it.`;
+  return { system: systemPrompt, messages: [{ role: 'user', content: userPrompt }] };
+}
+
 function buildPromptEn(snap) {
+  if (snap.spreadKey === 'pastlife' || snap.spreadKey === 'chemistry') return buildStoryPromptEn(snap);
   const { petInfo, drawnCards, actionCards, fullName, freeReadingText } = commonParts(snap, 'en');
   const cardSummary = drawnCards.map(c => `[${c.position}] ${c.name}(${c.reversed ? 'Reversed' : 'Upright'})`).join('\n');
   const actionSummary = actionCards.length > 0

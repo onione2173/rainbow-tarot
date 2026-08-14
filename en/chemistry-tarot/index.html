@@ -3,20 +3,20 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Beyond the Rainbow Bridge — PetTarot</title>
-  <meta name="description" content="Connect through tarot with the soul of the pet who crossed the rainbow bridge. Receive a final greeting and a heartfelt letter from your beloved companion.">
-  <link rel="canonical" href="https://rainbow-tarot.netlify.app/en/rainbow-tarot/">
-  <link rel="alternate" hreflang="ko" href="https://rainbow-tarot.netlify.app/rainbow-tarot/">
-  <link rel="alternate" hreflang="ja" href="https://rainbow-tarot.netlify.app/ja/rainbow-tarot/">
-  <link rel="alternate" hreflang="en" href="https://rainbow-tarot.netlify.app/en/rainbow-tarot/">
-  <link rel="alternate" hreflang="x-default" href="https://rainbow-tarot.netlify.app/rainbow-tarot/">
+  <title>Chemistry Tarot — PetTarot</title>
+  <meta name="description" content="What's the chemistry between you and your pet? Discover your bond through tarot cards. A free one-card tarot reading.">
+  <link rel="canonical" href="https://rainbow-tarot.netlify.app/en/chemistry-tarot/">
+  <link rel="alternate" hreflang="ko" href="https://rainbow-tarot.netlify.app/chemistry-tarot/">
+  <link rel="alternate" hreflang="ja" href="https://rainbow-tarot.netlify.app/ja/chemistry-tarot/">
+  <link rel="alternate" hreflang="en" href="https://rainbow-tarot.netlify.app/en/chemistry-tarot/">
+  <link rel="alternate" hreflang="x-default" href="https://rainbow-tarot.netlify.app/chemistry-tarot/">
   <meta property="og:type" content="website">
   <meta property="og:site_name" content="PetTarot">
   <meta property="og:locale" content="en_US">
-  <meta property="og:title" content="Beyond the Rainbow Bridge — PetTarot">
-  <meta property="og:description" content="Connect through tarot with the soul of the pet who crossed the rainbow bridge. Receive a final greeting and a heartfelt letter from your beloved companion.">
+  <meta property="og:title" content="Chemistry Tarot — PetTarot">
+  <meta property="og:description" content="What's the chemistry between you and your pet? Discover your bond through tarot cards. A free one-card tarot reading.">
   <meta property="og:image" content="https://rainbow-tarot.netlify.app/assets/og-image-en.png">
-  <meta property="og:url" content="https://rainbow-tarot.netlify.app/en/rainbow-tarot/">
+  <meta property="og:url" content="https://rainbow-tarot.netlify.app/en/chemistry-tarot/">
   <meta name="twitter:card" content="summary_large_image">
   <link rel="icon" type="image/svg+xml" href="/favicon.svg">
   <link rel="apple-touch-icon" href="/favicon.svg">
@@ -114,26 +114,29 @@
   <div class="page">
     <div class="container">
       <div class="header reveal">
-        <span class="icon">🌈</span>
-        <h1>Beyond the Rainbow Bridge</h1>
-        <p class="sub">A place to connect with the soul of the pet you love<br>They are always watching over us from beyond the rainbow bridge</p>
+        <span class="icon">💞</span>
+        <h1>What's our chemistry like?</h1>
+        <p class="sub">Discover the chemistry between you and your pet through tarot cards<br>Find out what kind of bond you two share</p>
       </div>
 
       <div class="glass">
         <div class="input-row">
           <div>
             <label class="field-label">🐾 Pet's Name</label>
-            <input type="text" id="petName" placeholder="e.g. Bella, Max, Luna…">
+            <input type="text" id="chemPetName" placeholder="e.g. Bella, Max, Luna…">
           </div>
           <div>
-            <label class="field-label">💌 What your pet calls you</label>
-            <input type="text" id="ownerTitle" placeholder="e.g. Mom, Dad, Mommy, Daddy…">
+            <label class="field-label">🏷️ Species (optional)</label>
+            <input type="text" id="chemPetType" placeholder="e.g. Dog, Cat, Rabbit…">
           </div>
         </div>
-        <label class="field-label">🌸 What would you like to talk about?</label>
-        <textarea class="question" id="question"
-          placeholder="e.g. Are you happy now? / Is there anything you want to tell me? / Could I have done more for you?"></textarea>
-        <button class="btn-draw" onclick="onDraw()">🌈 &nbsp;Draw a Tarot Card</button>
+        <div class="input-row">
+          <div>
+            <label class="field-label">💌 What your pet calls you</label>
+            <input type="text" id="chemOwnerTitle" placeholder="e.g. Mom, Dad, Big Sis…">
+          </div>
+        </div>
+        <button class="btn-draw" onclick="onDraw()">💞 &nbsp;Draw a Chemistry Card</button>
       </div>
 
       <div class="spread-section" id="spreadSection">
@@ -151,7 +154,7 @@
 
       <div class="loading-section" id="loadingSection">
         <div class="orb"></div>
-        <p class="loading-text" id="loadingText">Listening closely to the voice of the soul…<br>
+        <p class="loading-text" id="loadingText">The tarot is reading the chemistry between you two…<br>
           <span style="font-size:.8rem;color:var(--text-dim)">Just a moment, please</span></p>
       </div>
 
@@ -163,23 +166,23 @@
         <div class="chips" id="chipRow"></div>
         <div class="reading-body" id="readingBody"></div>
         <div class="letter-trigger" id="letterTrigger">
-          <button class="btn-open-letter" onclick="openLetter()">💌 &nbsp;Open the Letter</button>
+          <button class="btn-open-letter" onclick="openLetter()">💞 &nbsp;See What Your Pet Wants to Say</button>
         </div>
         <div class="letter-section" id="letterSection" style="display:none">
           <div class="letter-divider"></div>
           <div class="letter-header">
-            <span class="ltr-icon">💌</span>
+            <span class="ltr-icon">💞</span>
             <h3 id="letterTitle"></h3>
           </div>
           <div class="reading-body" id="letterBody"></div>
         </div>
         <div class="ad-in-reading" id="adInReading" style="display:none"></div>
         <div class="reading-footer" id="readingFooter" style="display:none">
-          <a class="upsell-card" href="/en/deep-reading/" onclick="track('upsell_click',{from:'rainbow'})">
+          <a class="upsell-card" href="/en/deep-reading/?spread=chemistry" onclick="track('upsell_click',{from:'chemistry'})">
             <span class="upsell-tag">PREMIUM</span>
-            <div class="upsell-title">🔮 Is another pet still by your side?</div>
-            <div class="upsell-desc">You may not be the only one missing your friend. Listen to what the pet still with you is feeling — a full multi-card report with in-depth card meanings, a letter from their heart, and gentle guidance for you.</div>
-            <span class="upsell-cta">Get the In-Depth Reading <span class="upsell-price">Launch price $2.99</span></span>
+            <div class="upsell-title">💞 Does your pet love you too?</div>
+            <div class="upsell-desc">A 3-card Chemistry Report — how you feel about each other, how your pet feels about you, and tips to strengthen your bond.</div>
+            <span class="upsell-cta">Get the Chemistry Report <span class="upsell-price">Launch price $2.99</span></span>
           </a>
           <div class="footer-actions">
             <div class="share-btns">
@@ -193,8 +196,7 @@
       </div>
 
       <footer class="site-footer">
-        <p>Made for everyone who loves their pet with all their heart</p>
-        <p>🌈 Even beyond the Rainbow Bridge, that love is forever 🐾</p>
+        <p>🐾 Every moment with your pet is special</p>
         <div class="footer-operator">
           <p>Operator: BrandWick &nbsp;|&nbsp; Contact: <a href="mailto:ralra_1@naver.com">ralra_1@naver.com</a></p>
           <p><a href="/en/privacy/">Privacy Policy</a> &nbsp;|&nbsp; <a href="/en/terms/">Terms of Service</a></p>
@@ -211,7 +213,7 @@
       <h3>Operator Information</h3>
       <p>Operator: BrandWick &nbsp;|&nbsp; Contact: ralra_1@naver.com</p>
       <h3>Information We Collect</h3>
-      <p>This service does not directly collect or store your personal information.<br>However, the following third-party services automatically collect usage statistics.</p>
+      <p>This service does not directly collect or store your personal information.</p>
       <h3>Google Analytics 4</h3>
       <p>We use Google Analytics to understand how the service is used.</p>
       <h3>Google AdSense</h3>
@@ -224,20 +226,21 @@
 
   <script src="/assets/cards-en.js"></script>
   <script>
-    const currentMode = 0;
-    const PAGE_ICON = '🌈';
-    const PAGE_TITLE = 'Beyond the Rainbow Bridge';
-    const PAGE_LOADING = 'Listening closely to the voice of the soul…';
-    const PAGE_LETTER_BTN = '💌 &nbsp;Open the Letter';
-    const PAGE_LETTER_TITLE = petN => `💌 A Letter from ${petN}`;
-    const PAGE_SHARE_LABEL = petN => `💌 A Letter from ${petN}`;
+    const currentMode = 4;
+    const PAGE_ICON = '💞';
+    const PAGE_TITLE = 'Chemistry Tarot';
+    const PAGE_LOADING = 'The tarot is reading the chemistry between you two…';
+    const PAGE_LETTER_BTN = '💞 &nbsp;See What Your Pet Wants to Say';
+    const PAGE_LETTER_TITLE = petN => `💞 A Message From ${petN}`;
+    const PAGE_SHARE_LABEL = petN => `💞 A Message From ${petN}`;
+    const PAGE_UPSELL_TITLE = petN => `💞 Does ${petN} love me too?`;
 
     function onDraw(){
-      const q = document.getElementById('question').value.trim();
-      if(!q){
-        const ta = document.getElementById('question');
-        ta.style.borderColor='rgba(255,100,100,.5)'; ta.focus();
-        setTimeout(()=>ta.style.borderColor='',2000); return;
+      const n = document.getElementById('chemPetName').value.trim();
+      if(!n){
+        const el = document.getElementById('chemPetName');
+        el.style.borderColor='rgba(255,100,100,.5)'; el.focus();
+        setTimeout(()=>el.style.borderColor='',2000); return;
       }
       ['readingSection','loadingSection','cardsSection','spreadSection']
         .forEach(id=>document.getElementById(id).classList.remove('show'));
@@ -250,26 +253,24 @@
       const card=drawn[0], rv=drawnRv[0];
       const cardInfo=`Card: ${card.name} (${card.en}) — ${rv?'Reversed':'Upright'}\nUpright keywords: ${card.upKw}\nReversed keywords: ${card.rvKw}`;
       const sep='\n\nYou must include the exact separator marker ---LETTER--- to split your reply into precisely two parts.';
-      const petName=document.getElementById('petName').value.trim()||'your pet';
-      const ownerTitle=document.getElementById('ownerTitle').value.trim()||'their person';
-      const question=document.getElementById('question').value.trim();
+      const petName=document.getElementById('chemPetName').value.trim()||'your pet';
+      const petType=document.getElementById('chemPetType').value.trim();
+      const ownerTitle=document.getElementById('chemOwnerTitle').value.trim()||'their person';
       return {
         petName,
-        system:`You are a tarot channeler who connects with the souls of pets who have crossed the rainbow bridge.
-Write warmly in English, as if speaking gently and directly to a grieving pet parent.
+        system:`You are a channeler who reads the chemistry between a pet parent and their pet through tarot cards.
+Write warmly in English.
 Your reply must always be split into exactly two parts.
 
-[PART 1: Card Interpretation]
-Briefly explain what this card means, weaving it warmly together with the pet parent's question. 2-4 sentences.
+[PART 1: Chemistry Card Interpretation]
+On the first line, give a short, distinctive bolded chemistry type (e.g. **Chemistry Type: Telepathic bond — you don't even need words**).
+Then describe in 2-3 warm sentences what this card reveals about the chemistry between the pet parent and their pet.
 
 ---LETTER---
 
-[PART 2: A Letter from the Pet]
-A short letter written in first person, from the pet to their person, based only on the meaning of the card.
-- No species-specific physical details of any kind (no tails, paws, barks, meows, or any language tied to a specific animal)
-- Use only emotional and soul-level language ("I feel...", "I remember...", "I'm still with you...", "I love you so much...")
-- Even a reversed card must be interpreted as warm comfort / around 60-80 words`,
-        user:`Pet's name: ${petName}\nWhat the pet calls their person: "${ownerTitle}"\nThe pet parent's question: "${question}"\n\n${cardInfo}${sep}`,
+[PART 2: A Message From Your Pet]
+A short, affectionate message from the pet, calling their person "${ownerTitle}." Include an emoji. 1-2 sentences.`,
+        user:`Pet's name: ${petName}${petType?'\nSpecies: '+petType:''}\nWhat they call their person: "${ownerTitle}"\n\n${cardInfo}${sep}`,
       };
     }
   </script>
