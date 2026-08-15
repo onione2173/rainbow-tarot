@@ -40,7 +40,10 @@
   <link rel="stylesheet" href="/assets/style.css">
   <style>
     .site-header{position:sticky;top:3px;z-index:200;background:rgba(10,8,28,.92);backdrop-filter:blur(18px);border-bottom:1px solid rgba(200,160,255,.1);height:56px;display:flex;align-items:center;justify-content:space-between;padding:0 20px;}
-    .header-brand{display:flex;align-items:center;gap:9px;text-decoration:none;}
+    .header-left{display:flex;align-items:center;gap:9px;min-width:0;}
+    .header-brand{display:flex;align-items:center;gap:9px;text-decoration:none;flex-shrink:0;}
+    .breadcrumb-sep{color:#6a5a8a;font-size:.9rem;}
+    .breadcrumb-current{font-size:.92rem;color:#c0aad8;font-family:'Noto Sans KR',sans-serif;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;}
     .brand-icon{font-size:1.35rem;}
     .brand-name{font-size:1.15rem;font-weight:600;background:linear-gradient(135deg,#e8c4ff 0%,#c8e6ff 100%);-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;}
     .hamburger-btn{background:none;border:none;cursor:pointer;display:flex;flex-direction:column;gap:5px;padding:8px;margin-right:-8px;}
@@ -70,10 +73,14 @@
   <div id="petals"></div>
 
   <header class="site-header">
-    <a href="/ja/" class="header-brand">
-      <span class="brand-icon">🐾</span>
-      <span class="brand-name">ペットタロット</span>
-    </a>
+    <div class="header-left">
+      <a href="/ja/" class="header-brand">
+        <span class="brand-icon">🐾</span>
+        <span class="brand-name">ペットタロット</span>
+      </a>
+      <span class="breadcrumb-sep">|</span>
+      <span class="breadcrumb-current" id="breadcrumbCurrent"></span>
+    </div>
     <div class="header-right">
       <div class="lang-switch" id="langSwitch"></div>
       <button class="hamburger-btn" id="hamburgerBtn" aria-label="メニューを開く">
@@ -177,7 +184,7 @@
             <span class="upsell-tag">PREMIUM</span>
             <div class="upsell-title">🔮 <span class="upsell-name">うちの子</span>の気持ちを、もっと深く</div>
             <div class="upsell-desc">複数のカードで読み解く本格タロットレポート — カードごとの詳しい解釈、あの子からの手紙、飼い主さんへのアドバイスまでお届けします。</div>
-            <span class="upsell-cta">深層リーディングを受ける <span class="upsell-price"><span style="background:#ff6b6b;color:#fff;font-size:.65em;font-weight:700;padding:1px 6px;border-radius:10px;margin-right:6px;vertical-align:middle">50%OFF</span><span style="text-decoration:line-through;opacity:.5;font-size:.85em;margin-right:4px">¥600</span>¥300</span></span>
+            <span class="upsell-cta"><span class="upsell-cta-label">深層リーディングを受ける</span><span class="upsell-price"><span style="background:#ff6b6b;color:#fff;font-size:.65em;font-weight:700;padding:1px 6px;border-radius:10px;margin-right:6px;vertical-align:middle">50%OFF</span><span style="text-decoration:line-through;opacity:.5;font-size:.85em;margin-right:4px">¥600</span>¥300</span></span>
           </a>
           <div class="footer-actions">
             <div class="share-btns">

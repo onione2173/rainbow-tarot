@@ -639,7 +639,8 @@
     .upsell-cta {
       display:inline-block; margin-top:12px; padding:10px 22px;
       border-radius:22px; color:#fff; font-family:'Noto Serif KR',serif;
-      font-size:.85rem; white-space:nowrap;
+      font-size:.85rem; text-align:center; line-height:1.7;
       background:linear-gradient(135deg,#7d5fff,#5f4bd8);
     }
-    .upsell-price { color:#ffd060; font-weight:700; }
+    .upsell-cta-label { display:block; }
+    .upsell-price { display:block; color:#ffd060; font-weight:700; white-space:nowrap; }

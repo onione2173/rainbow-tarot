@@ -19,6 +19,12 @@ for(let i=0;i<16;i++){
 const ro=new IntersectionObserver(entries=>entries.forEach(e=>{if(e.isIntersecting)e.target.classList.add('in');}),{threshold:.15});
 document.querySelectorAll('.reveal').forEach(el=>ro.observe(el));
 
+/* ── breadcrumb (show current page name in header) ── */
+(function(){
+  var bc=document.getElementById('breadcrumbCurrent');
+  if(bc&&typeof PAGE_TITLE!=='undefined')bc.textContent=PAGE_TITLE;
+})();
+
 /* ── analytics helper ── */
 function track(eventName, params){
   if(typeof gtag==='function') gtag('event', eventName, params||{});

@@ -40,7 +40,10 @@
   <link rel="stylesheet" href="/assets/style.css">
   <style>
     .site-header{position:sticky;top:3px;z-index:200;background:rgba(10,8,28,.92);backdrop-filter:blur(18px);border-bottom:1px solid rgba(200,160,255,.1);height:56px;display:flex;align-items:center;justify-content:space-between;padding:0 20px;}
-    .header-brand{display:flex;align-items:center;gap:9px;text-decoration:none;}
+    .header-left{display:flex;align-items:center;gap:9px;min-width:0;}
+    .header-brand{display:flex;align-items:center;gap:9px;text-decoration:none;flex-shrink:0;}
+    .breadcrumb-sep{color:#6a5a8a;font-size:.9rem;}
+    .breadcrumb-current{font-size:.92rem;color:#c0aad8;font-family:'Noto Sans KR',sans-serif;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;}
     .brand-icon{font-size:1.35rem;}
     .brand-name{font-size:1.15rem;font-weight:600;background:linear-gradient(135deg,#e8c4ff 0%,#c8e6ff 100%);-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;}
     .hamburger-btn{background:none;border:none;cursor:pointer;display:flex;flex-direction:column;gap:5px;padding:8px;margin-right:-8px;}
@@ -66,10 +69,14 @@
   <div id="petals"></div>
 
   <header class="site-header">
-    <a href="/" class="header-brand">
-      <span class="brand-icon">🐾</span>
-      <span class="brand-name">펫타로</span>
-    </a>
+    <div class="header-left">
+      <a href="/" class="header-brand">
+        <span class="brand-icon">🐾</span>
+        <span class="brand-name">펫타로</span>
+      </a>
+      <span class="breadcrumb-sep">|</span>
+      <span class="breadcrumb-current" id="breadcrumbCurrent"></span>
+    </div>
     <div class="header-right">
       <div class="lang-switch" id="langSwitch"></div>
       <button class="hamburger-btn" id="hamburgerBtn" aria-label="메뉴 열기">
@@ -146,8 +153,9 @@
           <button class="concern-chip" data-personality="애교쟁이">🥰 애교쟁이</button>
           <button class="concern-chip" data-personality="까칠한 편">😤 까칠한 편</button>
           <button class="concern-chip" data-personality="온순한 편">🕊️ 온순한 편</button>
+          <button class="concern-chip" data-personality="기타">✍️ 기타</button>
         </div>
-        <input type="text" id="plPersonalityCustom" placeholder="✍️ 직접 입력 (선택) — 예: 낮잠을 좋아해요, 물을 무서워해요" style="margin-bottom:16px">
+        <input type="text" id="plPersonalityCustom" placeholder="직접 입력 — 예: 낮잠을 좋아해요, 물을 무서워해요" style="display:none;margin-bottom:16px">
         <button class="btn-draw" onclick="onDraw()">🕰️ &nbsp;전생 카드 뽑기</button>
       </div>
 
@@ -200,7 +208,7 @@
             <span class="upsell-tag">PREMIUM</span>
             <div class="upsell-title">🕰️ 아이는 왜 나와 만나게 되었을까?</div>
             <div class="upsell-desc">카드 3장으로 읽는 전생 연대기 — 가장 오래된 전생부터 지금 나와 다시 만난 이유까지, 전체 이야기를 담아드려요.</div>
-            <span class="upsell-cta">전생 연대기 받기 <span class="upsell-price">오픈 할인가 1,500원</span></span>
+            <span class="upsell-cta"><span class="upsell-cta-label">전생 연대기 받기</span><span class="upsell-price"><span style="background:#ff6b6b;color:#fff;font-size:.65em;font-weight:700;padding:1px 6px;border-radius:10px;margin-right:6px;vertical-align:middle">50%OFF</span><span style="text-decoration:line-through;opacity:.5;font-size:.85em;margin-right:4px">3,000원</span>1,500원</span></span>
           </a>
           <div class="footer-actions">
             <div class="share-btns">
@@ -269,6 +277,9 @@
         document.querySelectorAll('.concern-chip').forEach(c=>c.classList.remove('active'));
         el.classList.add('active');
         selectedPersonality = el.dataset.personality;
+        const customEl = document.getElementById('plPersonalityCustom');
+        customEl.style.display = selectedPersonality === '기타' ? '' : 'none';
+        if (selectedPersonality === '기타') customEl.focus();
         track('personality_selected',{personality:el.dataset.personality});
       });
     });
@@ -294,8 +305,8 @@
       const petName=document.getElementById('plPetName').value.trim()||'반려동물';
       const petType=document.getElementById('plPetType').value.trim();
       const customPersonality=document.getElementById('plPersonalityCustom').value.trim();
-      const personality=customPersonality
-        ? (selectedPersonality!=='잘 모르겠어요' ? `${selectedPersonality}, ${customPersonality}` : customPersonality)
+      const personality=selectedPersonality==='기타'
+        ? (customPersonality || '기타')
         : selectedPersonality;
       return {
         petName,

@@ -40,7 +40,10 @@
   <link rel="stylesheet" href="/assets/style.css">
   <style>
     .site-header{position:sticky;top:3px;z-index:200;background:rgba(10,8,28,.92);backdrop-filter:blur(18px);border-bottom:1px solid rgba(200,160,255,.1);height:56px;display:flex;align-items:center;justify-content:space-between;padding:0 20px;}
-    .header-brand{display:flex;align-items:center;gap:9px;text-decoration:none;}
+    .header-left{display:flex;align-items:center;gap:9px;min-width:0;}
+    .header-brand{display:flex;align-items:center;gap:9px;text-decoration:none;flex-shrink:0;}
+    .breadcrumb-sep{color:#6a5a8a;font-size:.9rem;}
+    .breadcrumb-current{font-size:.92rem;color:#c0aad8;font-family:'Noto Sans KR',sans-serif;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;}
     .brand-icon{font-size:1.35rem;}
     .brand-name{font-size:1.15rem;font-weight:600;background:linear-gradient(135deg,#e8c4ff 0%,#c8e6ff 100%);-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;}
     .hamburger-btn{background:none;border:none;cursor:pointer;display:flex;flex-direction:column;gap:5px;padding:8px;margin-right:-8px;}
@@ -70,10 +73,14 @@
   <div id="petals"></div>
 
   <header class="site-header">
-    <a href="/ja/" class="header-brand">
-      <span class="brand-icon">🐾</span>
-      <span class="brand-name">ペットタロット</span>
-    </a>
+    <div class="header-left">
+      <a href="/ja/" class="header-brand">
+        <span class="brand-icon">🐾</span>
+        <span class="brand-name">ペットタロット</span>
+      </a>
+      <span class="breadcrumb-sep">|</span>
+      <span class="breadcrumb-current" id="breadcrumbCurrent"></span>
+    </div>
     <div class="header-right">
       <div class="lang-switch" id="langSwitch"></div>
       <button class="hamburger-btn" id="hamburgerBtn" aria-label="メニューを開く">
@@ -138,8 +145,9 @@
           <button class="concern-chip" data-personality="甘えん坊">🥰 甘えん坊</button>
           <button class="concern-chip" data-personality="気難しい">😤 気難しい</button>
           <button class="concern-chip" data-personality="おとなしい">🕊️ おとなしい</button>
+          <button class="concern-chip" data-personality="その他">✍️ その他</button>
         </div>
-        <input type="text" id="plPersonalityCustom" placeholder="✍️ 自由入力 (任意) — 例: 昼寝が好き、水が苦手" style="margin-bottom:16px">
+        <input type="text" id="plPersonalityCustom" placeholder="自由入力 — 例: 昼寝が好き、水が苦手" style="display:none;margin-bottom:16px">
         <button class="btn-draw" onclick="onDraw()">🕰️ &nbsp;前世カードを引く</button>
       </div>
 
@@ -186,7 +194,7 @@
             <span class="upsell-tag">PREMIUM</span>
             <div class="upsell-title">🕰️ うちの子は、なぜ私に出会ったのだろう?</div>
             <div class="upsell-desc">カード3枚で読み解く前世クロニクル — いちばん古い前世から、今また出会った理由まで、物語をまるごとお届けします。</div>
-            <span class="upsell-cta">前世クロニクルを受け取る <span class="upsell-price">オープン記念価格 ¥400</span></span>
+            <span class="upsell-cta"><span class="upsell-cta-label">前世クロニクルを受け取る</span><span class="upsell-price"><span style="background:#ff6b6b;color:#fff;font-size:.65em;font-weight:700;padding:1px 6px;border-radius:10px;margin-right:6px;vertical-align:middle">50%OFF</span><span style="text-decoration:line-through;opacity:.5;font-size:.85em;margin-right:4px">¥600</span>¥300</span></span>
           </a>
           <div class="footer-actions">
             <div class="share-btns">
@@ -246,6 +254,9 @@
         document.querySelectorAll('.concern-chip').forEach(c=>c.classList.remove('active'));
         el.classList.add('active');
         selectedPersonality = el.dataset.personality;
+        const customEl = document.getElementById('plPersonalityCustom');
+        customEl.style.display = selectedPersonality === 'その他' ? '' : 'none';
+        if (selectedPersonality === 'その他') customEl.focus();
         track('personality_selected',{personality:el.dataset.personality});
       });
     });
@@ -271,8 +282,8 @@
       const petName=document.getElementById('plPetName').value.trim()||'ペット';
       const petType=document.getElementById('plPetType').value.trim();
       const customPersonality=document.getElementById('plPersonalityCustom').value.trim();
-      const personality=customPersonality
-        ? (selectedPersonality!=='よくわからない' ? `${selectedPersonality}、${customPersonality}` : customPersonality)
+      const personality=selectedPersonality==='その他'
+        ? (customPersonality || 'その他')
         : selectedPersonality;
       return {
         petName,

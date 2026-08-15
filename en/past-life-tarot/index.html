@@ -40,7 +40,10 @@
   <link rel="stylesheet" href="/assets/style.css">
   <style>
     .site-header{position:sticky;top:3px;z-index:200;background:rgba(10,8,28,.92);backdrop-filter:blur(18px);border-bottom:1px solid rgba(200,160,255,.1);height:56px;display:flex;align-items:center;justify-content:space-between;padding:0 20px;}
-    .header-brand{display:flex;align-items:center;gap:9px;text-decoration:none;}
+    .header-left{display:flex;align-items:center;gap:9px;min-width:0;}
+    .header-brand{display:flex;align-items:center;gap:9px;text-decoration:none;flex-shrink:0;}
+    .breadcrumb-sep{color:#6a5a8a;font-size:.9rem;}
+    .breadcrumb-current{font-size:.92rem;color:#c0aad8;font-family:'Noto Sans',sans-serif;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;}
     .brand-icon{font-size:1.35rem;}
     .brand-name{font-size:1.15rem;font-weight:600;background:linear-gradient(135deg,#e8c4ff 0%,#c8e6ff 100%);-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;}
     .hamburger-btn{background:none;border:none;cursor:pointer;display:flex;flex-direction:column;gap:5px;padding:8px;margin-right:-8px;}
@@ -70,10 +73,14 @@
   <div id="petals"></div>
 
   <header class="site-header">
-    <a href="/en/" class="header-brand">
-      <span class="brand-icon">🐾</span>
-      <span class="brand-name">PetTarot</span>
-    </a>
+    <div class="header-left">
+      <a href="/en/" class="header-brand">
+        <span class="brand-icon">🐾</span>
+        <span class="brand-name">PetTarot</span>
+      </a>
+      <span class="breadcrumb-sep">|</span>
+      <span class="breadcrumb-current" id="breadcrumbCurrent"></span>
+    </div>
     <div class="header-right">
       <div class="lang-switch" id="langSwitch"></div>
       <button class="hamburger-btn" id="hamburgerBtn" aria-label="Open menu">
@@ -138,8 +145,9 @@
           <button class="concern-chip" data-personality="Affectionate">🥰 Affectionate</button>
           <button class="concern-chip" data-personality="Feisty">😤 Feisty</button>
           <button class="concern-chip" data-personality="Gentle">🕊️ Gentle</button>
+          <button class="concern-chip" data-personality="Other">✍️ Other</button>
         </div>
-        <input type="text" id="plPersonalityCustom" placeholder="✍️ Or describe it yourself (optional) — e.g. loves naps, afraid of water" style="margin-bottom:16px">
+        <input type="text" id="plPersonalityCustom" placeholder="Describe it yourself — e.g. loves naps, afraid of water" style="display:none;margin-bottom:16px">
         <button class="btn-draw" onclick="onDraw()">🕰️ &nbsp;Draw a Past Life Card</button>
       </div>
 
@@ -186,7 +194,7 @@
             <span class="upsell-tag">PREMIUM</span>
             <div class="upsell-title">🕰️ Why did your pet find me?</div>
             <div class="upsell-desc">A 3-card Past Life Chronicle — from their earliest past life to why you found each other again, told as one complete story.</div>
-            <span class="upsell-cta">Get the Past Life Chronicle <span class="upsell-price">Launch price $2.99</span></span>
+            <span class="upsell-cta"><span class="upsell-cta-label">Get the Past Life Chronicle</span><span class="upsell-price"><span style="background:#ff6b6b;color:#fff;font-size:.65em;font-weight:700;padding:1px 6px;border-radius:10px;margin-right:6px;vertical-align:middle">50%OFF</span><span style="text-decoration:line-through;opacity:.5;font-size:.85em;margin-right:4px">$5.99</span>$2.99</span></span>
           </a>
           <div class="footer-actions">
             <div class="share-btns">
@@ -246,6 +254,9 @@
         document.querySelectorAll('.concern-chip').forEach(c=>c.classList.remove('active'));
         el.classList.add('active');
         selectedPersonality = el.dataset.personality;
+        const customEl = document.getElementById('plPersonalityCustom');
+        customEl.style.display = selectedPersonality === 'Other' ? '' : 'none';
+        if (selectedPersonality === 'Other') customEl.focus();
         track('personality_selected',{personality:el.dataset.personality});
       });
     });
@@ -271,8 +282,8 @@
       const petName=document.getElementById('plPetName').value.trim()||'your pet';
       const petType=document.getElementById('plPetType').value.trim();
       const customPersonality=document.getElementById('plPersonalityCustom').value.trim();
-      const personality=customPersonality
-        ? (selectedPersonality!=='Not sure' ? `${selectedPersonality}, ${customPersonality}` : customPersonality)
+      const personality=selectedPersonality==='Other'
+        ? (customPersonality || 'Other')
         : selectedPersonality;
       return {
         petName,

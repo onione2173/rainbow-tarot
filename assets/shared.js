@@ -19,6 +19,12 @@ for(let i=0;i<16;i++){
 const ro=new IntersectionObserver(entries=>entries.forEach(e=>{if(e.isIntersecting)e.target.classList.add('in');}),{threshold:.15});
 document.querySelectorAll('.reveal').forEach(el=>ro.observe(el));
 
+/* ── breadcrumb (헤더에 현재 페이지명 표시) ── */
+(function(){
+  var bc=document.getElementById('breadcrumbCurrent');
+  if(bc&&typeof PAGE_TITLE!=='undefined')bc.textContent=PAGE_TITLE;
+})();
+
 /* ── analytics helper ── */
 function track(eventName, params){
   if(typeof gtag==='function') gtag('event', eventName, params||{});
@@ -325,7 +331,20 @@ function showReadingFooter(){
     var _un=document.querySelector('.upsell-name');
     if(_un&&_currentPetName)_un.textContent=_currentPetName;
   }
+  refreshKakaoShareLabel();
   track('upsell_shown',{mode:(typeof currentMode!=='undefined'?currentMode:'')});
+}
+
+/* 비로그인 상태에선 카톡 공유 버튼을 로그인 유도로 (회원가입 퍼널) */
+async function refreshKakaoShareLabel(){
+  let loggedIn=false;
+  try{ loggedIn=!!(typeof getUser==='function' && await getUser()); }catch(e){}
+  document.querySelectorAll('.btn-kakao').forEach(function(kb){
+    const last=kb.lastChild; // SVG 뒤의 텍스트 노드
+    if(last && last.nodeType===3){
+      last.nodeValue = loggedIn ? ' 카톡 공유' : ' 로그인하고 카톡 공유';
+    }
+  });
 }
 
 function initReadingAd(){
@@ -533,6 +552,14 @@ async function uploadShareImageToKakao(canvas){
 }
 
 async function shareKakao(){
+  // 비로그인 상태면 공유 대신 카카오 로그인으로 유도 (회원가입 퍼널)
+  try{
+    if(typeof getUser==='function' && !(await getUser())){
+      track('share_login_prompt',{mode:currentMode});
+      if(typeof setAuthReturnPath==='function') setAuthReturnPath(window.location.pathname);
+      if(typeof signInWithKakao==='function'){ signInWithKakao('/auth-callback/'); return; }
+    }
+  }catch(e){}
   track('share_click',{mode:currentMode+'_kakao'});
   initKakao();
   if(!window.Kakao || !Kakao.isInitialized()){

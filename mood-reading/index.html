@@ -42,7 +42,10 @@
   <link rel="stylesheet" href="/assets/style.css">
   <style>
     .site-header{position:sticky;top:3px;z-index:200;background:rgba(10,8,28,.92);backdrop-filter:blur(18px);border-bottom:1px solid rgba(200,160,255,.1);height:56px;display:flex;align-items:center;justify-content:space-between;padding:0 20px;}
-    .header-brand{display:flex;align-items:center;gap:9px;text-decoration:none;}
+    .header-left{display:flex;align-items:center;gap:9px;min-width:0;}
+    .header-brand{display:flex;align-items:center;gap:9px;text-decoration:none;flex-shrink:0;}
+    .breadcrumb-sep{color:#6a5a8a;font-size:.9rem;}
+    .breadcrumb-current{font-size:.92rem;color:#c0aad8;font-family:'Noto Sans KR',sans-serif;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;}
     .brand-icon{font-size:1.35rem;}
     .brand-name{font-size:1.15rem;font-weight:600;background:linear-gradient(135deg,#e8c4ff 0%,#c8e6ff 100%);-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;}
     .hamburger-btn{background:none;border:none;cursor:pointer;display:flex;flex-direction:column;gap:5px;padding:8px;margin-right:-8px;}
@@ -68,10 +71,14 @@
   <div id="petals"></div>
 
   <header class="site-header">
-    <a href="/" class="header-brand">
-      <span class="brand-icon">🐾</span>
-      <span class="brand-name">펫타로</span>
-    </a>
+    <div class="header-left">
+      <a href="/" class="header-brand">
+        <span class="brand-icon">🐾</span>
+        <span class="brand-name">펫타로</span>
+      </a>
+      <span class="breadcrumb-sep">|</span>
+      <span class="breadcrumb-current" id="breadcrumbCurrent"></span>
+    </div>
     <div class="header-right">
       <div class="lang-switch" id="langSwitch"></div>
       <button class="hamburger-btn" id="hamburgerBtn" aria-label="메뉴 열기">
@@ -198,7 +205,7 @@
             <span class="upsell-tag">PREMIUM</span>
             <div class="upsell-title">🔮 <span class="upsell-name">아이</span>의 마음, 더 깊이 들어보고 싶다면</div>
             <div class="upsell-desc">여러 장의 카드로 읽는 심층 타로 리포트 — 카드별 자세한 해석, 아이가 보내는 편지, 보호자를 위한 실천 안내까지 담아드려요.</div>
-            <span class="upsell-cta">심층 리딩 받기 <span class="upsell-price"><span style="background:#ff6b6b;color:#fff;font-size:.65em;font-weight:700;padding:1px 6px;border-radius:10px;margin-right:6px;vertical-align:middle">50%OFF</span><span style="text-decoration:line-through;opacity:.5;font-size:.85em;margin-right:4px">3,000원</span>1,500원</span></span>
+            <span class="upsell-cta"><span class="upsell-cta-label">심층 리딩 받기</span><span class="upsell-price"><span style="background:#ff6b6b;color:#fff;font-size:.65em;font-weight:700;padding:1px 6px;border-radius:10px;margin-right:6px;vertical-align:middle">50%OFF</span><span style="text-decoration:line-through;opacity:.5;font-size:.85em;margin-right:4px">3,000원</span>1,500원</span></span>
           </a>
           <div class="footer-actions">
             <div class="share-btns">
