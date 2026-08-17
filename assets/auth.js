@@ -11,14 +11,37 @@ const SUPABASE_ANON_KEY = '__SUPABASE_ANON_KEY__';
 
 const _sbReady = SUPABASE_URL.includes('supabase.co') && !SUPABASE_URL.includes('YOUR_PROJECT');
 
+// 신규 가입 1회만 Slack 알림을 보내도록 중복 방지 (브라우저 단위)
+function maybeNotifySignup(user, session) {
+  try {
+    if (!user || user.is_anonymous) return;
+    const createdAt = new Date(user.created_at).getTime();
+    const lastSignIn = new Date(user.last_sign_in_at).getTime();
+    const isFreshSignup = Math.abs(lastSignIn - createdAt) < 15000; // 생성 직후 첫 로그인만 "가입"으로 간주
+    if (!isFreshSignup) return;
+    const flagKey = 'petarot_signup_notified_' + user.id;
+    if (localStorage.getItem(flagKey)) return;
+    localStorage.setItem(flagKey, '1');
+    if (typeof gtag === 'function') gtag('event', 'sign_up', { method: user.app_metadata?.provider || 'unknown' });
+    fetch('/.netlify/functions/notify-signup', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ access_token: session?.access_token }),
+    }).catch(() => {});
+  } catch {}
+}
+
 let _sb = null;
 if (_sbReady && window.supabase) {
   _sb = window.supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
   window._sb = _sb;
-  _sb.auth.onAuthStateChange((event) => {
-    if (typeof gtag !== 'function') return;
-    if (event === 'SIGNED_IN') gtag('event', 'login', { method: 'kakao' });
-    if (event === 'SIGNED_OUT') gtag('event', 'logout');
+  _sb.auth.onAuthStateChange((event, session) => {
+    if (event === 'SIGNED_IN') {
+      const user = session?.user;
+      if (typeof gtag === 'function') gtag('event', 'login', { method: user?.app_metadata?.provider || 'unknown' });
+      maybeNotifySignup(user, session);
+    }
+    if (event === 'SIGNED_OUT' && typeof gtag === 'function') gtag('event', 'logout');
   });
 }
 
