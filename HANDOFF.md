@@ -80,6 +80,26 @@
 - **대기(미구현, 방향만 합의)**: "무지개다리 그 후" 결과를 "다시 보려면 로그인" 게이트로 걸어서 회원전환 늘리기 — `deep-reading`의 `linkGoogleIdentity` 익명→계정 연결 패턴 재사용 예정, 아직 착수 안 함.
 - **전생 타로 / 케미 타로 신규 추가** (별도 세션, 2026-08-11~16): 무료 원카드 + `deep-reading`의 심층 3카드 확장(`?spread=pastlife`/`chemistry`)으로 ko/ja/en 전부 구현. 프리뷰 텍스트가 유료 리포트 카드1로 그대로 재사용되도록 수정(과거엔 "미리보기에서 보신 것처럼"이라고만 언급해서 헷갈림). 홈 배너 순서/업셀 CTA 2줄 레이아웃/브레드크럼 헤더/카톡 공유 로그인 유도 등 UX 피드백 반영 완료.
 
+## 🔧 제품 변경 로그 (2026-08-19)
+
+- **홈 필터 탭 개편**: "전체/간단한 분석/심층분석" → "전체/원카드/스프레드"로 변경 (ko/ja/en `index.html` 3개 전부). `data-filter`/`data-category` 값도 `simple`/`deep` → `onecard`/`spread`로 리네이밍. 뱃지 텍스트(원카드/스프레드)와 이미 1:1 대응이라 로직 변경 없이 라벨+속성값만 교체.
+- **`/deep-reading/`(5개 스프레드가 한 페이지에 뭉쳐있던 심층 콤보 분석) 항목별 분리, 1차분**: 독립 슬러그 3개 신설, 결제는 통일 유지(가격 개별화는 아직 안 함 — 다음 단계).
+  - `/past-life-tarot/deep/` — 전생 연대기 스프레드만 (SPREADS 1개, 카테고리 선택 스킵하고 바로 폼으로)
+  - `/chemistry-tarot/deep/` — 케미 스프레드만 (동일 패턴)
+  - `/guardian-tarot/deep/` — 아이 생각/행동 이상/변화 3개 스프레드 허브 (기존 5개 선택지 중 pastlife/chemistry만 제거, 나머지 그대로 픽커 유지) — mind/behavior/change는 자체 원카드 페이지가 없어서 "걱정될 때" 테마인 guardian-tarot 밑으로 묶음
+  - `/deep-reading/` 원본 파일은 완전히 그대로 둠(레거시 허브로 계속 작동 — 기존 결제/재개 플로우, `_returnPath` 없는 오래된 링크 호환용)
+  - 관련 페이지 업셀 링크 갱신: `past-life-tarot`→자기 deep, `chemistry-tarot`→자기 deep, `guardian-tarot`/`mood-reading`/`rainbow-tarot`→`guardian-tarot/deep/` (rainbow-tarot 업셀은 원래도 "곁에 남은 아이" 쪽으로 유도하는 카피라 걱정 계열과 자연스럽게 매칭)
+  - 홈 배너의 "심층 콤보 분석" 카드도 `/guardian-tarot/deep/`로 링크 변경(카피/이미지는 그대로, 아직 새 아트워크 없음)
+  - 로그인 중간 이탈 시 복귀 경로(`_returnPath`)도 각 신규 페이지 자기 자신으로 정확히 세팅됨. 홈페이지의 "카톡인앱→홈으로 튕김" 폴백(`index.html`)도 `_returnPath` 우선 사용하도록 수정.
+  - sitemap.xml에 신규 3개 URL 추가.
+  - **백엔드(`nicepay-confirm.js`, `deep-tarot-background.js`) 전혀 안 건드림** — spreadKey 값이 그대로라 결제 검증 로직 변경 불필요.
+  - 서브에이전트(fast-worker) 위임 후 직접 diff/구조 검증 완료.
+- **아직 안 한 것 (다음 단계 후보)**:
+  - 무지개다리 그 후(rainbow-tarot)에 죽은 아이 본인에 대한 심층분석 신설 — 콘텐츠(카드 구성/카피)는 아직 미정, 애도 감정 이용 안 하는 톤으로 신중하게 설계 필요. 착수 안 함.
+  - 5개(+신설 시 6개) 스프레드 **개별 가격 책정** — 아직 전부 동일가(₩1,500). 서버 가격 검증 로직(`EXPECTED_AMOUNT` 단일 상수)을 스프레드별로 바꿔야 하는 작업이라 별도 세션 필요.
+  - ja/en 버전은 이번 분리 작업 범위 밖(건드리지 않음).
+  - mypage의 "이어서 결제" 재개 링크는 여전히 `/deep-reading/`로 감(기능은 정상 작동, 신규 슬러그로 안 바꿈 — 우선순위 낮음).
+
 ## 대기 중 (막힌 것 아님, 미션 외)
 
 - 해외 결제 수단 확장: Lemon Squeezy 답변 대기(Paddle은 점술 카테고리 거절). 현재 PayPal(¥400)은 살아 있음.

@@ -379,15 +379,15 @@
   <nav class="filter-nav">
     <div class="filter-inner">
       <button class="filter-tab active" data-filter="all">전체</button>
-      <button class="filter-tab" data-filter="simple">간단한 분석</button>
-      <button class="filter-tab" data-filter="deep">심층분석</button>
+      <button class="filter-tab" data-filter="onecard">원카드</button>
+      <button class="filter-tab" data-filter="spread">스프레드</button>
     </div>
   </nav>
 
   <div class="page">
     <div class="content-wrap">
 
-      <a href="/rainbow-tarot/" class="banner-card" data-category="simple">
+      <a href="/rainbow-tarot/" class="banner-card" data-category="onecard">
         <div class="banner-bg"><img src="/assets/images/1.webp" alt="무지개다리 그 후"></div>
         <div class="banner-overlay"></div>
         <div class="banner-content">
@@ -399,7 +399,7 @@
           <p class="banner-desc">무지개 다리를 건넌 반려동물의 영혼과<br>타로로 연결해보세요</p>
         </div>
       </a>
-      <a href="/deep-reading/" class="banner-card" data-category="deep">
+      <a href="/guardian-tarot/deep/" class="banner-card" data-category="spread">
         <div class="banner-bg"><img src="/assets/images/4.webp" alt="심층 콤보 분석" loading="lazy" decoding="async"></div>
         <div class="banner-overlay"></div>
         <div class="banner-content">
@@ -411,7 +411,7 @@
           <p class="banner-desc">반려동물의 고민을 구체적으로 입력하면<br>여러 카드의 심층 콤보 리딩을 제공해드려요</p>
         </div>
       </a>
-      <a href="/past-life-tarot/" class="banner-card" data-category="simple">
+      <a href="/past-life-tarot/" class="banner-card" data-category="onecard">
         <div class="banner-bg"><img src="/assets/images/5.webp" alt="전생 타로" loading="lazy" decoding="async"></div>
         <div class="banner-overlay"></div>
         <div class="banner-content">
@@ -423,7 +423,7 @@
           <p class="banner-desc">우리 아이는 전생에 어떤 존재였을까요?<br>타로카드로 알아봐요</p>
         </div>
       </a>
-      <a href="/chemistry-tarot/" class="banner-card" data-category="simple">
+      <a href="/chemistry-tarot/" class="banner-card" data-category="onecard">
         <div class="banner-bg"><img src="/assets/images/6.webp" alt="케미 타로" loading="lazy" decoding="async"></div>
         <div class="banner-overlay"></div>
         <div class="banner-content">
@@ -435,7 +435,7 @@
           <p class="banner-desc">나랑 우리 아이, 케미 어때?<br>타로로 우리만의 궁합을 확인해봐요</p>
         </div>
       </a>
-      <a href="/guardian-tarot/" class="banner-card" data-category="simple">
+      <a href="/guardian-tarot/" class="banner-card" data-category="onecard">
         <div class="banner-bg"><img src="/assets/images/3.webp" alt="우리 아이 걱정될 때" loading="lazy" decoding="async"></div>
         <div class="banner-overlay"></div>
         <div class="banner-content">
@@ -446,7 +446,7 @@
           <p class="banner-desc">건강, 행동, 관계… 반려동물 고민을<br>타로에게 물어봐요</p>
         </div>
       </a>
-      <a href="/mood-reading/" class="banner-card" data-category="simple">
+      <a href="/mood-reading/" class="banner-card" data-category="onecard">
         <div class="banner-bg"><img src="/assets/images/2.webp" alt="오늘 우리 아이 어때요?" loading="lazy" decoding="async"></div>
         <div class="banner-overlay"></div>
         <div class="banner-content">
@@ -553,7 +553,7 @@
       }
       const user = await getUser();
       if (!user) return;
-      window.location.replace('/deep-reading/');
+      window.location.replace(state._returnPath || '/deep-reading/');
     })();
   </script>
 </body>
