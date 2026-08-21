@@ -3,20 +3,18 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>달의 서재 | 심층 콤보 펫타로 스프레드</title>
-  <meta name="description" content="반려동물의 고민을 구체적으로 입력하면 여러 장의 타로 카드로 심층 콤보 리딩을 제공해드려요.">
-  <link rel="canonical" href="https://rainbow-tarot.netlify.app/deep-reading/">
-  <link rel="alternate" hreflang="ko" href="https://rainbow-tarot.netlify.app/deep-reading/">
-  <link rel="alternate" hreflang="ja" href="https://rainbow-tarot.netlify.app/ja/deep-reading/">
-  <link rel="alternate" hreflang="en" href="https://rainbow-tarot.netlify.app/en/deep-reading/">
-  <link rel="alternate" hreflang="x-default" href="https://rainbow-tarot.netlify.app/deep-reading/">
+  <title>달의 서재 | 마음 펫타로 스프레드</title>
+  <meta name="description" content="아이가 무슨 생각을 하는지 크로스 스프레드 4장으로 깊이 있게 풀어드리는 심층 타로예요.">
+  <link rel="canonical" href="https://rainbow-tarot.netlify.app/mind-tarot/">
+  <link rel="alternate" hreflang="ko" href="https://rainbow-tarot.netlify.app/mind-tarot/">
+  <link rel="alternate" hreflang="x-default" href="https://rainbow-tarot.netlify.app/mind-tarot/">
   <meta property="og:type" content="website">
   <meta property="og:site_name" content="달의 서재 펫타로">
   <meta property="og:locale" content="ko_KR">
-  <meta property="og:title" content="달의 서재 | 심층 콤보 펫타로 스프레드">
-  <meta property="og:description" content="반려동물의 고민을 구체적으로 입력하면 여러 장의 타로 카드로 심층 콤보 리딩을 제공해드려요.">
+  <meta property="og:title" content="달의 서재 | 마음 펫타로 스프레드">
+  <meta property="og:description" content="아이가 무슨 생각을 하는지 크로스 스프레드 4장으로 깊이 있게 풀어드리는 심층 타로예요.">
   <meta property="og:image" content="https://rainbow-tarot.netlify.app/assets/og-image.png">
-  <meta property="og:url" content="https://rainbow-tarot.netlify.app/deep-reading/">
+  <meta property="og:url" content="https://rainbow-tarot.netlify.app/mind-tarot/">
   <meta name="twitter:card" content="summary_large_image">
   <link rel="icon" type="image/svg+xml" href="/favicon.svg">
   <link rel="preconnect" href="https://fonts.googleapis.com">
@@ -688,11 +686,11 @@
     <div class="wrap">
 
       <!-- ① 배열 선택 -->
-      <section id="secCategory">
+      <section id="secCategory" style="display:none">
         <div class="step-header">
-          <a href="/" class="back-link">
+          <a href="/guardian-tarot/" class="back-link" onclick="if(document.referrer.indexOf(location.origin)===0){event.preventDefault();history.back();}">
             <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M19 12H5M12 5l-7 7 7 7"/></svg>
-            홈으로
+            돌아가기
           </a>
           <div class="progress-dots">
             <div class="dot active" id="dot1"></div>
@@ -712,46 +710,6 @@
               <div class="spread-meta">
                 <span>크로스 스프레드</span>
                 <span>카드 4장</span>
-              </div>
-            </div>
-          </button>
-          <button class="spread-btn" onclick="selectSpread('behavior')">
-            <span class="spread-icon">🔍</span>
-            <div class="spread-info">
-              <div class="spread-name">갑자기 행동이 이상해졌어요</div>
-              <div class="spread-meta">
-                <span>호스슈 스프레드</span>
-                <span>카드 5장</span>
-              </div>
-            </div>
-          </button>
-          <button class="spread-btn" onclick="selectSpread('change')">
-            <span class="spread-icon">🌿</span>
-            <div class="spread-info">
-              <div class="spread-name">이사·합사 등 변화를 앞두고 있어요</div>
-              <div class="spread-meta">
-                <span>쓰리카드 스프레드</span>
-                <span>카드 3장</span>
-              </div>
-            </div>
-          </button>
-          <button class="spread-btn" onclick="selectSpread('pastlife')">
-            <span class="spread-icon">🕰️</span>
-            <div class="spread-info">
-              <div class="spread-name">전생 이야기를 더 깊이 알고 싶어요</div>
-              <div class="spread-meta">
-                <span>전생 연대기 스프레드</span>
-                <span>카드 3장</span>
-              </div>
-            </div>
-          </button>
-          <button class="spread-btn" onclick="selectSpread('chemistry')">
-            <span class="spread-icon">💞</span>
-            <div class="spread-info">
-              <div class="spread-name">우리 케미를 더 깊이 알고 싶어요</div>
-              <div class="spread-meta">
-                <span>케미 스프레드</span>
-                <span>카드 3장</span>
               </div>
             </div>
           </button>
@@ -1049,32 +1007,6 @@
         fullName: '아이가 무슨 생각 하는지 궁금해요 — 크로스 스프레드',
         cardCount: 4,
         positions: ['현재 아이의 마음', '보호자가 미치는 영향', '숨겨진 진짜 원인', '관계 회복을 위한 조언']
-      },
-      behavior: {
-        name: '호스슈 스프레드',
-        fullName: '갑자기 행동이 이상해졌어요 — 호스슈 스프레드',
-        cardCount: 5,
-        positions: ['과거의 계기', '현재 상황', '숨겨진 영향', '취할 수 있는 행동', '앞으로의 흐름']
-      },
-      change: {
-        name: '쓰리카드 스프레드',
-        fullName: '이사·합사 등 변화를 앞두고 있어요 — 쓰리카드 스프레드',
-        cardCount: 3,
-        positions: ['과거의 흔적', '지금 아이의 마음', '변화 이후의 흐름']
-      },
-      pastlife: {
-        name: '전생 연대기 스프레드',
-        fullName: '전생 이야기를 더 깊이 알고 싶어요 — 전생 연대기 스프레드',
-        cardCount: 3,
-        positions: ['가장 오래된 전생', '지금 성격을 만든 전생', '이번 생에서 다시 만난 이유'],
-        storyType: true
-      },
-      chemistry: {
-        name: '케미 스프레드',
-        fullName: '우리 케미를 더 깊이 알고 싶어요 — 케미 스프레드',
-        cardCount: 3,
-        positions: ['내가 느끼는 우리 사이', '아이가 느끼는 우리 사이', '앞으로 더 좋아지는 방법'],
-        storyType: true
       }
     };
 
@@ -1499,9 +1431,6 @@
 
       const systemPrompt = `당신은 반려동물 타로 전문가입니다. 따뜻하고 감성적인 한국어로 작성하세요. 동물의 종과 나이에 따른 특성을 자연스럽게 반영하세요. 반드시 사용자가 입력한 구체적인 정보를 직접 언급하세요. 누구에게나 해당될 수 있는 일반적 표현은 절대 쓰지 마세요.`;
       const concernLine = petInfo.concern ? `${isStoryType() ? '참고 정보' : '고민'}: ${petInfo.concern}\n` : '';
-      const cardIntroBullet = currentSpreadKey === 'pastlife'
-        ? `- 이 포지션의 의미 + 카드 상징이 이 자리에서 갖는 의미`
-        : `- 먼저 카드 속 장면과 상징을 짧게 설명하고 전통적으로 어떤 의미인지 풀어준 뒤, "그 중에서도 지금 이 카드가 보호자님께 말하고 싶은 부분은 「○○」로 보여요" 식으로 이 포지션에서의 핵심 메시지를 짚기`;
       const lastBullet = isStoryType()
         ? `- ${petInfo.name}의 이야기에 직접 연결`
         : `- ${petInfo.name}의 고민 상황에 직접 연결`;
@@ -1512,7 +1441,7 @@ ${concernLine}배열법: ${currentSpread.fullName}
 전체 카드: ${cardSummary}
 
 첫 번째 카드 "[${firstCard.position}] ${firstCard.name}(${firstCard.reversed ? '역방향' : '정방향'})"만 심층 해석해주세요. (4~6줄)
-${cardIntroBullet}
+- 이 포지션의 의미 + 카드 상징이 이 자리에서 갖는 의미
 ${lastBullet}
 - 감성적이고 구체적으로`;
 
@@ -1571,7 +1500,7 @@ ${lastBullet}
         const spreadKey = Object.keys(SPREADS).find(k => SPREADS[k].name === currentSpread.name);
         localStorage.setItem('petarot_dr', JSON.stringify({
           _loginPending: true,
-          _returnPath: '/deep-reading/',
+          _returnPath: '/mind-tarot/',
           _savedAt: Date.now(),
           spreadKey,
           petInfo,
@@ -2020,7 +1949,7 @@ ${lastBullet}
           const s = localStorage.getItem('petarot_dr');
           if (s) {
             const st = JSON.parse(s);
-            st._returnPath = '/deep-reading/';
+            st._returnPath = '/mind-tarot/';
             st._savedAt = Date.now();
             localStorage.setItem('petarot_dr', JSON.stringify(st));
           }
@@ -2058,7 +1987,7 @@ ${lastBullet}
       if (!saved || !state) {
         document.documentElement.style.visibility = '';
         // 무료 원카드 결과 업셀에서 넘어온 경우: 배열 선택을 건너뛰고 바로 정보 입력으로 진입
-        const spreadParam = urlParams.get('spread');
+        const spreadParam = urlParams.get('spread') || 'mind';
         if (spreadParam && SPREADS[spreadParam]) {
           window.history.replaceState({}, '', window.location.pathname);
           selectSpread(spreadParam);
