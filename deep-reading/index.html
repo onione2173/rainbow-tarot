@@ -1499,6 +1499,9 @@
 
       const systemPrompt = `당신은 반려동물 타로 전문가입니다. 따뜻하고 감성적인 한국어로 작성하세요. 동물의 종과 나이에 따른 특성을 자연스럽게 반영하세요. 반드시 사용자가 입력한 구체적인 정보를 직접 언급하세요. 누구에게나 해당될 수 있는 일반적 표현은 절대 쓰지 마세요.`;
       const concernLine = petInfo.concern ? `${isStoryType() ? '참고 정보' : '고민'}: ${petInfo.concern}\n` : '';
+      const cardIntroBullet = currentSpreadKey === 'pastlife'
+        ? `- 이 포지션의 의미 + 카드 상징이 이 자리에서 갖는 의미`
+        : `- 먼저 카드 속 장면과 상징을 짧게 설명하고 전통적으로 어떤 의미인지 풀어준 뒤, "그 중에서도 지금 이 카드가 보호자님께 말하고 싶은 부분은 「○○」로 보여요" 식으로 이 포지션에서의 핵심 메시지를 짚기`;
       const lastBullet = isStoryType()
         ? `- ${petInfo.name}의 이야기에 직접 연결`
         : `- ${petInfo.name}의 고민 상황에 직접 연결`;
@@ -1509,7 +1512,7 @@ ${concernLine}배열법: ${currentSpread.fullName}
 전체 카드: ${cardSummary}
 
 첫 번째 카드 "[${firstCard.position}] ${firstCard.name}(${firstCard.reversed ? '역방향' : '정방향'})"만 심층 해석해주세요. (4~6줄)
-- 이 포지션의 의미 + 카드 상징이 이 자리에서 갖는 의미
+${cardIntroBullet}
 ${lastBullet}
 - 감성적이고 구체적으로`;
 

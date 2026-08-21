@@ -140,7 +140,7 @@ ${freeCtx}`;
     const cardInstruction = freeReadingText
       ? `카드 1(${drawnCards[0]?.position})은 위에 제공된 무료 미리보기 텍스트를 한 글자도 바꾸지 말고 그대로 첫 항목으로 포함하세요. 나머지 카드는 포지션 순서(지금 성격을 만든 전생 → 이번 생에서 다시 만난 이유)에 따라 하나로 이어지는 연대기처럼 새로 해석하세요. 각 전생의 시대·장소·모습을 구체적으로 상상해서 묘사. ${petInfo.name}의 지금 성격과 자연스럽게 연결. (나머지 각 카드 3~4줄) ${noMetaNote}`
       : `세 카드를 포지션 순서(가장 오래된 전생 → 지금 성격을 만든 전생 → 이번 생에서 다시 만난 이유)에 따라 하나로 이어지는 연대기처럼 해석. 각 전생의 시대·장소·모습을 구체적으로 상상해서 묘사. ${petInfo.name}의 지금 성격과 자연스럽게 연결. (각 카드 3~4줄)`;
-    const systemPrompt = `당신은 반려동물의 전생을 타로카드로 상상해서 들려주는 채널러입니다. 실제 예언이 아니라 유쾌하고 몰입감 있는 상상 놀이라는 톤을 유지하되, 진지하게 몰입해서 이야기해주세요. 반드시 이 아이의 이름과 종을 직접 언급하세요. 일반적인 표현은 쓰지 마세요.`;
+    const systemPrompt = `당신은 반려동물의 전생을 타로카드로 상상해서 들려주는 채널러입니다. 실제 예언이 아니라 유쾌하고 몰입감 있는 상상 놀이라는 톤을 유지하되, 진지하게 몰입해서 이야기해주세요. 반드시 이 아이의 이름과 종을 직접 언급하세요. 일반적인 표현은 쓰지 마세요. 메시지·마무리 섹션은 위 카드별 전생 해석에서 실제로 다룬 그 카드의 의미에서 감정과 표현이 이어져야 합니다. 카드 이름만 장식으로 끼워넣고 내용은 카드와 무관한 상투적 위로로 채우면 안 됩니다 — 카드가 달랐다면 이 문단의 핵심 문장도 달라져야 합니다.`;
     const userPrompt = `${petHeader}
 아래 세 섹션으로 충분히 풍부하게 전생 이야기를 작성하세요:
 
@@ -148,18 +148,18 @@ ${freeCtx}`;
 ${cardInstruction}
 
 ## 💌 전생이 전하는 메시지
-그 전생들의 자아가 하나로 모여 ${petInfo.name}의 1인칭 시점으로 "${petInfo.ownerTitle}"에게 전하는 메시지. 감정과 애정을 구체적으로 표현. (6~8줄)
+그 전생들의 자아가 하나로 모여 ${petInfo.name}의 1인칭 시점으로 "${petInfo.ownerTitle}"에게 전하는 메시지. 감정과 애정을 구체적으로 표현. 위 카드별 전생 해석에서 나온 카드 의미를 실제로 이어받아 쓰기 — 카드 이름만 끼워넣고 내용은 바뀌지 않는 건 안 됨. (6~8줄)
 
 ## 🐾 지금 이 아이와 다시 만난 이유
-카드 전체 흐름을 바탕으로 ${petInfo.name}와 "${petInfo.ownerTitle}"이(가) 이번 생에서 다시 만난 이유를 따뜻하게 풀어내기. 위로와 감동 포함. (4~5줄)`;
+카드 전체 흐름을 바탕으로 ${petInfo.name}와 "${petInfo.ownerTitle}"이(가) 이번 생에서 다시 만난 이유를 따뜻하게 풀어내기. 이 카드 조합이었기 때문에 할 수 있는 이야기를 쓰고, 카드가 달랐어도 똑같이 쓸 수 있는 상투적 위로 문구는 피하기. 위로와 감동 포함. (4~5줄)`;
     return { system: systemPrompt, messages: [{ role: 'user', content: userPrompt }] };
   }
 
   // chemistry
   const cardInstruction = freeReadingText
-    ? `카드 1(${drawnCards[0]?.position})은 위에 제공된 무료 미리보기 텍스트를 한 글자도 바꾸지 말고 그대로 첫 항목으로 포함하세요. 나머지 카드는 포지션 의미(아이가 느끼는 우리 사이 → 앞으로 더 좋아지는 방법)와 결합하여 깊이 있게 새로 해석하세요. 카드 간 흐름도 언급. (나머지 각 카드 3~4줄) ${noMetaNote}`
-    : `세 카드를 포지션 의미(내가 느끼는 우리 사이 → 아이가 느끼는 우리 사이 → 앞으로 더 좋아지는 방법)와 결합하여 깊이 있게 해석. 카드 간 흐름도 언급. (각 카드 3~4줄)`;
-  const systemPrompt = `당신은 보호자와 반려동물 사이의 케미(궁합)를 타로카드로 읽어주는 채널러입니다. 반드시 이 아이의 이름과 종을 직접 언급하세요. 일반적인 표현은 쓰지 마세요.`;
+    ? `카드 1(${drawnCards[0]?.position})은 위에 제공된 무료 미리보기 텍스트를 한 글자도 바꾸지 말고 그대로 첫 항목으로 포함하세요. 나머지 카드는 먼저 카드 속 장면과 상징을 짧게 설명하고 전통적으로 어떤 의미인지 풀어준 뒤, "그 중에서도 지금 이 카드가 보호자님께 말하고 싶은 부분은 「○○」로 보여요" 식으로 핵심 메시지를 짚고, 포지션 의미(아이가 느끼는 우리 사이 → 앞으로 더 좋아지는 방법)와 결합하여 깊이 있게 새로 해석하세요. 카드 간 흐름도 언급. (나머지 각 카드 4~5줄) ${noMetaNote}`
+    : `각 카드마다 먼저 카드 속 장면과 상징을 짧게 설명하고 전통적으로 어떤 의미인지 풀어준 뒤, "그 중에서도 지금 이 카드가 보호자님께 말하고 싶은 부분은 「○○」로 보여요" 식으로 핵심 메시지를 짚고, 포지션 의미(내가 느끼는 우리 사이 → 아이가 느끼는 우리 사이 → 앞으로 더 좋아지는 방법)와 결합하여 깊이 있게 해석. 카드 간 흐름도 언급. (각 카드 4~5줄)`;
+  const systemPrompt = `당신은 보호자와 반려동물 사이의 케미(궁합)를 타로카드로 읽어주는 채널러입니다. 반드시 이 아이의 이름과 종을 직접 언급하세요. 일반적인 표현은 쓰지 마세요. 편지 섹션은 위 카드별 케미 해석에서 실제로 다룬 그 카드의 의미에서 감정과 표현이 이어져야 합니다. 카드 이름만 장식으로 끼워넣고 내용은 카드와 무관한 상투적 표현으로 채우면 안 됩니다.`;
   const userPrompt = `${petHeader}
 아래 세 섹션으로 충분히 풍부하게 케미 리포트를 작성하세요:
 
@@ -167,7 +167,7 @@ ${cardInstruction}
 ${cardInstruction}
 
 ## 💌 ${petInfo.name}이 전하는 마음
-${petInfo.name}의 1인칭 시점 내면 독백. 보호자를 "${petInfo.ownerTitle}"(이)라고 부르며 직접 말하는 애정 어린 편지 형식. (6~8줄)
+${petInfo.name}의 1인칭 시점 내면 독백. 보호자를 "${petInfo.ownerTitle}"(이)라고 부르며 직접 말하는 애정 어린 편지 형식. 위 카드별 케미 해석에서 나온 카드 의미를 실제로 이어받아 쓰기 — 카드 이름만 끼워넣고 내용은 바뀌지 않는 건 안 됨. (6~8줄)
 
 ## ✨ 케미 up 실천 팁
 카드를 바탕으로 지금 바로 해볼 수 있는 구체적인 실천 팁 3가지. 각 항목: **팁 제목** — 이유와 방법.`;
@@ -185,13 +185,13 @@ function buildPromptKo(snap, pastLossDetected) {
   const lossNote = pastLossDetected
     ? ` [내부 참고, 리딩에 그대로 인용하거나 "기록에 따르면" 식으로 출처를 밝히지 말 것] ${petInfo.name}은(는) 이미 무지개다리를 건넌 것으로 보입니다. 톤과 시제만 이에 맞게 자연스럽게 조율하세요.`
     : '';
-  const systemPrompt = `당신은 반려동물 타로 전문가입니다. 따뜻하고 감성적인 한국어로 작성하세요. 반드시 이 아이의 이름, 종, 고민을 직접 언급하세요. 일반적인 표현은 쓰지 마세요.${lossNote}`;
+  const systemPrompt = `당신은 반려동물 타로 전문가입니다. 따뜻하고 감성적인 한국어로 작성하세요. 반드시 이 아이의 이름, 종, 고민을 직접 언급하세요. 일반적인 표현은 쓰지 마세요. 속마음 편지·보호자님께 섹션은 위 🃏 카드별 해석에서 실제로 다룬 그 카드의 의미에서 감정과 표현이 이어져야 합니다. 카드 이름만 장식으로 끼워넣고 내용은 카드와 무관한 상투적 위로("곁에 있어요", "원망하지 않아요" 등)로 채우면 안 됩니다 — 카드가 달랐다면 이 문단의 핵심 문장도 달라져야 합니다.${lossNote}`;
   const freeCtx = freeReadingText
     ? `\n무료 미리보기에서 이미 보여준 카드 1(${drawnCards[0]?.position}) 해석 — 아래 텍스트를 한 글자도 바꾸지 말고, 카드별 해석 섹션의 첫 항목으로 그대로 포함하세요:\n${freeReadingText}\n`
     : '';
   const cardInstruction = freeReadingText
-    ? `카드 1(${drawnCards[0]?.position})은 위에 제공된 무료 미리보기 텍스트를 한 글자도 바꾸지 말고 그대로 첫 항목으로 포함하세요. 나머지 카드는 포지션 의미와 결합하여 깊이 있게 새로 해석하세요. ${petInfo.name}의 상황에 직접 연결. 카드 간 흐름과 연결도 언급. (나머지 각 카드 3~4줄) '미리보기에서 보신 것처럼' 같은 메타 언급은 절대 하지 마세요 — 이 리포트는 그 자체로 완결된 문서입니다.`
-    : `각 카드를 포지션 의미와 결합하여 깊이 있게 해석. ${petInfo.name}의 상황에 직접 연결. 카드 간 흐름과 연결도 언급. (각 카드 3~4줄)`;
+    ? `카드 1(${drawnCards[0]?.position})은 위에 제공된 무료 미리보기 텍스트를 한 글자도 바꾸지 말고 그대로 첫 항목으로 포함하세요. 나머지 카드는 먼저 카드 속 장면과 상징을 짧게 설명하고 전통적으로 어떤 의미인지 풀어준 뒤, "그 중에서도 지금 이 카드가 보호자님께 말하고 싶은 부분은 「○○」로 보여요" 식으로 핵심 메시지를 짚고, 포지션 의미와 결합하여 깊이 있게 새로 해석하세요. ${petInfo.name}의 상황에 직접 연결. 카드 간 흐름과 연결도 언급. (나머지 각 카드 4~5줄) '미리보기에서 보신 것처럼' 같은 메타 언급은 절대 하지 마세요 — 이 리포트는 그 자체로 완결된 문서입니다.`
+    : `각 카드마다 먼저 카드 속 장면과 상징을 짧게 설명하고 전통적으로 어떤 의미인지 풀어준 뒤, "그 중에서도 지금 이 카드가 보호자님께 말하고 싶은 부분은 「○○」로 보여요" 식으로 핵심 메시지를 짚고, 포지션 의미와 결합하여 깊이 있게 해석. ${petInfo.name}의 상황에 직접 연결. 카드 간 흐름과 연결도 언급. (각 카드 4~5줄)`;
   const userPrompt = `반려동물: ${petInfo.name} (${petInfo.species}${petInfo.age ? ', ' + petInfo.age : ''}${petInfo.gender ? ', ' + petInfo.gender : ''})
 보호자 호칭: "${petInfo.ownerTitle}"
 ${speciesCtx}
@@ -207,10 +207,10 @@ ${freeCtx}
 ${cardInstruction}
 
 ## 💌 ${petInfo.name}의 속마음
-${petInfo.name}의 1인칭 시점 내면 독백. 보호자를 "${petInfo.ownerTitle}"(이)라고 부르며 직접 말하는 형식. 감정과 바람을 구체적으로 표현. (6~8줄)
+${petInfo.name}의 1인칭 시점 내면 독백. 보호자를 "${petInfo.ownerTitle}"(이)라고 부르며 직접 말하는 형식. 감정과 바람을 구체적으로 표현. 위 카드별 포지션 해석에서 나온 카드 의미를 실제로 이어받아 쓰기 — 카드 이름만 끼워넣고 내용은 바뀌지 않는 건 안 됨. (6~8줄)
 
 ## 🐾 보호자님께
-카드 전체 흐름을 바탕으로 놓치고 있을 수 있는 관점, 위로와 공감. 구체적인 인사이트 포함. (4~5줄)
+카드 전체 흐름을 바탕으로 놓치고 있을 수 있는 관점, 위로와 공감. 이 카드 조합이었기 때문에 할 수 있는 이야기를 쓰고, 카드가 달랐어도 똑같이 쓸 수 있는 상투적 위로 문구는 피하기. 구체적인 인사이트 포함. (4~5줄)
 
 ## ✨ 앞으로의 행동 가이드
 ${actionSummary
@@ -239,7 +239,7 @@ ${freeCtx}`;
     const cardInstruction = freeReadingText
       ? `カード1(${drawnCards[0]?.position})は上に提供した無料プレビューのテキストを一字も変えずにそのまま最初の項目として含めてください。残りのカードはポジション順(今の性格を作った前世 → 今また出会った理由)に沿って、ひとつながりの年代記として新しく解釈してください。各前世の時代・場所・姿を具体的に描写してください。${petInfo.name}の今の性格と自然につなげてください。(残りの各カード3〜4行) ${noMetaNote}`
       : `3枚のカードをポジション順(いちばん古い前世 → 今の性格を作った前世 → 今また出会った理由)に沿って、ひとつながりの年代記として解釈してください。各前世の時代・場所・姿を具体的に描写してください。${petInfo.name}の今の性格と自然につなげてください。(各カード3〜4行)`;
-    const systemPrompt = `あなたはペットの前世をタロットカードで想像して伝えるチャネラーです。必ず日本語で、です・ます調で書いてください。実際の予言ではなく、没入感のある物語として、真剣な気持ちで語ってください。必ずこの子の名前と種類に直接言及してください。一般的な表現は使わないでください。`;
+    const systemPrompt = `あなたはペットの前世をタロットカードで想像して伝えるチャネラーです。必ず日本語で、です・ます調で書いてください。実際の予言ではなく、没入感のある物語として、真剣な気持ちで語ってください。必ずこの子の名前と種類に直接言及してください。一般的な表現は使わないでください。メッセージ・締めくくりのセクションは、上のカードごとの前世解釈で実際に扱ったそのカードの意味から感情と表現がつながっている必要があります。カードの名前だけを飾りとして入れて、内容はカードと無関係な定型的な慰めの言葉で埋めるのはだめです — カードが違えば、この段落の核心となる文も違ってくるはずです。`;
     const userPrompt = `${petHeader}
 以下の3つのセクションで、十分に読み応えのある前世の物語を作成してください:
 
@@ -247,17 +247,17 @@ ${freeCtx}`;
 ${cardInstruction}
 
 ## 💌 前世からのメッセージ
-その前世たちの魂がひとつになり、${petInfo.name}の一人称視点で「${petInfo.ownerTitle}」に伝えるメッセージ。感情と愛情を具体的に表現してください。(6〜8行)
+その前世たちの魂がひとつになり、${petInfo.name}の一人称視点で「${petInfo.ownerTitle}」に伝えるメッセージ。感情と愛情を具体的に表現してください。上のカードごとの前世解釈で出てきたカードの意味を実際に引き継いで書いてください — カードの名前だけ入れて内容は変わらないのはだめです。(6〜8行)
 
 ## 🐾 今この子と再び出会った理由
-カード全体の流れをもとに、${petInfo.name}と「${petInfo.ownerTitle}」が今生でまた出会った理由を温かく語ってください。慰めと感動を含めてください。(4〜5行)`;
+カード全体の流れをもとに、${petInfo.name}と「${petInfo.ownerTitle}」が今生でまた出会った理由を温かく語ってください。このカードの組み合わせだからこそ言えることを書き、カードが違っても同じように書けるような定型的な慰めの言葉は避けてください。慰めと感動を含めてください。(4〜5行)`;
     return { system: systemPrompt, messages: [{ role: 'user', content: userPrompt }] };
   }
 
   const cardInstruction = freeReadingText
-    ? `カード1(${drawnCards[0]?.position})は上に提供した無料プレビューのテキストを一字も変えずにそのまま最初の項目として含めてください。残りのカードはポジションの意味(うちの子が感じているふたりの関係 → 相性がもっと良くなる方法)と組み合わせて深く新しく解釈してください。カード同士の流れにも触れてください。(残りの各カード3〜4行) ${noMetaNote}`
-    : `3枚のカードをポジションの意味(私が感じているふたりの関係 → うちの子が感じているふたりの関係 → 相性がもっと良くなる方法)と組み合わせて深く解釈してください。カード同士の流れにも触れてください。(各カード3〜4行)`;
-  const systemPrompt = `あなたは飼い主さんとペットの相性をタロットカードで読み解くチャネラーです。必ず日本語で、です・ます調で書いてください。必ずこの子の名前と種類に直接言及してください。一般的な表現は使わないでください。`;
+    ? `カード1(${drawnCards[0]?.position})は上に提供した無料プレビューのテキストを一字も変えずにそのまま最初の項目として含めてください。残りのカードはまずカードの絵柄と象徴を簡潔に説明し、伝統的にどんな意味を持つのか解きほぐしたうえで、「その中でも、今このカードが飼い主さんに伝えたいのは『○○』のようです」という形で核心のメッセージを示し、ポジションの意味(うちの子が感じているふたりの関係 → 相性がもっと良くなる方法)と組み合わせて深く新しく解釈してください。カード同士の流れにも触れてください。(残りの各カード4〜5行) ${noMetaNote}`
+    : `各カードごとにまずカードの絵柄と象徴を簡潔に説明し、伝統的にどんな意味を持つのか解きほぐしたうえで、「その中でも、今このカードが飼い主さんに伝えたいのは『○○』のようです」という形で核心のメッセージを示し、ポジションの意味(私が感じているふたりの関係 → うちの子が感じているふたりの関係 → 相性がもっと良くなる方法)と組み合わせて深く解釈してください。カード同士の流れにも触れてください。(各カード4〜5行)`;
+  const systemPrompt = `あなたは飼い主さんとペットの相性をタロットカードで読み解くチャネラーです。必ず日本語で、です・ます調で書いてください。必ずこの子の名前と種類に直接言及してください。一般的な表現は使わないでください。手紙のセクションは、上のカードごとの相性解釈で実際に扱ったそのカードの意味から感情と表現がつながっている必要があります。カードの名前だけを飾りとして入れて、内容はカードと無関係な定型的な表現で埋めるのはだめです。`;
   const userPrompt = `${petHeader}
 以下の3つのセクションで、十分に読み応えのある相性レポートを作成してください:
 
@@ -265,7 +265,7 @@ ${cardInstruction}
 ${cardInstruction}
 
 ## 💌 ${petInfo.name}が伝える気持ち
-${petInfo.name}の一人称視点での心の中の独白。飼い主さんを「${petInfo.ownerTitle}」と呼びながら直接語りかける、愛情のこもった手紙の形式。(6〜8行)
+${petInfo.name}の一人称視点での心の中の独白。飼い主さんを「${petInfo.ownerTitle}」と呼びながら直接語りかける、愛情のこもった手紙の形式。上のカードごとの相性解釈で出てきたカードの意味を実際に引き継いで書いてください — カードの名前だけ入れて内容は変わらないのはだめです。(6〜8行)
 
 ## ✨ 相性アップの実践ヒント
 カードをもとに、今すぐ試せる具体的な実践ヒントを3つ挙げてください。各項目: **ヒントのタイトル** — 理由と方法。`;
@@ -283,13 +283,13 @@ function buildPromptJa(snap, pastLossDetected) {
   const lossNote = pastLossDetected
     ? ` [内部参考、レポートにそのまま引用したり「記録によると」のように出典を明かさないこと] ${petInfo.name}はすでに虹の橋を渡ったと見られます。トーンと時制だけをそれに合わせて自然に調整してください。`
     : '';
-  const systemPrompt = `あなたはペットタロットの専門家です。温かく情感豊かな日本語で書いてください。必ずこの子の名前、種類、お悩みに直接言及してください。一般的な表現は使わないでください。${lossNote}`;
+  const systemPrompt = `あなたはペットタロットの専門家です。温かく情感豊かな日本語で書いてください。必ずこの子の名前、種類、お悩みに直接言及してください。一般的な表現は使わないでください。本音・飼い主さんへのセクションは、上の🃏カードごとの解釈で実際に扱ったそのカードの意味から感情と表現がつながっている必要があります。カードの名前だけを飾りとして入れて、内容を「そばにいます」「恨んでいません」のようなカードと無関係な定型的な慰めの言葉で埋めるのはだめです — カードが違えば、この段落の核心となる文も違ってくるはずです。${lossNote}`;
   const freeCtx = freeReadingText
     ? `\n無料プレビューですでに見せたカード1(${drawnCards[0]?.position})の解釈 — 下のテキストは一字も変えずに、カードごとの解釈セクションの最初の項目としてそのまま含めてください:\n${freeReadingText}\n`
     : '';
   const cardInstruction = freeReadingText
-    ? `カード1(${drawnCards[0]?.position})は上に提供した無料プレビューのテキストを一字も変えずにそのまま最初の項目として含めてください。残りのカードはポジションの意味と組み合わせて深く新しく解釈してください。${petInfo.name}の状況に直接つなげてください。カード同士の流れやつながりにも触れてください。（残りの各カード3〜4行）「無料プレビューでご覧いただいたように」のようなメタ的な言及は絶対にしないでください — このレポートはそれ自体で完結した文章です。`
-    : `各カードをポジションの意味と組み合わせて深く解釈してください。${petInfo.name}の状況に直接つなげてください。カード同士の流れやつながりにも触れてください。（各カード3〜4行）`;
+    ? `カード1(${drawnCards[0]?.position})は上に提供した無料プレビューのテキストを一字も変えずにそのまま最初の項目として含めてください。残りのカードはまずカードの絵柄と象徴を簡潔に説明し、伝統的にどんな意味を持つのか解きほぐしたうえで、「その中でも、今このカードが飼い主さんに伝えたいのは『○○』のようです」という形で核心のメッセージを示し、ポジションの意味と組み合わせて深く新しく解釈してください。${petInfo.name}の状況に直接つなげてください。カード同士の流れやつながりにも触れてください。（残りの各カード4〜5行）「無料プレビューでご覧いただいたように」のようなメタ的な言及は絶対にしないでください — このレポートはそれ自体で完結した文章です。`
+    : `各カードごとにまずカードの絵柄と象徴を簡潔に説明し、伝統的にどんな意味を持つのか解きほぐしたうえで、「その中でも、今このカードが飼い主さんに伝えたいのは『○○』のようです」という形で核心のメッセージを示し、ポジションの意味と組み合わせて深く解釈してください。${petInfo.name}の状況に直接つなげてください。カード同士の流れやつながりにも触れてください。（各カード4〜5行）`;
   const userPrompt = `ペット: ${petInfo.name}（${petInfo.species}${petInfo.age ? '、' + petInfo.age : ''}${petInfo.gender ? '、' + petInfo.gender : ''}）
 飼い主さんの呼び方: 「${petInfo.ownerTitle}」
 ${speciesCtx}
@@ -305,10 +305,10 @@ ${freeCtx}
 ${cardInstruction}
 
 ## 💌 ${petInfo.name}の本音
-${petInfo.name}の一人称視点での心の中の独白。飼い主さんを「${petInfo.ownerTitle}」と呼びながら直接語りかける形式。感情や願いを具体的に表現してください。（6〜8行）
+${petInfo.name}の一人称視点での心の中の独白。飼い主さんを「${petInfo.ownerTitle}」と呼びながら直接語りかける形式。感情や願いを具体的に表現してください。上のカードごとのポジション解釈で出てきたカードの意味を実際に引き継いで書いてください — カードの名前だけ入れて内容は変わらないのはだめです。（6〜8行）
 
 ## 🐾 飼い主さんへ
-カード全体の流れをもとに、見落としているかもしれない視点、慰めと共感を伝えてください。具体的な気づきを含めてください。（4〜5行）
+カード全体の流れをもとに、見落としているかもしれない視点、慰めと共感を伝えてください。このカードの組み合わせだからこそ言えることを書き、カードが違っても同じように書けるような定型的な慰めの言葉は避けてください。具体的な気づきを含めてください。（4〜5行）
 
 ## ✨ これからのアクションガイド
 ${actionSummary
@@ -337,7 +337,7 @@ ${freeCtx}`;
     const cardInstruction = freeReadingText
       ? `Card 1 (${drawnCards[0]?.position}) — reuse the free-preview text provided above word-for-word as the first item, unchanged. Interpret the remaining cards in position order (the past life that shaped their personality today → why you found each other again) as a newly written, connected chronicle. Describe each past life's era, place, and form vividly. Connect it naturally to ${petInfo.name}'s personality today. (3-4 lines per remaining card) ${noMetaNote}`
       : `Interpret the three cards in position order (their earliest past life → the past life that shaped their personality today → why you found each other again) as one connected chronicle. Describe each past life's era, place, and form vividly. Connect it naturally to ${petInfo.name}'s personality today. (3-4 lines per card)`;
-    const systemPrompt = `You are a channeler who imagines a pet's past life through tarot cards. Write warmly in English. This isn't a real prediction — it's an immersive, imaginative story, but tell it with genuine conviction. Always directly reference this pet's name and species. Never use generic phrasing.`;
+    const systemPrompt = `You are a channeler who imagines a pet's past life through tarot cards. Write warmly in English. This isn't a real prediction — it's an immersive, imaginative story, but tell it with genuine conviction. Always directly reference this pet's name and species. Never use generic phrasing. The message and closing sections must carry forward the actual meaning of the cards you already interpreted above — don't just drop a card's name in for decoration while the underlying content stays generic. Don't fill paragraphs with stock comfort lines ("I'm always with you," "I don't blame you") that could apply no matter which card was drawn; if the cards had been different, the core sentences of these sections should be different too.`;
     const userPrompt = `${petHeader}
 Write a substantial, satisfying past-life story in the following three sections:
 
@@ -345,17 +345,17 @@ Write a substantial, satisfying past-life story in the following three sections:
 ${cardInstruction}
 
 ## 💌 A Message From Their Past Life
-Write as if those past-life selves have become one voice, speaking in ${petInfo.name}'s first person to "${petInfo.ownerTitle}." Express feeling and affection concretely. (6-8 lines)
+Write as if those past-life selves have become one voice, speaking in ${petInfo.name}'s first person to "${petInfo.ownerTitle}." Express feeling and affection concretely. Carry forward the actual meaning of the cards from the past-life interpretation above — don't just drop a card's name in while the content stays unchanged. (6-8 lines)
 
 ## 🐾 Why You Found Each Other Again
-Based on the overall flow of the cards, warmly explain why ${petInfo.name} and "${petInfo.ownerTitle}" found each other again in this life. Include comfort and warmth. (4-5 lines)`;
+Based on the overall flow of the cards, warmly explain why ${petInfo.name} and "${petInfo.ownerTitle}" found each other again in this life. Write something only this specific card combination could justify — avoid stock comfort lines that would fit any card draw. Include comfort and warmth. (4-5 lines)`;
     return { system: systemPrompt, messages: [{ role: 'user', content: userPrompt }] };
   }
 
   const cardInstruction = freeReadingText
-    ? `Card 1 (${drawnCards[0]?.position}) — reuse the free-preview text provided above word-for-word as the first item, unchanged. Interpret the remaining cards in combination with their position meanings (how the pet feels about their bond → how to strengthen the chemistry), newly written. Touch on the flow between the cards. (3-4 lines per remaining card) ${noMetaNote}`
-    : `Interpret the three cards in combination with their position meanings (how the pet parent feels about their bond → how the pet feels about their bond → how to strengthen the chemistry). Touch on the flow between the cards. (3-4 lines per card)`;
-  const systemPrompt = `You are a channeler who reads the chemistry between a pet parent and their pet through tarot cards. Write warmly in English. Always directly reference this pet's name and species. Never use generic phrasing.`;
+    ? `Card 1 (${drawnCards[0]?.position}) — reuse the free-preview text provided above word-for-word as the first item, unchanged. For the remaining cards, first briefly describe what's pictured on the card and its symbolism, unpack what that traditionally means, then name the core message with a pivot like "What this card seems to want to say to you right now is ___," and only then interpret it in combination with its position meaning (how the pet feels about their bond → how to strengthen the chemistry), newly written. Touch on the flow between the cards. (4-5 lines per remaining card) ${noMetaNote}`
+    : `For each card, first briefly describe what's pictured on the card and its symbolism, unpack what that traditionally means, then name the core message with a pivot like "What this card seems to want to say to you right now is ___," and only then interpret it in combination with its position meaning (how the pet parent feels about their bond → how the pet feels about their bond → how to strengthen the chemistry). Touch on the flow between the cards. (4-5 lines per card)`;
+  const systemPrompt = `You are a channeler who reads the chemistry between a pet parent and their pet through tarot cards. Write warmly in English. Always directly reference this pet's name and species. Never use generic phrasing. The letter section must carry forward the actual meaning of the cards you already interpreted above — don't just drop a card's name in for decoration while the underlying content stays generic.`;
   const userPrompt = `${petHeader}
 Write a substantial, satisfying chemistry report in the following three sections:
 
@@ -363,7 +363,7 @@ Write a substantial, satisfying chemistry report in the following three sections
 ${cardInstruction}
 
 ## 💌 A Message From ${petInfo.name}
-A first-person inner monologue from ${petInfo.name}, speaking directly and calling their person "${petInfo.ownerTitle}," in the form of an affectionate letter. (6-8 lines)
+A first-person inner monologue from ${petInfo.name}, speaking directly and calling their person "${petInfo.ownerTitle}," in the form of an affectionate letter. Carry forward the actual meaning of the cards from the interpretation above — don't just drop a card's name in while the content stays unchanged. (6-8 lines)
 
 ## ✨ Tips to Strengthen the Chemistry
 List three concrete, actionable tips based on the cards. Each item: **Tip title** — the reason and how to do it.`;
@@ -381,13 +381,13 @@ function buildPromptEn(snap, pastLossDetected) {
   const lossNote = pastLossDetected
     ? ` [Internal note only — do not quote this verbatim or cite "according to past records"] ${petInfo.name} appears to have already crossed the rainbow bridge based on prior readings. Adjust only the tone and tense naturally to reflect this.`
     : '';
-  const systemPrompt = `You are a pet tarot expert. Write in warm, emotionally rich English. Always directly reference this pet's name, species, and concern. Never use generic phrasing.${lossNote}`;
+  const systemPrompt = `You are a pet tarot expert. Write in warm, emotionally rich English. Always directly reference this pet's name, species, and concern. Never use generic phrasing. The heart-letter and message-for-you sections must carry forward the actual meaning of the cards you already interpreted above — don't just drop a card's name in for decoration while the underlying content stays generic. Don't fill paragraphs with stock comfort lines ("I'm always with you," "I don't blame you") that could apply no matter which card was drawn; if the cards had been different, the core sentences of these sections should be different too.${lossNote}`;
   const freeCtx = freeReadingText
     ? `\nCard 1 (${drawnCards[0]?.position}) was already shown in the free preview — reuse the text below word-for-word as the first item in the card-by-card section, do not rewrite or summarize it:\n${freeReadingText}\n`
     : '';
   const cardInstruction = freeReadingText
-    ? `Card 1 (${drawnCards[0]?.position}) — reuse the free-preview text provided above word-for-word as the first item, unchanged. Interpret the remaining cards in combination with their position meanings, newly written. Connect it directly to ${petInfo.name}'s situation. Also touch on the flow and connections between the cards. (3-4 lines per remaining card) Never write meta-references like "as you saw in the preview" — this report must read as a single, complete, self-contained document.`
-    : `Interpret each card in combination with its position's meaning. Connect it directly to ${petInfo.name}'s situation. Also touch on the flow and connections between the cards. (3-4 lines per card)`;
+    ? `Card 1 (${drawnCards[0]?.position}) — reuse the free-preview text provided above word-for-word as the first item, unchanged. For the remaining cards, first briefly describe what's pictured on the card and its symbolism, unpack what that traditionally means, then name the core message with a pivot like "What this card seems to want to say to you right now is ___," and only then interpret it in combination with its position meaning, newly written. Connect it directly to ${petInfo.name}'s situation. Also touch on the flow and connections between the cards. (4-5 lines per remaining card) Never write meta-references like "as you saw in the preview" — this report must read as a single, complete, self-contained document.`
+    : `For each card, first briefly describe what's pictured on the card and its symbolism, unpack what that traditionally means, then name the core message with a pivot like "What this card seems to want to say to you right now is ___," and only then interpret it in combination with its position's meaning. Connect it directly to ${petInfo.name}'s situation. Also touch on the flow and connections between the cards. (4-5 lines per card)`;
   const userPrompt = `Pet: ${petInfo.name} (${petInfo.species}${petInfo.age ? ', ' + petInfo.age : ''}${petInfo.gender ? ', ' + petInfo.gender : ''})
 What the pet calls their person: "${petInfo.ownerTitle}"
 ${speciesCtx}
@@ -403,10 +403,10 @@ Write a substantial, satisfying report in the following four sections:
 ${cardInstruction}
 
 ## 💌 A Letter from ${petInfo.name}'s Heart
-A first-person inner monologue from ${petInfo.name}, speaking directly and calling their person "${petInfo.ownerTitle}." Express feelings and wishes concretely. (6-8 lines)
+A first-person inner monologue from ${petInfo.name}, speaking directly and calling their person "${petInfo.ownerTitle}." Express feelings and wishes concretely. Carry forward the actual meaning of the cards from the position interpretation above — don't just drop a card's name in while the content stays unchanged. (6-8 lines)
 
 ## 🐾 A Message for You
-Based on the overall flow of the cards, offer a perspective the pet parent may be missing, along with comfort and empathy. Include a specific insight. (4-5 lines)
+Based on the overall flow of the cards, offer a perspective the pet parent may be missing, along with comfort and empathy. Write something only this specific card combination could justify — avoid stock comfort lines that would fit any card draw. Include a specific insight. (4-5 lines)
 
 ## ✨ Action Guide for What's Ahead
 ${actionSummary

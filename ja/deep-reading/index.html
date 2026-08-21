@@ -1488,6 +1488,9 @@
 
       const systemPrompt = `あなたはペットタロットの専門家です。温かく情感豊かな日本語で書いてください。動物の種類や年齢による特性を自然に反映してください。ユーザーが入力した具体的な情報には必ず直接言及してください。誰にでも当てはまるような一般的な表現は絶対に使わないでください。`;
       const concernLine = petInfo.concern ? `${isStoryType() ? '参考情報' : 'お悩み'}: ${petInfo.concern}\n` : '';
+      const cardIntroBullet = currentSpreadKey === 'pastlife'
+        ? `・このポジションの意味 + カードの象徴がこの位置で持つ意味`
+        : `・まずカードの絵柄と象徴を簡潔に説明し、伝統的にどんな意味を持つのか解きほぐしたうえで、「その中でも、今このカードが飼い主さんに伝えたいのは『○○』のようです」という形でこのポジションでの核心のメッセージを示す`;
       const lastBullet = isStoryType()
         ? `・${petInfo.name}の物語に直接つなげる`
         : `・${petInfo.name}のお悩みの状況に直接つなげる`;
@@ -1498,7 +1501,7 @@ ${concernLine}スプレッド: ${currentSpread.fullName}
 すべてのカード: ${cardSummary}
 
 1枚目のカード「[${firstCard.position}] ${firstCard.name}（${firstCard.reversed ? '逆位置' : '正位置'}）」だけを深く解釈してください。（4〜6行）
-・このポジションの意味 + カードの象徴がこの位置で持つ意味
+${cardIntroBullet}
 ${lastBullet}
 ・情感豊かに、具体的に`;
 

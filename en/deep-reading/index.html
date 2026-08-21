@@ -1487,6 +1487,9 @@
 
       const systemPrompt = `You are a pet tarot expert. Write in warm, emotionally rich English. Naturally reflect traits based on the animal's species and age. Always directly reference the specific details the user has provided. Never use generic phrasing that could apply to any pet.`;
       const concernLine = petInfo.concern ? `${isStoryType() ? 'Notes' : 'Concern'}: ${petInfo.concern}\n` : '';
+      const cardIntroBullet = currentSpreadKey === 'pastlife'
+        ? `- The meaning of this position, plus what the card's symbolism means in it`
+        : `- First briefly describe what's pictured on the card and its symbolism, unpack what that traditionally means, then name the core message with a pivot like "What this card seems to want to say to you right now is ___," for this position`;
       const lastBullet = isStoryType()
         ? `- Connect it directly to ${petInfo.name}'s story`
         : `- Connect it directly to ${petInfo.name}'s specific situation`;
@@ -1497,7 +1500,7 @@ ${concernLine}Spread: ${currentSpread.fullName}
 All cards: ${cardSummary}
 
 Interpret only the first card, "[${firstCard.position}] ${firstCard.name} (${firstCard.reversed ? 'Reversed' : 'Upright'})," in depth. (4-6 lines)
-- The meaning of this position, plus what the card's symbolism means in it
+${cardIntroBullet}
 ${lastBullet}
 - Be emotionally rich and specific`;
 
