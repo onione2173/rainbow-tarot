@@ -51,6 +51,21 @@
     <priority>0.85</priority>
   </url>
   <url>
+    <loc>https://rainbow-tarot.netlify.app/mind-tarot/</loc>
+    <changefreq>weekly</changefreq>
+    <priority>0.85</priority>
+  </url>
+  <url>
+    <loc>https://rainbow-tarot.netlify.app/behavior-tarot/</loc>
+    <changefreq>weekly</changefreq>
+    <priority>0.85</priority>
+  </url>
+  <url>
+    <loc>https://rainbow-tarot.netlify.app/change-tarot/</loc>
+    <changefreq>weekly</changefreq>
+    <priority>0.85</priority>
+  </url>
+  <url>
     <loc>https://rainbow-tarot.netlify.app/contact/</loc>
     <changefreq>monthly</changefreq>
     <priority>0.4</priority>
