@@ -3,7 +3,9 @@
   publish = "."
   # Skip deploys (and save build credits) when only non-site files changed:
   # marketing queue/state, journals, CI workflows, the posting scripts, HANDOFF.
-  ignore = "git diff --quiet $CACHED_COMMIT_REF $COMMIT_REF -- . ':(exclude).github' ':(exclude)marketing' ':(exclude)log' ':(exclude)scripts/fukumaru' ':(exclude)HANDOFF.md'"
+  # $CACHED_COMMIT_REF가 비어있으면(직전 배포가 스킵/오류였던 경우 등) git diff가 기준점 없이
+  # COMMIT_REF 자기 자신과만 비교돼 "차이 없음"으로 잘못 판정하는 버그가 있어서, 그 경우엔 무조건 빌드.
+  ignore = "[ -z \"$CACHED_COMMIT_REF\" ] && exit 1 || git diff --quiet $CACHED_COMMIT_REF $COMMIT_REF -- . ':(exclude).github' ':(exclude)marketing' ':(exclude)log' ':(exclude)scripts/fukumaru' ':(exclude)HANDOFF.md'"
 
 [functions]
   directory = "netlify/functions"
