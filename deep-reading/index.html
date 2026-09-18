@@ -1235,7 +1235,7 @@
       const selNum = drawnCards.length + 1;
       selectedIndices.push(i);
       const card = shuffledPool[i];
-      drawnCards.push({ ...card, reversed: Math.random() < .35, position: currentSpread.positions[drawnCards.length] });
+      drawnCards.push({ ...card, reversed: Math.random() < .5, position: currentSpread.positions[drawnCards.length] });
 
       if (poolEl) {
         poolEl.classList.add('pool-selected');
@@ -1300,7 +1300,7 @@
       }
       if (actionCards.length >= 3) return;
       const card = shuffledPool[i];
-      actionCards.push({ ...card, _pi: i, reversed: Math.random() < .35 });
+      actionCards.push({ ...card, _pi: i, reversed: Math.random() < .5 });
       if (poolEl) {
         poolEl.classList.add('pool-selected');
         poolEl.innerHTML = `<div class="pool-card-back" style="background:linear-gradient(145deg,#3d2800,#6a4200,#2a1800)"><span class="pool-sel-num" style="color:#ffd060">${actionCards.length}</span></div>`;
@@ -1497,7 +1497,7 @@
 
       freeReadLabel.textContent = `🃏 ${firstCard.position} — 무료 공개`;
 
-      const systemPrompt = `당신은 반려동물 타로 전문가입니다. 따뜻하고 감성적인 한국어로 작성하세요. 동물의 종과 나이에 따른 특성을 자연스럽게 반영하세요. 반드시 사용자가 입력한 구체적인 정보를 직접 언급하세요. 누구에게나 해당될 수 있는 일반적 표현은 절대 쓰지 마세요.`;
+      const systemPrompt = `당신은 반려동물 타로 전문가입니다. 따뜻하고 감성적인 한국어로 작성하세요. 동물의 종과 나이에 따른 특성을 자연스럽게 반영하세요. 반드시 사용자가 입력한 구체적인 정보를 직접 언급하세요. 누구에게나 해당될 수 있는 일반적 표현은 절대 쓰지 마세요.${currentSpreadKey === 'pastlife' ? '' : ' 카드가 힘들거나 무거운 의미(상실·이별·불안·급변·좌절 등)를 담고 있다면 억지로 가볍게 포장하거나 곧장 위로로 덮지 마세요 — 그 어려움을 있는 그대로 인정하는 문장을 먼저 쓰고, 위로나 대안은 그 다음에 자연스럽게 이어가세요.'}`;
       const concernLine = petInfo.concern ? `${isStoryType() ? '참고 정보' : '고민'}: ${petInfo.concern}\n` : '';
       const cardIntroBullet = currentSpreadKey === 'pastlife'
         ? `- 이 포지션의 의미 + 카드 상징이 이 자리에서 갖는 의미`

@@ -150,7 +150,7 @@ function pickCard(i){
 
 function transitionToCards(){
   drawn=[shuffledDeck[selectedFromSpread[0]]];
-  drawnRv=[Math.random()<0.3];
+  drawnRv=[Math.random()<0.5];
   const spreadSec=document.getElementById('spreadSection');
   spreadSec.classList.add('fading');
   setTimeout(()=>{

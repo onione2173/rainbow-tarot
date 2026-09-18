@@ -1227,7 +1227,7 @@
       const selNum = drawnCards.length + 1;
       selectedIndices.push(i);
       const card = shuffledPool[i];
-      drawnCards.push({ ...card, reversed: Math.random() < .35, position: currentSpread.positions[drawnCards.length] });
+      drawnCards.push({ ...card, reversed: Math.random() < .5, position: currentSpread.positions[drawnCards.length] });
 
       if (poolEl) {
         poolEl.classList.add('pool-selected');
@@ -1292,7 +1292,7 @@
       }
       if (actionCards.length >= 3) return;
       const card = shuffledPool[i];
-      actionCards.push({ ...card, _pi: i, reversed: Math.random() < .35 });
+      actionCards.push({ ...card, _pi: i, reversed: Math.random() < .5 });
       if (poolEl) {
         poolEl.classList.add('pool-selected');
         poolEl.innerHTML = `<div class="pool-card-back" style="background:linear-gradient(145deg,#3d2800,#6a4200,#2a1800)"><span class="pool-sel-num" style="color:#ffd060">${actionCards.length}</span></div>`;
@@ -1486,7 +1486,7 @@
 
       freeReadLabel.textContent = `🃏 ${firstCard.position} — 無料公開`;
 
-      const systemPrompt = `あなたはペットタロットの専門家です。温かく情感豊かな日本語で書いてください。動物の種類や年齢による特性を自然に反映してください。ユーザーが入力した具体的な情報には必ず直接言及してください。誰にでも当てはまるような一般的な表現は絶対に使わないでください。`;
+      const systemPrompt = `あなたはペットタロットの専門家です。温かく情感豊かな日本語で書いてください。動物の種類や年齢による特性を自然に反映してください。ユーザーが入力した具体的な情報には必ず直接言及してください。誰にでも当てはまるような一般的な表現は絶対に使わないでください。${currentSpreadKey === 'pastlife' ? '' : ' カードが辛い、または重い意味(喪失・別れ・不安・急変・挫折など)を持っている場合、無理に軽く包んだり、すぐに慰めで覆ったりしないでください — その難しさをそのまま認める文をまず書き、慰めや代案はそのあとで自然につなげてください。'}`;
       const concernLine = petInfo.concern ? `${isStoryType() ? '参考情報' : 'お悩み'}: ${petInfo.concern}\n` : '';
       const cardIntroBullet = currentSpreadKey === 'pastlife'
         ? `・このポジションの意味 + カードの象徴がこの位置で持つ意味`
