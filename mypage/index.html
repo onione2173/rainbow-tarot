@@ -207,6 +207,29 @@
       white-space:pre-wrap;display:none;
     }
 
+    /* Review form */
+    .review-form{
+      margin-top:12px;padding:14px;
+      background:rgba(255,255,255,.03);border:1px solid rgba(200,160,255,.12);
+      border-radius:10px;display:none;
+    }
+    .review-stars{
+      font-size:1.5rem;letter-spacing:5px;margin-bottom:10px;
+      cursor:pointer;color:rgba(200,160,255,.25);
+    }
+    .review-stars .star.on{color:#ffd32a;}
+    .review-textarea{
+      display:block;width:100%;min-height:64px;
+      background:rgba(255,255,255,.04);border:1px solid rgba(200,160,255,.15);
+      border-radius:8px;padding:10px;color:var(--text-main);
+      font-family:'Noto Sans KR',sans-serif;font-size:.82rem;
+      resize:vertical;margin-bottom:10px;
+    }
+    .review-msg{
+      font-size:.78rem;color:var(--text-dim);margin-top:8px;
+      font-family:'Noto Sans KR',sans-serif;
+    }
+
     /* Link list */
     .link-list a,.link-list button{
       display:flex;align-items:center;justify-content:space-between;
@@ -401,11 +424,23 @@
                 : isError
                   ? `<button class="btn-resume" onclick="resumeReading(${i})" style="background:rgba(200,160,255,.12);color:#c8a8f0;border-color:rgba(200,160,255,.3)">다시 시도하기</button>`
                 : r.full_reading
-                  ? `<button class="btn-view" onclick="toggleReading(${i})">다시 보기</button>`
+                  ? `<button class="btn-view" onclick="toggleReading(${i})">다시 보기</button>
+                     <button class="btn-view" onclick="toggleReviewForm(${i})">${r.reviewed ? '후기 수정하기' : '후기 남기기'}</button>`
                   : '';
               const expandDiv = (!isPending && r.full_reading)
                 ? `<div class="reading-expand" id="expand-${i}">${renderMd(r.full_reading)}</div>`
                 : '';
+              const isDone = !isPending && !isGenerating && !isError && r.full_reading;
+              const reviewForm = isDone ? `
+                <div class="review-form" id="review-${i}">
+                  <div class="review-stars" id="reviewStars-${i}">
+                    ${[1, 2, 3, 4, 5].map(n => `<span class="star" data-n="${n}" onclick="setRating(${i},${n})">★</span>`).join('')}
+                  </div>
+                  <textarea class="review-textarea" id="reviewText-${i}" maxlength="500" placeholder="하고 싶은 말이 있다면 편하게 남겨주세요 (선택, 서비스 개선에 참고할게요)"></textarea>
+                  <button class="btn-resume" onclick="submitReview(${i})">보내기</button>
+                  <div class="review-msg" id="reviewMsg-${i}"></div>
+                </div>
+              ` : '';
               return `
                 <div class="history-item">
                   <div class="history-item-title">${title}${petName}${badge}</div>
@@ -413,6 +448,7 @@
                   ${expireStr}
                   ${actionBtn}
                   ${expandDiv}
+                  ${reviewForm}
                 </div>
               `;
             }).join('');
@@ -459,6 +495,48 @@
         window.location.reload();
       } else {
         alert('아직 생성 중이에요. 잠시 후 다시 확인해주세요.');
+      }
+    }
+
+    window._ratings = {};
+
+    function toggleReviewForm(idx) {
+      const el = document.getElementById('review-' + idx);
+      if (!el) return;
+      el.style.display = (el.style.display === 'none' || !el.style.display) ? 'block' : 'none';
+    }
+
+    function setRating(idx, n) {
+      window._ratings[idx] = n;
+      document.querySelectorAll(`#reviewStars-${idx} .star`).forEach(s => {
+        s.classList.toggle('on', Number(s.dataset.n) <= n);
+      });
+    }
+
+    async function submitReview(idx) {
+      const rating = window._ratings[idx];
+      const msgEl = document.getElementById('reviewMsg-' + idx);
+      if (!rating) { msgEl.textContent = '별점을 먼저 선택해주세요.'; return; }
+      const r = window._readings?.[idx];
+      if (!r?.id) return;
+      const comment = (document.getElementById('reviewText-' + idx).value || '').trim();
+      msgEl.textContent = '보내는 중…';
+      try {
+        const { data: { session } } = await window._sb.auth.getSession();
+        const res = await fetch('/.netlify/functions/submit-review', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ access_token: session?.access_token, reading_history_id: r.id, rating, comment }),
+        });
+        const out = await res.json().catch(() => ({}));
+        if (res.ok && out.ok) {
+          if (typeof gtag === 'function') gtag('event', 'review_submitted', { rating });
+          document.getElementById('review-' + idx).innerHTML = '<div class="review-msg">후기 감사해요 🐾 소중하게 참고할게요.</div>';
+        } else {
+          msgEl.textContent = '전송에 실패했어요. 잠시 후 다시 시도해주세요.';
+        }
+      } catch {
+        msgEl.textContent = '전송에 실패했어요. 잠시 후 다시 시도해주세요.';
       }
     }
 
