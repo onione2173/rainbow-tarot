@@ -57,9 +57,15 @@
 
 일본 가격 변경은 `ja/deep-reading/index.html` + `netlify/functions/paypal-order.js` + `netlify/functions/deep-tarot-background.js` 세 곳이 정확히 일치해야 결제가 안 깨짐(과거 "캡처 금액 vs 원 주문 금액 불일치" 사고 있었음, 재발 주의).
 
-## 계획됐지만 아직 구현 안 한 것
+## 🔧 제품 변경 로그 (2026-09-18) — 유료 딥리딩 후기 기능
 
-- **후기 제출 기능**: 결제 완료 후 결과 페이지에서 별점(필수)+자유 텍스트(선택, "혹시 더 하고싶은 말씀이...") 받고, `approved=false`로 저장 → 사람이 검수 후 공개. **가짜 후기는 절대 금지**(경품표시법 리스크 + 브랜드 신뢰 붕괴 위험) — 실제 후기 쌓일 때까지 위젯은 비워두거나 숨김. Supabase `reviews` 테이블 설계는 돼있음(위 대화 참고), 아직 코드로 안 옮김.
+- **범위를 유료 딥리딩만으로 확정** (무료 원카드는 제외 — "무료는 그냥도 다들 이용할거다"라는 사용자 판단).
+- 마이페이지(`mypage/index.html`) 히스토리에서, 완료된 유료 리딩마다 "후기 남기기"(이미 남겼으면 "후기 수정하기") 버튼 → 별점(★ 클릭)+자유 텍스트(선택) 인라인 폼.
+- `netlify/functions/submit-review.js`: access_token으로 로그인 검증 → 그 리딩이 본인 소유+완료 상태인지 서버에서 재확인 → `reviews` 테이블에 upsert(재제출 시 수정 처리, `reading_history_id` unique) → `reading_history.reviewed=true` 플래그 → **Slack으로 즉시 알림**.
+- 이름은 "김민준"→"김ㅇㅇ" 식으로 서버에서 마스킹해서 저장 — 실명 자체는 `reviews` 테이블에 안 남음(구글 로그인 영문 이름은 "J**" 식).
+- Supabase 스키마(`sql/2026-09-18-reviews.sql`) — **사용자가 SQL Editor에서 직접 실행 완료(2026-09-18)**. `reviews` 테이블은 RLS enable + 정책 0개(anon/authenticated 전부 접근 불가, 서버 service key만 접근) — 검수 전 후기 내용이 아무에게도 노출 안 됨.
+- **다음 단계(대기, 미착수)**: 승인된 후기가 **10개 이상 모이면**, 심층리딩 진입 페이지에 "다른 분들의 후기를 먼저 확인해보세요" 문구로 후기 목록 노출. `approved` 컬럼은 이미 있음(기본 false, 사람이 검수 후 true) — 공개 위젯 UI/공개용 조회 엔드포인트는 아직 안 만듦. 지금은 사람이 Supabase 대시보드에서 검수.
+- git push는 아직 안 함 — 사용자 요청 시 진행.
 
 ## 알아둬야 할 함정들
 
