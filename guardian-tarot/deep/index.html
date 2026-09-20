@@ -1199,7 +1199,7 @@
       const selNum = drawnCards.length + 1;
       selectedIndices.push(i);
       const card = shuffledPool[i];
-      drawnCards.push({ ...card, reversed: Math.random() < .35, position: currentSpread.positions[drawnCards.length] });
+      drawnCards.push({ ...card, reversed: Math.random() < .5, position: currentSpread.positions[drawnCards.length] });
 
       if (poolEl) {
         poolEl.classList.add('pool-selected');
@@ -1264,7 +1264,7 @@
       }
       if (actionCards.length >= 3) return;
       const card = shuffledPool[i];
-      actionCards.push({ ...card, _pi: i, reversed: Math.random() < .35 });
+      actionCards.push({ ...card, _pi: i, reversed: Math.random() < .5 });
       if (poolEl) {
         poolEl.classList.add('pool-selected');
         poolEl.innerHTML = `<div class="pool-card-back" style="background:linear-gradient(145deg,#3d2800,#6a4200,#2a1800)"><span class="pool-sel-num" style="color:#ffd060">${actionCards.length}</span></div>`;

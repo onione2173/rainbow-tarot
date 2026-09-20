@@ -1226,7 +1226,7 @@
       const selNum = drawnCards.length + 1;
       selectedIndices.push(i);
       const card = shuffledPool[i];
-      drawnCards.push({ ...card, reversed: Math.random() < .35, position: currentSpread.positions[drawnCards.length] });
+      drawnCards.push({ ...card, reversed: Math.random() < .5, position: currentSpread.positions[drawnCards.length] });
 
       if (poolEl) {
         poolEl.classList.add('pool-selected');
@@ -1291,7 +1291,7 @@
       }
       if (actionCards.length >= 3) return;
       const card = shuffledPool[i];
-      actionCards.push({ ...card, _pi: i, reversed: Math.random() < .35 });
+      actionCards.push({ ...card, _pi: i, reversed: Math.random() < .5 });
       if (poolEl) {
         poolEl.classList.add('pool-selected');
         poolEl.innerHTML = `<div class="pool-card-back" style="background:linear-gradient(145deg,#3d2800,#6a4200,#2a1800)"><span class="pool-sel-num" style="color:#ffd060">${actionCards.length}</span></div>`;
@@ -1485,7 +1485,7 @@
 
       freeReadLabel.textContent = `🃏 ${firstCard.position} — Free Preview`;
 
-      const systemPrompt = `You are a pet tarot expert. Write in warm, emotionally rich English. Naturally reflect traits based on the animal's species and age. Always directly reference the specific details the user has provided. Never use generic phrasing that could apply to any pet.`;
+      const systemPrompt = `You are a pet tarot expert. Write in warm, emotionally rich English. Naturally reflect traits based on the animal's species and age. Always directly reference the specific details the user has provided. Never use generic phrasing that could apply to any pet.${currentSpreadKey === 'pastlife' ? '' : ' If a card carries a difficult or heavy meaning (loss, separation, anxiety, sudden upheaval, setback, etc.), don't force it into something lighter or rush straight to comfort — first write a sentence that honestly acknowledges the difficulty, then let comfort or guidance follow naturally afterward.'}`;
       const concernLine = petInfo.concern ? `${isStoryType() ? 'Notes' : 'Concern'}: ${petInfo.concern}\n` : '';
       const cardIntroBullet = currentSpreadKey === 'pastlife'
         ? `- The meaning of this position, plus what the card's symbolism means in it`

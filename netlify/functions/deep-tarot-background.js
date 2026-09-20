@@ -159,7 +159,7 @@ ${cardInstruction}
   const cardInstruction = freeReadingText
     ? `카드 1(${drawnCards[0]?.position})은 위에 제공된 무료 미리보기 텍스트를 한 글자도 바꾸지 말고 그대로 첫 항목으로 포함하세요. 나머지 카드는 먼저 카드 속 장면과 상징을 짧게 설명하고 전통적으로 어떤 의미인지 풀어준 뒤, "그 중에서도 지금 이 카드가 보호자님께 말하고 싶은 부분은 「○○」로 보여요" 식으로 핵심 메시지를 짚고, 포지션 의미(아이가 느끼는 우리 사이 → 앞으로 더 좋아지는 방법)와 결합하여 깊이 있게 새로 해석하세요. 카드 간 흐름도 언급. (나머지 각 카드 4~5줄) ${noMetaNote}`
     : `각 카드마다 먼저 카드 속 장면과 상징을 짧게 설명하고 전통적으로 어떤 의미인지 풀어준 뒤, "그 중에서도 지금 이 카드가 보호자님께 말하고 싶은 부분은 「○○」로 보여요" 식으로 핵심 메시지를 짚고, 포지션 의미(내가 느끼는 우리 사이 → 아이가 느끼는 우리 사이 → 앞으로 더 좋아지는 방법)와 결합하여 깊이 있게 해석. 카드 간 흐름도 언급. (각 카드 4~5줄)`;
-  const systemPrompt = `당신은 보호자와 반려동물 사이의 케미(궁합)를 타로카드로 읽어주는 채널러입니다. 반드시 이 아이의 이름과 종을 직접 언급하세요. 일반적인 표현은 쓰지 마세요. 편지 섹션은 위 카드별 케미 해석에서 실제로 다룬 그 카드의 의미에서 감정과 표현이 이어져야 합니다. 카드 이름만 장식으로 끼워넣고 내용은 카드와 무관한 상투적 표현으로 채우면 안 됩니다.`;
+  const systemPrompt = `당신은 보호자와 반려동물 사이의 케미(궁합)를 타로카드로 읽어주는 채널러입니다. 반드시 이 아이의 이름과 종을 직접 언급하세요. 일반적인 표현은 쓰지 마세요. 편지 섹션은 위 카드별 케미 해석에서 실제로 다룬 그 카드의 의미에서 감정과 표현이 이어져야 합니다. 카드 이름만 장식으로 끼워넣고 내용은 카드와 무관한 상투적 표현으로 채우면 안 됩니다. 카드가 힘들거나 무거운 의미(상실·이별·불안·급변·좌절 등)를 담고 있다면 억지로 가볍게 포장하거나 곧장 위로로 덮지 마세요 — 그 어려움을 있는 그대로 인정하는 문장을 먼저 쓰고, 위로나 대안은 그 다음에 자연스럽게 이어가세요.`;
   const userPrompt = `${petHeader}
 아래 세 섹션으로 충분히 풍부하게 케미 리포트를 작성하세요:
 
@@ -185,7 +185,7 @@ function buildPromptKo(snap, pastLossDetected) {
   const lossNote = pastLossDetected
     ? ` [내부 참고, 리딩에 그대로 인용하거나 "기록에 따르면" 식으로 출처를 밝히지 말 것] ${petInfo.name}은(는) 이미 무지개다리를 건넌 것으로 보입니다. 톤과 시제만 이에 맞게 자연스럽게 조율하세요.`
     : '';
-  const systemPrompt = `당신은 반려동물 타로 전문가입니다. 따뜻하고 감성적인 한국어로 작성하세요. 반드시 이 아이의 이름, 종, 고민을 직접 언급하세요. 일반적인 표현은 쓰지 마세요. 속마음 편지·보호자님께 섹션은 위 🃏 카드별 해석에서 실제로 다룬 그 카드의 의미에서 감정과 표현이 이어져야 합니다. 카드 이름만 장식으로 끼워넣고 내용은 카드와 무관한 상투적 위로("곁에 있어요", "원망하지 않아요" 등)로 채우면 안 됩니다 — 카드가 달랐다면 이 문단의 핵심 문장도 달라져야 합니다.${lossNote}`;
+  const systemPrompt = `당신은 반려동물 타로 전문가입니다. 따뜻하고 감성적인 한국어로 작성하세요. 반드시 이 아이의 이름, 종, 고민을 직접 언급하세요. 일반적인 표현은 쓰지 마세요. 속마음 편지·보호자님께 섹션은 위 🃏 카드별 해석에서 실제로 다룬 그 카드의 의미에서 감정과 표현이 이어져야 합니다. 카드 이름만 장식으로 끼워넣고 내용은 카드와 무관한 상투적 위로("곁에 있어요", "원망하지 않아요" 등)로 채우면 안 됩니다 — 카드가 달랐다면 이 문단의 핵심 문장도 달라져야 합니다. 카드가 힘들거나 무거운 의미(상실·이별·불안·급변·좌절 등)를 담고 있다면 억지로 가볍게 포장하거나 곧장 위로로 덮지 마세요 — 그 어려움을 있는 그대로 인정하는 문장을 먼저 쓰고, 위로나 대안은 그 다음에 자연스럽게 이어가세요.${lossNote}`;
   const freeCtx = freeReadingText
     ? `\n무료 미리보기에서 이미 보여준 카드 1(${drawnCards[0]?.position}) 해석 — 아래 텍스트를 한 글자도 바꾸지 말고, 카드별 해석 섹션의 첫 항목으로 그대로 포함하세요:\n${freeReadingText}\n`
     : '';
@@ -257,7 +257,7 @@ ${cardInstruction}
   const cardInstruction = freeReadingText
     ? `カード1(${drawnCards[0]?.position})は上に提供した無料プレビューのテキストを一字も変えずにそのまま最初の項目として含めてください。残りのカードはまずカードの絵柄と象徴を簡潔に説明し、伝統的にどんな意味を持つのか解きほぐしたうえで、「その中でも、今このカードが飼い主さんに伝えたいのは『○○』のようです」という形で核心のメッセージを示し、ポジションの意味(うちの子が感じているふたりの関係 → 相性がもっと良くなる方法)と組み合わせて深く新しく解釈してください。カード同士の流れにも触れてください。(残りの各カード4〜5行) ${noMetaNote}`
     : `各カードごとにまずカードの絵柄と象徴を簡潔に説明し、伝統的にどんな意味を持つのか解きほぐしたうえで、「その中でも、今このカードが飼い主さんに伝えたいのは『○○』のようです」という形で核心のメッセージを示し、ポジションの意味(私が感じているふたりの関係 → うちの子が感じているふたりの関係 → 相性がもっと良くなる方法)と組み合わせて深く解釈してください。カード同士の流れにも触れてください。(各カード4〜5行)`;
-  const systemPrompt = `あなたは飼い主さんとペットの相性をタロットカードで読み解くチャネラーです。必ず日本語で、です・ます調で書いてください。必ずこの子の名前と種類に直接言及してください。一般的な表現は使わないでください。手紙のセクションは、上のカードごとの相性解釈で実際に扱ったそのカードの意味から感情と表現がつながっている必要があります。カードの名前だけを飾りとして入れて、内容はカードと無関係な定型的な表現で埋めるのはだめです。`;
+  const systemPrompt = `あなたは飼い主さんとペットの相性をタロットカードで読み解くチャネラーです。必ず日本語で、です・ます調で書いてください。必ずこの子の名前と種類に直接言及してください。一般的な表現は使わないでください。手紙のセクションは、上のカードごとの相性解釈で実際に扱ったそのカードの意味から感情と表現がつながっている必要があります。カードの名前だけを飾りとして入れて、内容はカードと無関係な定型的な表現で埋めるのはだめです。カードが辛い、または重い意味(喪失・別れ・不安・急変・挫折など)を持っている場合、無理に軽く包んだり、すぐに慰めで覆ったりしないでください — その難しさをそのまま認める文をまず書き、慰めや代案はそのあとで自然につなげてください。`;
   const userPrompt = `${petHeader}
 以下の3つのセクションで、十分に読み応えのある相性レポートを作成してください:
 
@@ -283,7 +283,7 @@ function buildPromptJa(snap, pastLossDetected) {
   const lossNote = pastLossDetected
     ? ` [内部参考、レポートにそのまま引用したり「記録によると」のように出典を明かさないこと] ${petInfo.name}はすでに虹の橋を渡ったと見られます。トーンと時制だけをそれに合わせて自然に調整してください。`
     : '';
-  const systemPrompt = `あなたはペットタロットの専門家です。温かく情感豊かな日本語で書いてください。必ずこの子の名前、種類、お悩みに直接言及してください。一般的な表現は使わないでください。本音・飼い主さんへのセクションは、上の🃏カードごとの解釈で実際に扱ったそのカードの意味から感情と表現がつながっている必要があります。カードの名前だけを飾りとして入れて、内容を「そばにいます」「恨んでいません」のようなカードと無関係な定型的な慰めの言葉で埋めるのはだめです — カードが違えば、この段落の核心となる文も違ってくるはずです。${lossNote}`;
+  const systemPrompt = `あなたはペットタロットの専門家です。温かく情感豊かな日本語で書いてください。必ずこの子の名前、種類、お悩みに直接言及してください。一般的な表現は使わないでください。本音・飼い主さんへのセクションは、上の🃏カードごとの解釈で実際に扱ったそのカードの意味から感情と表現がつながっている必要があります。カードの名前だけを飾りとして入れて、内容を「そばにいます」「恨んでいません」のようなカードと無関係な定型的な慰めの言葉で埋めるのはだめです — カードが違えば、この段落の核心となる文も違ってくるはずです。カードが辛い、または重い意味(喪失・別れ・不安・急変・挫折など)を持っている場合、無理に軽く包んだり、すぐに慰めで覆ったりしないでください — その難しさをそのまま認める文をまず書き、慰めや代案はそのあとで自然につなげてください。${lossNote}`;
   const freeCtx = freeReadingText
     ? `\n無料プレビューですでに見せたカード1(${drawnCards[0]?.position})の解釈 — 下のテキストは一字も変えずに、カードごとの解釈セクションの最初の項目としてそのまま含めてください:\n${freeReadingText}\n`
     : '';
@@ -355,7 +355,7 @@ Based on the overall flow of the cards, warmly explain why ${petInfo.name} and "
   const cardInstruction = freeReadingText
     ? `Card 1 (${drawnCards[0]?.position}) — reuse the free-preview text provided above word-for-word as the first item, unchanged. For the remaining cards, first briefly describe what's pictured on the card and its symbolism, unpack what that traditionally means, then name the core message with a pivot like "What this card seems to want to say to you right now is ___," and only then interpret it in combination with its position meaning (how the pet feels about their bond → how to strengthen the chemistry), newly written. Touch on the flow between the cards. (4-5 lines per remaining card) ${noMetaNote}`
     : `For each card, first briefly describe what's pictured on the card and its symbolism, unpack what that traditionally means, then name the core message with a pivot like "What this card seems to want to say to you right now is ___," and only then interpret it in combination with its position meaning (how the pet parent feels about their bond → how the pet feels about their bond → how to strengthen the chemistry). Touch on the flow between the cards. (4-5 lines per card)`;
-  const systemPrompt = `You are a channeler who reads the chemistry between a pet parent and their pet through tarot cards. Write warmly in English. Always directly reference this pet's name and species. Never use generic phrasing. The letter section must carry forward the actual meaning of the cards you already interpreted above — don't just drop a card's name in for decoration while the underlying content stays generic.`;
+  const systemPrompt = `You are a channeler who reads the chemistry between a pet parent and their pet through tarot cards. Write warmly in English. Always directly reference this pet's name and species. Never use generic phrasing. The letter section must carry forward the actual meaning of the cards you already interpreted above — don't just drop a card's name in for decoration while the underlying content stays generic. If a card carries a difficult or heavy meaning (loss, separation, anxiety, sudden upheaval, setback, etc.), don't force it into something lighter or rush straight to comfort — first write a sentence that honestly acknowledges the difficulty, then let comfort or guidance follow naturally afterward.`;
   const userPrompt = `${petHeader}
 Write a substantial, satisfying chemistry report in the following three sections:
 
@@ -381,7 +381,7 @@ function buildPromptEn(snap, pastLossDetected) {
   const lossNote = pastLossDetected
     ? ` [Internal note only — do not quote this verbatim or cite "according to past records"] ${petInfo.name} appears to have already crossed the rainbow bridge based on prior readings. Adjust only the tone and tense naturally to reflect this.`
     : '';
-  const systemPrompt = `You are a pet tarot expert. Write in warm, emotionally rich English. Always directly reference this pet's name, species, and concern. Never use generic phrasing. The heart-letter and message-for-you sections must carry forward the actual meaning of the cards you already interpreted above — don't just drop a card's name in for decoration while the underlying content stays generic. Don't fill paragraphs with stock comfort lines ("I'm always with you," "I don't blame you") that could apply no matter which card was drawn; if the cards had been different, the core sentences of these sections should be different too.${lossNote}`;
+  const systemPrompt = `You are a pet tarot expert. Write in warm, emotionally rich English. Always directly reference this pet's name, species, and concern. Never use generic phrasing. The heart-letter and message-for-you sections must carry forward the actual meaning of the cards you already interpreted above — don't just drop a card's name in for decoration while the underlying content stays generic. Don't fill paragraphs with stock comfort lines ("I'm always with you," "I don't blame you") that could apply no matter which card was drawn; if the cards had been different, the core sentences of these sections should be different too. If a card carries a difficult or heavy meaning (loss, separation, anxiety, sudden upheaval, setback, etc.), don't force it into something lighter or rush straight to comfort — first write a sentence that honestly acknowledges the difficulty, then let comfort or guidance follow naturally afterward.${lossNote}`;
   const freeCtx = freeReadingText
     ? `\nCard 1 (${drawnCards[0]?.position}) was already shown in the free preview — reuse the text below word-for-word as the first item in the card-by-card section, do not rewrite or summarize it:\n${freeReadingText}\n`
     : '';
