@@ -3,6 +3,15 @@
 새 세션에서 "HANDOFF.md 읽고 이어서 진행해줘"로 시작하면 됩니다.
 **큰 변화가 생길 때마다 이 파일을 갱신할 것. 할 일 목록은 반드시 여기 기록하고, 기록된 루틴은 반드시 실행할 것 (사용자 지시 7/25).** (최종 업데이트: 2026-10-23 KST)
 
+## ⭐ 10/23 세션 — /pricing/ 페이지를 언어별로 분리 (ko/ja/en, 각자 자기 화폐만)
+
+- **배경**: 지금까지 `/pricing/`은 단일 페이지(영어)로 KRW/JPY/USD 세 가격을 한 화면에 전부 나열했음. 사용자가 "접속자 언어에 따라 자기 나라 가격만 보이게" 요청.
+- **변경**: `/pricing/`(ko, ₩1,500만), `/ja/pricing/`(ja, ¥400만), `/en/pricing/`(en, $2.99만) 3개 페이지로 분리. 홈페이지(`index.html`)가 이미 쓰는 `navigator.language` + `localStorage.lang_pref` 리다이렉트 패턴을 `/pricing/`에도 그대로 적용 — ja/en 브라우저가 `/pricing/`로 직접 들어오면 자동으로 자기 언어 가격 페이지로 이동(수동 선택 있으면 존중). `/ja/`, `/en/` 자체처럼 이 페이지들 자체에선 추가 리다이렉트 없음(사이트 기존 컨벤션과 동일).
+- 페이지 구조는 terms/privacy 페이지의 공통 쉘(헤더+`#langSwitch` 드롭다운+뒤로가기)로 새로 맞춤 — 기존 bare한 레이아웃 대신 사이트 나머지와 톤 통일.
+- `ja/index.html`, `ja/terms/index.html`, `en/index.html`, `en/terms/index.html`에서 전부 `/pricing/`를 가리키던 링크를 각 언어 경로로 수정.
+- 로컬 `python3 -m http.server` + Claude-in-Chrome으로 3개 페이지 전부 렌더링·언어 스위처 링크 확인 완료.
+- **다음 세션 확인할 것**: Netlify에 배포(push)된 뒤 실제 운영 URL에서도 ja/en 리다이렉트가 잘 도는지 한 번 확인. sitemap.xml에는 pricing이 원래 없었어서 그대로 둠.
+
 ## ⭐ 10/23 세션 — payments_watch.py를 로컬 launchd → Railway Cron Job으로 이전 (운영 변경, 중요)
 
 - **배경**: 10/22 결제가 뜬 뒤 쓰레드 답글이 3시간 넘게 안 붙는 사고 발생 → 원인은 노트북이 11:51~15:09 사이 잠들어서 launchd StartInterval이 그동안 전혀 못 돈 것(코드 버그 아님). 노트북 수면에 의존하는 구조 자체가 단일 장애점이라 사용자가 Railway(다른 프로젝트에서 이미 쓰던 클라우드)로 이전 요청.
