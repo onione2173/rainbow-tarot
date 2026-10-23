@@ -1,72 +1,117 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="ko">
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Pricing — PetTarot</title>
-  <meta name="description" content="PetTarot pricing: free pet tarot readings and a one-time premium in-depth reading report.">
+  <script>
+    // 일본어/영어 브라우저 첫 방문 시 해당 언어 가격 페이지로 자동 이동 (수동 언어 선택이 있으면 존중)
+    (function(){try{
+      var p=localStorage.getItem('lang_pref');var l=(navigator.language||'').toLowerCase();
+      if(!p||p!=='ko'){ if(p==='ja'||(!p&&l.indexOf('ja')===0)){location.replace('/ja/pricing/');} else if(p==='en'||(!p&&l.indexOf('en')===0)){location.replace('/en/pricing/');} }
+    }catch(e){}})();
+  </script>
+  <title>이용요금 — 펫타로</title>
+  <meta name="description" content="펫타로 이용요금: 무료 타로 리딩과 1회 결제형 심층 리포트 안내.">
   <link rel="canonical" href="https://rainbow-tarot.netlify.app/pricing/">
+  <link rel="alternate" hreflang="ko" href="https://rainbow-tarot.netlify.app/pricing/">
+  <link rel="alternate" hreflang="ja" href="https://rainbow-tarot.netlify.app/ja/pricing/">
+  <link rel="alternate" hreflang="en" href="https://rainbow-tarot.netlify.app/en/pricing/">
+  <link rel="alternate" hreflang="x-default" href="https://rainbow-tarot.netlify.app/pricing/">
+  <meta property="og:type" content="website">
+  <meta property="og:site_name" content="펫타로">
+  <meta property="og:locale" content="ko_KR">
+  <meta property="og:title" content="이용요금 — 펫타로">
+  <meta property="og:description" content="펫타로 이용요금: 무료 타로 리딩과 1회 결제형 심층 리포트 안내.">
+  <meta property="og:image" content="https://rainbow-tarot.netlify.app/assets/og-image.png">
+  <meta property="og:url" content="https://rainbow-tarot.netlify.app/pricing/">
+  <meta name="twitter:card" content="summary_large_image">
   <link rel="icon" type="image/svg+xml" href="/favicon.svg">
+  <link rel="apple-touch-icon" href="/favicon.svg">
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Noto+Serif+KR:wght@300;400;600&family=Noto+Sans+KR:wght@300;400&display=swap" rel="stylesheet">
+  <script>
+    /* ?dev=1 접속 시 이 브라우저에서 GA 수집 영구 차단 (운영자 접속 제외용) */
+    try{if(location.search.indexOf('dev=1')>-1)localStorage.setItem('ga_off','1');
+    if(localStorage.getItem('ga_off'))window['ga-disable-G-ZDTC39TEKD']=true;}catch(e){}
+  </script>
+  <script async src="https://www.googletagmanager.com/gtag/js?id=G-ZDTC39TEKD"></script>
+  <script>window.dataLayer=window.dataLayer||[];function gtag(){dataLayer.push(arguments);}gtag('js',new Date());gtag('config','G-ZDTC39TEKD');</script>
   <style>
-    *, *::before, *::after { margin:0; padding:0; box-sizing:border-box; }
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
     body {
-      min-height:100vh;
-      background:radial-gradient(ellipse at 20% 10%,#2a0a4a 0%,#0d0d2b 40%,#0a1428 70%,#001a1a 100%);
-      font-family:'Noto Serif KR',serif;
-      color:#f0e6ff;
-      padding:40px 20px 60px;
+      min-height: 100vh;
+      background: radial-gradient(ellipse at 20% 10%,#2a0a4a 0%,#0d0d2b 40%,#0a1428 70%,#001a1a 100%);
+      color: #f0e6ff;
+      font-family: 'Noto Serif KR', serif;
     }
-    .wrap { max-width:640px; margin:0 auto; }
-    h1 { font-size:1.6rem; font-weight:600; margin-bottom:6px; }
-    .sub { color:#c0aad8; font-size:.9rem; margin-bottom:32px; font-family:'Noto Sans KR',sans-serif; }
+    .rainbow-bar { position:fixed; top:0; left:0; right:0; height:3px; z-index:300; background:linear-gradient(90deg,#ff6b6b,#ff9f43,#ffd32a,#0be881,#17c0eb,#7d5fff,#ef5777); }
+    .site-header { position:sticky; top:3px; z-index:200; background:rgba(10,8,28,.92); backdrop-filter:blur(18px); border-bottom:1px solid rgba(200,160,255,.1); height:56px; display:flex; align-items:center; justify-content:space-between; padding:0 20px; }
+    .header-brand { display:flex; align-items:center; gap:9px; text-decoration:none; }
+    .brand-icon { font-size:1.35rem; }
+    .brand-name { font-size:1.15rem; font-weight:600; background:linear-gradient(135deg,#e8c4ff 0%,#c8e6ff 100%); -webkit-background-clip:text; -webkit-text-fill-color:transparent; background-clip:text; }
+    .header-right { display:flex; align-items:center; gap:10px; }
+    .back-btn { font-size:.82rem; color:#8070a0; text-decoration:none; font-family:'Noto Sans KR',sans-serif; }
+    .back-btn:hover { color:#c0aad8; }
+    .wrap { max-width:640px; margin:0 auto; padding:56px 20px 60px; }
+    h1 { font-size:1.5rem; font-weight:600; color:#e8d0ff; margin-bottom:6px; }
+    .sub { color:#8070a0; font-size:.82rem; margin-bottom:32px; font-family:'Noto Sans KR',sans-serif; font-weight:300; }
     .card {
       background:rgba(255,255,255,.04);
       border:1px solid rgba(200,160,255,.18);
       border-radius:16px; padding:24px; margin-bottom:18px;
     }
-    .card h2 { font-size:1.05rem; color:#e8d0ff; margin-bottom:4px; }
+    .card h2 { font-size:1.02rem; font-weight:600; color:#e8d0ff; margin-bottom:4px; }
     .price { font-size:1.5rem; font-weight:600; color:#ffd060; margin:10px 0 6px; }
-    .price small { font-size:.75rem; color:#8070a0; font-weight:400; }
-    .card p, .card li { font-size:.85rem; line-height:1.8; color:#c0aad8; font-family:'Noto Sans KR',sans-serif; }
+    .price small { font-size:.75rem; color:#8070a0; font-weight:300; font-family:'Noto Sans KR',sans-serif; }
+    .card p, .card li { font-size:.85rem; line-height:1.85; color:#c0aad8; font-family:'Noto Sans KR',sans-serif; font-weight:300; }
     .card ul { margin:8px 0 0 18px; }
     .badge { display:inline-block; font-size:.65rem; padding:3px 10px; border-radius:10px;
       background:rgba(120,200,140,.15); border:1px solid rgba(120,200,140,.4); color:#a8e0b8;
       font-family:'Noto Sans KR',sans-serif; margin-left:8px; vertical-align:middle; }
-    .note { font-size:.75rem; color:#8070a0; line-height:1.8; font-family:'Noto Sans KR',sans-serif; margin-top:26px; }
-    .note a { color:#c0aad8; }
-    a.home { color:#c0aad8; font-size:.8rem; font-family:'Noto Sans KR',sans-serif; }
+    .note { font-size:.75rem; color:#8070a0; line-height:1.85; font-family:'Noto Sans KR',sans-serif; font-weight:300; margin-top:26px; }
+    .note a { color:#c8a8f0; }
+    .note a:hover { color:#e8d0ff; }
   </style>
 </head>
 <body>
+  <div class="rainbow-bar"></div>
+  <header class="site-header">
+    <a href="/" class="header-brand">
+      <span class="brand-icon">🐾</span>
+      <span class="brand-name">펫타로</span>
+    </a>
+    <div class="header-right">
+      <div class="lang-switch" id="langSwitch"></div>
+      <a href="javascript:history.back()" class="back-btn">← 뒤로</a>
+    </div>
+  </header>
+
   <div class="wrap">
-    <h1>🐾 PetTarot — Pricing</h1>
-    <p class="sub">AI-generated pet tarot readings for entertainment purposes. All content is digital and delivered instantly on screen.</p>
+    <h1>이용요금</h1>
+    <p class="sub">반려동물 타로 리딩은 오락 목적의 AI 생성 콘텐츠입니다. 모든 콘텐츠는 디지털로 제공되며 화면에 즉시 표시됩니다.</p>
 
     <div class="card">
-      <h2>Free Readings</h2>
-      <div class="price">Free</div>
+      <h2>무료 리딩</h2>
+      <div class="price">무료</div>
       <ul>
-        <li>Beyond the Rainbow Bridge — a comforting reading for pet loss (虹の橋のむこう / 무지개 다리 너머)</li>
-        <li>Today's Mood Reading — how your pet feels today (きょうの気持ちリーディング / 기분 읽기)</li>
-        <li>Guardian Tarot — your pet's guardian card (守護タロット / 수호 타로)</li>
+        <li>무지개 다리 너머 — 떠난 반려동물을 위한 위로의 리딩</li>
+        <li>오늘 우리 아이 어때요? — 오늘의 기분을 읽어보는 원카드 리딩</li>
+        <li>우리 아이 걱정될 때 — 건강·행동·관계 고민을 위한 수호 타로</li>
       </ul>
     </div>
 
     <div class="card">
-      <h2>In-Depth Premium Reading Report <span class="badge">One-time purchase</span></h2>
-      <div class="price">JPY 400 <small>(Japan — available now, PayPal)</small></div>
-      <div class="price">USD 2.99 <small>(English — available now, PayPal)</small></div>
-      <div class="price">KRW 1,500 <small>(Korea — available now, card payment)</small></div>
-      <p>A full multi-card tarot reading report generated by AI: per-card in-depth interpretation, a heartfelt letter from your pet's perspective, a message for the owner, and an action guide. Displayed on screen immediately after payment. No subscription, no recurring charges, no physical goods.</p>
+      <h2>심층 콤보 분석 <span class="badge">1회 결제</span></h2>
+      <div class="price">₩1,500 <small>(카드 결제로 바로 이용 가능)</small></div>
+      <p>여러 장의 카드를 활용한 심층 타로 리포트를 AI가 작성해드려요: 카드별 심층 해석, 반려동물 시점의 편지, 보호자님께 드리는 메시지, 행동 가이드까지. 결제 직후 화면에 바로 표시됩니다. 구독·정기결제·실물 상품이 아닙니다.</p>
     </div>
 
     <p class="note">
-      Refund policy: full refund before the reading starts; non-refundable once the report is displayed (digital content delivered); full refund within 7 days for service errors. See our <a href="/terms/">Terms of Service</a> (<a href="/ja/terms/">日本語</a>) · <a href="/privacy/">Privacy Policy</a> · <a href="/contact/">Contact</a><br><br>
-      <a class="home" href="/">← PetTarot Home (한국어)</a> &nbsp;·&nbsp; <a class="home" href="/ja/">日本語版</a>
+      환불 정책: 결제 후 리딩 시작 전 전액 환불 · 리딩 결과 표시 후 환불 불가(디지털 콘텐츠 제공 완료) · 서비스 오류·미제공 시 7일 이내 문의하면 전액 환불.
+      자세한 내용은 <a href="/terms/">이용약관</a> · <a href="/privacy/">개인정보처리방침</a> · <a href="/contact/">문의</a>에서 확인하세요.
     </p>
   </div>
+  <script src="/assets/lang-switch.js" defer></script>
 </body>
 </html>
