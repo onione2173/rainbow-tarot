@@ -3,14 +3,15 @@
 새 세션에서 "HANDOFF.md 읽고 이어서 진행해줘"로 시작하면 됩니다.
 **큰 변화가 생길 때마다 이 파일을 갱신할 것. 할 일 목록은 반드시 여기 기록하고, 기록된 루틴은 반드시 실행할 것 (사용자 지시 7/25).** (최종 업데이트: 2026-10-23 KST)
 
-## ⭐ 10/23 세션 — /pricing/ 페이지를 언어별로 분리 (ko/ja/en, 각자 자기 화폐만)
+## ⭐ 10/23 세션 — /pricing/ 페이지를 언어별로 분리 (ko/ja/en, 각자 자기 화폐만) — **main에 배포 완료**
 
-- **배경**: 지금까지 `/pricing/`은 단일 페이지(영어)로 KRW/JPY/USD 세 가격을 한 화면에 전부 나열했음. 사용자가 "접속자 언어에 따라 자기 나라 가격만 보이게" 요청.
-- **변경**: `/pricing/`(ko, ₩1,500만), `/ja/pricing/`(ja, ¥400만), `/en/pricing/`(en, $2.99만) 3개 페이지로 분리. 홈페이지(`index.html`)가 이미 쓰는 `navigator.language` + `localStorage.lang_pref` 리다이렉트 패턴을 `/pricing/`에도 그대로 적용 — ja/en 브라우저가 `/pricing/`로 직접 들어오면 자동으로 자기 언어 가격 페이지로 이동(수동 선택 있으면 존중). `/ja/`, `/en/` 자체처럼 이 페이지들 자체에선 추가 리다이렉트 없음(사이트 기존 컨벤션과 동일).
-- 페이지 구조는 terms/privacy 페이지의 공통 쉘(헤더+`#langSwitch` 드롭다운+뒤로가기)로 새로 맞춤 — 기존 bare한 레이아웃 대신 사이트 나머지와 톤 통일.
-- `ja/index.html`, `ja/terms/index.html`, `en/index.html`, `en/terms/index.html`에서 전부 `/pricing/`를 가리키던 링크를 각 언어 경로로 수정.
-- 로컬 `python3 -m http.server` + Claude-in-Chrome으로 3개 페이지 전부 렌더링·언어 스위처 링크 확인 완료.
-- **다음 세션 확인할 것**: Netlify에 배포(push)된 뒤 실제 운영 URL에서도 ja/en 리다이렉트가 잘 도는지 한 번 확인. sitemap.xml에는 pricing이 원래 없었어서 그대로 둠.
+- **배경**: 지금까지 `/pricing/`은 단일 페이지(영어, `lang="en"`)로 KRW/JPY/USD 세 가격을 한 화면에 전부 나열했음. 사용자가 "접속자 언어에 따라 자기 나라 가격만 보이게" 요청.
+- **⚠️ 중간에 중요한 사고 방지**: 이 작업을 **이 브랜치(`onione2173/read-handoff-md`)**에서 먼저 했는데, 이 브랜치가 8월 10일쯔음 스냅샷에서 갈라져 main과 32커밋이나 벌어진 상태였음(오픈 이벤트 50% 할인, 전생/케미 타로 추가, 브랜드명 "달의 서재 펫타로" 확장 등을 전혀 모르는 상태) — 그대로 머지했으면 틀린 가격·구버전 상품 정보가 실서비스에 올라갈 뻔했음. **그래서 origin/main 기준으로 새 브랜치(`onione2173/pricing-locale-split`)를 따로 파서 다시 작업 → main에 fast-forward 머지 → push 완료(커밋 `6c6984f`).** 실제 배포본은 이게 맞고, **이 브랜치(`onione2173/read-handoff-md`)에 남아있는 `pricing/index.html`, `ja/pricing/`, `en/pricing/`과 그 HANDOFF 기록(아래)은 전부 구버전 — 이 브랜치를 나중에 main에 머지할 일이 있으면 이 파일들은 절대 가져오지 말 것(먼저 main으로 rebase 필요).**
+- **실제 반영 내용**: `/pricing/`(ko, "달의 서재 펫타로" 브랜드, ₩3,000→₩1,500 50%OFF), `/ja/pricing/`(ja, ¥600→¥300), `/en/pricing/`(en, $5.99→$2.99) 3개 페이지. 홈페이지가 이미 쓰는 `navigator.language` + `localStorage.lang_pref` 리다이렉트 패턴을 `/pricing/`에도 적용 — ja/en 브라우저가 `/pricing/`로 직접 들어오면 자동으로 자기 언어 가격 페이지로 이동. ko는 mind/behavior/change+전생+케미 심층 스프레드를 한 상품으로 묘사, ja/en은 아직 "深層コンボリーディング/Deep Combo Reading" 단일 상품(ja/en은 스프레드 분리가 안 됐어서).
+- 페이지 구조는 terms/privacy 페이지의 공통 쉘(헤더+`#langSwitch` 드롭다운+뒤로가기)로 새로 맞춤.
+- `ja/index.html`, `ja/terms/index.html`, `en/index.html`, `en/terms/index.html`의 `/pricing/` 링크를 각 언어 경로로 수정.
+- 로컬 `python3 -m http.server` + Claude-in-Chrome으로 3개 페이지 전부 렌더링·실제 가격/브랜드 일치·언어 스위처 링크 확인 완료.
+- **다음 세션 확인할 것**: 실제 운영 URL(rainbow-tarot.netlify.app)에서 Netlify 빌드가 정상 끝났는지, ja/en 리다이렉트가 잘 도는지 한 번 확인.
 
 ## ⭐ 10/23 세션 — payments_watch.py를 로컬 launchd → Railway Cron Job으로 이전 (운영 변경, 중요)
 
