@@ -1,7 +1,20 @@
 # 인수인계 — 후쿠마루(일본 X) 미션
 
 새 세션에서 "HANDOFF.md 읽고 이어서 진행해줘"로 시작하면 됩니다.
-**큰 변화가 생길 때마다 이 파일을 갱신할 것. 할 일 목록은 반드시 여기 기록하고, 기록된 루틴은 반드시 실행할 것 (사용자 지시 7/25).** (최종 업데이트: 2026-10-20 KST)
+**큰 변화가 생길 때마다 이 파일을 갱신할 것. 할 일 목록은 반드시 여기 기록하고, 기록된 루틴은 반드시 실행할 것 (사용자 지시 7/25).** (최종 업데이트: 2026-10-23 KST)
+
+## ⭐ 10/23 세션 — payments_watch.py를 로컬 launchd → Railway Cron Job으로 이전 (운영 변경, 중요)
+
+- **배경**: 10/22 결제가 뜬 뒤 쓰레드 답글이 3시간 넘게 안 붙는 사고 발생 → 원인은 노트북이 11:51~15:09 사이 잠들어서 launchd StartInterval이 그동안 전혀 못 돈 것(코드 버그 아님). 노트북 수면에 의존하는 구조 자체가 단일 장애점이라 사용자가 Railway(다른 프로젝트에서 이미 쓰던 클라우드)로 이전 요청.
+- **새 배포**: Railway 프로젝트 **`rainbow-tarot-payments-watch`**(project id `886d6147-3a92-4d0a-9a7b-d7b31f18dfa9`), 서비스 **`payments-watch`**(service id `943b26b1-6d57-4907-8efd-67f900622b03`), environment `production`(`41d3f18d-4e4e-4aff-8bd4-6f9bd1b2ccf9`).
+  - **Cron Job**으로 설정(`deploy.cronSchedule = "*/10 * * * *"`, `deploy.startCommand = "python3 payments_watch.py"`) — 컨테이너가 10분마다 새로 뜨고 끝나면 꺼짐.
+  - **볼륨** `payments-watch-volume`(`/data`)에 `payments-seen.json` 상태 저장 — 컨테이너는 매번 새로 떠도 볼륨 데이터는 유지됨. 코드에서 `RAILWAY_VOLUME_MOUNT_PATH` 있으면 그 경로, 없으면(로컬) 스크립트 옆 — 이 분기로 로컬 launchd 버전과 코드 공유 가능.
+  - **환경변수**: `SUPABASE_URL`/`SUPABASE_SERVICE_KEY`/`SLACK_BOT_TOKEN`을 로컬 `.env` 대신 Railway Variables로 직접 설정(평문 그대로 Railway variable list에 존재 — 코드 쪽엔 `.env` 폴백도 남겨둬서 로컬 테스트 가능).
+  - **배포 소스 폴더**: `~/orca/workspaces/work-flow/grayling/payments-cron/`(신규, `payments_watch.py` + 빈 `requirements.txt`만) — 기존 `grayling/slack-bot/`(node_modules·bot.js 등)과는 분리된 깨끗한 폴더. `grayling/slack-bot/payments_watch.py`는 이제 레퍼런스/백업일 뿐 더 이상 실행되지 않음(launchd 내려감).
+  - **로컬 launchd 완전히 끔**: `launchctl bootout`으로 즉시 중지 + plist를 `~/Library/LaunchAgents/com.hayeonghwang.payments-watch.plist.disabled-20261023`로 리네임(재부팅해도 안 살아남음, 삭제는 안 해서 복구 가능).
+- **첫 실행 확인됨**: 볼륨이 비어있던 첫 실행에서 기존 28건을 조용히 seed(`first run: seeded 28 rows, no notifications sent`), Slack에 `:white_check_mark: 결제 감시 시작` 1회만 올라감(중복 moneybag 없음 — 당시 미완료(`결제 완료`/`생성 중`) 상태 레코드가 0건이어서 안전했음, 매번 보장되는 성질은 아님).
+- **CLI 주의사항(다음에 또 Railway 작업할 때)**: `railway environment edit --service-config <svc> deploy.xxx ...` **닷패스 패치가 이 프로젝트에서 "No changes to apply"로 조용히 실패**함(버그로 보임, restartPolicyMaxRetries처럼 확실히 다른 값도 무시됨) — **JSON 패치 방식**(`railway environment edit --json <<'JSON' {...} JSON`)으로 우회해서 성공시킴. `railway volume add`/`files`는 `--service`/`--volume` 플래그 위치가 서브커맨드 앞이 아니라 뒤(`volume files --volume <id> list /`)여야 함, 이름 대신 **explicit ID**를 쓰면 더 잘 동작함(이름으로는 `volume add`가 패닉 크래시 났음).
+- **다음 세션 확인할 것**: 며칠 안에 실제 결제가 들어왔을 때 Railway 쪽에서 쓰레드 답글이 정상적으로 붙는지 실물 확인. 문제 생기면 `railway logs --service payments-watch --environment production --lines 100 --json`로 로그 확인(프로젝트: `rainbow-tarot-payments-watch`).
 
 ## ⭐ 10/20 세션 — #payments 슬랙 알림에 리딩 원문 자동 첨부 (운영 변경)
 
