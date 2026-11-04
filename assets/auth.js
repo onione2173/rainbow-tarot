@@ -70,6 +70,13 @@ async function signInWithKakao(redirectPath) {
   if (error) alert('카카오 로그인 중 오류가 발생했습니다.\n' + error.message);
 }
 
+// 이메일/비밀번호 로그인 — 2차 인증(OTP 등) 없이 바로 로그인되는 "일반 로그인" 경로.
+// 공개 가입 폼은 없음(계정은 서버에서 발급) — PG사 심사용 테스트 계정 등 OAuth를 쓸 수 없는 경우용.
+async function signInWithPassword(email, password) {
+  if (!_sb) return { error: { message: 'not_configured' } };
+  return _sb.auth.signInWithPassword({ email, password });
+}
+
 // OAuth 복귀는 항상 /auth-callback/ 경유(Supabase redirect 허용 목록에 등록된 경로).
 // 복귀 후 이동할 경로는 petarot_dr._returnPath에 기록해 auth-callback이 읽는다.
 function setAuthReturnPath(path) {

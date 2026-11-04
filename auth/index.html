@@ -143,6 +143,33 @@
       border-radius:14px;padding:20px 16px;margin-bottom:24px;
     }
     .setup-notice p{font-size:.8rem;color:#f0c878;font-family:'Noto Sans KR',sans-serif;line-height:1.7;}
+
+    .email-toggle{
+      display:block;width:100%;text-align:center;background:none;border:none;
+      color:var(--text-dim);font-size:.82rem;font-family:'Noto Sans KR',sans-serif;
+      cursor:pointer;padding:4px;margin-top:2px;text-decoration:underline;text-underline-offset:3px;
+    }
+    .email-toggle:hover{color:var(--text-sub);}
+    .email-form{display:none;margin-top:16px;}
+    .email-form input{
+      width:100%;padding:13px 16px;margin-bottom:10px;
+      background:rgba(255,255,255,.04);border:1px solid rgba(200,160,255,.18);
+      border-radius:12px;color:var(--text-main);font-size:.9rem;
+      font-family:'Noto Sans KR',sans-serif;
+    }
+    .email-form input::placeholder{color:var(--text-dim);}
+    .email-form input:focus{outline:none;border-color:rgba(200,160,255,.4);}
+    .email-btn{
+      width:100%;padding:14px 20px;
+      background:rgba(200,160,255,.14);border:1px solid rgba(200,160,255,.35);
+      border-radius:12px;color:#e8d0ff;font-size:.9rem;font-weight:600;
+      cursor:pointer;font-family:'Noto Sans KR',sans-serif;
+    }
+    .email-btn:hover{background:rgba(200,160,255,.22);}
+    .email-error{
+      display:none;font-size:.78rem;color:#ff9d9d;
+      font-family:'Noto Sans KR',sans-serif;margin-top:8px;text-align:center;
+    }
   </style>
 </head>
 <body>
@@ -174,6 +201,14 @@
       </button>
 
       <div class="divider">또는</div>
+
+      <button type="button" class="email-toggle" id="emailToggle" onclick="toggleEmailForm()">이메일로 로그인</button>
+      <div class="email-form" id="emailForm">
+        <input type="email" id="emailInput" placeholder="이메일" autocomplete="username">
+        <input type="password" id="passwordInput" placeholder="비밀번호" autocomplete="current-password">
+        <button type="button" class="email-btn" id="emailLoginBtn" onclick="doEmailLogin()">로그인</button>
+        <p class="email-error" id="emailError"></p>
+      </div>
 
       <div class="terms-notice">
         가입하면 <a href="/terms/">이용약관</a> 및 <a href="/privacy/">개인정보 처리방침</a>에<br>
@@ -208,6 +243,34 @@
       await signInWithKakao('/mypage/');
       document.getElementById('kakaoBtn').textContent = '카카오로 시작하기';
       document.getElementById('kakaoBtn').disabled = false;
+    }
+    function toggleEmailForm() {
+      const form = document.getElementById('emailForm');
+      form.style.display = form.style.display === 'block' ? 'none' : 'block';
+    }
+    async function doEmailLogin() {
+      const email = document.getElementById('emailInput').value.trim();
+      const password = document.getElementById('passwordInput').value;
+      const errEl = document.getElementById('emailError');
+      errEl.style.display = 'none';
+      if (!email || !password) {
+        errEl.textContent = '이메일과 비밀번호를 입력해주세요.';
+        errEl.style.display = 'block';
+        return;
+      }
+      if (typeof gtag === 'function') gtag('event', 'login_initiated', { method: 'email' });
+      const btn = document.getElementById('emailLoginBtn');
+      btn.textContent = '로그인 중...';
+      btn.disabled = true;
+      const { error } = await signInWithPassword(email, password);
+      btn.textContent = '로그인';
+      btn.disabled = false;
+      if (error) {
+        errEl.textContent = '로그인에 실패했습니다. 이메일/비밀번호를 확인해주세요.';
+        errEl.style.display = 'block';
+        return;
+      }
+      window.location.href = '/mypage/';
     }
     initAuthPage();
   </script>
